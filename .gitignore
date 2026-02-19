@@ -1,4 +1,5 @@
 config.yaml
+config.json
 .env
 .env.local
 __pycache__/
@@ -19,4 +20,9 @@ build/
 # Large binaries
 *.pkg
 *.pdf
+*.glb
+*.fbx
+*.step
+*.blend
+*.blend1
 package-lock.json

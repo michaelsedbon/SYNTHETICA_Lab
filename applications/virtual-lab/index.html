@@ -1,0 +1,2362 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Virtual Lab - Stock Manager</title>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/png" href="/icon.png">
+  <link rel="apple-touch-icon" href="/icon.png">
+  <meta name="theme-color" content="#1a1a2e">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    /* ── VS Code Dark Theme Palette (matching Fab Planner) ── */
+    :root {
+      --bg-primary: #1e1e1e;
+      --bg-secondary: #252526;
+      --bg-tertiary: #2d2d2d;
+      --bg-hover: #2a2d2e;
+      --bg-active: #37373d;
+      --bg-input: #3c3c3c;
+      --border: #3c3c3c;
+      --border-light: #4a4a4a;
+      --text-primary: #cccccc;
+      --text-secondary: #9d9d9d;
+      --text-muted: #6e6e6e;
+      --accent-blue: #569cd6;
+      --accent-green: #4ec9b0;
+      --accent-orange: #ce9178;
+      --accent-red: #f44747;
+      --accent-yellow: #dcdcaa;
+      --accent-purple: #c586c0;
+      --accent-cyan: #9cdcfe;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+      --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6);
+      --radius-sm: 4px;
+      --radius-md: 6px;
+      --radius-lg: 8px;
+      --transition: 150ms ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      overflow: hidden;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Scrollbar (VS Code style) ── */
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(121, 121, 121, 0.4);
+      border-radius: 5px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(121, 121, 121, 0.7);
+    }
+
+    #canvas {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    /* ── Top Search UI ── */
+    #ui {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      z-index: 10;
+    }
+
+    #search-container {
+      display: flex;
+      align-items: center;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 8px 16px;
+      box-shadow: var(--shadow-md);
+      width: 420px;
+    }
+
+    #search-container svg {
+      width: 18px;
+      height: 18px;
+      margin-right: 10px;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    #search {
+      border: none;
+      outline: none;
+      font-size: 14px;
+      width: 100%;
+      background: transparent;
+      color: var(--text-primary);
+      font-family: inherit;
+    }
+
+    #search::placeholder {
+      color: var(--text-muted);
+    }
+
+    #record-count {
+      font-size: 11px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      margin-left: 8px;
+    }
+
+    /* ── Suggestions dropdown ── */
+    #suggestions {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      width: 420px;
+      max-height: 320px;
+      overflow-y: auto;
+      display: none;
+    }
+
+    .suggestion {
+      padding: 10px 16px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--text-primary);
+      border-bottom: 1px solid rgba(60, 60, 60, 0.4);
+    }
+
+    .suggestion:last-child {
+      border-bottom: none;
+    }
+
+    .suggestion:hover {
+      background: var(--bg-hover);
+    }
+
+    .suggestion .item-name {
+      font-weight: 600;
+      display: block;
+    }
+
+    .suggestion .item-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      gap: 12px;
+      margin-top: 2px;
+    }
+
+    .suggestion .storage-tag {
+      background: rgba(86, 156, 214, 0.2);
+      color: var(--accent-blue);
+      padding: 1px 6px;
+      border-radius: var(--radius-sm);
+      font-weight: 500;
+      font-size: 11px;
+    }
+
+    .suggestion .table-tag {
+      color: var(--text-muted);
+      font-size: 11px;
+    }
+
+    /* ── Info panel (bottom-left) ── */
+    #info-panel {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      box-shadow: var(--shadow-lg);
+      display: none;
+      z-index: 10;
+      min-width: 240px;
+      max-width: 360px;
+    }
+
+    #info-panel h3 {
+      font-size: 16px;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    #info-panel .info-storage {
+      font-size: 13px;
+      color: var(--accent-blue);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    #info-panel .info-table {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    #info-panel .info-fields {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    #info-panel .info-fields span {
+      color: var(--text-muted);
+    }
+
+    #info-panel .storage-prompt {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    #info-panel .storage-prompt input {
+      flex: 1;
+      padding: 5px 8px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      outline: none;
+      background: var(--bg-input);
+      color: var(--text-primary);
+      font-family: inherit;
+    }
+
+    #info-panel .storage-prompt input:focus {
+      border-color: var(--accent-blue);
+    }
+
+    #info-panel .storage-prompt button {
+      padding: 5px 12px;
+      background: var(--accent-blue);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    #info-panel .storage-prompt button:hover {
+      background: #4a8cc7;
+    }
+
+    #info-panel .close-btn {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      background: none;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    #info-panel .close-btn:hover {
+      color: var(--text-primary);
+    }
+
+    /* ── Loading ── */
+    #loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: var(--text-primary);
+      font-size: 16px;
+      z-index: 20;
+      text-align: center;
+    }
+
+    #loading .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(255, 255, 255, 0.15);
+      border-top-color: var(--accent-blue);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 12px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* ── Error banner ── */
+    #error-banner {
+      position: absolute;
+      top: 70px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(244, 71, 71, 0.15);
+      color: var(--accent-red);
+      border: 1px solid rgba(244, 71, 71, 0.3);
+      padding: 10px 20px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      z-index: 15;
+      display: none;
+      max-width: 500px;
+      text-align: center;
+    }
+
+    /* ── Browse panel ── */
+    #browse-panel {
+      position: absolute;
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      display: none;
+      z-index: 11;
+      max-width: 90vw;
+      max-height: 60vh;
+      overflow: auto;
+      padding: 12px 8px;
+    }
+
+    #browse-columns {
+      display: flex;
+      gap: 2px;
+      align-items: flex-start;
+    }
+
+    .browse-col {
+      min-width: 200px;
+      max-width: 260px;
+      flex-shrink: 0;
+    }
+
+    .browse-col-header {
+      position: sticky;
+      top: 0;
+      background: var(--bg-secondary);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--accent-blue);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 6px 10px 8px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2px;
+    }
+
+    .browse-col-header .col-count {
+      font-weight: 400;
+      color: var(--text-muted);
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    .browse-item {
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--text-primary);
+      border-radius: var(--radius-sm);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      transition: background var(--transition);
+    }
+
+    .browse-item:hover {
+      background: var(--bg-hover);
+    }
+
+    .browse-item .bi-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .browse-item .bi-storage {
+      background: rgba(86, 156, 214, 0.2);
+      color: var(--accent-blue);
+      padding: 1px 5px;
+      border-radius: var(--radius-sm);
+      font-size: 10px;
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+
+    /* ── Context menu ── */
+    #context-menu {
+      position: absolute;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      display: none;
+      z-index: 50;
+      min-width: 200px;
+      max-width: 300px;
+      overflow: hidden;
+    }
+
+    #context-menu .cm-header {
+      padding: 10px 14px 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--accent-blue);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    #context-menu .cm-list {
+      max-height: 260px;
+      overflow-y: auto;
+    }
+
+    #context-menu .cm-item {
+      padding: 8px 14px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--text-primary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      transition: background var(--transition);
+    }
+
+    #context-menu .cm-item:hover {
+      background: var(--bg-hover);
+    }
+
+    #context-menu .cm-item .cm-field-name {
+      font-weight: 500;
+    }
+
+    #context-menu .cm-item .cm-field-val {
+      color: var(--text-muted);
+      font-size: 11px;
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    #context-menu .cm-edit {
+      padding: 10px 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    #context-menu .cm-edit label {
+      display: block;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    #context-menu .cm-edit-row {
+      display: flex;
+      gap: 6px;
+    }
+
+    #context-menu .cm-edit input {
+      flex: 1;
+      padding: 5px 8px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      outline: none;
+      background: var(--bg-input);
+      color: var(--text-primary);
+      font-family: inherit;
+    }
+
+    #context-menu .cm-edit input:focus {
+      border-color: var(--accent-blue);
+    }
+
+    #context-menu .cm-edit button {
+      padding: 5px 12px;
+      background: var(--accent-blue);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      cursor: pointer;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+
+    #context-menu .cm-edit button:hover {
+      background: #4a8cc7;
+    }
+
+    #context-menu .cm-status {
+      padding: 6px 14px 10px;
+      font-size: 12px;
+    }
+
+    /* ── Tooltip ── */
+    #tooltip {
+      position: absolute;
+      pointer-events: none;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      z-index: 12;
+      display: none;
+      white-space: nowrap;
+      box-shadow: var(--shadow-md);
+    }
+
+    /* ── Burger menu ── */
+    #burger-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 30;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      width: 42px;
+      height: 42px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      box-shadow: var(--shadow-md);
+    }
+
+    #burger-btn span {
+      display: block;
+      width: 20px;
+      height: 2px;
+      background: var(--text-primary);
+      border-radius: 1px;
+      transition: transform 0.2s;
+    }
+
+    #burger-btn.open span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+
+    #burger-btn.open span:nth-child(2) {
+      opacity: 0;
+    }
+
+    #burger-btn.open span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    #burger-dropdown {
+      position: absolute;
+      top: 70px;
+      right: 20px;
+      z-index: 30;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      display: none;
+      overflow: hidden;
+      min-width: 180px;
+    }
+
+    .burger-option {
+      padding: 12px 16px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: background var(--transition);
+    }
+
+    .burger-option:hover {
+      background: var(--bg-hover);
+    }
+
+    .burger-option.active {
+      color: var(--accent-blue);
+      font-weight: 600;
+    }
+
+    .burger-option .bo-icon {
+      font-size: 16px;
+      width: 20px;
+      text-align: center;
+    }
+
+    /* ── Storage Mode ── */
+    #storage-mode {
+      position: absolute;
+      inset: 0;
+      background: var(--bg-primary);
+      z-index: 20;
+      display: none;
+      overflow-y: auto;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    #storage-mode .sm-header {
+      position: sticky;
+      top: 0;
+      background: var(--bg-tertiary);
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      z-index: 1;
+    }
+
+    #storage-mode .sm-header h2 {
+      font-size: 18px;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    #storage-mode .sm-header .sm-count {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    #storage-mode .sm-table-group {
+      padding: 0 24px;
+    }
+
+    #storage-mode .sm-table-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--accent-blue);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 16px 0 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    #storage-mode .sm-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(60, 60, 60, 0.4);
+    }
+
+    #storage-mode .sm-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+      min-width: 120px;
+      flex-shrink: 0;
+    }
+
+    #storage-mode .sm-supplier {
+      font-size: 12px;
+      color: var(--text-muted);
+      min-width: 80px;
+      flex-shrink: 0;
+    }
+
+    #storage-mode .sm-input-row {
+      display: flex;
+      gap: 6px;
+      flex: 1;
+      justify-content: flex-end;
+    }
+
+    #storage-mode .sm-input-row input {
+      width: 100px;
+      padding: 5px 8px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      outline: none;
+      background: var(--bg-input);
+      color: var(--text-primary);
+      font-family: inherit;
+    }
+
+    #storage-mode .sm-input-row input:focus {
+      border-color: var(--accent-blue);
+    }
+
+    #storage-mode .sm-input-row button {
+      padding: 5px 12px;
+      background: var(--accent-blue);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    #storage-mode .sm-input-row button:hover {
+      background: #4a8cc7;
+    }
+
+    #storage-mode .sm-saved {
+      color: var(--accent-green);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 5px 0;
+    }
+
+    #storage-mode .sm-empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+      font-size: 16px;
+    }
+
+    #storage-mode .sm-network {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 12px;
+      padding: 12px 16px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+
+    #storage-mode .sm-qr {
+      flex-shrink: 0;
+      line-height: 0;
+    }
+
+    #storage-mode .sm-qr img,
+    #storage-mode .sm-qr canvas {
+      border-radius: var(--radius-sm);
+    }
+
+    #storage-mode .sm-net-info {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    #storage-mode .sm-net-info .sm-wifi-name {
+      font-weight: 600;
+      color: var(--accent-blue);
+    }
+
+    #storage-mode .sm-net-info .sm-url {
+      font-family: 'SF Mono', 'Menlo', monospace;
+      font-size: 12px;
+      color: var(--text-muted);
+      word-break: break-all;
+    }
+
+    /* ── Storage autocomplete ── */
+    .storage-ac {
+      position: absolute;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+      max-height: 160px;
+      overflow-y: auto;
+      z-index: 60;
+      box-shadow: var(--shadow-md);
+      display: none;
+    }
+
+    .storage-ac .ac-item {
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--text-primary);
+      transition: background var(--transition);
+    }
+
+    .storage-ac .ac-item:hover,
+    .storage-ac .ac-item.ac-active {
+      background: rgba(86, 156, 214, 0.15);
+      color: var(--accent-blue);
+    }
+
+    .storage-ac .ac-item .ac-match {
+      font-weight: 700;
+    }
+
+    /* ── Filter panel ── */
+    #filter-panel {
+      position: absolute;
+      top: 80px;
+      left: 16px;
+      z-index: 15;
+      width: 220px;
+      max-height: calc(100vh - 100px);
+      overflow-y: auto;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      padding: 0;
+      transition: width 0.25s ease, opacity 0.25s ease;
+    }
+
+    #filter-panel.collapsed {
+      width: 42px;
+      overflow: hidden;
+    }
+
+    #filter-panel.collapsed .fp-body {
+      display: none;
+    }
+
+    #filter-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 12px 14px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent-blue);
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      font-family: inherit;
+    }
+
+    #filter-toggle .ft-icon {
+      font-size: 16px;
+      width: 18px;
+      text-align: center;
+      flex-shrink: 0;
+      transition: transform 0.2s;
+    }
+
+    #filter-panel.collapsed #filter-toggle .ft-icon {
+      transform: rotate(180deg);
+    }
+
+    #filter-toggle .ft-label {
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    #filter-panel.collapsed #filter-toggle .ft-label {
+      display: none;
+    }
+
+    .fp-body {
+      padding: 6px 0 10px;
+    }
+
+    .fp-section {
+      padding: 4px 14px 10px;
+    }
+
+    .fp-section-title {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .fp-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .fp-chip {
+      padding: 4px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      transition: all var(--transition);
+      white-space: nowrap;
+      font-family: inherit;
+    }
+
+    .fp-chip:hover {
+      border-color: var(--border-light);
+      color: var(--text-primary);
+    }
+
+    .fp-chip.active {
+      background: var(--accent-blue);
+      color: #fff;
+      border-color: var(--accent-blue);
+    }
+
+    .fp-chip.fp-all {
+      font-style: italic;
+      font-weight: 400;
+    }
+
+    .fp-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 4px 14px 8px;
+    }
+
+    /* ── Mobile responsive ── */
+    @media (max-width: 600px) {
+      #search-container {
+        width: 280px;
+        padding: 6px 12px;
+      }
+
+      #search {
+        font-size: 13px;
+      }
+
+      #suggestions {
+        width: 280px;
+      }
+
+      #browse-panel {
+        max-width: 95vw;
+        padding: 8px 4px;
+      }
+
+      .browse-col {
+        min-width: 160px;
+        max-width: 200px;
+      }
+
+      #info-panel {
+        max-width: 90vw;
+        min-width: auto;
+        bottom: 10px;
+        left: 10px;
+      }
+
+      #burger-btn {
+        top: 12px;
+        right: 12px;
+      }
+
+      #burger-dropdown {
+        right: 12px;
+        top: 62px;
+      }
+
+      #storage-mode .sm-row {
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      #storage-mode .sm-input-row {
+        width: 100%;
+      }
+
+      #storage-mode .sm-input-row input {
+        flex: 1;
+      }
+
+      #filter-panel {
+        top: 70px;
+        left: 8px;
+        width: 180px;
+      }
+
+      #filter-panel.collapsed {
+        width: 38px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <canvas id="canvas"></canvas>
+
+  <div id="filter-panel" class="collapsed">
+    <button id="filter-toggle">
+      <span class="ft-icon">&#9776;</span>
+      <span class="ft-label">Filters</span>
+    </button>
+    <div class="fp-body" id="fp-body"></div>
+  </div>
+
+  <div id="ui">
+    <div id="search-container">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8" />
+        <path d="m21 21-4.35-4.35" />
+      </svg>
+      <input type="text" id="search" placeholder="Search items in your inventory..." autocomplete="off">
+      <span id="record-count"></span>
+    </div>
+    <div id="suggestions"></div>
+  </div>
+
+  <div id="browse-panel">
+    <div id="browse-columns"></div>
+  </div>
+
+  <div id="error-banner"></div>
+
+  <div id="info-panel">
+    <button class="close-btn" id="close-info">&times;</button>
+    <h3 id="info-label"></h3>
+    <div class="info-storage" id="info-storage"></div>
+    <div class="info-table" id="info-table"></div>
+    <div class="info-fields" id="info-fields"></div>
+  </div>
+
+  <div id="context-menu">
+    <div class="cm-header">Modify</div>
+    <div class="cm-list" id="cm-list"></div>
+    <div class="cm-edit" id="cm-edit" style="display:none;"></div>
+    <div class="cm-status" id="cm-status" style="display:none;"></div>
+  </div>
+
+  <button id="burger-btn">
+    <span></span><span></span><span></span>
+  </button>
+  <div id="burger-dropdown">
+    <div class="burger-option active" data-mode="3d">
+      <span class="bo-icon">&#9635;</span> 3D View
+    </div>
+    <div class="burger-option" data-mode="storage">
+      <span class="bo-icon">&#9776;</span> Storage Mode
+    </div>
+  </div>
+
+  <div id="storage-mode">
+    <div class="sm-header">
+      <h2>Assign Storage Locations</h2>
+      <div class="sm-count" id="sm-count"></div>
+      <div class="sm-network" id="sm-network" style="display:none;">
+        <div class="sm-qr" id="sm-qr"></div>
+        <div class="sm-net-info" id="sm-net-info"></div>
+      </div>
+    </div>
+    <div id="sm-content"></div>
+  </div>
+
+  <div id="tooltip"></div>
+
+  <div id="loading">
+    <div class="spinner"></div>
+    <div id="loading-text">Loading 3D model...</div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.162.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.162.0/examples/jsm/"
+    }
+  }
+  </script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+    // =====================================================
+    // CONFIG — Loaded from config.json (gitignored)
+    // =====================================================
+    let AIRTABLE_PAT = '';
+    let AIRTABLE_BASE_ID = '';
+    let KNOWN_TABLE_ID = '';
+    try {
+      const cfgResp = await fetch('config.json');
+      if (cfgResp.ok) {
+        const cfg = await cfgResp.json();
+        AIRTABLE_PAT = cfg.airtable_pat || '';
+        AIRTABLE_BASE_ID = cfg.airtable_base_id || '';
+        KNOWN_TABLE_ID = cfg.known_table_id || '';
+      }
+    } catch (e) { console.warn('No config.json found — Airtable integration disabled'); }
+    const STORAGE_FIELD = 'Storage';
+    const PROJECT_FIELD = 'Project';
+
+    // =====================================================
+    // Scene setup
+    // =====================================================
+    const canvas = document.getElementById('canvas');
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.2;
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x1a1a2e);
+
+    const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 10000);
+    camera.position.set(500, 400, 500);
+
+    const controls = new OrbitControls(camera, canvas);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.08;
+    controls.target.set(0, 0, 0);
+
+    // Lighting
+    scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+    const dir1 = new THREE.DirectionalLight(0xffffff, 1.2);
+    dir1.position.set(300, 500, 400);
+    dir1.castShadow = true;
+    scene.add(dir1);
+    const dir2 = new THREE.DirectionalLight(0xffffff, 0.6);
+    dir2.position.set(-300, 300, -200);
+    scene.add(dir2);
+    const dir3 = new THREE.DirectionalLight(0xffffff, 0.4);
+    dir3.position.set(0, -200, 300);
+    scene.add(dir3);
+    scene.add(new THREE.HemisphereLight(0xddeeff, 0x444466, 0.5));
+
+    // =====================================================
+    // State
+    // =====================================================
+    let allMeshes = [];                    // { name, mesh }
+    let originalMaterials = new Map();     // mesh uuid -> original material
+    let airtableItems = [];               // { name, tableName, tableId, storage, fields, recordId }
+    const tableFieldsMeta = new Map();    // tableName → [{ name, type }] from meta API
+    const HIGHLIGHT_COLOR = new THREE.Color(0xe63946);
+    const HOVER_COLOR = new THREE.Color(0xa8e6a1);
+    let hoveredMesh = null;               // currently hovered mesh
+    let searchHighlightedMeshes = new Set(); // UUIDs of meshes highlighted by search (red)
+    let activeProjectFilters = new Set();    // empty = show all projects
+    let activeTableFilters = new Set();      // empty = show all tables
+
+    // =====================================================
+    // Load labels.json — build body name index
+    // =====================================================
+    const labelsResp = await fetch('labels.json');
+    const labels = await labelsResp.json();
+
+    // Collect all known body names from labels.json
+    const allBodyNames = new Set();
+    for (const occ of Object.values(labels.occurrences)) {
+      for (const body of occ.bodies) {
+        allBodyNames.add(body);
+      }
+    }
+
+    // =====================================================
+    // Load GLB model
+    // =====================================================
+    const loadingText = document.getElementById('loading-text');
+
+    const model = await new Promise((resolve, reject) => {
+      new GLTFLoader().load('virtual_lab.glb', (gltf) => resolve(gltf.scene), undefined, reject);
+    });
+
+    scene.add(model);
+
+    // Center model
+    const box = new THREE.Box3().setFromObject(model);
+    const center = box.getCenter(new THREE.Vector3());
+    const size = box.getSize(new THREE.Vector3());
+    controls.target.copy(center);
+    camera.position.set(center.x + size.x, center.y + size.y * 0.8, center.z + size.x);
+    controls.update();
+
+    // Index ALL nodes in the scene (groups + meshes) to build a complete name map.
+    // GLB exports from CAD tools put meaningful names on groups, not always on meshes.
+    const allNodes = [];  // { name, node } — every named Object3D in the scene
+    model.traverse((child) => {
+      if (child.isMesh) {
+        originalMaterials.set(child.uuid, child.material.clone());
+        allMeshes.push({ name: child.name, mesh: child });
+      }
+      if (child.name) {
+        allNodes.push({ name: child.name, node: child });
+      }
+    });
+
+    // Lighten walls & floor (Body1, Body2, Body4 under Bare_room) to distinguish from furniture
+    const wallFloorNames = new Set(['Body1', 'Body2', 'Body4']);
+    model.traverse((child) => {
+      if (child.isMesh && wallFloorNames.has(child.name)) {
+        // Check it's actually under Bare_room, not another component with same body name
+        let parent = child.parent;
+        let isBareRoom = false;
+        while (parent) {
+          if (parent.name && parent.name.startsWith('Bare_room')) { isBareRoom = true; break; }
+          parent = parent.parent;
+        }
+        if (isBareRoom) {
+          child.material = new THREE.MeshStandardMaterial({
+            color: 0xd8d8e8,
+            roughness: 0.9,
+            metalness: 0.0,
+          });
+          originalMaterials.set(child.uuid, child.material.clone());
+        }
+      }
+    });
+
+    // Build a map: name → all meshes under that node (for group-based lookup)
+    function getMeshesUnder(node) {
+      const meshes = [];
+      node.traverse((c) => { if (c.isMesh) meshes.push(c); });
+      return meshes;
+    }
+
+    // Debug: log the full scene tree
+    function logTree(node, depth = 0) {
+      const prefix = '  '.repeat(depth);
+      const type = node.isMesh ? '[Mesh]' : node.isGroup ? '[Group]' : '[Object3D]';
+      console.log(`${prefix}${type} "${node.name}" ${node.isMesh ? '' : `(${node.children.length} children)`}`);
+      node.children.forEach(c => logTree(c, depth + 1));
+    }
+    console.log('--- Full GLB scene tree ---');
+    logTree(model);
+    console.log('All node names:', allNodes.map(n => n.name));
+    console.log('All body names from labels.json:', [...allBodyNames]);
+
+    // =====================================================
+    // Airtable: fetch all tables and records
+    // =====================================================
+    loadingText.textContent = 'Loading inventory from Airtable...';
+
+    const headers = { 'Authorization': `Bearer ${AIRTABLE_PAT}` };
+
+    async function fetchAllRecords(tableIdOrName) {
+      let allRecords = [];
+      let offset = null;
+      do {
+        const url = new URL(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${tableIdOrName}`);
+        url.searchParams.set('pageSize', '100');
+        if (offset) url.searchParams.set('offset', offset);
+        const resp = await fetch(url, { headers });
+        if (!resp.ok) throw new Error(`Airtable error: ${resp.status}`);
+        const data = await resp.json();
+        allRecords = allRecords.concat(data.records);
+        offset = data.offset || null;
+      } while (offset);
+      return allRecords;
+    }
+
+    // Infer item name from the first non-empty string field of a record
+    function inferName(fields) {
+      for (const val of Object.values(fields)) {
+        if (typeof val === 'string' && val.trim()) return val.trim();
+      }
+      return '(unnamed)';
+    }
+
+    function addRecords(records, tableName, tableId) {
+      for (const rec of records) {
+        const name = inferName(rec.fields);
+        const storage = rec.fields[STORAGE_FIELD] || null;
+        airtableItems.push({
+          name,
+          tableName,
+          tableId: tableId || tableName,
+          storage: storage ? String(storage).trim() : null,
+          fields: rec.fields,
+          recordId: rec.id,
+        });
+      }
+    }
+
+    try {
+      // Try meta API first to discover all tables
+      const metaResp = await fetch(`https://api.airtable.com/v0/meta/bases/${AIRTABLE_BASE_ID}/tables`, { headers });
+
+      if (metaResp.ok) {
+        // Meta API available — load all tables
+        const metaData = await metaResp.json();
+        for (const table of metaData.tables) {
+          // Store field metadata for the context menu editor
+          const editableTypes = new Set(['singleLineText', 'multilineText', 'url', 'number', 'email', 'phone', 'singleSelect']);
+          tableFieldsMeta.set(table.name, table.fields
+            .filter(f => editableTypes.has(f.type))
+            .map(f => ({ name: f.name, type: f.type }))
+          );
+          loadingText.textContent = `Loading ${table.name}...`;
+          try {
+            const records = await fetchAllRecords(table.id);
+            addRecords(records, table.name, table.id);
+          } catch (e) {
+            console.warn(`Failed to load table "${table.name}":`, e);
+          }
+        }
+      } else {
+        // Fallback: meta API blocked (403) — use known table ID
+        console.warn('Meta API unavailable, falling back to known table ID');
+        loadingText.textContent = 'Loading inventory...';
+        const records = await fetchAllRecords(KNOWN_TABLE_ID);
+        addRecords(records, 'Inventory', KNOWN_TABLE_ID);
+      }
+
+      document.getElementById('record-count').textContent = `${airtableItems.length} items`;
+    } catch (err) {
+      console.error('Airtable error:', err);
+      const banner = document.getElementById('error-banner');
+      banner.textContent = `Airtable: ${err.message}`;
+      banner.style.display = 'block';
+    }
+
+    document.getElementById('loading').style.display = 'none';
+
+    // =====================================================
+    // Filter panel: Project + Table filters
+    // =====================================================
+    function getFilteredItems() {
+      return airtableItems.filter(item => {
+        if (activeProjectFilters.size > 0) {
+          const proj = item.fields[PROJECT_FIELD];
+          const projVal = proj ? String(proj).trim() : '';
+          if (!activeProjectFilters.has(projVal)) return false;
+        }
+        if (activeTableFilters.size > 0) {
+          if (!activeTableFilters.has(item.tableName)) return false;
+        }
+        return true;
+      });
+    }
+
+    function updateRecordCount() {
+      const filtered = getFilteredItems();
+      const total = airtableItems.length;
+      if (filtered.length === total) {
+        document.getElementById('record-count').textContent = `${total} items`;
+      } else {
+        document.getElementById('record-count').textContent = `${filtered.length} / ${total} items`;
+      }
+    }
+
+    function buildFilterPanel() {
+      const fpBody = document.getElementById('fp-body');
+      fpBody.innerHTML = '';
+
+      // --- Project section ---
+      const projectValues = new Map(); // value → count
+      for (const item of airtableItems) {
+        const proj = item.fields[PROJECT_FIELD];
+        const val = proj ? String(proj).trim() : '';
+        projectValues.set(val, (projectValues.get(val) || 0) + 1);
+      }
+      // Sort: non-empty first (alphabetical), then empty last
+      const sortedProjects = [...projectValues.keys()].sort((a, b) => {
+        if (!a && b) return 1;
+        if (a && !b) return -1;
+        return a.localeCompare(b);
+      });
+
+      if (sortedProjects.length > 0) {
+        const sec = document.createElement('div');
+        sec.className = 'fp-section';
+        sec.innerHTML = `<div class="fp-section-title">Project</div><div class="fp-chips" id="fp-project-chips"></div>`;
+        const chipsEl = sec.querySelector('#fp-project-chips');
+
+        // "All" chip
+        const allChip = document.createElement('span');
+        allChip.className = 'fp-chip fp-all' + (activeProjectFilters.size === 0 ? ' active' : '');
+        allChip.textContent = 'All';
+        allChip.addEventListener('click', () => {
+          activeProjectFilters.clear();
+          onFilterChange();
+        });
+        chipsEl.appendChild(allChip);
+
+        for (const val of sortedProjects) {
+          const chip = document.createElement('span');
+          chip.className = 'fp-chip' + (activeProjectFilters.has(val) ? ' active' : '');
+          chip.textContent = val || '(none)';
+          chip.addEventListener('click', () => {
+            if (activeProjectFilters.has(val)) {
+              activeProjectFilters.delete(val);
+            } else {
+              activeProjectFilters.add(val);
+            }
+            onFilterChange();
+          });
+          chipsEl.appendChild(chip);
+        }
+        fpBody.appendChild(sec);
+      }
+
+      // --- Divider ---
+      const divider = document.createElement('div');
+      divider.className = 'fp-divider';
+      fpBody.appendChild(divider);
+
+      // --- Table section ---
+      const tableNames = new Map();
+      for (const item of airtableItems) {
+        tableNames.set(item.tableName, (tableNames.get(item.tableName) || 0) + 1);
+      }
+      const sortedTables = [...tableNames.keys()].sort();
+
+      if (sortedTables.length > 0) {
+        const sec = document.createElement('div');
+        sec.className = 'fp-section';
+        sec.innerHTML = `<div class="fp-section-title">Table</div><div class="fp-chips" id="fp-table-chips"></div>`;
+        const chipsEl = sec.querySelector('#fp-table-chips');
+
+        // "All" chip
+        const allChip = document.createElement('span');
+        allChip.className = 'fp-chip fp-all' + (activeTableFilters.size === 0 ? ' active' : '');
+        allChip.textContent = 'All';
+        allChip.addEventListener('click', () => {
+          activeTableFilters.clear();
+          onFilterChange();
+        });
+        chipsEl.appendChild(allChip);
+
+        for (const name of sortedTables) {
+          const chip = document.createElement('span');
+          chip.className = 'fp-chip' + (activeTableFilters.has(name) ? ' active' : '');
+          chip.textContent = `${name} (${tableNames.get(name)})`;
+          chip.addEventListener('click', () => {
+            if (activeTableFilters.has(name)) {
+              activeTableFilters.delete(name);
+            } else {
+              activeTableFilters.add(name);
+            }
+            onFilterChange();
+          });
+          chipsEl.appendChild(chip);
+        }
+        fpBody.appendChild(sec);
+      }
+    }
+
+    function onFilterChange() {
+      buildFilterPanel();  // re-render chips to update active states
+      buildBrowsePanel();
+      updateRecordCount();
+      // Re-run search if there's text in the search bar
+      if (searchInput.value.trim()) doSearch();
+    }
+
+    // Toggle filter panel collapse/expand
+    document.getElementById('filter-toggle').addEventListener('click', () => {
+      document.getElementById('filter-panel').classList.toggle('collapsed');
+    });
+
+    // Build the filter panel now that data is loaded
+    buildFilterPanel();
+    // Auto-expand if there are items
+    if (airtableItems.length > 0) {
+      document.getElementById('filter-panel').classList.remove('collapsed');
+    }
+
+    // =====================================================
+    // Fetch network info (WiFi name + LAN IP) for QR code
+    // =====================================================
+    let networkInfo = null;
+    try {
+      const niResp = await fetch('network-info.json');
+      if (niResp.ok) networkInfo = await niResp.json();
+    } catch (e) { /* ignore — file may not exist */ }
+
+    // =====================================================
+    // Storage value → mesh name resolution
+    // =====================================================
+    // GLB naming convention (Onshape export):
+    //   - Dots are stripped: body "A2.2" → mesh "A22", "F1.2" → "F12"
+    //   - If stripped name collides with a group name, "_1" is appended:
+    //     body "A1.1" → stripped "A11" collides with group "A11" → mesh "A11_1"
+    //     body "A2.3.1" → stripped "A231" collides with group "A231" → mesh "A231_1"
+    //   - Rack-level: "A2" is a group node containing all A2.x meshes
+    //   - Occurrence groups: "A2.3:1" → group "A231" in GLB
+
+    // Build sets of group names and mesh names for conflict detection
+    const groupNames = new Set();
+    const meshNameSet = new Set();
+    model.traverse((child) => {
+      if (child.isMesh) meshNameSet.add(child.name);
+      else if (child.name) groupNames.add(child.name);
+    });
+
+    // Build body name → GLB mesh name mapping from labels.json
+    const bodyToMeshMap = new Map();
+    for (const bodyName of allBodyNames) {
+      const stripped = bodyName.replace(/\./g, '');
+      if (meshNameSet.has(stripped)) {
+        bodyToMeshMap.set(bodyName, stripped);
+      } else if (meshNameSet.has(stripped + '_1')) {
+        bodyToMeshMap.set(bodyName, stripped + '_1');
+      }
+    }
+    console.log('Body→Mesh mapping:', Object.fromEntries(bodyToMeshMap));
+
+    // Build list of all valid storage locations for autocomplete
+    const storageLocations = [];
+    const storageSet = new Set();
+    const storagePattern = /^[A-Z]\d/; // Must start with letter + digit (e.g., A1, F1, B2, C1.3)
+    // Add component/occurrence-level names (A1, A2, F1, etc.)
+    for (const occ of Object.values(labels.occurrences)) {
+      const name = occ.label.replace(/:.*$/, ''); // strip ":1" suffix
+      if (storagePattern.test(name) && !storageSet.has(name)) {
+        storageSet.add(name);
+        storageLocations.push(name);
+      }
+    }
+    // Add body-level names (A1.1, A2.2, C1.3, F1.2, etc.)
+    for (const bodyName of allBodyNames) {
+      if (storagePattern.test(bodyName) && !storageSet.has(bodyName)) {
+        storageSet.add(bodyName);
+        storageLocations.push(bodyName);
+      }
+    }
+    storageLocations.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+    console.log('Autocomplete locations:', storageLocations);
+
+    // Attach autocomplete to a storage input field
+    function attachStorageAutocomplete(input) {
+      const ac = document.createElement('div');
+      ac.className = 'storage-ac';
+      input.parentElement.style.position = 'relative';
+      input.parentElement.appendChild(ac);
+      let activeIdx = -1;
+
+      function update() {
+        const q = input.value.trim().toUpperCase();
+        if (!q) { ac.style.display = 'none'; return; }
+        const matches = storageLocations.filter(loc => loc.toUpperCase().includes(q)).slice(0, 10);
+        if (matches.length === 0) { ac.style.display = 'none'; return; }
+        activeIdx = -1;
+        ac.innerHTML = matches.map((loc, i) => {
+          const idx = loc.toUpperCase().indexOf(q);
+          const before = loc.slice(0, idx);
+          const match = loc.slice(idx, idx + q.length);
+          const after = loc.slice(idx + q.length);
+          return `<div class="ac-item" data-val="${loc}">${before}<span class="ac-match">${match}</span>${after}</div>`;
+        }).join('');
+        // Position dropdown below the input
+        ac.style.width = input.offsetWidth + 'px';
+        ac.style.left = input.offsetLeft + 'px';
+        ac.style.top = (input.offsetTop + input.offsetHeight) + 'px';
+        ac.style.display = 'block';
+        ac.querySelectorAll('.ac-item').forEach(el => {
+          el.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            input.value = el.dataset.val;
+            ac.style.display = 'none';
+            input.dispatchEvent(new Event('input'));
+          });
+        });
+      }
+
+      input.addEventListener('input', update);
+      input.addEventListener('focus', update);
+      input.addEventListener('blur', () => { setTimeout(() => ac.style.display = 'none', 150); });
+      input.addEventListener('keydown', (e) => {
+        const items = ac.querySelectorAll('.ac-item');
+        if (ac.style.display !== 'block' || items.length === 0) return;
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          activeIdx = Math.min(activeIdx + 1, items.length - 1);
+          items.forEach((el, i) => el.classList.toggle('ac-active', i === activeIdx));
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          activeIdx = Math.max(activeIdx - 1, 0);
+          items.forEach((el, i) => el.classList.toggle('ac-active', i === activeIdx));
+        } else if (e.key === 'Tab' && activeIdx >= 0) {
+          e.preventDefault();
+          input.value = items[activeIdx].dataset.val;
+          ac.style.display = 'none';
+        }
+      });
+    }
+
+    // Reverse map: GLB mesh name → human-readable label
+    // e.g., "A22" → "A2.2", "A11_1" → "A1.1", "Body5002" → "B1"
+    const meshToLabel = new Map();
+    for (const [bodyName, meshName] of bodyToMeshMap.entries()) {
+      meshToLabel.set(meshName, bodyName);
+    }
+    // Also map meshes to their parent component name (for generic bodies like "Body5")
+    for (const occ of Object.values(labels.occurrences)) {
+      const def = labels.definitions[occ.definition];
+      if (!def) continue;
+      for (const bodyName of occ.bodies) {
+        const meshName = bodyToMeshMap.get(bodyName);
+        if (meshName && !meshToLabel.has(meshName)) {
+          meshToLabel.set(meshName, `${def.label} - ${bodyName}`);
+        }
+      }
+    }
+    // For meshes not in labels.json, walk up to find the nearest named group
+    function getLabelForMesh(mesh) {
+      if (meshToLabel.has(mesh.name)) return meshToLabel.get(mesh.name);
+      // Walk up the parent chain to find a meaningful component group name
+      let node = mesh.parent;
+      while (node) {
+        // Check if this group name matches a known component
+        for (const def of Object.values(labels.definitions)) {
+          if (def.label === node.name || def.componentName === node.name) {
+            return `${def.label} - ${mesh.name}`;
+          }
+        }
+        // Check occurrence labels
+        for (const occ of Object.values(labels.occurrences)) {
+          const occBase = occ.label.replace(/:.*$/, '');
+          if (node.name === occBase) {
+            return `${occBase} - ${mesh.name}`;
+          }
+        }
+        node = node.parent;
+      }
+      return mesh.name;
+    }
+
+    function findMeshesForStorage(storageValue) {
+      if (!storageValue) return [];
+      const val = storageValue.trim();
+      const stripped = val.replace(/\./g, '');
+
+      // 1. Direct body→mesh lookup (e.g., "A2.2" → mesh "A22")
+      const mappedMesh = bodyToMeshMap.get(val);
+      if (mappedMesh) {
+        const found = allMeshes.find(m => m.name === mappedMesh);
+        if (found) {
+          console.log(`Body "${val}" → mesh "${mappedMesh}"`);
+          return [found];
+        }
+      }
+
+      // 2. Component group lookup (e.g., "A2" → group "A2", "F1" → group "F1")
+      for (const { name, node } of allNodes) {
+        if (name === val && !node.isMesh) {
+          const meshes = getMeshesUnder(node);
+          if (meshes.length > 0) {
+            console.log(`Group "${val}" → ${meshes.length} meshes`);
+            return meshes.map(m => ({ name: m.name, mesh: m }));
+          }
+        }
+      }
+
+      // 3. Occurrence group lookup: "A2.3" → stripped "A23" + "1" → group "A231"
+      const occGroupName = stripped + '1';
+      for (const { name, node } of allNodes) {
+        if (name === occGroupName && !node.isMesh) {
+          const meshes = getMeshesUnder(node);
+          if (meshes.length > 0) {
+            console.log(`Occurrence group "${val}" → "${occGroupName}" → ${meshes.length} meshes`);
+            return meshes.map(m => ({ name: m.name, mesh: m }));
+          }
+        }
+      }
+
+      // 4. Prefix match on labels.json body names
+      //    e.g., "A2" matches bodies "A2.1", "A2.2", "A2.3", "A2.4"
+      const prefixMatches = [];
+      for (const [bodyName, meshName] of bodyToMeshMap.entries()) {
+        if (bodyName.startsWith(val + '.')) {
+          const found = allMeshes.find(m => m.name === meshName);
+          if (found && !prefixMatches.find(r => r.mesh === found.mesh)) {
+            prefixMatches.push(found);
+          }
+        }
+      }
+      if (prefixMatches.length > 0) {
+        console.log(`Prefix "${val}" → ${prefixMatches.length} meshes`);
+        return prefixMatches;
+      }
+
+      // 5. Fallback: try stripped name directly as mesh or with _1
+      if (meshNameSet.has(stripped)) {
+        const found = allMeshes.find(m => m.name === stripped);
+        if (found) {
+          console.log(`Stripped fallback "${val}" → mesh "${stripped}"`);
+          return [found];
+        }
+      }
+      if (meshNameSet.has(stripped + '_1')) {
+        const found = allMeshes.find(m => m.name === stripped + '_1');
+        if (found) {
+          console.log(`Stripped+_1 fallback "${val}" → mesh "${stripped}_1"`);
+          return [found];
+        }
+      }
+
+      console.warn(`No mesh found for storage "${val}"`);
+      return [];
+    }
+
+    // =====================================================
+    // Search UI + Browse Panel
+    // =====================================================
+    const searchInput = document.getElementById('search');
+    const suggestionsEl = document.getElementById('suggestions');
+    const infoPanel = document.getElementById('info-panel');
+    const browsePanel = document.getElementById('browse-panel');
+    const browseColumns = document.getElementById('browse-columns');
+
+    // Build the browse panel: group items by tableName into columns
+    function buildBrowsePanel() {
+      const filtered = getFilteredItems();
+      const byTable = new Map();
+      for (const item of filtered) {
+        if (!byTable.has(item.tableName)) byTable.set(item.tableName, []);
+        byTable.get(item.tableName).push(item);
+      }
+      browseColumns.innerHTML = '';
+      for (const [tableName, items] of byTable) {
+        const col = document.createElement('div');
+        col.className = 'browse-col';
+        col.innerHTML = `<div class="browse-col-header">${escapeHtml(tableName)} <span class="col-count">(${items.length})</span></div>`;
+        for (const item of items) {
+          const row = document.createElement('div');
+          row.className = 'browse-item';
+          row.innerHTML = `<span class="bi-name">${escapeHtml(item.name)}</span>${item.storage ? `<span class="bi-storage">${escapeHtml(item.storage)}</span>` : ''}`;
+          row.addEventListener('click', () => selectItem(item));
+          col.appendChild(row);
+        }
+        browseColumns.appendChild(col);
+      }
+    }
+    buildBrowsePanel();
+
+    function showBrowse() { browsePanel.style.display = 'block'; suggestionsEl.style.display = 'none'; }
+    function hideBrowse() { browsePanel.style.display = 'none'; }
+    function hideAll() { hideBrowse(); suggestionsEl.style.display = 'none'; }
+
+    // Focus on search → show browse if empty, otherwise keep suggestions
+    searchInput.addEventListener('focus', () => {
+      if (!searchInput.value.trim()) showBrowse();
+    });
+
+    // Click outside search + panels → hide
+    document.addEventListener('mousedown', (e) => {
+      const ui = document.getElementById('ui');
+      if (!ui.contains(e.target) && !browsePanel.contains(e.target) && !document.getElementById('context-menu').contains(e.target)) {
+        hideAll();
+      }
+    });
+
+    let debounceTimer;
+    searchInput.addEventListener('input', () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(doSearch, 150);
+    });
+
+    function doSearch() {
+      const q = searchInput.value.trim().toLowerCase();
+      if (!q) {
+        suggestionsEl.style.display = 'none';
+        showBrowse();
+        return;
+      }
+
+      hideBrowse();
+
+      // Search across item names and all text fields (respects active filters)
+      const filtered = getFilteredItems();
+      const matches = filtered.filter(item => {
+        if (item.name.toLowerCase().includes(q)) return true;
+        for (const val of Object.values(item.fields)) {
+          if (typeof val === 'string' && val.toLowerCase().includes(q)) return true;
+        }
+        return false;
+      }).slice(0, 20);
+
+      if (matches.length === 0) {
+        suggestionsEl.innerHTML = '<div class="suggestion" style="color:#999;cursor:default;">No items found</div>';
+        suggestionsEl.style.display = 'block';
+        return;
+      }
+
+      suggestionsEl.innerHTML = matches.map((item, i) =>
+        `<div class="suggestion" data-idx="${i}">
+          <span class="item-name">${escapeHtml(item.name)}</span>
+          <span class="item-meta">
+            ${item.storage ? `<span class="storage-tag">${escapeHtml(item.storage)}</span>` : ''}
+            <span class="table-tag">${escapeHtml(item.tableName)}</span>
+          </span>
+        </div>`
+      ).join('');
+      suggestionsEl.style.display = 'block';
+
+      suggestionsEl.querySelectorAll('.suggestion[data-idx]').forEach(el => {
+        el.addEventListener('click', () => {
+          selectItem(matches[parseInt(el.dataset.idx)]);
+        });
+      });
+    }
+
+    searchInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const q = searchInput.value.trim().toLowerCase();
+        const match = airtableItems.find(item => item.name.toLowerCase() === q);
+        if (match) selectItem(match);
+      }
+      if (e.key === 'Escape') {
+        hideAll();
+        resetHighlights();
+        infoPanel.style.display = 'none';
+      }
+    });
+
+    document.getElementById('close-info').addEventListener('click', () => {
+      infoPanel.style.display = 'none';
+      resetHighlights();
+      searchInput.value = '';
+      hideAll();
+    });
+
+    function selectItem(item) {
+      console.log('Selected item:', item.name, '| Storage:', item.storage, '| All fields:', item.fields);
+      hideAll();
+      searchInput.value = item.name;
+      resetHighlights();
+
+      // Show info panel
+      document.getElementById('info-label').textContent = item.name;
+      const storageEl = document.getElementById('info-storage');
+      if (item.storage) {
+        storageEl.innerHTML = `Location: ${escapeHtml(item.storage)}`;
+      } else {
+        storageEl.innerHTML = `<div class="storage-prompt">
+          <input type="text" id="storage-input" placeholder="e.g. A1.2" autocomplete="off">
+          <button id="storage-save">Save</button>
+        </div>`;
+        const inp = document.getElementById('storage-input');
+        const btn = document.getElementById('storage-save');
+        attachStorageAutocomplete(inp);
+        btn.addEventListener('click', () => updateStorage(item, inp.value.trim()));
+        inp.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') updateStorage(item, inp.value.trim());
+          e.stopPropagation();
+        });
+        inp.addEventListener('keyup', (e) => e.stopPropagation());
+        setTimeout(() => inp.focus(), 50);
+      }
+      document.getElementById('info-table').textContent = `Table: ${item.tableName}`;
+
+      // Show extra fields (skip Name and Storage, and skip non-string values)
+      const extraFields = Object.entries(item.fields)
+        .filter(([key]) => key !== STORAGE_FIELD && key !== Object.keys(item.fields)[0])
+        .filter(([, val]) => val !== null && val !== undefined && typeof val !== 'object')
+        .slice(0, 6);
+
+      document.getElementById('info-fields').innerHTML = extraFields.map(([key, val]) =>
+        `<div><span>${escapeHtml(key)}:</span> ${escapeHtml(String(val))}</div>`
+      ).join('');
+
+      infoPanel.style.display = 'block';
+
+      // Highlight 3D meshes for the storage location
+      searchHighlightedMeshes.clear();
+      if (item.storage) {
+        const meshes = findMeshesForStorage(item.storage);
+        for (const m of meshes) {
+          m.mesh.material = new THREE.MeshStandardMaterial({
+            color: HIGHLIGHT_COLOR,
+            emissive: HIGHLIGHT_COLOR,
+            emissiveIntensity: 0.3,
+            roughness: 0.4,
+            metalness: 0.1,
+          });
+          searchHighlightedMeshes.add(m.mesh.uuid);
+        }
+        // Focus camera on the first highlighted mesh
+        if (meshes.length > 0) {
+          const bbox = new THREE.Box3().setFromObject(meshes[0].mesh);
+          const c = bbox.getCenter(new THREE.Vector3());
+          controls.target.copy(c);
+        }
+      }
+    }
+
+    async function updateStorage(item, value) {
+      if (!value) return;
+      const storageEl = document.getElementById('info-storage');
+      storageEl.innerHTML = `<span style="color:#999;font-size:12px;">Saving...</span>`;
+      try {
+        const resp = await fetch(
+          `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${item.tableId}/${item.recordId}`,
+          {
+            method: 'PATCH',
+            headers: { 'Authorization': `Bearer ${AIRTABLE_PAT}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ fields: { [STORAGE_FIELD]: value }, typecast: true }),
+          }
+        );
+        if (!resp.ok) throw new Error(await airtableError(resp));
+        // Update local state
+        item.storage = value;
+        item.fields[STORAGE_FIELD] = value;
+        storageEl.innerHTML = `Location: ${escapeHtml(value)}`;
+        // Highlight the mesh now that storage is set
+        const meshes = findMeshesForStorage(value);
+        for (const m of meshes) {
+          m.mesh.material = new THREE.MeshStandardMaterial({
+            color: HIGHLIGHT_COLOR, emissive: HIGHLIGHT_COLOR,
+            emissiveIntensity: 0.3, roughness: 0.4, metalness: 0.1,
+          });
+          searchHighlightedMeshes.add(m.mesh.uuid);
+        }
+        if (meshes.length > 0) {
+          const bbox = new THREE.Box3().setFromObject(meshes[0].mesh);
+          controls.target.copy(bbox.getCenter(new THREE.Vector3()));
+        }
+        // Rebuild browse panel to show the new storage tag
+        buildBrowsePanel();
+      } catch (err) {
+        console.error('Failed to update storage:', err);
+        storageEl.innerHTML = `<span style="color:#c62828;">Failed to save: ${escapeHtml(err.message)}</span>`;
+      }
+    }
+
+    function resetHighlights() {
+      searchHighlightedMeshes.clear();
+      for (const m of allMeshes) {
+        const orig = originalMaterials.get(m.mesh.uuid);
+        if (orig) m.mesh.material = orig.clone();
+      }
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    async function airtableError(resp) {
+      try {
+        const body = await resp.json();
+        const msg = body?.error?.message || body?.error?.type || JSON.stringify(body.error);
+        return `${resp.status}: ${msg}`;
+      } catch { return `${resp.status} ${resp.statusText}`; }
+    }
+
+    // =====================================================
+    // Context menu: right-click to edit item fields
+    // =====================================================
+    const contextMenu = document.getElementById('context-menu');
+    const cmList = document.getElementById('cm-list');
+    const cmEdit = document.getElementById('cm-edit');
+    const cmStatus = document.getElementById('cm-status');
+    let contextItem = null; // item being edited via context menu
+
+    function showContextMenu(item, x, y) {
+      contextItem = item;
+      const fields = tableFieldsMeta.get(item.tableName) || [];
+      if (fields.length === 0) {
+        // Fallback: show fields from the record itself
+        const fallbackFields = Object.keys(item.fields).map(name => ({ name, type: 'unknown' }));
+        showColumnList(item, fallbackFields, x, y);
+      } else {
+        showColumnList(item, fields, x, y);
+      }
+    }
+
+    function showColumnList(item, fields, x, y) {
+      cmList.innerHTML = '';
+      cmEdit.style.display = 'none';
+      cmStatus.style.display = 'none';
+      for (const field of fields) {
+        const row = document.createElement('div');
+        row.className = 'cm-item';
+        const val = item.fields[field.name];
+        const displayVal = val != null ? String(val) : '';
+        row.innerHTML = `<span class="cm-field-name">${escapeHtml(field.name)}</span>
+          <span class="cm-field-val">${displayVal ? escapeHtml(displayVal) : '<em style="color:#ccc">empty</em>'}</span>`;
+        row.addEventListener('click', () => showFieldEditor(item, field.name, displayVal));
+        cmList.appendChild(row);
+      }
+      cmList.style.display = 'block';
+      contextMenu.style.display = 'block';
+      // Position: keep within viewport
+      const menuW = 260, menuH = 320;
+      contextMenu.style.left = Math.min(x, window.innerWidth - menuW) + 'px';
+      contextMenu.style.top = Math.min(y, window.innerHeight - menuH) + 'px';
+    }
+
+    function showFieldEditor(item, fieldName, currentVal) {
+      cmList.style.display = 'none';
+      cmStatus.style.display = 'none';
+      cmEdit.style.display = 'block';
+      cmEdit.innerHTML = `<label>${escapeHtml(fieldName)}</label>
+        <div class="cm-edit-row">
+          <input type="text" id="cm-input" value="${escapeHtml(currentVal)}" autocomplete="off">
+          <button id="cm-save">Save</button>
+        </div>`;
+      const inp = document.getElementById('cm-input');
+      const btn = document.getElementById('cm-save');
+      const doSave = () => saveField(item, fieldName, inp.value);
+      btn.addEventListener('click', doSave);
+      inp.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') doSave();
+        if (e.key === 'Escape') hideContextMenu();
+        e.stopPropagation();
+      });
+      inp.addEventListener('keyup', (e) => e.stopPropagation());
+      setTimeout(() => { inp.focus(); inp.select(); }, 30);
+    }
+
+    async function saveField(item, fieldName, newValue) {
+      cmEdit.style.display = 'none';
+      cmStatus.style.display = 'block';
+      cmStatus.innerHTML = `<span style="color:#999;">Saving...</span>`;
+      try {
+        const resp = await fetch(
+          `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${item.tableId}/${item.recordId}`,
+          {
+            method: 'PATCH',
+            headers: { 'Authorization': `Bearer ${AIRTABLE_PAT}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ fields: { [fieldName]: newValue || null }, typecast: true }),
+          }
+        );
+        if (!resp.ok) throw new Error(await airtableError(resp));
+        const result = await resp.json();
+        // Update local state
+        item.fields[fieldName] = newValue || null;
+        if (fieldName === STORAGE_FIELD) {
+          item.storage = newValue ? newValue.trim() : null;
+        }
+        // Update item name if the primary field changed
+        item.name = inferName(item.fields);
+        cmStatus.innerHTML = `<span style="color:#2e7d32;">Saved!</span>`;
+        // Rebuild browse panel to reflect changes
+        buildBrowsePanel();
+        // If the info panel is open for this item, refresh it
+        if (infoPanel.style.display === 'block') {
+          selectItem(item);
+        }
+        setTimeout(hideContextMenu, 600);
+      } catch (err) {
+        console.error('Failed to save field:', err);
+        cmStatus.innerHTML = `<span style="color:#c62828;">Error: ${escapeHtml(err.message)}</span>`;
+      }
+    }
+
+    function hideContextMenu() {
+      contextMenu.style.display = 'none';
+      contextItem = null;
+    }
+
+    // Close context menu on click outside
+    document.addEventListener('mousedown', (e) => {
+      if (contextMenu.style.display === 'block' && !contextMenu.contains(e.target)) {
+        hideContextMenu();
+      }
+    });
+
+    // Attach right-click to browse items (delegated handler)
+    browsePanel.addEventListener('contextmenu', (e) => {
+      const browseItem = e.target.closest('.browse-item');
+      if (!browseItem) return;
+      e.preventDefault();
+      const col = browseItem.closest('.browse-col');
+      const colIndex = [...browseColumns.children].indexOf(col);
+      const itemIndex = [...col.querySelectorAll('.browse-item')].indexOf(browseItem);
+      // Find the corresponding item (use filtered items to match browse panel)
+      const filtered = getFilteredItems();
+      const byTable = new Map();
+      for (const item of filtered) {
+        if (!byTable.has(item.tableName)) byTable.set(item.tableName, []);
+        byTable.get(item.tableName).push(item);
+      }
+      const tables = [...byTable.values()];
+      if (tables[colIndex] && tables[colIndex][itemIndex]) {
+        showContextMenu(tables[colIndex][itemIndex], e.clientX, e.clientY);
+      }
+    });
+
+    // Attach right-click to suggestion items (delegated handler)
+    suggestionsEl.addEventListener('contextmenu', (e) => {
+      const suggItem = e.target.closest('.suggestion[data-idx]');
+      if (!suggItem) return;
+      e.preventDefault();
+      const q = searchInput.value.trim().toLowerCase();
+      const filtered = getFilteredItems();
+      const matches = filtered.filter(item => {
+        if (item.name.toLowerCase().includes(q)) return true;
+        for (const val of Object.values(item.fields)) {
+          if (typeof val === 'string' && val.toLowerCase().includes(q)) return true;
+        }
+        return false;
+      }).slice(0, 20);
+      const idx = parseInt(suggItem.dataset.idx);
+      if (matches[idx]) {
+        showContextMenu(matches[idx], e.clientX, e.clientY);
+      }
+    });
+
+    // =====================================================
+    // Burger menu + mode switching
+    // =====================================================
+    const burgerBtn = document.getElementById('burger-btn');
+    const burgerDropdown = document.getElementById('burger-dropdown');
+    const storageMode = document.getElementById('storage-mode');
+    const smContent = document.getElementById('sm-content');
+    const smCount = document.getElementById('sm-count');
+    let currentMode = '3d';
+
+    burgerBtn.addEventListener('click', () => {
+      burgerBtn.classList.toggle('open');
+      burgerDropdown.style.display = burgerDropdown.style.display === 'block' ? 'none' : 'block';
+    });
+
+    document.addEventListener('mousedown', (e) => {
+      if (!burgerBtn.contains(e.target) && !burgerDropdown.contains(e.target)) {
+        burgerBtn.classList.remove('open');
+        burgerDropdown.style.display = 'none';
+      }
+    });
+
+    burgerDropdown.querySelectorAll('.burger-option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        const mode = opt.dataset.mode;
+        if (mode === currentMode) {
+          burgerDropdown.style.display = 'none';
+          burgerBtn.classList.remove('open');
+          return;
+        }
+        currentMode = mode;
+        burgerDropdown.querySelectorAll('.burger-option').forEach(o => o.classList.remove('active'));
+        opt.classList.add('active');
+        burgerDropdown.style.display = 'none';
+        burgerBtn.classList.remove('open');
+
+        if (mode === 'storage') {
+          storageMode.style.display = 'block';
+          hideAll();
+          infoPanel.style.display = 'none';
+          resetHighlights();
+          buildStorageMode();
+        } else {
+          storageMode.style.display = 'none';
+        }
+      });
+    });
+
+    function buildStorageMode() {
+      const unassigned = getFilteredItems().filter(item => !item.storage);
+      smCount.textContent = `${unassigned.length} item${unassigned.length !== 1 ? 's' : ''} without a storage location`;
+      smContent.innerHTML = '';
+
+      // Show QR code + WiFi info in header
+      const networkEl = document.getElementById('sm-network');
+      const qrEl = document.getElementById('sm-qr');
+      const netInfoEl = document.getElementById('sm-net-info');
+      // Determine the URL for the QR code: prefer LAN IP from network-info.json, fallback to current location
+      const lanUrl = networkInfo && networkInfo.ip && networkInfo.ip !== 'unknown'
+        ? `http://${networkInfo.ip}:${networkInfo.port || location.port || 8080}`
+        : window.location.origin;
+      const wifiName = networkInfo && networkInfo.wifi && networkInfo.wifi !== 'unknown'
+        ? networkInfo.wifi : null;
+
+      if (typeof qrcode !== 'undefined') {
+        qrEl.innerHTML = '';
+        const qr = qrcode(0, 'M');
+        qr.addData(lanUrl);
+        qr.make();
+        qrEl.innerHTML = qr.createSvgTag({ cellSize: 3, margin: 2 });
+        let infoHtml = `<div class="sm-url">Scan to open on your phone:</div>
+          <div class="sm-url">${escapeHtml(lanUrl)}</div>`;
+        if (wifiName) {
+          infoHtml += `<div style="margin-top:6px;">WiFi network: <span class="sm-wifi-name">${escapeHtml(wifiName)}</span></div>`;
+        }
+        netInfoEl.innerHTML = infoHtml;
+        networkEl.style.display = 'flex';
+      }
+
+      if (unassigned.length === 0) {
+        smContent.innerHTML = '<div class="sm-empty">All items have been assigned a storage location.</div>';
+        return;
+      }
+
+      // Group by table
+      const byTable = new Map();
+      for (const item of unassigned) {
+        if (!byTable.has(item.tableName)) byTable.set(item.tableName, []);
+        byTable.get(item.tableName).push(item);
+      }
+
+      for (const [tableName, items] of byTable) {
+        const group = document.createElement('div');
+        group.className = 'sm-table-group';
+        group.innerHTML = `<div class="sm-table-title">${escapeHtml(tableName)} (${items.length})</div>`;
+
+        for (const item of items) {
+          const row = document.createElement('div');
+          row.className = 'sm-row';
+          const supplier = item.fields['Supplier'] || '';
+          row.innerHTML = `
+            <span class="sm-name">${escapeHtml(item.name)}</span>
+            <span class="sm-supplier">${escapeHtml(typeof supplier === 'string' ? supplier : '')}</span>
+            <div class="sm-input-row">
+              <input type="text" placeholder="e.g. A1.2" autocomplete="off">
+              <button>Save</button>
+            </div>`;
+          const inp = row.querySelector('input');
+          const btn = row.querySelector('button');
+          attachStorageAutocomplete(inp);
+          const doSave = async () => {
+            const val = inp.value.trim();
+            if (!val) return;
+            btn.textContent = '...';
+            btn.disabled = true;
+            try {
+              const resp = await fetch(
+                `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${item.tableId}/${item.recordId}`,
+                {
+                  method: 'PATCH',
+                  headers: { 'Authorization': `Bearer ${AIRTABLE_PAT}`, 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ fields: { [STORAGE_FIELD]: val }, typecast: true }),
+                }
+              );
+              if (!resp.ok) throw new Error(await airtableError(resp));
+              item.storage = val;
+              item.fields[STORAGE_FIELD] = val;
+              row.innerHTML = `<span class="sm-name">${escapeHtml(item.name)}</span>
+                <span class="sm-saved">Saved: ${escapeHtml(val)}</span>`;
+              // Update counts and browse panel
+              const remaining = airtableItems.filter(i => !i.storage).length;
+              smCount.textContent = `${remaining} item${remaining !== 1 ? 's' : ''} without a storage location`;
+              buildBrowsePanel();
+              if (remaining === 0) {
+                setTimeout(() => {
+                  smContent.innerHTML = '<div class="sm-empty">All items have been assigned a storage location.</div>';
+                }, 800);
+              }
+            } catch (err) {
+              btn.textContent = 'Save';
+              btn.disabled = false;
+              inp.style.borderColor = '#c62828';
+              console.error('Failed to save storage:', err);
+            }
+          };
+          btn.addEventListener('click', doSave);
+          inp.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') doSave();
+            e.stopPropagation();
+          });
+          inp.addEventListener('keyup', (e) => e.stopPropagation());
+          group.appendChild(row);
+        }
+        smContent.appendChild(group);
+      }
+    }
+
+    // =====================================================
+    // Hover: raycast on mousemove → pale green highlight + tooltip
+    // =====================================================
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+    const tooltipEl = document.getElementById('tooltip');
+    const hoverMaterial = new THREE.MeshStandardMaterial({
+      color: HOVER_COLOR,
+      emissive: HOVER_COLOR,
+      emissiveIntensity: 0.15,
+      roughness: 0.5,
+      metalness: 0.1,
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+      mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(model.children, true);
+      const hit = intersects.length > 0 ? intersects[0].object : null;
+
+      if (hit && hit.isMesh) {
+        if (hoveredMesh !== hit) {
+          // Un-hover previous
+          if (hoveredMesh && !searchHighlightedMeshes.has(hoveredMesh.uuid)) {
+            const orig = originalMaterials.get(hoveredMesh.uuid);
+            if (orig) hoveredMesh.material = orig.clone();
+          }
+          // Hover new (only if not search-highlighted)
+          hoveredMesh = hit;
+          if (!searchHighlightedMeshes.has(hit.uuid)) {
+            hit.material = hoverMaterial.clone();
+          }
+        }
+        // Show tooltip
+        const label = getLabelForMesh(hit);
+        tooltipEl.textContent = label;
+        tooltipEl.style.left = (e.clientX + 14) + 'px';
+        tooltipEl.style.top = (e.clientY + 14) + 'px';
+        tooltipEl.style.display = 'block';
+        canvas.style.cursor = 'pointer';
+      } else {
+        // No hit — un-hover
+        if (hoveredMesh && !searchHighlightedMeshes.has(hoveredMesh.uuid)) {
+          const orig = originalMaterials.get(hoveredMesh.uuid);
+          if (orig) hoveredMesh.material = orig.clone();
+        }
+        hoveredMesh = null;
+        tooltipEl.style.display = 'none';
+        canvas.style.cursor = 'default';
+      }
+    });
+
+    canvas.addEventListener('mouseleave', () => {
+      if (hoveredMesh && !searchHighlightedMeshes.has(hoveredMesh.uuid)) {
+        const orig = originalMaterials.get(hoveredMesh.uuid);
+        if (orig) hoveredMesh.material = orig.clone();
+      }
+      hoveredMesh = null;
+      tooltipEl.style.display = 'none';
+      canvas.style.cursor = 'default';
+    });
+
+    // =====================================================
+    // Resize + Render loop
+    // =====================================================
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+  </script>
+</body>
+
+</html>

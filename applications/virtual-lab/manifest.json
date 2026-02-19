@@ -1,0 +1,17 @@
+{
+    "name": "Virtual Lab",
+    "short_name": "Virtual Lab",
+    "description": "3D Inventory Manager for your lab",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#1e1e1e",
+    "theme_color": "#1e1e1e",
+    "icons": [
+        {
+            "src": "/icon.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}

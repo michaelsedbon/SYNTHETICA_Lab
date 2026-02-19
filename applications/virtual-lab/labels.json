@@ -1,0 +1,1064 @@
+{
+  "occurrences": {
+    "/v4BAAAARlJLZXkAH4sIAAAAAAAA/zWOOwpCMRBFETdgaWGR4oHVQCaZJJPG6oGNm8gXOxUX4AqsxMZOBHdg4QpcgC7IyEMGLsPlMGekIKEECtkGFbcNh8aK/Xm0m4xX00t3e983r0MjlNBWeOOiyVlBMT4CeR0hBjYQpEPjiDlgaVcaackVpahAZtJAUaoGsQROUTqFkWUpg6vH7axb99fnab58fBbHv8swVqo+Q7ItKFQNTCFBys4icQ02pd/vX1e/4znHAAAA": {
+      "id": "Bare room:1",
+      "label": "Bare room:1",
+      "occurrenceName": "Bare room:1",
+      "fullPathName": "Bare room:1",
+      "parent": null,
+      "definition": "/v4BAAEAAwAAAAAAAAAAAAAA",
+      "transform": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "isPatternElement": false,
+      "bodies": [
+        "Body1",
+        "Body2",
+        "Body3",
+        "Body4",
+        "Body5",
+        "Body6"
+      ]
+    },
+    "/v4BAAAARlJLZXkAH4sIAAAAAAAA/32OsQ0CMAwEhViAkjIFrSU7iRNnB5ZwErtFiAGYgoYWiVUYgIUIokffvF6n/8eQQwwUcImiLEe/pITLbXPebY/7++Hxfp5e10XEkEpoXDvPGcG4dcgtdegqDIqVuGYRJVsti/Ree3I1QJ8TcsQCqnkAmkml4lWF/m85D25uBMrOa4sUJFGB7pjHNKJm8v3+AX5P6W3HAAAA": {
+      "id": "A1:1",
+      "label": "A1:1",
+      "occurrenceName": "A1:1",
+      "fullPathName": "A1:1",
+      "parent": null,
+      "definition": "/v4BAAEASAIAAAAAAAAAAAAA",
+      "transform": [
+        1.0,
+        6.106226635438398e-16,
+        -2.986800869141746e-16,
+        -306.5761259186015,
+        -1.7208456881689952e-15,
+        0.9999999999999998,
+        -7.150247641002051e-17,
+        -226.7186566769662,
+        -4.662936703425639e-15,
+        -3.05311331771822e-16,
+        0.9999999999999954,
+        2.5146201916050476e-13,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "isPatternElement": false,
+      "bodies": [
+        "tige1",
+        "tige2",
+        "tige3",
+        "tige4",
+        "A1.1",
+        "A1.2",
+        "A1.3",
+        "A1.4",
+        "A1.5"
+      ]
+    },
+    "/v4BAAAARlJLZXkAH4sIAAAAAAAA/32OsQ1CMQwFhViAkjIFraU4sRN7B5awk/9bhBiAKWhokViFAVgII3rk5snv5HNOlErClGOwSCT8bVq63Dbn3fa4vx8e7+fpdQ2ipNqScnees8DC6kBaHdyEwXJH7iRiuMSVIPsQmcRRabEgVwJvxoBKqJ51Sl7/u2o1t2oZpIWQfBkgghlocO99uJPa9/cPByGHF8cAAAA=": {
+      "id": "F1:1",
+      "label": "F1:1",
+      "occurrenceName": "F1:1",
+      "fullPathName": "F1:1",
+      "parent": null,
+      "definition": "/v4BAAEAdAQAAAAAAAAAAAAA",
+      "transform": [
+        1.0,
+        0.0,
+        0.0,
+        -471.1634549745109,
+        0.0,
+        1.0,
+        0.0,
+        -219.3648640658741,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "isPatternElement": false,
+      "bodies": [
+        "F1.1",
+        "F1.2"
+      ]
+    },
+    "/v4BAAAARlJLZXkAH4sIAAAAAAAA/31OMQ4CMQwT4gOMjBlYIyVp0qZ/4BPtNbcixAN4BQsrEl/hAXyIInbsxbIs2wQKAgw0yeJT8c/JcLltzrvtcX8/PN7P0+s6EwIpQ7XSbQzBsNpRa+rYmxs2KmxF3RvHbJlJ7hOLB66uFTVbYF2WhIn6sOFdLcr/rbJGEiNBnkAtkbG12nCVIMmuTv59Th/jOLR8xwAAAA==": {
+      "id": "A2:1",
+      "label": "A2:1",
+      "occurrenceName": "A2:1",
+      "fullPathName": "A2:1",
+      "parent": null,
+      "definition": "/v4BAAEAOAUAAAAAAAAAAAAA",
+      "transform": [
+        1.0,
+        8.326672684688674e-16,
+        -3.1851355130650855e-16,
+        -213.20925158637402,
+        -3.6082248300317706e-15,
+        1.0,
+        6.555597638739024e-16,
+        -226.89476089993863,
+        -8.160139230994852e-15,
+        -1.1934897514720468e-15,
+        0.9999999999999916,
+        -1.8892784078844895e-13,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "isPatternElement": false,
+      "bodies": [
+        "tige1",
+        "tige2",
+        "tige3",
+        "tige4",
+        "A2.1",
+        "A2.2",
+        "A2.3",
+        "A2.4",
+        "A2.5"
+      ]
+    },
+    "/v4BAAAARlJLZXkAH4sIAAAAAAAA/32OsQ1CMQxEhViAkjIFrSU7sRN7B5b4TvJbhBiAKWhokViFAVgII3p0zen0dHeYOOVECUOUNRz9kpout815tz3u74fH+3l6XYPIqdRk0lzGyDDFHNiKgy8qsGAjaay60IyWIHFkJHIB42pBrhSQIpD1SoqzYF3/b8k6Tbsj5NI5GpzBiRhGEelqXqR/n+MHrPlbvscAAAA=": {
+      "id": "wood table:1",
+      "label": "wood table:1",
+      "occurrenceName": "wood table:1",
+      "fullPathName": "wood table:1",
+      "parent": null,
+      "definition": "/v4BAAEAdg0AAAAAAAAAAAAA",
+      "transform": [
+        1.0000000000000038,
+        1.6653345369376074e-16,
+        -6.935373005736446e-16,
+        -5.854721198275221,
+        3.275157922644237e-15,
+        1.0,
+        -3.2361443199338e-16,
+        -52.98001151407699,
+        -2.2234818153332784e-15,
+        7.962380754733576e-16,
+        1.0000000000000038,
+        71.80000000000027,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "isPatternElement": false,
+      "bodies": [
+        "Body5"
+      ]
+    },
+    "/v4BAAAARlJLZXkAH4sIAAAAAAAA/32OsQ1CMQxEhViAktIFraXE347tHVgiJkmLEAMwBQ0tEqv8AViICHp0zen0dHcJGAgypKlMNl3+JQWu981ltz3uH4fn+3Veb5MgWAq4aEhrhF08kH0JjGqCNWkWZbOa+2yZpLY+qmrCEDVkIsUoXdGNEtUSo7L937LGMnJzVLOC3GxBPwVhVe/MTKrj+/0DIfOvo8cAAAA=": {
+      "id": "computer screns:1",
+      "label": "computer screns:1",
+      "occurrenceName": "computer screns:1",
+      "fullPathName": "computer screns:1",
+      "parent": null,
+      "definition": "/v4BAAEAcw4AAAAAAAAAAAAA",
+      "transform": [
+        5.523359547510192e-15,
+        1.0000000000000033,
+        -8.768758879409436e-16,
+        -5.854721198275219,
+        -0.9999999999999994,
+        8.937295348232535e-15,
+        -2.7764425987999417e-16,
+        -17.980011514076963,
+        -7.771561172376262e-16,
+        -2.262079412673756e-15,
+        1.0000000000000036,
+        98.90000000000055,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "isPatternElement": false,
+      "bodies": [
+        "Body1",
+        "Body2",
+        "Body3"
+      ]
+    },
+    "/v4BAAAARlJLZXkAH4sIAAAAAAAA/32OsQ1CMQxEhViAkjIFrSU7sR1nB5awSX6LEAMwBQ0tEqswAAsRoEfXnE5Pd4eJU06UcIqyTUe/RNP5ujpt1vvtbXd/PY7PyyRyKpqa1JDeMwxpAdxKQLgJOFaSymZOY7ZM8iC1DhUG1A9Z6QCGGKA2OhfvVgL/b3lbfOklAyELsCuCWTgEZ9XKRRf6fn8DSnmILscAAAA=": {
+      "id": "Chair v11:1",
+      "label": "Chair v11:1",
+      "occurrenceName": "Chair v11:1",
+      "fullPathName": "Chair v11:1",
+      "parent": null,
+      "definition": "/v4BAAEAVg8AAAAAAAAAAAAA",
+      "transform": [
+        -1.0000000000000056,
+        -9.253708910250721e-14,
+        -5.99320131784654e-16,
+        -7.861355175454417,
+        8.90953977261688e-14,
+        -1.0000000000000018,
+        -3.053998354956236e-16,
+        -116.76627710212088,
+        2.3175905639050943e-15,
+        -7.771561172373997e-16,
+        1.0000000000000038,
+        -1.2996772699823655e-13,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "isPatternElement": false,
+      "bodies": []
+    },
+    "/v4BAAAARlJLZXkAH4sIAAAAAAAA/32PsQ1CMQxEhViAkjIFrSU7tmNnB5ZIfpIWIQZgChpaJFZhABYiX79H15xOT2cfBgkxUMApij4dbUkKt8fuetifj8/T6/u+fO6TiIFTyGpVW4vQNVeQzBVqcYWCRmriXqhv5KJmPakAppU0WsARKyTvTbg054orpwvzWLhB9DFAkAnqkAwiYpo7O7L9/6nXyGhJYLi32dDnpV4QMnsST4NKy+vGH53vTlfvAAAA": {
+      "id": "Casters:1",
+      "label": "Casters:1",
+      "occurrenceName": "Casters:1",
+      "fullPathName": "Chair v11:1+Casters:1",
+      "parent": "/v4BAAAARlJLZXkAH4sIAAAAAAAA/32OsQ1CMQxEhViAkjIFrSU7sR1nB5awSX6LEAMwBQ0tEqswAAsRoEfXnE5Pd4eJU06UcIqyTUe/RNP5ujpt1vvtbXd/PY7PyyRyKpqa1JDeMwxpAdxKQLgJOFaSymZOY7ZM8iC1DhUG1A9Z6QCGGKA2OhfvVgL/b3lbfOklAyELsCuCWTgEZ9XKRRf6fn8DSnmILscAAAA=",
+      "definition": "/v4BAAEA0A8AAAAAAAAAAAAA",
+      "transform": [
+        1.0,
+        -1.2156009176936246e-29,
+        -9.860761315262648e-32,
+        0.0,
+        1.1913982706573244e-29,
+        1.0,
+        4.930380657631324e-32,
+        -1.4210854715202004e-14,
+        0.0,
+        0.0,
+        1.0,
+        -2.524354896707238e-29,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "isPatternElement": false,
+      "bodies": [
+        "Body1",
+        "Body2",
+        "Body3",
+        "Body4",
+        "Body5"
+      ]
+    },
+    "/v4BAAAARlJLZXkAH4sIAAAAAAAA/33Pu00GQQwEYCEaICTcgNSS3+vtgSbW670UIQqgChJSJFqhABriTn+OnIxGXzDGpo0bNTyPOM5Et8bb28fd68P98+Pn09fv98vP+ym4ibdhPa2KYdtI0CEJOcNgYifrGjFp3+Sy3rebAvolOy0IxASPXSqzQhIvdzgvHsSQQRtUFSFEAmZ5HX5Y9Nz/b+Kx1PtW2CwGuqZAFhHwWjuxXNZR149/4xnY9u8AAAA=": {
+      "id": "Pads:1",
+      "label": "Pads:1",
+      "occurrenceName": "Pads:1",
+      "fullPathName": "Chair v11:1+Pads:1",
+      "parent": "/v4BAAAARlJLZXkAH4sIAAAAAAAA/32OsQ1CMQxEhViAkjIFrSU7sR1nB5awSX6LEAMwBQ0tEqswAAsRoEfXnE5Pd4eJU06UcIqyTUe/RNP5ujpt1vvtbXd/PY7PyyRyKpqa1JDeMwxpAdxKQLgJOFaSymZOY7ZM8iC1DhUG1A9Z6QCGGKA2OhfvVgL/b3lbfOklAyELsCuCWTgEZ9XKRRf6fn8DSnmILscAAAA=",
+      "definition": "/v4BAAEADRAAAAAAAAAAAAAA",
+      "transform": [
+        1.0,
+        -1.2156009176936246e-29,
+        -9.860761315262648e-32,
+        1.4210854715202004e-14,
+        1.1913982706573244e-29,
+        1.0,
+        4.930380657631324e-32,
+        -1.4210854715202004e-14,
+        0.0,
+        0.0,
+        1.0,
+        20.31999999999995,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "isPatternElement": false,
+      "bodies": [
+        "BackRest",
+        "Seat",
+        "Armrest",
+        "Armrest (1)"
+      ]
+    },
+    "/v4BAAAARlJLZXkAH4sIAAAAAAAA/32Puw2CMQyEhViAkjIFrSXHj8TZgSWcBy1CDMAUNLRIrMIALER+/h65OZ0+ne8wSKAQA86LZFPF1Unhet9cdtvj/nF4fl7n920SFDiForlq7wRDSwUpXKG6KTjmqFnMPI6VbJrzSCqAaSFzbGCIFZKNLuzduOIv0Zw4nk7QGBtIY54cDUjkzNym6+l/J0/Ui1qGaq0sn2Yn8gzC3ZWJehdZNn4BOZs0Ye8AAAA=": {
+      "id": "Frame:1",
+      "label": "Frame:1",
+      "occurrenceName": "Frame:1",
+      "fullPathName": "Chair v11:1+Frame:1",
+      "parent": "/v4BAAAARlJLZXkAH4sIAAAAAAAA/32OsQ1CMQxEhViAkjIFrSU7sR1nB5awSX6LEAMwBQ0tEqswAAsRoEfXnE5Pd4eJU06UcIqyTUe/RNP5ujpt1vvtbXd/PY7PyyRyKpqa1JDeMwxpAdxKQLgJOFaSymZOY7ZM8iC1DhUG1A9Z6QCGGKA2OhfvVgL/b3lbfOklAyELsCuCWTgEZ9XKRRf6fn8DSnmILscAAAA=",
+      "definition": "/v4BAAEAkw8AAAAAAAAAAAAA",
+      "transform": [
+        1.0,
+        -1.2156009176936246e-29,
+        -9.860761315262648e-32,
+        0.0,
+        1.1913982706573244e-29,
+        1.0,
+        4.930380657631324e-32,
+        -1.4210854715202004e-14,
+        0.0,
+        0.0,
+        1.0,
+        -2.524354896707238e-29,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "isPatternElement": false,
+      "bodies": [
+        "Post",
+        "Base"
+      ]
+    },
+    "/v4BAAAARlJLZXkAH4sIAAAAAAAA/32Ouw0CMAxEhViAkjIFrSXbsRNnB5aI82kRYgCmoKFFYhUGYCGC6NE1p9PT3WGQwIECLhHbcvRLUrjcNufd9ri/Hx7v5+l1XQSHmELR7No7w9DiICU6eDWFipk0i1mlsVoWaYPFhAUo5wTSRMFS6zAbWmfqbXb6v4Wa3EdFaHFOkFkaeMMMwzlmruge+/f7B15cK9XHAAAA": {
+      "id": "B1:1",
+      "label": "B1:1",
+      "occurrenceName": "B1:1",
+      "fullPathName": "B1:1",
+      "parent": null,
+      "definition": "/v4BAAEAMRQAAAAAAAAAAAAA",
+      "transform": [
+        -1.0000000000000013,
+        -9.714451465470111e-17,
+        3.768237935475089e-19,
+        -426.0,
+        6.938893903907209e-17,
+        -0.9999999999999989,
+        9.315050844454585e-16,
+        215.9999999999996,
+        -4.7570469626364534e-32,
+        9.367506770274748e-16,
+        0.9999999999999981,
+        71.8,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "isPatternElement": false,
+      "bodies": [
+        "Body5"
+      ]
+    },
+    "/v4BAAAARlJLZXkAH4sIAAAAAAAA/32Ouw0CMAxEhViAktIFraUktpN4B5aI82kRYgCmoKFFYhUGYCGM6NE1p9PT3QVgSBAhuGKq7uIvyXC5bc677XF/Pzzez9Pr6kQCyqBSTMZIOEUNWcnQWhVsoUQpXGuL01ucDEFViNihRchLGNUBZF5ltTk6Rfq/VevMPZJiD0O9xgqadcHQdEnWPnjy9/sHgu3XpscAAAA=": {
+      "id": "B2:1",
+      "label": "B2:1",
+      "occurrenceName": "B2:1",
+      "fullPathName": "B2:1",
+      "parent": null,
+      "definition": "/v4BAAEAJhUAAAAAAAAAAAAA",
+      "transform": [
+        -1.0000000000000013,
+        -9.714451465470111e-17,
+        3.768237935475089e-19,
+        -265.99999999999983,
+        6.938893903907209e-17,
+        -0.9999999999999989,
+        9.315050844454585e-16,
+        215.99999999999963,
+        -4.7570469626364534e-32,
+        9.367506770274748e-16,
+        0.9999999999999981,
+        71.8,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "isPatternElement": false,
+      "bodies": [
+        "Body5"
+      ]
+    },
+    "/v4BAAAARlJLZXkAH4sIAAAAAAAA/4WOuw0CMAxEhViAktIFraXEcT7egSWcOG4RYgCmoKFFYhUGYCGCGABdczo93V0ABoIIYSlSWy7+kgKX2+a82x7398Pj/Ty9rosgSAUk157NCGeWjiypY9eWUUONuXJrGudqWSSRCeWiWH1OZB+EkpzRyTh5quxJ/2wNleIeMdgcyIEVRS2hhSYjE3NR+37/AIWJKezHAAAA": {
+      "id": "B3:1",
+      "label": "B3:1",
+      "occurrenceName": "B3:1",
+      "fullPathName": "B3:1",
+      "parent": null,
+      "definition": "/v4BAAEAGBcAAAAAAAAAAAAA",
+      "transform": [
+        -1.0000000000000013,
+        -9.714451465470111e-17,
+        3.768237935475089e-19,
+        -105.99999999999974,
+        6.938893903907209e-17,
+        -0.9999999999999989,
+        9.315050844454585e-16,
+        215.99999999999966,
+        -4.7570469626364534e-32,
+        9.367506770274748e-16,
+        0.9999999999999981,
+        71.8,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "isPatternElement": false,
+      "bodies": [
+        "Body5"
+      ]
+    },
+    "/v4BAAAARlJLZXkAH4sIAAAAAAAA/32OsQ1CMQxEhViAktIFraUktr+dHVjCifNbhBiAKWhokViFAViIIHp0zen0dHcJGApkSFO52HT5lyxwuW3Ou+1xfz883s/T6zqJArRAFW0SUXBIbciVGjY3QU+aRdnM85gtk+xrbRZZ0JwnKYXQOTpKcM1D27qE/9+idZCqDIyqfTY4oyUrSEpFhnpvSb/fPz4O5XzHAAAA": {
+      "id": "B4:1",
+      "label": "B4:1",
+      "occurrenceName": "B4:1",
+      "fullPathName": "B4:1",
+      "parent": null,
+      "definition": "/v4BAAEAFRgAAAAAAAAAAAAA",
+      "transform": [
+        -1.0000000000000013,
+        -9.714451465470111e-17,
+        3.768237935475089e-19,
+        54.00000000000053,
+        6.938893903907209e-17,
+        -0.9999999999999989,
+        9.315050844454585e-16,
+        215.99999999999937,
+        -4.7570469626364534e-32,
+        9.367506770274748e-16,
+        0.9999999999999981,
+        71.8,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "isPatternElement": false,
+      "bodies": [
+        "Body5"
+      ]
+    },
+    "/v4BAAAARlJLZXkAH4sIAAAAAAAA/32OMQ4CQQhFY7yApSWFLQkDyw7cwUuAM9sa4wE8hY2tiVfxAF7I2dgbGkLe532CCRgK0JjCNrbyu8xwvW8uu+1x/zg8P6/z+zYIBpnBtaa2xtjVEyeXxAxTDKpF62QWpY8vK1mp9rYoFmYf5InQGyU2F9buJpH03yVqp4xYc8twdXO0cMEU95zVZDFfu38BODmF5ccAAAA=": {
+      "id": "A2.4.1:1",
+      "label": "A2.4.1:1",
+      "occurrenceName": "A2.4.1:1",
+      "fullPathName": "A2.4.1:1",
+      "parent": null,
+      "definition": "/v4BAAEAHBkAAAAAAAAAAAAA",
+      "transform": [
+        -0.9999999999999993,
+        4.399258735077184e-15,
+        -3.629549733932967e-17,
+        -185.70925158637414,
+        -4.39925873507718e-15,
+        -0.9999999999999993,
+        -4.900540749101793e-14,
+        -232.89476089993795,
+        -1.387778780781632e-17,
+        -4.9016346537200623e-14,
+        1.0000000000000002,
+        60.999999999999496,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "isPatternElement": false,
+      "bodies": [
+        "A2.4.1.4",
+        "A2.4.1.3",
+        "A2.4.1.2",
+        "A2.4.1.1"
+      ]
+    },
+    "/v4BAAAARlJLZXkAH4sIAAAAAAAA/32OzQkCMAxGERfw6DEHr4E2P/3ZwSXapr2KOIBTePEquIoDuJAR7xL4CB+PlwQQIIgQfCIV3+KvSXC5bc677XF/Pzzez9Pr6gQBJ6iau5oRTq0dpXLH3opiCzlqllJanG5x0kaYNBehhiYoXAb24TjlRp2TsWX6f2vQMjFeWMlDOLphmmFeYZjKqkn5+/sHJ0L5XscAAAA=": {
+      "id": "A2.4.2:1",
+      "label": "A2.4.2:1",
+      "occurrenceName": "A2.4.2:1",
+      "fullPathName": "A2.4.2:1",
+      "parent": null,
+      "definition": "/v4BAAEAtRoAAAAAAAAAAAAA",
+      "transform": [
+        -1.0,
+        -8.493206138382449e-15,
+        3.211940363194586e-14,
+        -220.7092515863739,
+        8.604228440844944e-15,
+        -1.0000000000000002,
+        -4.3045787241653514e-14,
+        -227.1447608999393,
+        3.212707877509046e-14,
+        -4.300726441642035e-14,
+        0.9999999999999998,
+        60.99999999999761,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "isPatternElement": false,
+      "bodies": [
+        "A2.4.2.3",
+        "A2.4.2.2",
+        "A2.4.2.1"
+      ]
+    },
+    "/v4BAAAARlJLZXkAH4sIAAAAAAAA/32OsQ1CMQxEhViAkjIFraXYcb7tHVjCTvJbhBiAKWhokViFAViIIHp0zen0dHc5caKEKU8h6XT4S5Z0uW3Ou+1xfz883s/T6zoJSmVJViVq7wSjWgBbCQjXCp4Fq7Cq45gtk2QRpZwrlG4CTKuANmIQauZVmQnl/9aQwi7RYUFvwKN0CAsBGrFqDyE0/37/APslrZ3HAAAA": {
+      "id": "A3:1",
+      "label": "A3:1",
+      "occurrenceName": "A3:1",
+      "fullPathName": "A3:1",
+      "parent": null,
+      "definition": "/v4BAAEAEB4AAAAAAAAAAAAA",
+      "transform": [
+        1.0,
+        0.0,
+        0.0,
+        -121.45925158637394,
+        0.0,
+        1.0,
+        8.326672684688674e-16,
+        -226.89476089993886,
+        0.0,
+        -8.326672684688674e-16,
+        1.0,
+        -5.537193711046582e-13,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "isPatternElement": false,
+      "bodies": [
+        "tige1",
+        "tige2",
+        "tige3",
+        "tige4",
+        "A3.1",
+        "A3.2",
+        "A3.3",
+        "A3.4",
+        "A3.5"
+      ]
+    },
+    "/v4BAAAARlJLZXkAH4sIAAAAAAAA/32OsQ1CMQxEhViAktIFraUkjmNnB5aIv/1bhBiAKWhokViFAViIIHp0zen0dHcJKhTIkKZy0enyL2lwuW3Ou+1xfz883s/T6zqJAtSgsxi7FwzuhrWToQ1lHEkyS1UdOWbLJL1F6e6B4caTVEf1phgqSVYrnBv93yIdsuRYcFWfW40aDmZDkrVqGBtpfL9/AEpyQlnHAAAA": {
+      "id": "A4:1",
+      "label": "A4:1",
+      "occurrenceName": "A4:1",
+      "fullPathName": "A4:1",
+      "parent": null,
+      "definition": "/v4BAAEAUB8AAAAAAAAAAAAA",
+      "transform": [
+        1.0,
+        0.0,
+        0.0,
+        -28.709251586373938,
+        0.0,
+        1.0,
+        8.326672684688674e-16,
+        -226.89476089993886,
+        0.0,
+        -8.326672684688674e-16,
+        1.0,
+        -5.537193711046582e-13,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "isPatternElement": false,
+      "bodies": [
+        "tige1",
+        "tige2",
+        "tige3",
+        "tige4",
+        "A4.1",
+        "A4.2",
+        "A4.3",
+        "A4.4",
+        "A4.5"
+      ]
+    },
+    "/v4BAAAARlJLZXkAH4sIAAAAAAAA/32OsQ1CMQxEhViAktIFraXYseNkB5aw/09ahBiAKWhokViFAViIIHp0zen0dHcJBBgI0hRxnY5+SYHLbXPebY/7++Hxfp5e10kw5AJNLXRdGbu2QGk5MLwqejJSk1qd+myZJCn1zKbYgiYpVjGGd8xDSUzSkGH/twpHieaMizZCyYnRhxfkRXv1sjDH8v3+AZ7xvrrHAAAA": {
+      "id": "C1:1",
+      "label": "C1:1",
+      "occurrenceName": "C1:1",
+      "fullPathName": "C1:1",
+      "parent": null,
+      "definition": "/v4BAAEAmSAAAAAAAAAAAAAA",
+      "transform": [
+        1.0,
+        0.0,
+        1.4572372298653717e-31,
+        -397.8261259186015,
+        0.0,
+        0.9999999999999997,
+        1.8270331136387094e-31,
+        -225.2186566769661,
+        0.0,
+        0.0,
+        0.9999999999999997,
+        5.07435738901497e-13,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "isPatternElement": false,
+      "bodies": [
+        "Body1",
+        "Body2",
+        "Body3",
+        "Body4",
+        "C1.1",
+        "C1.2",
+        "C1.3",
+        "C1.4",
+        "C1.5"
+      ]
+    },
+    "/v4BAAAARlJLZXkAH4sIAAAAAAAA/32OsQ1CMQxEhViAktIFrSU7sX+cHVjC+UlahBiAKWhokViFAVgII3p0zen0dHcEAgkYKMTJwvEvWeBy25x32+P+fni8n6fXNYgEeYGqpWnvCYfWhlJzw+am6FRYi5g5j2gJUi3PMVzQrDvKyg2tDcLRpXldqS5i/7fK5DJ7FszVOBokZmxxnFqI1IiV+vf7B4IWAZLHAAAA": {
+      "id": "L1:1",
+      "label": "L1:1",
+      "occurrenceName": "L1:1",
+      "fullPathName": "L1:1",
+      "parent": null,
+      "definition": "/v4BAAEAUiIAAAAAAAAAAAAA",
+      "transform": [
+        1.0,
+        -2.465190328815663e-32,
+        -5.2235739915128474e-18,
+        195.13856495097602,
+        5.551115123125783e-17,
+        0.9999999999999998,
+        -3.828646458361116e-15,
+        222.6288661648654,
+        -1.232595164407831e-32,
+        3.7569278742496715e-15,
+        0.9999999999999998,
+        83.00000000000011,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "isPatternElement": false,
+      "bodies": [
+        "L1.1",
+        "L1.2",
+        "Body3",
+        "Body4",
+        "Body5",
+        "Body6"
+      ]
+    },
+    "/v4BAAAARlJLZXkAH4sIAAAAAAAA/32Ova0CMAyEhViAktIFrSU7sRNnB5aI89OipzcAU9DQIrEKA7AQAXp0zen06e4IBAIw0BIHW46/SYL/y+Zvtz3ur4fb8356nBcRICYoml17Dzi0OEqJjl5NsVJmzWJWeayWD5lUZogYpWeU2hKatIAzE5mPHIfR7y1tU7TqxOlTUFJyLD4Uhcm4DeXO+v7+AhGX5nzHAAAA": {
+      "id": "A2.3.2:1",
+      "label": "A2.3.2:1",
+      "occurrenceName": "A2.3.2:1",
+      "fullPathName": "A2.3.2:1",
+      "parent": null,
+      "definition": "/v4BAAEAZCQAAAAAAAAAAAAA",
+      "transform": [
+        1.0000000000000002,
+        -5.69067945749746e-17,
+        5.551115123125796e-17,
+        -238.20925158637405,
+        -1.1552320661639758e-16,
+        1.0000000000000004,
+        -6.002705839898968e-16,
+        -224.89476089993863,
+        -8.326672684688673e-17,
+        6.530776838476363e-16,
+        1.0000000000000004,
+        100.99999999999915,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "isPatternElement": false,
+      "bodies": []
+    },
+    "/v4BAAAARlJLZXkAH4sIAAAAAAAA/32Pv2mDMRTEMV7ApUsVaR/o/Zd28BJ6n6Q2hAyQKdK4NXgVD5CFog/j1lxzHD+Ou5wkUcKUl5DKcvhMLH3/Hr5Ox8v5+nH7u38+fhZBiS1V9dDeCYbWAKkcEK0otOyoLqU0HC/SVCYxsHQHaZtBkY1ges4lhvMoeeeQWsZoBNbRVuNYjWwdzOckmhm5x/tNWBSFycGJB8igATErA7H5ppuihe4f/wGB7bLL7wAAAA==": {
+      "id": "A2.3.2.1:1",
+      "label": "A2.3.2.1:1",
+      "occurrenceName": "A2.3.2.1:1",
+      "fullPathName": "A2.3.2:1+A2.3.2.1:1",
+      "parent": "/v4BAAAARlJLZXkAH4sIAAAAAAAA/32Ova0CMAyEhViAktIFrSU7sRNnB5aI89OipzcAU9DQIrEKA7AQAXp0zen06e4IBAIw0BIHW46/SYL/y+Zvtz3ur4fb8356nBcRICYoml17Dzi0OEqJjl5NsVJmzWJWeayWD5lUZogYpWeU2hKatIAzE5mPHIfR7y1tU7TqxOlTUFJyLD4Uhcm4DeXO+v7+AhGX5nzHAAAA",
+      "definition": "/v4BAAEAoSQAAAAAAAAAAAAA",
+      "transform": [
+        1.0,
+        7.247608584091641e-34,
+        0.0,
+        0.0,
+        -6.787601749946314e-34,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        1.9999999999999858,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "isPatternElement": false,
+      "bodies": [
+        "Body1"
+      ]
+    },
+    "/v4BAAAARlJLZXkAH4sIAAAAAAAA/32PvW2DMQxEYXgBly5VpCUg/onUDl7io0S1QZABMkUatwaySgbIQvkMw61xzcPhFXe1SKGCpe5B8p3w0bTy+X34OB0v5+vb7e/n/fdrN6hwK10tdE6C1B4gnQNic4WtGqqJ+4b5NJvKIgaWaSDbaOAyCJbV6pHG6fXuyU7du0NdNkGiI0TWAa3NNa3T4rTXm9AVhcnAiBMkKSFWZyBuNnQottD7x39t6gVt7wAAAA==": {
+      "id": "A2.3.2.1:2",
+      "label": "A2.3.2.1:2",
+      "occurrenceName": "A2.3.2.1:2",
+      "fullPathName": "A2.3.2:1+A2.3.2.1:2",
+      "parent": "/v4BAAAARlJLZXkAH4sIAAAAAAAA/32Ova0CMAyEhViAktIFrSU7sRNnB5aI89OipzcAU9DQIrEKA7AQAXp0zen06e4IBAIw0BIHW46/SYL/y+Zvtz3ur4fb8356nBcRICYoml17Dzi0OEqJjl5NsVJmzWJWeayWD5lUZogYpWeU2hKatIAzE5mPHIfR7y1tU7TqxOlTUFJyLD4Uhcm4DeXO+v7+AhGX5nzHAAAA",
+      "definition": "/v4BAAEAoSQAAAAAAAAAAAAA",
+      "transform": [
+        1.0,
+        7.247608584091641e-34,
+        0.0,
+        0.0,
+        -6.787601749946314e-34,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        14.000000000000043,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "isPatternElement": false,
+      "bodies": [
+        "Body1"
+      ]
+    },
+    "/v4BAAAARlJLZXkAH4sIAAAAAAAA/32Puw0CMAxEhViAkjIFrSXbseNkB5bIt0WIAZiChhaJVRiAhUiEaJGbk/XudIdOHDtyOI84TkXfT3CX2+a82x7398Pj/Ty9rpNg54NLakVbY+iaCkjyBUqOChmN1CTGTP1HBpXBHrw0A8k1QJTKMAwxlm6+R1zccpGtsNEJpOGA3NK04agJU6lJ6/9OFJXEs4Gx7yCdO5QxE9gHq1qVQtG18QOmnmIg7wAAAA==": {
+      "id": "A2.3.2.1:3",
+      "label": "A2.3.2.1:3",
+      "occurrenceName": "A2.3.2.1:3",
+      "fullPathName": "A2.3.2:1+A2.3.2.1:3",
+      "parent": "/v4BAAAARlJLZXkAH4sIAAAAAAAA/32Ova0CMAyEhViAktIFrSU7sRNnB5aI89OipzcAU9DQIrEKA7AQAXp0zen06e4IBAIw0BIHW46/SYL/y+Zvtz3ur4fb8356nBcRICYoml17Dzi0OEqJjl5NsVJmzWJWeayWD5lUZogYpWeU2hKatIAzE5mPHIfR7y1tU7TqxOlTUFJyLD4Uhcm4DeXO+v7+AhGX5nzHAAAA",
+      "definition": "/v4BAAEAoSQAAAAAAAAAAAAA",
+      "transform": [
+        1.0,
+        7.247608584091641e-34,
+        0.0,
+        0.0,
+        -6.787601749946314e-34,
+        1.0,
+        0.0,
+        2.842170943040401e-14,
+        0.0,
+        0.0,
+        1.0,
+        26.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "isPatternElement": false,
+      "bodies": [
+        "Body1"
+      ]
+    },
+    "/v4BAAAARlJLZXkAH4sIAAAAAAAA/32Osa2CMQyEhViAktIFrSXHsRN7B5awyf+36OkNwBQ0tEiswgAsRBA9uuZ0+nR3BAIMBWiqsE1XvkmD/+vmb7c97m+H++txfl4mwVAbuPbUMRgX9UTxmphhikG9aBezKMtsmWSNlGprQx6nBYWpoctwzO5t5SSN0X9vRYSluWAzFZRRHKNzoBv7WoitU3y+vwEup9qkxwAAAA==": {
+      "id": "A2.3.1:1",
+      "label": "A2.3.1:1",
+      "occurrenceName": "A2.3.1:1",
+      "fullPathName": "A2.3.1:1",
+      "parent": null,
+      "definition": "/v4BAAEAsSUAAAAAAAAAAAAA",
+      "transform": [
+        1.0000000000000002,
+        -1.232595164407831e-32,
+        2.7755575615628914e-17,
+        -203.20925158637408,
+        1.1102230246251565e-16,
+        1.0000000000000002,
+        -2.7755575615628914e-17,
+        -224.89476089993857,
+        0.0,
+        0.0,
+        1.0,
+        102.999999999999,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "isPatternElement": false,
+      "bodies": [
+        "Body1"
+      ]
+    }
+  },
+  "definitions": {
+    "/v4BAAEAAwAAAAAAAAAAAAAA": {
+      "id": "Bare room",
+      "label": "Bare room",
+      "componentName": "Bare room",
+      "bodies": [
+        "Body1",
+        "Body2",
+        "Body3",
+        "Body4",
+        "Body5",
+        "Body6"
+      ]
+    },
+    "/v4BAAEASAIAAAAAAAAAAAAA": {
+      "id": "A1",
+      "label": "A1",
+      "componentName": "A1",
+      "bodies": [
+        "tige1",
+        "tige2",
+        "tige3",
+        "tige4",
+        "A1.1",
+        "A1.2",
+        "A1.3",
+        "A1.4",
+        "A1.5"
+      ]
+    },
+    "/v4BAAEAdAQAAAAAAAAAAAAA": {
+      "id": "F1",
+      "label": "F1",
+      "componentName": "F1",
+      "bodies": [
+        "F1.1",
+        "F1.2"
+      ]
+    },
+    "/v4BAAEAOAUAAAAAAAAAAAAA": {
+      "id": "A2",
+      "label": "A2",
+      "componentName": "A2",
+      "bodies": [
+        "tige1",
+        "tige2",
+        "tige3",
+        "tige4",
+        "A2.1",
+        "A2.2",
+        "A2.3",
+        "A2.4",
+        "A2.5"
+      ]
+    },
+    "/v4BAAEAdg0AAAAAAAAAAAAA": {
+      "id": "wood table",
+      "label": "wood table",
+      "componentName": "wood table",
+      "bodies": [
+        "Body5"
+      ]
+    },
+    "/v4BAAEAcw4AAAAAAAAAAAAA": {
+      "id": "computer screns",
+      "label": "computer screns",
+      "componentName": "computer screns",
+      "bodies": [
+        "Body1",
+        "Body2",
+        "Body3"
+      ]
+    },
+    "/v4BAAEAVg8AAAAAAAAAAAAA": {
+      "id": "Chair v11",
+      "label": "Chair v11",
+      "componentName": "Chair v11",
+      "bodies": []
+    },
+    "/v4BAAEA0A8AAAAAAAAAAAAA": {
+      "id": "Casters",
+      "label": "Casters",
+      "componentName": "Casters",
+      "bodies": [
+        "Body1",
+        "Body2",
+        "Body3",
+        "Body4",
+        "Body5"
+      ]
+    },
+    "/v4BAAEADRAAAAAAAAAAAAAA": {
+      "id": "Pads",
+      "label": "Pads",
+      "componentName": "Pads",
+      "bodies": [
+        "BackRest",
+        "Seat",
+        "Armrest",
+        "Armrest (1)"
+      ]
+    },
+    "/v4BAAEAkw8AAAAAAAAAAAAA": {
+      "id": "Frame",
+      "label": "Frame",
+      "componentName": "Frame",
+      "bodies": [
+        "Post",
+        "Base"
+      ]
+    },
+    "/v4BAAEAMRQAAAAAAAAAAAAA": {
+      "id": "B1",
+      "label": "B1",
+      "componentName": "B1",
+      "bodies": [
+        "Body5"
+      ]
+    },
+    "/v4BAAEAJhUAAAAAAAAAAAAA": {
+      "id": "B2",
+      "label": "B2",
+      "componentName": "B2",
+      "bodies": [
+        "Body5"
+      ]
+    },
+    "/v4BAAEAGBcAAAAAAAAAAAAA": {
+      "id": "B3",
+      "label": "B3",
+      "componentName": "B3",
+      "bodies": [
+        "Body5"
+      ]
+    },
+    "/v4BAAEAFRgAAAAAAAAAAAAA": {
+      "id": "B4",
+      "label": "B4",
+      "componentName": "B4",
+      "bodies": [
+        "Body5"
+      ]
+    },
+    "/v4BAAEAHBkAAAAAAAAAAAAA": {
+      "id": "A2.4.1",
+      "label": "A2.4.1",
+      "componentName": "A2.4.1",
+      "bodies": [
+        "A2.4.1.4",
+        "A2.4.1.3",
+        "A2.4.1.2",
+        "A2.4.1.1"
+      ]
+    },
+    "/v4BAAEAtRoAAAAAAAAAAAAA": {
+      "id": "A2.4.2",
+      "label": "A2.4.2",
+      "componentName": "A2.4.2",
+      "bodies": [
+        "A2.4.2.3",
+        "A2.4.2.2",
+        "A2.4.2.1"
+      ]
+    },
+    "/v4BAAEAEB4AAAAAAAAAAAAA": {
+      "id": "A3",
+      "label": "A3",
+      "componentName": "A3",
+      "bodies": [
+        "tige1",
+        "tige2",
+        "tige3",
+        "tige4",
+        "A3.1",
+        "A3.2",
+        "A3.3",
+        "A3.4",
+        "A3.5"
+      ]
+    },
+    "/v4BAAEAUB8AAAAAAAAAAAAA": {
+      "id": "A4",
+      "label": "A4",
+      "componentName": "A4",
+      "bodies": [
+        "tige1",
+        "tige2",
+        "tige3",
+        "tige4",
+        "A4.1",
+        "A4.2",
+        "A4.3",
+        "A4.4",
+        "A4.5"
+      ]
+    },
+    "/v4BAAEAmSAAAAAAAAAAAAAA": {
+      "id": "C1",
+      "label": "C1",
+      "componentName": "C1",
+      "bodies": [
+        "Body1",
+        "Body2",
+        "Body3",
+        "Body4",
+        "C1.1",
+        "C1.2",
+        "C1.3",
+        "C1.4",
+        "C1.5"
+      ]
+    },
+    "/v4BAAEAUiIAAAAAAAAAAAAA": {
+      "id": "L1",
+      "label": "L1",
+      "componentName": "L1",
+      "bodies": [
+        "L1.1",
+        "L1.2",
+        "Body3",
+        "Body4",
+        "Body5",
+        "Body6"
+      ]
+    },
+    "/v4BAAEAZCQAAAAAAAAAAAAA": {
+      "id": "A2.3.2",
+      "label": "A2.3.2",
+      "componentName": "A2.3.2",
+      "bodies": []
+    },
+    "/v4BAAEAoSQAAAAAAAAAAAAA": {
+      "id": "A2.3.2.1",
+      "label": "A2.3.2.1",
+      "componentName": "A2.3.2.1",
+      "bodies": [
+        "Body1"
+      ]
+    },
+    "/v4BAAEAsSUAAAAAAAAAAAAA": {
+      "id": "A2.3.1",
+      "label": "A2.3.1",
+      "componentName": "A2.3.1",
+      "bodies": [
+        "Body1"
+      ]
+    }
+  }
+}

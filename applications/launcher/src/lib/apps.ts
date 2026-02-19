@@ -63,6 +63,24 @@ export const apps: AppInfo[] = [
             },
         ],
     },
+    {
+        slug: "virtual-lab",
+        name: "Virtual Lab",
+        description:
+            "Interactive 3D model of the laboratory. Explore equipment, workstations, and layout in a browser-based viewer.",
+        icon: "🧪",
+        frontendPort: 8080,
+        tags: ["3D", "visualisation", "lab"],
+        managed: true,
+        startCommands: [
+            {
+                cwd: "applications/virtual-lab",
+                cmd: "python3 -m http.server 8080 --bind 0.0.0.0",
+                port: 8080,
+                label: "frontend",
+            },
+        ],
+    },
 ];
 
 /**
