@@ -16,6 +16,7 @@ Reproduces the exact recording setup from Mishra et al., Sci. Robot. 2024:
 
 import json
 import os
+import platform
 import subprocess
 import sys
 import time
@@ -158,9 +159,15 @@ class ADC24Driver:
         if not self._bridge_script.exists():
             raise RuntimeError(f"Bridge script not found: {self._bridge_script}")
 
-        # Start bridge under Rosetta
+        # On macOS ARM64 we need Rosetta to load the x86_64 PicoSDK lib.
+        # On Linux x86_64 (the server) we run directly.
+        if platform.system() == "Darwin" and platform.machine() == "arm64":
+            cmd = ["arch", "-x86_64", sys.executable, str(self._bridge_script)]
+        else:
+            cmd = [sys.executable, str(self._bridge_script)]
+
         self._bridge = subprocess.Popen(
-            ["arch", "-x86_64", sys.executable, str(self._bridge_script)],
+            cmd,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -178,7 +185,8 @@ class ADC24Driver:
         if not ready.get("ok"):
             raise RuntimeError(f"Bridge error: {ready.get('error', 'unknown')}")
 
-        logger.info("Bridge subprocess started (x86_64 Rosetta)")
+        arch_note = "x86_64 Rosetta" if "arch" in cmd else platform.machine()
+        logger.info(f"Bridge subprocess started ({arch_note})")
 
         # Open the ADC-24
         result = self._send_cmd({"cmd": "open"})
