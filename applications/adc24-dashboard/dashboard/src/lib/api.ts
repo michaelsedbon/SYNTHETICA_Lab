@@ -1,4 +1,9 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+function getApiBase(): string {
+    if (typeof window !== "undefined") {
+        return process.env.NEXT_PUBLIC_API_URL || `http://${window.location.hostname}:8000`;
+    }
+    return "http://localhost:8000";
+}
 
 export interface SessionInfo {
     id: string;
@@ -53,18 +58,18 @@ export interface StreamMessage {
 }
 
 export async function getStatus(): Promise<StatusResponse> {
-    const res = await fetch(`${API_BASE}/api/status`);
+    const res = await fetch(`${getApiBase()}/api/status`);
     return res.json();
 }
 
 export async function connectDevice(): Promise<{ status: string }> {
-    const res = await fetch(`${API_BASE}/api/connect`, { method: "POST" });
+    const res = await fetch(`${getApiBase()}/api/connect`, { method: "POST" });
     if (!res.ok) throw new Error((await res.json()).detail);
     return res.json();
 }
 
 export async function disconnectDevice(): Promise<{ status: string }> {
-    const res = await fetch(`${API_BASE}/api/disconnect`, { method: "POST" });
+    const res = await fetch(`${getApiBase()}/api/disconnect`, { method: "POST" });
     if (!res.ok) throw new Error((await res.json()).detail);
     return res.json();
 }
@@ -81,33 +86,33 @@ export async function startRecording(params?: {
     if (params?.differential !== undefined) query.set("differential", String(params.differential));
     if (params?.mains_50hz !== undefined) query.set("mains_50hz", String(params.mains_50hz));
 
-    const res = await fetch(`${API_BASE}/api/start?${query}`, { method: "POST" });
+    const res = await fetch(`${getApiBase()}/api/start?${query}`, { method: "POST" });
     if (!res.ok) throw new Error((await res.json()).detail);
     return res.json();
 }
 
 export async function startDemo(): Promise<StartResponse> {
-    const res = await fetch(`${API_BASE}/api/demo/start`, { method: "POST" });
+    const res = await fetch(`${getApiBase()}/api/demo/start`, { method: "POST" });
     if (!res.ok) throw new Error((await res.json()).detail);
     return res.json();
 }
 
 export async function stopRecording(): Promise<StopResponse> {
-    const res = await fetch(`${API_BASE}/api/stop`, { method: "POST" });
+    const res = await fetch(`${getApiBase()}/api/stop`, { method: "POST" });
     if (!res.ok) throw new Error((await res.json()).detail);
     return res.json();
 }
 
 export async function listSessions(): Promise<{ sessions: SessionInfo[] }> {
-    const res = await fetch(`${API_BASE}/api/sessions`);
+    const res = await fetch(`${getApiBase()}/api/sessions`);
     return res.json();
 }
 
 export function getSessionDownloadUrl(sessionId: string): string {
-    return `${API_BASE}/api/sessions/${sessionId}/download`;
+    return `${getApiBase()}/api/sessions/${sessionId}/download`;
 }
 
 export function createWebSocket(): WebSocket {
-    const wsBase = API_BASE.replace(/^http/, "ws");
+    const wsBase = getApiBase().replace(/^http/, "ws");
     return new WebSocket(`${wsBase}/ws/stream`);
 }
