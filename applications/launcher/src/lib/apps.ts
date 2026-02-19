@@ -12,6 +12,16 @@ export interface AppInfo {
 
 export const apps: AppInfo[] = [
     {
+        slug: "fab-planner",
+        name: "Fab Planner",
+        description:
+            "Production planning and fabrication management. Track parts, assemblies, jobs, timelines, stock inventory, and share across workspaces.",
+        icon: "🏭",
+        frontendPort: 3000,
+        status: "running",
+        tags: ["production", "planning", "fabrication"],
+    },
+    {
         slug: "adc24-dashboard",
         name: "ADC-24 Electrophysiology",
         description:
@@ -24,3 +34,14 @@ export const apps: AppInfo[] = [
         experiment: "EXP_001",
     },
 ];
+
+/**
+ * Build the full URL for an app.
+ * On the server (or any non-localhost access), uses the current hostname.
+ * On localhost, uses localhost.
+ */
+export function getAppUrl(app: AppInfo): string {
+    if (typeof window === "undefined") return `http://localhost:${app.frontendPort}`;
+    const host = window.location.hostname;
+    return `http://${host}:${app.frontendPort}`;
+}

@@ -1,6 +1,6 @@
 "use client";
 
-import { apps, type AppInfo } from "@/lib/apps";
+import { apps, getAppUrl, type AppInfo } from "@/lib/apps";
 
 function StatusDot({ status }: { status: AppInfo["status"] }) {
   const colors = {
@@ -22,7 +22,7 @@ function StatusDot({ status }: { status: AppInfo["status"] }) {
 }
 
 function AppCard({ app }: { app: AppInfo }) {
-  const href = `http://localhost:${app.frontendPort}`;
+  const href = getAppUrl(app);
 
   return (
     <a
