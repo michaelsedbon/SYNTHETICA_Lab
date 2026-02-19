@@ -1,0 +1,22 @@
+config.yaml
+.env
+.env.local
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+Thumbs.db
+node_modules/
+.next/
+venv*/
+.venv/
+dist/
+build/
+*.egg-info/
+.agent/
+.gemini/
+
+# Large binaries
+*.pkg
+*.pdf
+package-lock.json

@@ -1,0 +1,624 @@
+--- Page 1 ---
+Re ors
+Collapse of Gels in an Electric Field
+Abstract. An infinitesimal change in electric potential across a polyelectrolyte gel
+produces a discrete, reversible volume change. The volume of the collapsed gel can
+be several hundred times smaller than that of the swollen gel.
+Partially hydrolyzed acrylamide gels
+in a solvent, such as an acetone-water
+mixture, undergo discrete and reversible
+volume
+transitions
+upon
+infinitesimal
+changes in temperature, solvent compo-
+sition, pH, or concentration of an added
+salt (1, 2). The degree of volume change
+varies with the degree of ionization of
+the gel and may be as large as 500-fold.
+The volume change is understood as a
+phase transition of the system consisting
+of the charged polymer network, coun-
+terions, and fluid (3). The phase transi-
+tion is a manifestation of competition
+among three forces on the gel: the posi-
+tive osmotic pressure of counterions, the
+negative pressure due to polymer-poly-
+mer affinity, and the rubber elasticity of
+the polymer network (2). The balance of
+these forces varies with changes in tem-
+perature or solvent properties.
+We demonstrate here that the phase
+transition is also induced by the applica-
+tion of an electric field across the gel.
+The electric forces on the charged sites
+of the network produce a stress gradient
+along the electric field lines in the gel.
+There exists a critical stress below which
+the gel is swollen and above which the
+gel collapses. The volume change at the
+transition is either discrete or continu-
+ous, depending on the degree of ioniza-
+tion of the gel and on the solvent compo-
+sition.
+Fig. 1. (a) A cylindrical gel segment 3 cm long
+is placed between platinum electrodes and
+immersed in a 50 percent acetone-water mix-
+ture. When an electric field is applied to the
+gel, a stress gradient appears along the elec-
+tric field. A portion of the gel having stress
+larger than a critical value collapses while the
+rest of the gel remains swollen. (b) The pro-
+portion of collapsed to swollen regions in the
+gel varies with the electric potential. (c) Pho-
+tographic sequence showing how the volume
+of a 3-cm gel segment diminishes under an
+increasing electric field. The straight gel (first
+photograph) is a control under no electric
+field.
+SCIENCE, VOL. 218, 29 OCTOBER 1982
+The polyacrylamide
+gels were pre-
+pared by free-radical polymerization (2).
+Acrylamide,
+the
+linear
+constituent;
+N,N'-methylenebisacrylamide, the tetra-
+functional cross-linking constituent; and
+ammonium persulfate and N,N,N',N'-
+tetramethylethylene diamine (TEMED),
+the initiators, were dissolved in water.
+Micropipettes with a well-defined diame-
+ter (1.4 mm) were immersed in this solu-
+a
+Acetone
++
+water
+(50%)
+b
+Voltage
+0 V
+j4.-.
+tion.
+Within
+5
+minutes,
+the
+solution
+gelled. After an hour, the gels were re-
+moved from the micropipettes and im-
+mersed in water to wash away residual
+monomers. The gels then underwent hy-
+drolysis
+in a
+1.2 percent solution of
+TEMED (pH 12) for more than a month.
+Approximately 20 percent of the acryl-
+amide groups were converted to acrylic
+acid groups, some of which were ionized
+in water,
+-CONH2 --GOOH ;
+-COO- + H+
+(1)
+(In experiments where the composition
+of the acetone-water mixture is varied,
+the volume of these gels can change by a
+factor of 300 with an infinitesimal change
+in the solvent composition.) After hy-
+drolysis, the gels were immersed in a 50
+percent
+acetone-water
+mixture.
+Once
+equilibrium was reached, the gels were
+cut into segments 3 cm long. The diame-
+ter of each segment was approximately 4
+mm.
+The cylindrical
+gel was placed be-
+tween two platinum electrodes (Fig. la).
+The voltage applied across
+the
+elec-
+2.15 V
+2.5
+V
+5
+V
+0036-8075/82/1029-0467$01.00/0
+Copyright © 1982 AAAS
+HODD
+1 v
+1.25 V
+1.5 v
+2.0 V
+Stisw7.-07f=w.d~~~~~ - ;E.0T..~ r.
+467
+ on July 7, 2014
+www.sciencemag.org
+Downloaded from 
+ on July 7, 2014
+www.sciencemag.org
+Downloaded from 
+ on July 7, 2014
+www.sciencemag.org
+Downloaded from 
+
+
+--- Page 2 ---
+trodes ranged from 0 to 5 V (Fig. 1, b and
+c). The electric field produces not only a
+force on the H+, causing a stationary
+current in the gel, but also a force on the
+negatively charged acrylic acid groups in
+the polymer network, pulling the gel
+toward the positive electrode. This latter
+action creates a uniaxial stress along the
+gel axis, maximum at the positive elec-
+trode and minimum at the negative elec-
+trode. The stress gradient deforms the
+gel. The new shape is in equilibrium
+within a day. For potentials less than 1
+V, there is no drastic change in the gel
+shape. At 1.25 V, 20 percent of the gel
+adjacent to the positive electrode col-
+lapses 200-fold in volume. The other 80
+percent of the gel remains swollen. With
+an increase in voltage, more of the gel
+collapses. Above 2.15 V, the entire gel
+collapses. This phenomenon is revers-
+ible-when the electric field is removed,
+the gel assumes the
+original swollen
+shape. If the 50 percent acetone-water
+mixture is replaced by pure water, the
+gel diameter changes coutinuously along
+the gel axis when the electric field is
+applied.
+The phenomenon can be explained in
+terms of a mean field theory, initially
+formulated for gels by Flory and Huggins
+(4, 5). Consider a network consisting of v
+polymers with their ends cross-linked.
+Each polymer consists of No freely joint-
+ed segments, of which f segments are
+ionized. When formed, the network is
+cylindrical with length Lo, diameter Do,
+and concentration 4)0 and is in the special
+condition
+of no
+interaction
+between
+polymer segments. This special condi-
+tion is taken as a reference state from
+wbich expansion or contraction is mea-
+sured. A uniform electric field E is ap-
+plied along the gel axis. One end of the
+gel is fixed to an electrode to avoid the
+translational motion of the entire gel
+along the electric field. Depending on the
+direction of the electric field, the gel is
+either compressed or stretched along its
+axis as a result of the presence of a
+charged site on the network. Consider a
+thin disk- in the gel of thickness AZ0
+before application of the electric field
+and located at a distance Z from the free
+end ofthe gel (Fig. 2). Under the effect of
+E, the thickness changes to pAZO and the
+diameter to aD0. The aim of this analysis
+is to find the combinations (a,>) that
+minimize the free energy F of the disk.
+The free energy includes a term associat-
+ed with the deformation of the gel Fg and
+a term for the work done against the
+electric field Fe,
+F = Fg + Fe
+(2)
+For Fg we use the Flory-Huggins formu-
+la (5),
+Fg= vkT {No I
+j
+[ln(l -
+14) +
+kT 4] +
+I [2a2 + p2 - 3 -
+(2f + l)ln(a2p)]
+AZO
+(3)
+where T is the absolute temperature, k is
+the Boltzmann constant, 4) is the volume
+fraction of the polymer network, and AF
+is the free energy decrease associated
+with a contact between two polymer
+segments (AF varies with the solvent
+composition). The free energy needed to
+expand the network against the electric-
+potential is given by
+Fe = vfeE(Z/Lo)(3 - l)AZo
+BvkT(AZrJLo)(P - 1)
+(4)
+where
+e
+is
+the
+electron
+charge and
+B
+feEzlkT is the reduced electric po-
+tential.
+Minimization of the total free energy
+yields two equations,
+a2 =
+p2 + BP3
+and
+No [ln(l- O) +
+4) + (1 - T)j42/2] -
+f
+2o
+(f' +
+l/2)(a2,B) +
+i/p
+=
+(5)
+(6)
+x
+. -..
+aj /
+\
+q'
+whereT -
+1 -2AF/kT is the reduced tem-
+Fixed
+to.,
+<
+1 \ /
+......
+perature. Equation 5 shows that the an-
+Fixed to electrode.\
+..
+°
+Ill
+isotropy of deformation of the disk is
+0.1
+/'.
+/ihi
+uniquely determined by B. If B is posi-
+I =L| | 2
+s>
+z
+g°
+g1
+\ 2(
+|
+tive, the disk is compressed more in the
+BAZ
+1 \
+-(
+.?
+axial direction than radially (a >
+1).
+The
+I I
+LL-aD
+7--', \lE\
+/
+\4
+reverse
+is
+true
+if B
+is negative. For
+Lo
+Do
+BDZ ETSF
+1
+L
+'
+I
+certain values ofT and B, Eqs. 5 and 6
+~A
+have two solutions corresponding to two
+t
+>)<\-.8_5°
+minima of free energy. In this case, the
+z\\
+\\\\
+'\
+'
+\
+smaller free energy minimum represents
+o.o1
+B
+£: )
+I
+I
+I
+I
+S"""'"1 \
+I 'I
+the stable state. A discrete volume tran-
+0.2
+0.3
+0.4
+0.5
+1.0
+2.0
+3.0
+4 0
+sition occurs from one minimum to the
+0a2
+0.3
+0.4 0.5
+1.0
+2.0
+3.o
+4.0
+other when the values of two minima
+Fig. 2. Phase diagram of a gel disk under an electric field. Each point in the diagram represents
+values of the radial expansion a and the axial expansion , which minimize the free energy of the
+in Fig. 2, where the stable states (a,@)
+disk for a given combination of the reduced temperature
+r and reduced electric potential B
+are plotted at various combinations of 'r
+calculated from Eqs. 5 and 6. The solid lines represent constant B for various values of r, while
+and B. Figure 2 shows that the discrete
+the broken lines represent constant T for various values of B (B was varied in the experiment).
+transition
+can occur when T is changed
+The domain surrounded by the parabola-like boundary represents unstable states. The dotted
+for a fixed B
+or when B is varied for a
+and dashed lines inside the unstable region connect two stable states with the same free energy.
+fix
+xe B or whe B
+th
+discrea
+The gel state can change between these two states with an infinitesimal change in B (the dashed
+fixed
+r.
+The
+magnitude
+of the
+discrete
+line) or
+r (the dotted line).
+transition is greater for lower vrand B. At
+10
+1.0
+468
+SCIENCE, VOL. 218
+
+
+--- Page 3 ---
+larger values of these parameters, the
+transition
+becomes
+continuous.
+This
+analysis accounts for both the discrete
+transition observed in a 50 percent ace-
+tone-water mixture and the continuous
+transition in pure water. The former cor-
+responds to a low T value, whereas the
+latter corresponds to a high T value.
+Although only the
+electric force was
+considered in describing the phase tran-
+sition, other factors may play a role. The
+effects of inhomogeneous distributions
+of ions, cuffents, and solvent composi-
+tion within the gel and electrochemical
+reactions. occurring
+at
+the
+electrodes
+need to be considered for a complete
+understanding of the phenomena.
+The discrete volume transition of the
+gel induced by an electric field can be
+used to tnake switches, memories, and
+mechanochemical transducers. For ex-
+ample, ionic gels controlled by coordi-
+nated signals from a microcomputer may
+be used for an artificial muscle. It may
+to manifest reduced immunocompetence,
+first generation.
+A number of nutritional factors modu-
+late
+immunological
+function
+(1).
+Al-
+though initial interest in this subject was
+generated by the immunodeficiency ob-
+served in protein-malnourished children,
+it is now recognized that such individuals
+suffer from a wide range of nutritional
+deficiencies (2). Attention has thus be-
+come focused on the role of specific
+nutrients in immune responsiveness. In
+particular, much has been learned about
+the influence of dietary zinc on the main-
+tenance of immunological function in
+adult animals (3). Zinc deficiency has
+been associated with impaired immune
+responses, particularly those mediated
+by T lymphocytes
+(4), and has been
+shown to influence the course of infec-
+tious (5), neoplastic (6), and autoimmune
+disease (7). Similar observations have
+been made in humans
+(8). However,
+relatively little is known about the role of
+zinc in the ontogeny of immunity. We
+previously showed that when mice are
+deprived of zinc during the suckling peri-
+od, their ability to generate an effective
+immune response is markedly compro-
+SCIENCE, VOL. 218, 29 OCTOBER 1982
+also be possible to store two- or three-
+dimensional images by using the local
+collapse and swelling of the gel.
+TOYOICHI TANAKA
+IZUMI NISHIO
+SHAO-TANG SUN
+SHIZUE UENo-NISHIO
+Department ofPhysics and Center
+for Materials Science and Engineering,
+Massachusetts Institute of Technology,
+Cambridge 02139
+References and Notes
+1. T. Tanaka, Sci. Am. 244, 124 (January 1981);
+Phys. Rev. Lett. 40, 820 (1978).
+2.
+, D. Fillmore, I. Nishio, S.-T. Sun, G.
+Swislow, A. Shah, ibid. 45, 1936 (1980).
+3. T. Tanaka, S. Ishiwata, C. Ishimoto, ibid. 38,
+771 (1977); T. Tanaka, Phys. Rev. A 17, 763
+(1978).
+4. K. Dusek and D. Patterson, J. Polym. Sci. Part
+A-2 6, 1209 (1968).
+5. P. J. Flory, Principles in Polymer Chemistry
+(Corndll Univ. Press, Ithaca, N.Y., 1953).
+6. We thank G. Swislow and I. Ohmine for their
+critical reading of the manuscript. This work has
+been supported by the Office of Naval Research
+under grant N00014-80-C-0500.
+4 January 1982; revised I June 1982
+although not to the same degree as in the
+mised (9). Indeed, mice only marginally
+deficient
+in
+zinc show decreased
+re-
+sponses to mitogens and sheep red blood
+cells (SRBC's) and highly altered serum
+immunoglobutin profiles (10). We now
+report that moderate deprivation of zinc
+during prenatal life alone is also associat-
+ed with a depressed plaque-forming cell
+(PFC) response to SRBC inoculation and
+with impaired developmenit of serum
+immunoglobulins. In addition, these de-
+fects in immunological function persist
+into the second and third generations.
+Pregnant young adult Swiss Webster
+mice were fed a zinc-deficient diet or a
+control diet ad libitum from day 7 of
+gestation (the beginning of pregnancy
+was designated day 0) to term. The bio-
+tin-fortified,
+egg white-based
+diet
+(7)
+contained 5 ppm zinc and the control diet
+100 ppm zinc. The choice of these di-
+etary levels of zinc was based on our
+previous
+studies
+in
+BALB/c
+and
+N:NIH(S) mice (7,
+9). Moderate defi-
+ciency was defined
+as a reduction in
+serum zinc to levels 60 to 70 percent of
+those in control mice (9). Because Zinc
+deficiency is known to cause inanition
+(10), which also may alter immune func-
+tion (11), pair-fed controls were also
+studied. During the period of zinc depri-
+vation all the mice were maintained un-
+der conditions designed to reduce extra-
+neous zinc contamination
+(7,
+10). At
+parturition,
+litters were culled to five
+pups and all dams and offspring were
+returned to the control diet, which they
+consumed until the end of the experi-
+ment. The PFC response to SRBC's and
+the concentration of immunoglobulin M
+(IgM) in serum were assessed in some
+offspring at 6 weeks, 10 weeks, and 6
+months, of age; the retnainder of the
+offspring were mated (brothers to sisters)
+at 10 weeks of age to produce an F2
+generation. Because a consequence of
+zinc deprivation during pregnancy is im-
+paired development of the mammary
+gland and reduced
+la6tational
+ability
+(12), pups from zinc-deprived dams were
+cross-fostered to control dams and pups
+from control dams were, cross-fostered
+to zinc-deficient dams. The F2 and F3
+offspring were culled to five pups and
+studied at thq same ages as the F, off-
+spring or bred at 10 weeks of age. All F1,
+F2, and F3 mice were thus fed the control
+diet throughout their lives. The only pe-
+riod of zinc deprivation was during ges-
+tation of the F1 offspring.
+Overt signs of zinc deficiency, such as
+alopecia and exfoliative dermatitis, were
+not observed in the zinc-deptived dams;
+nonetheless,
+othet features
+were ob-
+served, sich as decreased food intake,
+fewer and smaller offspring, and slightly
+higher neonatal
+mortality
+rates
+(13).
+Analysis of maternAl plasma on day 17 of
+gestation indicated that a significant de-
+gree
+of
+zinc
+deficiency
+had
+been
+achieved, with the controls fed ad libi-
+tum atid the pair-fed controls having zinc
+concentrations of 106.4 and 109.7 ,ug per
+100 ml of plasma, respectively, com-
+pared to 58.0 F.g per 100 tnl in dams fed
+the 5 ppm zinc diet. These zinc concen-
+trations were not as low as those general-
+ly seen
+in animals fed a diet nearly
+devoid of zinc (14), indicating that a
+moderate deficiency was achieved. No
+further differences were observed be-
+tween plasma zinc levels in any groups at
+any age. Thus, the postnatal effects of
+zinc depletion during gestation were due
+to a defect in development rather than to
+a persistence of low plasma zinc.
+The F1 offspring of zinc-deficient dams
+had no detectable 1gM at 6 and 10 weeks
+of age (Fig. iA). By 6 months of age,
+significant amounts
+of IgM
+had
+ap-
+peared, buit the concentrations were still
+below those of both control groups.
+0036-8075/82/1029-0469$01.00/0
+Copyright
+1982 AAAS
+Gestational Zinc Deprivation in Mice: Persistence of
+Immunodeficiency for Three Generations
+Abstract. Pregnant Swiss Webster mice were fed a diet moderately deficient in
+zinc from day 7 of gestation until parturition. Offspring of these mice showed
+depressed immune function through 6 months of age. In addition, the second and
+thirdfilial generations, all ofwhich were fed only the normal control diet, continued
+469

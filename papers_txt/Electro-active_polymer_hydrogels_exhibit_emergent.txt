@@ -1,0 +1,1829 @@
+--- Page 1 ---
+Article
+Electro-active polymer hydrogels exhibit
+emergent memory when embodied in a
+simulated game environment
+Strong et al. demonstrate the application of ionic electro-active polymer hydrogels
+to computational tasks through use of a multi-electrode array integrated with a
+simulated Pong environment, taking advantage of the unique memory mechanics
+present in many active mediums. Improved performance is shown within the task
+as environmental memory is acquired.
+Vincent Strong, William
+Holderbaum, Yoshikatsu
+Hayashi
+y.hayashi@reading.ac.uk
+Highlights
+EAP gel memory mechanics are
+demonstrated via ion
+concentration measurements
+A hybrid EAP gel control system is
+integrated into a simulated Pong
+environment
+The system shows improved
+performance over time,
+supported by control experiments
+This demonstrates the application
+of alternate active medium to
+computational tasks
+Strong et al., Cell Reports Physical Science 5,
+102151
+September 18, 2024 ª 2024 The Authors.
+Published by Elsevier Inc.
+https://doi.org/10.1016/j.xcrp.2024.102151
+ll
+OPEN ACCESS
+
+
+--- Page 2 ---
+Article
+Electro-active polymer hydrogels exhibit
+emergent memory when embodied
+in a simulated game environment
+Vincent Strong,1 William Holderbaum,1 and Yoshikatsu Hayashi1,2,*
+SUMMARY
+The goal of artiﬁcial neural networks is to utilize the functions of
+biological brains to develop computational algorithms. However,
+these purely artiﬁcial implementations cannot achieve the adaptive
+behavior found in biological neural networks (BNNs) via their
+inherent memory. Alternative computing mediums that integrate
+biological neurons with computer hardware have shown similar
+emergent behavior via memory, as found in BNNs. By applying cur-
+rent theories in BNNs, can emergent memory functions be achieved
+with alternative mediums? Electro-active polymer (EAP) hydrogels
+were embedded in the simulated game-world of Pong via custom
+multi-electrode arrays and feedback between motor commands
+and stimulation. Through performance analysis within the game
+environment, emergent memory acquisition was demonstrated,
+driven by ion migration through the hydrogels.
+INTRODUCTION
+Emergent computing is a ﬁeld inspired by the computation that takes place throughout
+nature and is described as highly complex processes arising from the cooperation of
+many simple processes1 or when the behavior of a system does not depend on its indi-
+vidual parts but on their relationships to one another.2 Artiﬁcial neural networks were
+developed based on the emergent computing behavior of biological brains. Both are
+large complex systems composed of simple machines whose combined interactions
+lead to complex computation or thought. The expansion of these theories led to reser-
+voir computing and the application of physical non-linear systems, called reservoirs, as
+part of the computation process. By using reservoirs found in nature, reservoir
+computing techniques allowed the emergent computation of nature to be utilized in
+practical applications; for example, with water ripples for image analysis,3,4 mycelium
+mold as maze solvers,5 and chemical reactors as logic gates.6,7 These systems solve
+calculation tasks and often provide unexpected solutions. However, they do not exhibit
+emergent memory and, by association learning, behavior observed within biological
+neural networks (BNNs). With limited memory, a reservoir system’s capability to
+improve is limited. This would mean that continuous tasks, requiring behavior based
+on task history, are too complex for a reservoir to yield any useful result. However,
+not all possible reservoir mediums behave in this way. With the correct combination
+of task and computational medium, can emergent memory functions, similar to those
+observed in BNNs, be achieved? Furthermore, would this allow more complex and
+nuanced tasks to be pursued through reservoir computing techniques?
+To harness the computational power of BNNs, for calculation problems, the ﬁeld of
+artiﬁcial neural networks (ANNs) was developed. ANNs were created through the
+1Department of Biomedical Sciences and
+Biomedical Engineering, School of Biological
+Sciences, University of Reading, Reading,
+Berkshire RG6 7BE, UK
+2Lead contact
+*Correspondence: y.hayashi@reading.ac.uk
+https://doi.org/10.1016/j.xcrp.2024.102151
+Cell Reports Physical Science 5, 102151, September 18, 2024 ª 2024 The Authors. Published by Elsevier Inc.
+This is an open access article under the CC BY license (http://creativecommons.org/licenses/by/4.0/).
+1
+ll
+OPEN ACCESS
+
+
+--- Page 3 ---
+application of structural elements from biological brains, with the goal of achieving
+similar learning capabilities. ANNs have made great strides in solving problems via
+machine learning that were previously thought to be impossible via computers.
+However, these solutions are limited by hardware implementation;8,9 as approxima-
+tions of BNNs, ANNs are not capable of the learning found in their biological inspi-
+ration. Learning behavior, in biological systems, is dependent on the ability of a sys-
+tem to remember the outcomes and consequences of previous iterations within
+a task.
+To better understand how the interactions of biological neurons allow for such com-
+plex and useful behavior, theories of morphological and embodied cognition were
+employed,10,11 both exploring the integration of computing behavior with the phys-
+ical ‘‘hardware.’’12 Embodied cognition theorizes that a body’s environmental inter-
+actions constitute or contribute to cognition, meaning that memory and learning
+behavior results from the method of information acquisition, thus resulting from
+its physical structure.13 Both theories contribute to the idea that, to achieve the
+behavior of BNNs in ANNs, hardware capable of the complex interactions present
+in BNNs is needed. The concept of ANN implementation outside of digital hardware
+led to the development of reservoir computing.
+Reservoir computing derives from recurrent neural network frameworks. The dy-
+namics of a ﬁxed non-linear system, called a reservoir, are used as part of a neural
+network, mapping input and output signals to higher dimensional space.14 Reser-
+voirs are typically physical systems exhibiting complex behavior used to encode
+data, embodying computation not possible within a typical ANN structure. Reservoir
+computer structures consist of three main layers: an excitation layer, reservoir, and
+readout layer. The excitation layer encodes network input into reservoir stimulation.
+The readout layer interprets reservoir responses into usable data, using weights to
+allow performance tuning and optimization. The reservoir can be any kind of me-
+dium that encodes temporal problems into higher dimensions, creating recurrent
+connections in data.15
+A promising application of reservoir computing to achieve biological computa-
+tional capabilities is through biological neurons themselves.16 Integration of
+neuron cultures and electronic interfaces produces computational devices17
+referred to as organic or ‘‘wetware’’ computers. By stimulating BNNs with encoded
+task information, neurons will form pathways in response. This leads to a complex
+integration of memory in computation via neural plasticity.18 Wetware computers
+are usually implemented through control of network plasticity, achieved via appli-
+cation of patterned or random stimulation.19 By controlling plasticity, the rate of
+network reorganization is controlled. A feedback loop is implemented where the
+network is ‘‘punished’’ by increasing plasticity or ‘‘rewarded’’ by reducing plas-
+ticity,19,20 directly inﬂuencing what stimulus is incorporated into memory. Imple-
+mentations of this technology include simulated ﬂight control21 and the arcade
+game Pong.22
+In a previous study,22 a hybrid BNN-computer system was developed. Using this
+hybrid system, a grown culture of neurons is trained to play the game Pong in a vir-
+tual environment. The game environment is encoded into BNN stimulation with re-
+gions designated for ball position sensing and paddle motor commands. Using rally
+lengths, maximum score before a miss, as the performance metric with a closed loop
+that manages neural plasticity, the BNN (referred to as DishBrain) improved in ability
+while playing the game.
+ll
+OPEN ACCESS
+2
+Cell Reports Physical Science 5, 102151, September 18, 2024
+Article
+
+
+--- Page 4 ---
+In the hybrid BNN-computer system,22 supervised learning techniques were used to
+train the BNN memory for a given purpose. Using random or patterned neural stim-
+ulation as punishment or reward, respectively, controls neural plasticity. This method
+of controlled plasticity is derived from theories of emergent intelligent behavior in
+biological brains via the free energy principle (FEP).23–25
+Theories of FEP generally present in BNNs through self-organization of synaptic
+pathways via active inference,23,26 although there are many complex layered sys-
+tems within the brain that can be inﬂuenced by theories of FEP. Active inference
+as a theory holds that the internal structure of the medium represents information
+about the environment, acting as a form of ‘‘memory.’’23,27,28 Due to the variable na-
+ture of such media, the information is not stored as a one-to-one comparison but as
+an encoded and pseudo-representative structure. The ‘‘memory’’ continually
+updates its structure as information is received. As sensed inputs, different from
+those represented via the structure, are received, free energy increases. The system
+seeks to reduce free energy by the most direct means. This presents as self-organi-
+zation and restructuring of the medium.29,30
+Since the initial theories presented through the DishBrain studies,22 other concepts
+have come to expand on the role of free energy and self-organization within systems
+of memory, both in and outside of biology. The most impactful so far is that of
+criticality.31
+Dynamic criticality consists of many ideas applied on the basis that the medium, such
+as a BNN, is a type of excitable, or active, medium and, in a broader sense, a dissi-
+pative dynamical system. To brieﬂy summarize, theories of criticality posit that these
+systems, when provided with energy, evolve into a ‘‘critical state’’ in which interac-
+tions are no longer subject to characteristic time or length scales,32,33 effectively
+bridging the gap between local and global scales of interaction. This loss of scale
+presents spatially as self-reorganization, resulting in the emergence of scale-
+invariant, or fractal, structures33–35 representative of the method in which the energy
+was provided. The co-dependency of FEP and criticality36 was further expanded on
+in work by Isomura et al.36 In this study, BNN cultures were trained on mixed sensory
+input from two sources. Through reverse engineering techniques, they were able to
+predict the reorganization of the BNN through the minimization of variational free
+energy, as the sensory input was encoded into the structure or ‘‘memory.’’
+However, BNNs are not the only medium that presents restructuring behavior that
+could be conceptualized via theories of free energy for the purpose of computation.
+Many active-matter materials also display these mechanics.37 Ionic electro-active
+polymer (EAP) hydrogels are active materials also governed by these principles,
+with ions migrating under the inﬂuence of electric ﬁelds to reduce system free en-
+ergy,38 reorganizing the ion distribution to adapt to the temporal and spatial pattern
+of electric stimulation.
+Ionic EAP hydrogels are active-matter materials39 showing promise in soft robotics
+as actuators.40 Recent studies have shown the potential for these materials to be
+used in computation,41 given an appropriate application and framework. This mate-
+rial changes shape in response to electric stimulation, with ions acting as active
+agents. The dynamics of these active particles have shown memory-like behavior.42
+Electric stimulation increases free energy, which, via ion migration, the EAP seeks to
+minimize.38 This migration causes a restructuring of the EAP’s distribution of ions
+and charged polymer chains. The method of information encoding via ion migration
+ll
+OPEN ACCESS
+Cell Reports Physical Science 5, 102151, September 18, 2024
+3
+Article
+
+
+--- Page 5 ---
+is comparable to the role of ions within the neurons of the BNN, where the inhomo-
+geneous distribution of ions appears as a common driving mechanic.
+Therefore, if the EAP’s electric stimulation was representative of an environment, then
+would the reorganization of ions be representative of that environment, similar to the
+structure of BNNs within the brain? Furthermore, if both ionic EAPs and BNNs exhibit
+memory behavior, then is it possible that EAPs, like BNNS, can exhibit improved motor
+performance via memory if applied to an established BNN task such as Pong?
+In summary, there are many computation techniques that are being developed rapidly
+to achieve the kind of emergent memory behavior found in BNNs. Theories in
+embodied computation have led to developments in ANNs, allowing physical media
+with complex behaviors to be used as computational resources.14 Through reservoir
+computing, BNNs were integrated into computational tasks using fundamental the-
+ories of free energy14,22 that were then expanded on through theories of criticality.31,36
+This study aims to show how EAP hydrogels can exhibit emergent memory func-
+tions when embodied in a simulated game environment. First, by measuring ion
+concentrations through conductivity of the EAP hydrogel after periods of electric
+stimulation, the memory mechanics of the ionic EAP hydrogel were studied. Sec-
+ond, the EAP hydrogel was embodied in the simulated game environment of
+Pong through a custom multi-electrode array (MEA). The game Pong was used
+as an established task for this study via current work in wetware computers.22
+The game environment was encoded into stimulations provided to the hydrogel,
+and recorded ion concentrations were used as motor commands. Multiple game
+‘‘runs’’ were conducted with this setup, with game performance over time recorded
+and analyzed in order to determine the effectiveness of the system’s ‘‘memory’’
+within the task.
+RESULTS AND DISCUSSION
+Memory mechanics through ion migration and conductivity measurement
+For a medium to be used in computation, it must exhibit behaviors representative of
+properties key to the computational system; the most fundamental of this is memory.
+Polyacrylamide hydrogel is an ionic EAP that displays mechanics that can be inter-
+preted as a form of computational memory.
+Polyacrylamide hydrogel is an active-matter EAP;38 hydrogen ions act as active
+agents within the hydrogel, inﬂuenced by the polymer network and each other. Stim-
+ulation by an electric ﬁeld causes an increase in free energy within the hydrogel, and
+the ions migrate43 to minimize the free energy of the system.38 As the ions move,
+they drag water molecules, causing changes in water distribution and localized
+deformation of the gel, driven by an equilibrium between osmotic pressure44 and
+rubber elasticity45 in the polymer network. Given a constant migration of ions into
+a location, the localized rate of swelling gradually decreases, further decreasing
+free energy. This creates a hysteresis effect46 that leads to complex dynamics in
+the gel’s reactions to stimulation.
+The hydrogen ions take relatively little time to migrate under stimulation by an elec-
+tric ﬁeld but take considerably longer to diffuse to a homogeneous distribution un-
+der no stimulation. The difference in timescale allows previous stimulations to affect
+future stimulations, as the ion distributions persist between stimulations, leading to
+a form of memory.42,47
+ll
+OPEN ACCESS
+4
+Cell Reports Physical Science 5, 102151, September 18, 2024
+Article
+
+
+--- Page 6 ---
+This experiment is designed to demonstrate this initial memory mechanic and detail
+the underlining methodology that is used in the subsequent experiment presented
+in this study regarding the impact of said memory. By recording the ion concentra-
+tions before and after consecutive stimulations, the ‘‘remembered’’ state caused by
+the stimulation can be observed. Ion concentration can be measured through the
+conductivity of the gel. As ions collect in a location and ionic concentration in-
+creases, the local conductivity also increases.48 By applying a small voltage to said
+location, the electric current draw on the power supply is directly proportional to
+the conductivity and, thus, directly proportional to the ion concentration. By utilizing
+two adjacent pairs of electrodes, stimulation can be applied while conductivity is
+measured simultaneously. This setup is illustrated in Figure 1.
+To better understand hydrogel EAP system behavior, as shown in Figure 1, the basic
+mechanisms can be described through Frick’s ﬁrst law of particle diffusion,49 charac-
+terizing diffusive ﬂux J over a free energy gradient du, shown in Equation 1. There are
+three main components to the free energy u of ions within the hydrogel system,
+shown in Equation 2:
+(1) energy due to the electric ﬁeld imposed by the electrode pair ue,
+(2) energy imposed by the changing chemical concentration gradient within the
+hydrogel as ions migrate uc, and
+(3) energy due to the electrical potential gradient of ions within the hydrogel as
+ions migrate up.
+ue and uc + up (electrochemical gradient) oppose each other. As the electric ﬁeld at-
+tracts ions to a location, the local concentration and potential increase, causing an
+increase in free energy opposing that of the electric ﬁeld:
+J = D
+RT
+du
+dx
+(Equation 1)
+Figure 1. Ion motion under electric stimulation
+Diagrams show how ion motion is inﬂuenced by external stimulation via an electric ﬁeld and
+recorded via electric current draw. Under stimulation, ions will gather between the electrode pair
+from elsewhere in the EAP gel. As the concentration of ions in this location increases, the
+conductivity also increases; the increase in conductivity can be measured as an increase in electric
+current draw when a small voltage is applied in parallel close to this location via a secondary
+electrode pair.
+ll
+OPEN ACCESS
+Cell Reports Physical Science 5, 102151, September 18, 2024
+5
+Article
+
+
+--- Page 7 ---
+where
+du = ue + uc + up
+(Equation 2)
+ue = ke
+veAe
+dr
+(Equation 3)
+uc = RT ln
+m2
+m1
+
+(Equation 4)
+up = ZFðv1  v2Þ
+(Equation 5)
+ue can be represented via Coulomb’s law and electric potential energy, shown in
+Equation 3. Ion charge is equal to electron charge; the charge imposed by the
+electrode pair is derived from the capacitance of the electrodes surrounding the
+hydrogel. uc can be derived from the Gibbs free energy representation of thermody-
+namic entropy as the ratio between concentration increases,50 shown in Equation 4.
+up is represented via the Gibbs free energy derivation of cell potential as the com-
+bined charge of ions becomes inhomogeneous,50 shown in Equation 5.
+Due to Coulomb’s law, as the ions approach the charged electrode pair, u increases,
+resulting in a larger ﬂux J. However, uc + up also increases opposing the electric ﬁeld.
+These two opposing forces change at very different rates, with the difference in
+magnitude being a key factor of the hysteresis component. As the ions migrate un-
+der the inﬂuence of the electric ﬁeld, eventually the u is minimized as the opposing
+factors balance. This interpretation is, however, a simpliﬁcation. In actuality, there
+are many additional free energy components that contribute to the complexity of
+the hydrogel’s EAP behavior, such as terms associated with the deformation of
+the gel’s polymer structure as it swells due to local ion and water concentrations.
+These additional terms also inﬂuence factors of other terms, such as diffusion coef-
+ﬁcients and permittivity of the hydrogel material, resulting in extremely complex
+behavior as the free energy is minimized.
+Experimental approach
+Using these concepts, a series of stimulations were applied to a polyacrylamide
+hydrogel sample to demonstrate the memory mechanism. Polyacrylamide is a rela-
+tively simple EAP hydrogel to synthesize,51 allowing for it to be produced in large
+batches and molded in many different ways for the required experiments. The
+gels were synthesized using the methodology described in the supplemental exper-
+imental procedures under ‘‘Gel synthesis procedure.’’ The gel was left in a sodium
+chloride solution (0:08%) to allow the ion concentrations to stabilize and provide a
+consistent starting water concentration within the hydrogel. The gel was then placed
+between two electrode pairs spaced with a 7 mm gap between them. A constant
+sensing voltage of 2 V was applied to one electrode pair, using an electric current
+sensor to record the response, while a series of 20 V stimulations, across the thick-
+ness of the hydrogel (8.5 mm), was applied to the second electrode pair. Both volt-
+ages were applied with the same polarity.
+Temperature and water content within the hydrogel can affect free energy equilib-
+rium.38 Temperature alters the elastic properties and rate of ionic motion.51 As
+the osmotic pressure difference between the polymer networks and ionic solution
+drives the swelling, changes in the hydrogel’s water content change the degree to
+which it can swell, as well as altering the mechanical properties of the material.52
+Because of this, temperature and water content must be controlled. To mitigate
+ll
+OPEN ACCESS
+6
+Cell Reports Physical Science 5, 102151, September 18, 2024
+Article
+
+
+--- Page 8 ---
+this as much as possible, the water was taken from a temperature-controlled source
+(approximately 22C) to ensure that the solution was at a consistent temperature and
+provide the same starting temperature conditions. Furthermore, the gels were
+stored in watertight containers and left in the ionic solution for the same period of
+time to ensure the water content of the hydrogel was consistent.
+Findings
+The results of this demonstration can be seen in Figure 2. The recorded electric cur-
+rent had a default value of approximately 0.8 mA as the EAP hydrogel was inherently
+conductive, as shown in segment A. With application of an electric ﬁeld, there is an
+immediate rise to 2 mA as the ﬁeld is picked up by the sensing electrode pair shown
+at the beginning of segment B. The stimulation also caused an increase in free en-
+ergy. As a result, the ions moved toward the electrode pair to minimize free energy.
+The electric current draw rose, as ions collect and conductivity rose, to 2.4 mA, as
+shown in segment B. Once the stimulation was removed, the electric current drop-
+ped back to default values, as shown in segment C. Once the stimulation was reap-
+plied, the electric current draw immediately rose back to the point where segment B
+ended, as the ions still maintained their positions, as shown at the start of segment D.
+This observed behavior exhibits a memory-like mechanism where a value is ‘‘saved’’
+to the EAP hydrogel by the redistribution of ions within the gel. This behavior can
+then be seen again at the beginning of segment F, where it continues from where
+segment D ﬁnished.
+Figure 2. Electric current draw over time with select stimulation
+Shown is a sample of a recorded electric current draw from 2 adjacent parallel electrodes as
+described in Figure 1. The data are segmented and labeled A–G for reference. The sensing voltage
+(2 V) was applied continually through the entire demonstration, and stimulation (20 V across the 8.5-
+mm-thick hydrogel) was applied in sections B, D, and F. The recorded electric current has a default
+value of approximately 0.8 mA, as the EAP gel is inherently conductive, as shown in segment A. With
+application of an electric ﬁeld, there is an immediate rise to 2 mA as the ﬁeld is picked up by the
+sensing electrode pair shown at the beginning of segment B.
+ll
+OPEN ACCESS
+Cell Reports Physical Science 5, 102151, September 18, 2024
+7
+Article
+
+
+--- Page 9 ---
+Interpretation
+From this demonstration of memory mechanics, it is evident that changes in the ion
+distribution and polymer network can be recorded as electric current draw through
+the application of small voltages. This is evidenced by the change in electric current
+over time as stimulation is applied, altering the ion distribution and polymer
+network. The demonstration also highlights how the increase in free energy through
+stimulation was resolved by the hydrogel through ion migration and the last state of
+the EAP hydrogel ‘‘remembered’’ after the electric stimulation was removed. With
+reapplication of the stimulation, the changing electric current continued from the
+last state recorded during stimulation. From these observations, it can be estab-
+lished that a form of memory is present in the EAP hydrogel, and the response
+due to the hydrogel’s memory can be measured in parallel with the application of
+stimuli. To fully demonstrate this memory mechanism and its value within computa-
+tion, a suitable activity was required, along with a closed-loop control structure and
+hardware to interface with the hydrogel.
+EAP hydrogel embodied in a simulated game world
+The memory-like behaviors of the EAP hydrogel can be characterized through free en-
+ergy minimization.38 There are many systems whose mechanics can be represented
+through free energy minimization; in computation, one of the most signiﬁcant is that
+of BNNs.23 Furthermore, in the most basic sense, biological brains represent informa-
+tion through the self-organization of neurons as active agents.53 Similarly, EAP hydro-
+gels can represent information via the distribution and organization of ions as active
+agents. Information in BNNS is also stored through many other complex means; how-
+ever, the organization of neurons serves as a leading mechanism within the BNN sys-
+tem. To accurately demonstrate the memory mechanics within a task, the EAP hydrogel
+must be embodied within a closedcontrol loop, as is present in BNN systems.To induce
+emergent memory functions, the hydrogel must be able to inﬂuence actions within an
+environment. The change in environment as a result of those actions must feed back to
+the hydrogel, leading to changes in actions and memory behavior. To construct this
+closed loop and quantify the effect of memory, a suitable activity is required.
+A previous study22 used a single-player version of the game Pong as the quantifying ac-
+tivity when integrating a BNN with computer architecture. The game provided a virtual
+environment for the BNN to inhabit and from which to acquire information. The method
+used to interface the biological neurons with the simulated environment ﬁts neatly with
+the reservoir computing framework.14 In the study,22 the position of the ball was pre-
+sented to the neurons through localized stimulation, aligning with the function of the
+excitation layer in a reservoir computer. The neuron responses were converted to motor
+commands to control the paddle, aligning with the function of the readout layer.
+A common driving mechanism between both BNNs and EAP hydrogels is the migra-
+tion of ions in reaction to stimuli, creating an inhomogeneous distribution of ions
+throughout the media. Ion migration can encode information provided via stimula-
+tion in the sensory-motor loop. As shown in previous work, the resulting inhomoge-
+neous distribution of ions can present as a memory function of previous stimuli.41
+Utilizing a reservoir computing framework, performance of the computational ability
+within the EAP hydrogel can be assessed using the Pong game-based activity in a
+simulated game environment.
+Experimental approach
+An MEA was used to interface the EAP hydrogel with a computer system containing
+the Pong game environment. The array of electrodes was divided into two regions,
+ll
+OPEN ACCESS
+8
+Cell Reports Physical Science 5, 102151, September 18, 2024
+Article
+
+
+--- Page 10 ---
+used to provide a stimulus as input to the gel via the application of electric ﬁelds at
+select locations and record output via the electric current at select locations. This di-
+vision of regions is similar to how MEAs are currently used in applications.22,54 By
+dividing areas into speciﬁc tasks, interference from different tasks happening in
+the same location is minimized. The layout of these regions can be seen in Figure 3A.
+The stimulation region of the gel acts as the stimulation layer of the reservoir frame-
+work, consisting of a 2 3 3 array. To translate the ball’s position into stimulations, the
+game environment was divided into a 2 3 3 grid, as shown in Figure 4B. The location
+of the ball in the game environment is sent from the computer to the MEA; as the ball
+passes through those regions, the corresponding electrode pair is activated to stim-
+ulate that area. The regions as they are labeled in black in Figure 4B are how they will
+be referenced throughout this paper.
+The sensing region acts as the readout layer of the reservoir framework. Electric cur-
+rent sensors were used to measure the electric current draw at the sensing elec-
+trodes, utilizing the small sensing voltage (2 V) deﬁned in the previous experiment.
+These electric current values are recorded on screen, shown in Figure 4A, recorded
+in milliamperes, and interpreted into motor commands for the paddle. Recorded
+electric current values are normalized using the maximum and minimum electric cur-
+rent values recorded from the hydrogel during the previous experimentation with
+the apparatus, found to be +3 mA and 0.75 mA, respectively. A trend is then calcu-
+lated using these normalized values against their locations represented in the Pong
+Figure 3. System layout of closed-loop communication between the computer containing the
+Pong environment and the EAP hydrogel
+(A) The layout of communication between components in the system and separation of the
+electrodes into regions. The electrodes are divided into driving, which provide stimulation, and
+sensing, which measure electric current draw. The driving electrodes are driven by relays that direct
+the electric ﬁeld (20 V across the 10-mm-thick hydrogel disk). The sensing electrodes provide a
+small voltage (2 V), and the electric current draw is measured by an electric current sensor. Both
+relays and sensors are coordinated by a microcontroller, which, in turn, is directed by the computer
+and Pong game environment. A more detailed circuitry schematic can also be found in Figure S1.
+Additionally, an image of the physical hardware can be seen in Figure S2.
+(B) A ﬂowchart of the information path from the Pong environment on the computer to the hydrogel
+containing the ions.
+ll
+OPEN ACCESS
+Cell Reports Physical Science 5, 102151, September 18, 2024
+9
+Article
+
+
+--- Page 11 ---
+game environment. The trend is generated by ﬁtting a second-degree polynomial to
+the 3 points. The peak of this trend is the predicted point of highest electric current
+and highest ion concentration in the gel and is where the paddle is placed. This is
+illustrated in the example in Figure 4C.
+Through this layout of hardware and software, a closed loop was established, where
+the computer outputs the game’s environment, represented as ball location, to the
+MEA applied to the gel as shaped electric ﬁelds. In response, the ion concentrations
+are measured by the MEA as electric current and provided to the computer and the
+Pong game to move the paddle. This closed loop is outlined in Figure 3B. A more
+detailed description of the behavior and implementation of the Pong game, as
+shown in Figure 4, can be found in Note S1. Similarly, a more detailed description
+of the hardware implementation, as shown in Figure 3A, can be found in Note S2.
+A circuitry schematic and image of the physical hardware can be found in
+Figures S1 and S2. The full setup of the computer game environment and MEA appa-
+ratus can be seen in Figure S3. The full experimental procedure for each run of the
+Pong game with the EAP hydrogel can be found in the supplemental experimental
+procedures under ‘‘Pong Game Experimental Procedure.’’ In total 21, separate
+EAP hydrogel runs were carried out, collecting 3,500 s of ‘‘gameplay’’ for each run
+before the hydrogel degraded beyond the point of continuing.
+From these games, several metrics were recorded to be used in performance ana-
+lyses, such as electric current measurements, stimulation positions, and score. The
+score, shown in Figure 4B, increases whenever the paddle successfully hits the ball
+Figure 4. Software representation of the Pong game within the computer
+(A) The electric current sensor readings as they are received by the computer. The black, brown, and red lines represent the top, middle, and bottom
+sensors, respectively. The interval between received data is also measured and averages 0.5 mS, labeled as ‘‘Plot Interval.’’ The averaged electric
+current across the graph for each sensor is measured for the purposes of establishing default values, labeled as ‘‘Bk,’’ ‘‘Br,’’ and ‘‘Rd.’’ The total
+recording time is also displayed, labeled as ‘‘Time.’’ These sensor values move the paddle in the Pong game environment through conversion to a
+position based on sensor location, as visualized in (C). This can be seen on the computer screen, along with the apparatus shown in Figure S3.
+(B) The simulated Pong game environment, 1,000 3 1,000 pixels, which is separated into 6 regions as described in Figure 3B. When the ball is in a region,
+it will darken, and the corresponding electrode pair will stimulate the EAP hydrogel. The score is displayed at the top and resets when the ball hits the
+left wall behind the paddle. The regions are also labeled in black here for reference within this paper. The paddle is set to 1/3 the environment height
+(333 pixels). The rearrangement of regions used for the control dataset, where ‘‘vision’’ is impaired, is indicated by the red labels. This can be seen on the
+computer screen, along with the apparatus shown in Figure S3.
+(C) An example of the method used to place the paddle based on the electric current readings as measured in (A), shown here as the same
+representative colors and labeled with their region locations. The electric current readings are normalized between 0 and 1 and plotted based on their
+region’s center vertical location. A second-degree polynomial is applied, as indicated by the blue dashed line. The point where the polynomial is at its
+peak is the maximum predicted electric current, as indicated by the blue circle, and this is where the paddle is placed.
+ll
+OPEN ACCESS
+10
+Cell Reports Physical Science 5, 102151, September 18, 2024
+Article
+
+
+--- Page 12 ---
+and resets to 0 whenever the ball misses the paddle hitting the wall. All data from
+these separate runs was combined into a single dataset to view the overall averaged
+behavior of the hydrogel and assess the performance as well as the repeatability.
+Control experiments via interference of information translation.
+A set of control ex-
+periments were undertaken to create a baseline against which to compare perfor-
+mance. The primary purpose of the baseline comparison is to further show that the hy-
+drogel’s improved performance was a direct result of the closed loop control and
+based on the accurate information received, such as the position of the ball from the
+Pong environment. These experiments explore the null hypothesis that the hydrogel’s
+performance increase was not a result of accurate game environment information. The
+control experiments were designed to accomplish this by interfering with the transla-
+tion of information between the hydrogel and the simulated game environment. By
+altering this translation, the hydrogel is presented with information that does not accu-
+rately represent the simulated game environment, and, thus, it is expected that the hy-
+drogel would be unable to effectively control a paddle. There are two key positions
+within the closed feedback loop, between the hydrogel and game environment, that
+can be altered; these are labeled in Figure 5 and described as follows:
+(1) translation from electric current readings in the hydrogels, related to ion con-
+centrations at electrodes, to produce motor commands controlling paddle
+position within the game environment and
+(2) translation from ball position within the game environment to the location of
+the electric stimulation on the hydrogel via electrodes.
+Control experiments can be applied by altering the ﬂow of information within the
+closed feedback loop at either of these key positions:
+(1) altering the ﬂow of information from the hydrogel to the simulated game envi-
+ronment via interfering with the translation of information at point 1 or
+(2) altering the ﬂow of information from the simulated game environment to the
+hydrogel via interfering with the translation of information at point 2.
+At these positions in the closed control loop, there are also two main ways in which
+information translation can be altered: either through the manipulation of mapping
+Figure 5. Information ﬂow paths within the experimental setup
+Shown is a representation of the ﬂow of information between the MEA and computer systems. The
+key points of information transduction that can be altered for the purpose of control experiments
+are labeled as 1 and 2.
+ll
+OPEN ACCESS
+Cell Reports Physical Science 5, 102151, September 18, 2024
+11
+Article
+
+
+--- Page 13 ---
+functions, altering the way in which electrode positions in the hydrogel map to po-
+sitions in the simulated game environment, or by entirely severing the information
+path. The latter method would, however, only provide useful information in position
+2. If position 1 were to be severed, the information used to control the paddle would
+be the result of noise in the electric current sensors reading unconnected electrodes.
+This means that the hydrogel itself would have no impact on the actions within the
+simulated game environment, and therefore, any results would provide no insight
+into the behavior of the hydrogel within the altered control loop.
+In all of these control experiment structures, for the null hypothesis to be rejected,
+the hydrogel would need to exhibit no adaptation or performance improvement
+due to memory. For this to be true, the hydrogel performance in the game would
+need to not increase by any statistically signiﬁcant amount. This is also true if the hy-
+drogel performs worse than if the paddle was moving randomly. As the paddle is 1/3
+the height of the simulated environment, the rejection would require a hit rate below
+33% for this condition.
+The ﬁrst control experiment, impairing sensing through remapping (referred to as
+impaired sensing), was achieved through simulation, utilizing the data collected
+through running the experiment with hydrogels. Simulation allows for multiple ar-
+rangements of sensing inputs to be tested without the need to run experiments
+with hydrogel samples. The method of simulation is detailed in Note S7. In this con-
+trol experiment, the electric current sensing regions, as described in Figure 4C, were
+rearranged from top, middle, bottom to middle, bottom, top. This ensures that all
+sensing regions are in entirely different areas and ensures that the data collected
+for each region will not repeat those of the unaltered feedback loop experiment.
+As the information transfer between the simulated environment and the simulated
+hydrogel is impaired but not severed, this experiment still represents a closed-
+loop system. However, as the sensory information is rearranged, the direct effect
+of the closed loop is impeded.
+The second control experiment, impairing stimulation through remapping (referred
+to as impaired stimulation), however, cannot be accomplished in simulation. Due to
+the complex interference between stimulated regions within the EAP hydrogel, this
+experiment must be performed on the hydrogel sample. This was accomplished by
+rearranging the game environment’s regional, or ball’s positional, correlation to the
+MEA’s stimulation electrodes. This results in incoherent environmental information
+to the hydrogel and effectively impairs its ‘‘vision’’ of the ball position. The rear-
+rangement of game environment regions can be seen in Figure 4B, indicated by
+the red labels. As with the ﬁrst experiment, the information transfer between the
+simulated environment and the hydrogel is impaired but not severed; thus, this
+experiment still represents a closed-loop system. However, as the stimulating infor-
+mation is rearranged the direct effect of the closed loop is impeded.
+The third control experiment, severing stimulation (referred to as severed stimula-
+tion) was also performed, using the hydrogel samples. This is because, in this exper-
+iment, the hydrogel is under no stimulating voltage but is still under sensing voltage,
+a combination that is not present in any of the other experiments. Because of this,
+the electric current responses, and by association the paddle positions, cannot be
+derived, and simulated, from any of the previous experiments. This experiment
+was accomplished by disconnecting the stimulating electrodes from the MEA,
+thus preventing the simulated environment from providing any electric stimulation
+to the hydrogels. The electric currents from the hydrogels were still measured to
+ll
+OPEN ACCESS
+12
+Cell Reports Physical Science 5, 102151, September 18, 2024
+Article
+
+
+--- Page 14 ---
+produce motor commands to control the paddle in the Pong game. With the infor-
+mation transfer between the simulated environment and the hydrogel severed, this
+experiment represents an open-loop variant of the system. The hydrogel’s perfor-
+mance within the game is still recorded; however, the change in performance is in-
+dependent of the information provided by the ball’s position within the simulated
+environment.
+Findings
+Memory function of the EAP hydrogels via electric current measurement.
+To show
+the memory mechanics in the MEA experimental structure, the measured electric
+current draw was plotted for each sensing electrode pair. Figure 6 represents the
+combined measured electric current data points of all 21 game runs, with data points
+sorted against time, averaged using a 600-s moving average window.
+The electric current initially rises as ions move toward the electrodes. As the ions
+accumulate, their rate of migration decreases due to the increasing concentration
+gradient. Eventually, the ions stop moving, and the electric current reaches its
+maximum, shown in Figure 6 by the vertical purple dashed line. This gives an initial
+view of minimized energy in the form of electric current and establishes the time
+range in which memory acquisition may occur. The electric current then falls as the
+hydrogel eventually breaks down under the effects of electrolysis,55 impairing
+Figure 6. Average electric current over time, with a 600 s window
+Shown is the electric current at each sensor over time for the combined unimpaired dataset of runs,
+smoothed using a moving average window of 600 s. Due to the averaging, data start at 300 s. The
+point of maximum electric current draw is marked with a black dot; 1,203, 1,023, and 1,142 s for top,
+middle, and bottom, respectively. The average point of maximum electric current draw is marked
+by the purple vertical dashed line at 1,122 s. The orange vertical dashed line marks the earliest point
+the EAP gels broken down. Standard error was calculated for each trend from the windowed
+samples and found to be at maximum, 0.0169, 0.0053, and 0.0116 for the top, middle, and bottom
+trends, respectively.
+ll
+OPEN ACCESS
+Cell Reports Physical Science 5, 102151, September 18, 2024
+13
+Article
+
+
+--- Page 15 ---
+ll
+OPEN ACCESS
+14
+Cell Reports Physical Science 5, 102151, September 18, 2024
+Article
+
+
+--- Page 16 ---
+connection between electrodes. This breakdown marks a cutoff point that is indi-
+cated in Figure 6 by the orange vertical dashed line at 2,000 s. Thus, the graphs
+used to analyze the hydrogel’s performance were limited to between 0 and 2,000 s.
+Performance of the EAP hydrogel within the Pong game.
+To assess the perfor-
+mance of the hydrogel within the Pong game, the hit rate was calculated using the
+combined data points of the 21 game runs sorted by timestamp, shown in Figure 7A
+as the left axis. 21 experiments were sufﬁcient for reliable results, shown via standard
+deviation analysis, described in Note S3. Due to the boundary conditions of the pad-
+dle, the top and bottom regions of the wall were hit more often by the ball than the
+middle (Figure S4). As the hit rate is different between regions, the performance
+improvement rate may be different between regions. For this reason, the hit/miss
+data were segmented based on the region in which the hit/miss occurred. Figure 7A
+shows the segmented paddle performance curve for the top, middle, and bottom
+game regions.
+For the middle region, the paddle had an initial ball hit rate of 50%, but over
+the course of the game, this rose to maximum of 60%, giving a rise of 10% over
+1,450 s. The middle region shows the greatest improvement in performance.
+The top and bottom regions are subject to the boundary conditions, leading to a
+higher initial hit rate, as seen in Figure 7A, as the trend via the measured electric cur-
+rent in those regions is almost linear, as seen in Figure 6. For the bottom region, the
+paddle initially hit the ball approximately four times more often than it missed,
+hitting 79% of the time. As the bottom region is also a boundary condition, this is
+expected. However, over time, this performance did increase up to a maximum of
+an 87% hit rate, showing an improvement of 8% over 1,750 s.
+When compared to the other regions, when the paddle was in the top region, it
+rarely missed the ball. However, when the successful paddle hits are summed for
+each region over the 21 game runs, the paddle hit the ball in the top region 49%
+of the time, while the middle and bottom regions hit the ball 12% and 40% of the
+time, respectively. This distribution can be found in Figure S5A. This distribution fol-
+lows the distribution of ball hits as seen in Figure S4, with the top and bottom regions
+hitting more often, consistent with each other, while the middle region is hitting far
+less often. This means that the distribution of paddle hits matches the inherent dis-
+tribution of the game physics and, furthermore, that the increased hit rate is not due
+Figure 7. Averaged performance metrics over time
+(A) Left axis: the hit rate as a hit-to-miss ratio over time for the combined unimpaired feedback loop dataset, separated based on the region where the
+hit/miss occurred, as described in Figure 4B. Smoothed using a moving average window of 600 s, this window size provided the clearest view; additional
+window sizes can be seen in Figure S6. The standard error for each windowed sample is shown by the shaded area. The point of maximum performance
+is marked on the ‘‘Middle’’ and ‘‘Bottom’’ lines by a black dot; 1,450 and 1,750 s, respectively. The average between these times is marked by the purple
+vertical dashed line (1,600 s). As seen from the graph, the middle region saw a performance increase of 0.1, from 0.50 to 0.60. The bottom region
+decreased to 0.79 before increasing to 0.87; from its lowest point, this is a performance increase of 0.08. Right axis: the rally length (maximum score
+before a miss) against time for the combined unimpaired feedback loop dataset, smoothed using a moving average window of 600 s. The standard error
+for each windowed sample is shown by the shaded area. A fourth-degree polynomial best ﬁt line was applied via the MATLAB Polyﬁt function.56 This was
+the minimum order polynomial that ﬁt the trend presented by the data. The maximum point of performance is marked by the black dot at 1,744 s. This
+marks an increase of 0.8, from 4.3 to 5.1. These data, prior to the application of the moving average, was used to perform a one tailed t test. From 0 s to
+the vertical orange dashed line (838 s) indicates the dataset used to represent before MA. From the vertical green dashed line (1,487 s) to the cutoff of
+2,000 s indicates the dataset used to represent after MA. The distributions of these datasets can be seen in Figure S8.
+(B) Plot of rally aces, representing the number of times the paddle failed to intercept the ball without a single hit, smoothed using a moving average
+window of 600 s. The standard error for each windowed sample is shown by the shaded area. A fourth-degree polynomial best ﬁt line was applied via the
+MATLAB Polyﬁt function.56 This was the minimum order polynomial that ﬁt the trend presented by the data. The maximum point of performance is
+marked by the black dot at 1,706 s. This marks a decrease of 0.04, from 0.23 to 0.19.
+ll
+OPEN ACCESS
+Cell Reports Physical Science 5, 102151, September 18, 2024
+15
+Article
+
+
+--- Page 17 ---
+to the ball spending a higher percentage of time in the top region. However, when
+summing paddle misses, the top region has far fewer occurrences across all exper-
+iments. The paddle, when in the top region, only missed the ball 4% of the time,
+while the middle and bottom regions accounted for 66% and 30% of misses, respec-
+tively. This distribution can be found in Figure S5B. This means that the compara-
+tively high hit rate of the top region is, in actuality, caused by a much lower miss
+rate than the middle or bottom regions.
+From the readings shown in Figure 6, the top sensor tended to read higher electric
+currents than the other regions. These higher electric current readings, and, by
+connection, the lower miss rate, are likely due to some bias in the MEA rig construc-
+tion. However, this bias was consistent through all experiments, including the con-
+trol experiments. It should also be noted that the ball hit locations are distributed
+randomly across the ‘‘goal’’ of the game environment; this is supported by the mea-
+surement of hit distributions shown in Figures S4 and S5. Similarly, the ball’s speed
+and direction are seeded randomly at the start of each game; this is explained in
+Note S1. Because of this, the bias should pose no long-term implications within
+the results gathered.
+As shown in Figure 7A, when in the bottom region, the paddle initially hit the ball
+approximately four times more often than it missed, hitting 79% of the time. As
+the bottom region is also a boundary condition, this is expected. However, over
+time, this performance did increase up to a maximum of an 87% hit rate, showing
+an improvement of 8% over 1,750 s.
+To better show the overall performance increase through the course of the game, a
+graph was generated of the rally lengths against time via the right axis. The rally
+length is a measure of how many times the ball was hit before it was missed, shown
+as the ‘‘rally score’’ in Figure 4B. The score reached before it resets to zero when
+missed is called the rally length. Each time the ball was missed, the rally length
+achieved was recorded against the time and plotted using an averaging window
+of 600 s as with the previous plots. Figure 7A shows an increase in rally length
+over the course of the game. The metric appears to ﬂuctuate more than the hit
+rate; however, this is due to differences in scale and averaging over the combined
+scores of many samples, leading to higher variation. This does not impact the
+conclusion gathered from these results, as the standard error follows the same trend.
+This graph clearly shows the ability of the gel to perform within the Pong game
+before and after information of the simulated environment has been integrated
+into memory, referred to in this study as memory acquisition (MA). With this separa-
+tion of states, before and after MA, the signiﬁcance of the increase in the hydrogel-
+controlled paddle’s performance, via the rally lengths, can be analyzed.
+The signiﬁcance of the change in performance can be analyzed through a statistical
+test (using null hypothesis a = 0:05) between the rally length before and after the
+performance increase via MA. The sample representing before MA was subsampled
+from 0 to 838 s in the rally length dataset, shown via the vertical orange dashed line in
+Figure 7A. The sample representing after MA was a subsampled from 1487 to 2000 s
+in the rally length dataset, shown via the vertical green dashed line in Figure 7A. De-
+tails on how these ranges were selected can be found in Note S4.
+Although the pre and post MA values were recorded from the same gel samples,
+these values were recorded when the hydrogel was in two distinct states. When in
+the pre-MA state, the hydrogel is in the initial stages of the trial, with ions still
+ll
+OPEN ACCESS
+16
+Cell Reports Physical Science 5, 102151, September 18, 2024
+Article
+
+
+--- Page 18 ---
+aligning to an almost homogeneous distribution and not yet subject to signiﬁcant
+shape change within the EAP. When in the post-MA state, the hydrogel’s distribution
+is considerably altered by the ion migration- and stimulation-induced shape change.
+Therefore, there is no one-to-one relationship between data points in the two states.
+Because of this, the statistical signiﬁcance can be assessed via the p value of sample
+comparison, using the critical limit theorem and the Mann-Whitney U test. Details on
+this calculation can be found in Note S5.
+These calculations give p = 0:00041, placing the probability below 0.05% and re-
+jecting the null hypothesis. This validates the improvement before and after MA
+as statistically signiﬁcant, despite any ﬂuctuations between experimental runs, and
+reinforces the observed increase in hydrogel paddle control ability in the Pong
+game environment, showing that the improved hit rate, shown in Figure 7A, was
+not region exclusive but contributed to improved overall game performance.
+It can also be observed that the peak in rally length aligns with the average peak in hit
+rate at approximately 1,600 s, as shown in Figure 7A, with a slight delay of around
+150 s. This delay makes sense, as the effect of the improved hit rate would take
+some time to translate to an improvement in rally length due to the additional layer
+of abstraction caused by the time taken for a full rally to be completed. Further to
+this, the average peak in hit rate observed in Figure 7A aligns with the peak electric
+current measurement observed in Figure 6, with another delay of around 600 s.
+This increase in electric current represents the ion distribution of the hydrogel being
+inﬂuenced by the received environmental data, ﬁlling the memory similarly to how
+the memory component was observed in the ﬁrst section of this paper as electric cur-
+rent measurement. As with the delay between hit rate and rally length, it would take
+some time for the base-level electric current measurements to translate to improved
+hit ability due to the layers of abstraction caused by the mechanics of the game and
+MEA interface.
+Last, an additional metric was recorded as rally aces, representing the number of
+times the paddle failed to intercept the ball without a single hit. The graph of this
+metric is shown in Figure 7B. This graph shows a clear drop in the number of aces
+aligning with the points of maximum performance, as found from the previous met-
+rics of hit rate and rally lengths, occurring at 1,706 s. This shows an increase in per-
+formance at the same point as the rally lengths. It should, however, be noted that the
+rally aces before and after MA are very low, below 0.3, despite the further reduction
+at the point of maximum performance. This indicates that the performance improve-
+ment is considerably more visible in rally lengths as opposed to rally aces, possibly
+due to the frequency and range of available data in the two metrics. The combination
+of these three metrics shows a clear tendency for performance to increase
+throughout the course of the game.
+Control experiments via interference of information translation.
+Results from the
+control experiments were collected, as described in the experimental procedures,
+to further show that the hydrogel’s improved performance was a direct result of ac-
+curate environmental information fed into the hydrogels. The control experiments
+interfered with the translation of information, as shown in Figure 5. The ﬁrst control
+experiment interfering with sensing at point 1 was referred to as impaired sensing,
+the second control experiment interfering with stimulation at point 2 was referred
+to as impaired stimulation, and the third control experiment severing the stimulation
+at point 2 was referred to as severed stimulation.
+ll
+OPEN ACCESS
+Cell Reports Physical Science 5, 102151, September 18, 2024
+17
+Article
+
+
+--- Page 19 ---
+The hit rate and rally length plots for the ﬁrst, second, and third control experiment
+can be seen in Figures S15–S17, respectively. These results are summarized in box-
+plots shown in Figures 8A.i and 8A.ii. These plots show the distribution of rally
+lengths in both the pre-MA and post-MA states. As the rally length is an integer,
+the distribution is discreet and lacks the resolution to show small changes between
+states; for this reason, the smoothed dataset, as shown in Figure 7A, was also
+included. The plots show the median as a red line, with the box edges corresponding
+to the 25th and 75th percentiles and the whiskers showing the maximum and mini-
+mum values, discounting outliers. Outliers are deﬁned as 1.5 times the interquartile
+range away from the bottom or top of the box. The datasets for these states were
+extracted from the full experimental data for each experiment, following the same
+procedure as for the t test described in Note S4. As with the unaltered feedback
+experiment, the stabilization of the standard deviation in the recorded hit rate of
+the datasets was analyzed to ensure that the number of experiments run was sufﬁ-
+cient. The plots of these standard deviations over time with varying dataset sizes
+can be seen in Figures S11–S13 for the ﬁrst, second, and third control experiment,
+respectively.
+In Figure 8A.i, it is clear that the rally length for each control experiment is far below
+that of the original, unaltered feedback experiment. The best performance in the
+Figure 8. Comparison of pre- and post-MA states across experimental setups
+Shown is the comparison of pre-MA and post-MA datasets for each experimental set: unaltered feedback, impaired sensing, impaired stimulation, and
+severed stimulation. The datasets are sampled from the experimental runs using the same time spans as used for the t test analysis and taken from both
+the unaveraged discreet dataset and the smoothed average dataset. The averaged dataset was smoothed using a moving average window of 600 s as
+used in previous analyses. On each box, the central mark indicates the median, and the bottom and top edges of the box indicate the 25th and 75th
+percentiles, respectively. The whiskers extend to the most extreme data points not considered outliers. The datasets that were shown to be statistically
+different, via t test, with 0.05% similarity are marked with an asterisk datasets with 0.07% similarity are marked with D.
+(A.i) Boxplot of rally lengths unaveraged. The unaltered feedback experiment shows an increase in performance as the rally lengths increase between
+sets. All other experiments show little to no change between pre-MA and post-MA states, representing no improvement in performance.
+(A.ii) Boxplot of rally lengths averaged. The unaltered feedback experiment shows an increase in performance as the rally lengths increase between
+sets. All other experiments show a slight decrease in performance as rally lengths reduce.
+(B.i) Boxplot of rally aces unaveraged. The unaltered feedback experiment shows no increase in performance as the rally aces stay approximately 0. All
+other experiments show either no change between pre-MA and post-MA states or a reduction in performance as rally aces increase.
+(B.ii) Boxplot of rally aces averaged. The unaltered feedback experiment shows a very slight increase in performance as the rally aces decrease. The
+impaired sensing experiment shows a signiﬁcant decrease in performance as rally aces increase. All other experiments show a slight reduction in
+performance as rally aces increase.
+ll
+OPEN ACCESS
+18
+Cell Reports Physical Science 5, 102151, September 18, 2024
+Article
+
+
+--- Page 20 ---
+Pong game was demonstrated based on the closed sensory-motor loop with accu-
+rate information of the game environment. Note here that, at the beginning of the
+Pong game, labeled as the pre-MA state, the unaltered feedback condition already
+shows higher performance, indicating immediately improved performance as a
+result of the inference function. In addition, comparing the rally lengths, in Fig-
+ure 8A.i, for the pre-MA and post-MA states, it can be seen that emergent memory
+occurs as a function of time. The impaired sensing experiment shows the rally
+lengths to barely reach beyond 0, showing no improvement in performance. Simi-
+larly, the severed stimulation also shows no improvement in performance but is
+able to achieve rally lengths up to 2, although this is still far below the unaltered
+experiment.
+Interestingly, the impaired stimulation shows an increase in performance, although
+the achieved rally lengths in the post-MA state are still far below those of the unal-
+tered experiment, and the degree of improvement is far less. Figure 8A.ii shows
+much of the same; however, the decrease in performance of the control experiments
+becomes clearer as the data are presented over the non-discreet space. Each of the
+averaged datasets shows a slight decrease in performance as the rally lengths
+decrease. However, as these differences only present clearly on the averaged data-
+set and are only slight, further analysis is required to ensure their statistical
+signiﬁcance.
+To conﬁrm the statistical signiﬁcance of the difference in pre-MA and post-MA states
+within the control experiments, a series of t tests was performed. The tests were per-
+formed on the unaveraged dataset to better represent the collected data, using the
+same method as for the unaltered feedback experiment earlier in this study, as
+detailed in Note S5. The results of this test are found in Table S1. These results
+show that, through all experiments, only the pre-MA and post-MA states in the un-
+altered feedback and impaired sensing experiment present a p-value of under 0.05
+and, thus, a statistically signiﬁcant difference. The Pong game performance,
+between the pre-MA and post-MA states, for the impaired and severed stimulation
+experiments was not statistically different. This means that the initially observed
+reduction in performance, and thus the impact of memory on said performance, is
+not signiﬁcant. The lack of performance supports the initial theories of how the
+altered feedback of information from the environment affects the impact of memory
+on the hydrogel’s behavior.
+To further support these conclusions, rally aces were plotted for all control experi-
+ments. These can be found in Figures S18–S20 for the inhibited sensing information,
+inhibited stimulation information, and severed stimulation information, respectively.
+These results are also summarized in a boxplot shown in Figures 8B.i and 8B.ii, uti-
+lizing the same separation of pre-MA and post-MA datasets.
+As shown in Figure 8B.i, the control experiments clearly show low performance, with
+the average rally aces presenting much higher than in the unaltered experiment, in
+both pre-MA and post-MA states. The rally aces of the unaltered feedback experi-
+ment are much too small to be shown on this graph, attributed to the much higher
+performance; however, because of this, there is little observable change between
+pre-MA and post-MA states. The impaired sensing experiment, however, shows a
+clear decrease in performance as rally aces increase. The impaired stimulation
+experiment shows a similar low performance with high rally aces, although the range
+narrows. The severed stimulation experiment shows little change between states on
+this scale; this indicates that there was no decrease in performance but also no
+ll
+OPEN ACCESS
+Cell Reports Physical Science 5, 102151, September 18, 2024
+19
+Article
+
+
+--- Page 21 ---
+increase similar to the boxplot of rally lengths for the same experiment shown in Fig-
+ure 8A.i. Figure 8A.ii, as with the rally lengths, shows much of the same; however, a
+slight decrease in rally aces is visible in the unaltered feedback experiment, aligning
+with the increased performance shown in rally lengths. Additionally, each of the
+impaired and severed stimulation experiments shows a slight increase in rally aces
+over time, indicating a decrease in performance.
+As with the rally lengths, the statistical signiﬁcance of the difference in pre-MA and
+post-MA states within the rally aces for the control experiments was assessed with a t
+test, using the unaveraged dataset. The results of this test can be found in Table S2.
+These results, however, showed no signiﬁcant statistical difference between pre-MA
+and post-MA states. This is likely because the rally aces resulted in a reduced range
+of values compared to the rally lengths and, thus, smaller differences between
+states, resulting in less signiﬁcant differences between datasets. However, the
+impaired sensing does show the most signiﬁcant difference between states with a
+p value of 0.07; although this is not conclusively signiﬁcant, it does enforce the
+impact of the altered sensing feedback loop on the hydrogel performance in
+the game.
+According to both the rally lengths in Figures 8A.i and 8A.ii and the rally aces in
+Figures 8B.i and 8B.ii, it is clear that the performance of the impaired sensing exper-
+iment is far worse than in the other control experiments and shows some reduction in
+performance over the game.
+First, in the case of the impaired sensing experiment, the hydrogel ‘‘memorizes’’ the
+correct environmental data, but the interpretation of those data is incorrect. With the
+hydrogel’s sensing regions rearranged, the hydrogel’s motor commands to control
+the paddle are incorrect. Thus, the paddle was moved incorrectly, demonstrating
+poor performance. As MA continues, this performance worsens as the paddle is
+moved more precisely but with the continued incorrect interpretation.
+Second, in the case of the impaired stimulation experiment, even with the incorrect
+environmental information (represented by incorrect the ball position in the game
+environment), the hydrogel was provided electric stimulation via the rearranged
+stimulation electrodes. This means that the hydrogel was still adapting, as the
+ions moved to a distribution representative of the provided stimulation. Unfortu-
+nately, as the information that the provided stimulation represents was wrong, the
+information acquired by the hydrogel was also wrong, and performance decreased.
+Third, in the case of the severed stimulation experiment, the hydrogel no longer
+received any environmental information, so no stimulation was provided to the
+hydrogels. Based on the electric current recording from the hydrogels, the motor
+commands were produced to control the paddle, but as no electric stimulation
+was provided, the hydrogels were effectively ‘‘blinded.’’ This lack of meaningful in-
+formation resulted in a slight reduction in performance as the hydrogel was unable to
+adapt to the simulated environment in any meaningful way. This open loop experi-
+ment further conﬁrms the importance of the closed loop in the unaltered feedback
+experiments.
+These observations help to reinforce that the hydrogel’s increase in performance is
+directly related to accurate representation of the virtual environment in which it is
+acting. A more detailed analysis of the speciﬁc hit rate, rally length, and rally ace
+line plots can be found in Note S8.
+ll
+OPEN ACCESS
+20
+Cell Reports Physical Science 5, 102151, September 18, 2024
+Article
+
+
+--- Page 22 ---
+Game world performance in relation to memory functions via ion migration and free
+energy.
+With the signiﬁcance of the observed performance increase within
+Figures 7A and 7B conﬁrmed via comparison with the control experiments, there
+is a clear performance improvement or memory mechanism at play. In this section,
+we discuss the way in which the hydrogel dynamics, through free energy minimiza-
+tion via ion migration, result in this emergent memory and adaptation. In other
+words, how does the change in free energy as a result of polymer and ion dynamics
+(electrostatic interactions between polymers and ions, physical entropy of polymer
+networks, ion migration, etc.) alter the paddle’s behavior with respect to ball posi-
+tion and result in increased game performance and emergent adaptation via
+memory?
+The molecular picture of the free energy is extremely complex, as the already com-
+plex EAP system (charged polymer networks interacting with ions and water mole-
+cules)38 is, in this study, open and coupled to the environmental dynamics of the
+Pong game through the electrostatic forces applied externally.
+To summarize free energy in the context of the EAP hydrogel, minimization results
+from the equalization between three main sources of free energy, as shown in Equa-
+tion 2. These are free energy on ions due to the electric ﬁeld, free energy due to the
+chemical gradient of ions and water molecules, and free energy due to the electrical
+gradient of ions. The electric ﬁeld application causes a gradient of increased free en-
+ergy, shifting the equilibrium state.
+The game environment closed loop can be summarized as measured electric current
+encoded into paddle motor commands and the ball’s position fed back via electric
+stimulation to the hydrogel. As the ions migrate to minimize free energy, under the
+electric ﬁeld, the redistribution of ions affects the game environment through pad-
+dle motion since the paddle’s motion alters the ball’s trajectory through collision.
+To develop the chain of events that culminate in improved performance, the kine-
+matics of the paddle were analyzed over the course of the game through analysis
+of the changing distribution of paddle positions over time. This can be approached
+by analyzing the paddle’s motion in response to the ball’s location. This analysis is
+detailed in Note S6.
+Both the paddle and ball move on the y axis, each vertical position in which the pad-
+dle or ball exists can be thought of as a state of the paddle or ball. By applying a win-
+dow to the data, the change in positions can be shown as changing state distribu-
+tions through the course of the game.
+Figure 9A shows the mean of the paddle positional state probability distributions as
+a function of time. Individual distributions can be seen in Figure S9, showing prob-
+ability distributions for timestamps 200, 400, 600, 800, 1,000, 1,200, 1,400, 1,600,
+1,800, and 2,000. In these ﬁgures, there is a clear change in the distribution of pad-
+dle positions as the game progresses. Initially starting with a large central peak that
+becomes less pronounced as the gel reaches its maximum performance point at
+1,800 s, as shown in Figure 7A, where the distribution becomes more uniform.
+From this, it can be deduced that the distribution of paddle positions changes
+through game play. In line with the principles of free energy, this distribution of
+states can be thought of as a memory function. The distribution represents the ball’s
+motion within the simulation environment and is represented by the ion distribution
+within the polymer network.
+ll
+OPEN ACCESS
+Cell Reports Physical Science 5, 102151, September 18, 2024
+21
+Article
+
+
+--- Page 23 ---
+In Figure 9A, the states of y = 0 and y = 1,000 were omitted, as their larger values
+obscured the rest of the results. These larger values are a result of the boundary
+conditions. To fully explore the memory mechanics, the impact of these boundary
+conditions must be investigated.
+The boundary conditions occur because the paddle cannot pass beyond the edge of
+the game environment. If the measured electric current trend used to place the pad-
+dle, as shown in Figure 4C, has a positive gradient toward either edge, the paddle
+will be placed at the edge. This means that there are more combinations of electric
+current that lead to the paddle being at the edges than in between. The boundary
+conditions can be visualized by simulating the paddle with random electric current
+inputs, using the algorithm described in Figure 4C, and recording the paddle’s po-
+sitional states. A distribution of these simulated results is shown in Figure 9B.i; this
+plot shows that, with random electric current, the paddle has a signiﬁcant tendency
+toward either end, with a peak distribution in the center. The shape of distribution at
+the center can also be explained as a result of the boundary conditions and is anal-
+ogous with a depletion force. The boundaries in the paddle’s motion act as two point
+forces with high attraction to the paddle; the forces interact at the mid-point be-
+tween them, creating a peak.57,58 With greater resolution, the effect of the boundary
+conditions could be reduced. However, that is beyond the scope of this study.
+The distribution shown in Figure 9B.i is similar in shape to the initial distribution at
+Figure 9. Comparison of paddle state distributions over time
+(A) The mean distribution of paddle states for all 21 experimental samples as a heatmap. Distributions were sampled every 20 s starting at t = 100 using a
+window of 200 s, providing enough data points for accurate representation with minimal sample overlap. The color of each point represents the state
+probability. States of 0 and 1,000 pixels were omitted; the probability of these states was much higher that of than others (0.0129 and 0.0177
+respectively) due to the boundary conditions and so would obscure the data by scale biasing. An additional set of plots can be seen in Figure S9,
+showing individual distributions for the timestamps 200, 400, 600, 800, 1,000, 1,200, 1,400, 1,600, 1,800, and 2,000.
+(B) Distributions of positional states from paddle and ball simulations. Each plot shows the distribution divided into bins of each state, signiﬁed by the
+blue bars, and divided by regions shown by the orange transparent overlay bars.
+(B.i) The simulated distribution of paddle states generated, using the algorithm described in Figure 4C, with randomized electric current values. 10,000
+samples were simulated to show the distribution. To allow the central peak to be visible, the left y axis was limited to 0.006; however, the states of 0 and
+1,000 are higher than the central peak due to the boundary conditions. The states 0 and 1,000 have probabilities of 0.2754 and 0.2796, respectively.
+(B.ii) The simulated distribution of vertical ball states using the maximum hit rate for each region. The ball was simulated with the same game physics,
+starting with a random direction and resetting to the center on a miss. The probability of the ball being intercepted by the paddle was recorded as 0.98,
+0.58, and 0.86 for the top, middle, and bottom regions, respectively. Each time the ball hit the paddle wall in simulation, these probabilities were used to
+simulate whether the ball hit the wall or paddle. As the ball moved, the full path of each ball simulation was recorded, resulting in 600,000 samples, with
+the travel of each ball simulation before reset lasting, on average, 245 samples.
+ll
+OPEN ACCESS
+22
+Cell Reports Physical Science 5, 102151, September 18, 2024
+Article
+
+
+--- Page 24 ---
+t = 100 in Figure 9A, as the paddle’s initial motion is almost entirely inﬂuenced by
+the boundary conditions having yet to gather enough information to diverge.
+Although the boundary conditions explain the initial state distribution of the paddle,
+to understand the change in behavior, the distribution at maximum performance (t =
+1,800) must be assessed. If the paddle’s state distribution represents the ‘‘memo-
+rized’’ knowledge about the environment, and the ball’s state distribution represents
+the actual environment, a system that is adapting its behavior based on memory
+would seek to minimize the difference between these distributions.
+Indeed, in an ideal Pong game, the paddle position should match that of the ball’s
+vertical position. Ideal anticipation of ball dynamics would mean that the paddle’s
+position would be the same as the ball’s position once it hits the wall. Essentially,
+the paddle’s vertical position would match that of the ball’s vertical position with a
+time offset in relation to the proximity of the ball to the paddle, deﬁned by the de-
+gree of anticipation. This means that the paddle and ball should move through the
+same positions over the course of the game, meaning that the ball and paddle
+should have almost identical distributions of vertical positional states.
+By comparing the paddle’s state distribution against that of the ball, the paddle’s
+change in behavior can be assessed against what would be the ideal behavior,
+and the impact of memory on the hydrogel’s embodiment within the simulated
+environment can be contextualized. This allows analysis of what attributes of the
+paddle’s distribution change to match that of the ball, leading to improved
+performance. The ball’s state distribution can be simulated using the Pong game
+environment. However, the ball resets on missing the paddle, which alters the ball’s
+distribution. This means that, as performance improves, the ball’s behavior changes
+as it is hit more and follows different trajectories. This is evident when comparing two
+simulations of the ball’s positional distribution, where the ball is never hit by the pad-
+dle and where it is always hit by the paddle, as shown in Figures S14A and S14B. To
+accurately compare the paddle’s distribution to that of the ball, the ball’s distribu-
+tion must represent the behavior of the ball at the point of maximum performance.
+At this point, the hit rates are 0.98, 0.58, and 0.86 for the top, middle, and bottom
+regions, respectively, as shown in Figure 7A. When the ball hits the paddle wall, the
+ball is either bounced (as if hit by the paddle) or reset (as if hitting the wall) according
+to the hit rate of the region in which it hits the paddle wall; this simulated distribution
+can be seen in Figure 9B.ii. From this distribution, the ball’s vertical motion over the
+game environment is more uniform than the paddle’s initial distribution with fewer
+unique states (represented as the number of histogram bins), indicative of the pre-
+dictable ball trajectories. As shown in Figure 9A, the paddle’s distribution appears
+to become more uniform as the central peak becomes less pronounced. Addition-
+ally, the number of unique states reduces, also moving closer to the ball’s distribu-
+tion. These observations, however, need to be quantiﬁed via metrics representing
+the behavioral change of paddle and ball motion as a result of the closed-loop inter-
+action with them.
+There are two main metrics used to analyze the attributes of the paddle and ball mo-
+tion distribution, both representative of information entropy within the system used
+to quantify the impact of memory on the behavior of the EAP hydrogel.
+(1) Number of unique states: the number of unique states/positions in which
+the paddle/ball is recorded within the sample window used to generate
+the distribution (also represented as the number of histogram bins). Deﬁned
+ll
+OPEN ACCESS
+Cell Reports Physical Science 5, 102151, September 18, 2024
+23
+Article
+
+
+--- Page 25 ---
+in Equation 7 as o, where Q is the sample used to make the distribution, O is
+the set of elements in Q without repetitions, and jOj represents the cardinal-
+ity of O. When applied to the ball, due to the resolution of the ball’s motion
+as applied to the gel, the number of unique states of the ball will remain
+constant, limited by the 6 regions the ball inhabits, so not providing usable
+information. Information entropy S is a function of unique states u. In statis-
+tical thermodynamics, physical entropy is deﬁned as S = kB ln U,59 where kB
+is the Boltzmann constant and U is the number of microstates. As the paddle
+position is determined by conductivity of ions and their distribution, the
+physical entropy of the hydrogel is fundamentally linked to the information
+entropy of the paddle states, as U inﬂuences unique states u.
+(2) Variance in frequency of unique states: the variance in quantity of occurrence
+of each unique state, used as a measure for uniformity in the distribution;
+deﬁned in equation set (6) as s2, where ci is the number of occurrences of
+the ith element of O, barc is the mean value of c, Qj is the jth element of Q,
+and q is the number of elements in Q. Shown in Figure 9B.i, the boundary
+states of 0 and 1,000 greatly overshadow the central peak distribution. As
+the edge conditions are results of the interfacing algorithm and only repre-
+sent a fraction of the paddle’s motion, they can be ignored for the purposes
+of calculating variance in the paddle. This allows the uniformity in the central
+peak to be more accurately compared to that of the ball that is not subject to
+boundary conditions, as shown in Figure 9B.ii. Variance is linked to informa-
+tion entropy through information theory. Although not directly proportional,
+information entropy and variance are both measures of expected values and
+share trend directionality60:
+s2 =
+P ðci  cÞ2
+o  1
+(Equation 6)
+o = jOj
+(Equation 7)
+where:
+ci =
+X
+q
+j = 1
+f
+
+Qj; Oi
+
+f
+
+Qj; Oi
+
+=
+ 1
+Qj = Oi
+0
+QjsOi
+
+Due to the dynamic nature of the hydrogels, each sample will have slight variations in
+ion distribution, polymer density, and surface texture; this could lead to differences
+in recorded metrics. However, the emergent memory behavior is still driven by the
+same mechanics regardless of starting inconsistencies, and, as a result, the trend’s
+shape of these metrics will be consistent between samples. To minimize the effect
+of gel synthesis inconsistencies, the metrics are normalized via feature scaling to bet-
+ter highlight the shape of the trends. The plot of these trends is shown in Figure 10.
+The lines represent the mean between all samples, with error bars representing the
+standard error between all samples used.
+(1) At t = 200, the number of unique paddle states is low, while the variance in
+both paddle and ball is high, showing few states with large variations in fre-
+quency. This matches the simulated distribution shown in Figure 9B.i, as ex-
+pected, as the initial distribution will be almost entirely driven by the
+ll
+OPEN ACCESS
+24
+Cell Reports Physical Science 5, 102151, September 18, 2024
+Article
+
+
+--- Page 26 ---
+boundary conditions, as no information has been gathered about the game
+environment, and ions remain in a homogeneous distribution.
+(2) At t = 600, the number of states increases as the variance decreases in both
+paddle and ball. This happens as more information about the environment
+is gathered and coincides with the rise in electric current, as shown in Figure 6.
+With the application of an electric ﬁeld, the ions start to migrate within the hy-
+drogel to represent the stimulation. As ion mobility increases, the number of
+unique states increases, and the paddle explores more of its working area.
+Simultaneously, as more of the working area is explored, paddle motion be-
+comes more evenly distributed, and so the variance decreases. As the ball is
+hit more often, its variance decreases as it moves through more of the game
+environment before being reset on a miss. This is evident when comparing
+variance of simulations where the paddle always hits and always misses the
+ball, as shown in Figures S14A and S14B.
+(3) At t = 1,000, the number of states reaches its maximum and starts to decrease;
+this coincides with the behavior of the electric current, as shown in Figure 6,
+and can be explained though ion mobility. Initially, the ions have total
+mobility, as the gel is yet to change in structure; as the ion mobility increases,
+hysteresis takes effect within the hydrogel, opposing ion migration. Eventu-
+ally, ion mobility reaches its maximum, causing the maximum peak in electric
+current shown in Figure 6. After this point, the hysteresis effect continues, and
+ion mobility decreases, causing the number of unique states to decrease, as
+ions start to settle into their ﬁnal positions.
+Figure 10. Mean of the normalized number of unique paddle states and the mean of the
+normalized variance between unique paddle state frequencies for both the paddle and ball over
+the course of the game
+Distributions were generated from each gel sample using a window size of 200 s, as in the plots in
+Figure 9A, sampled every 20 s from t = 100 to t = 2,000. The number of unique paddle states and
+state frequency variance were then normalized, and the mean between gel samples was found. The
+standard error between gel samples is shown by the shaded area.
+ll
+OPEN ACCESS
+Cell Reports Physical Science 5, 102151, September 18, 2024
+25
+Article
+
+
+--- Page 27 ---
+(4) At t = 1,800 both the number of states and variance in the paddle have
+reached their minimum; this coincides with the point of maximum perfor-
+mance shown in Figure 7A. The normalized variances in paddle and ball
+now match, as the paddle and ball behavior have a stronger coupling. As
+the memory continues to saturate, the ion distribution comes to better repre-
+sent the ball’s motion. This leads to reduced paddle state variance and
+reduced number of unique paddle states, causing the behavior of the paddle
+to become more like that of the ball. This causes the ball to be missed less
+often, resulting in a more homogeneous distribution of ball states and less
+variance, as seen in Figure S14B. The saturation of memory is caused by the
+hysteresis and so is linked to the breakdown of the polymer structure. Even-
+tually, the same mechanic that allows the gel to retain memory causes the
+polymer structure to beak down to a point where it inhibits conductivity
+and performance reduces.
+The trends shown in Figure 10 and the way in which they coincide with features in
+other ﬁgures add another step to the chain of events leading to increased perfor-
+mance. This highlights interesting forms of emergent behavior occurring as the
+ions migrate to reduce free energy.
+Interpretation
+As seen through the experimental results, there is a clear increase in performance of
+the EAP hydrogel to play the Pong game, as shown in Figure 7A, when given infor-
+mation that is representative of the virtual game environment. This improved perfor-
+mance directly results from the MA of environmental information without the pres-
+ence of active feedback via a reward/punishment system as present in BNN
+systems. Over the course of the game, the ball and paddle inhabit more areas of
+the game environment, resulting in more environmental information inﬂuencing
+memory via stimulation of the polymer structure. In this way, the hydrogel
+gathers information about the environment and, through this collection of informa-
+tion, improves in performance. The positive impact of memory on EAP hydrogel
+performance is possible due to the inference function deﬁned in the encoding
+from hydrogel output to paddle position, shown in Figure 4C. The inference function
+is how the error between internal states, of the ion distribution, and external
+states, of game dynamics, are applied to actions of moving the paddle, similar to
+that of unsupervised learning algorithms.
+The development of the increased performance, based on the paddle state dy-
+namics, can also be directly linked to the underlying mechanics of the EAP hydrogel
+through ion migration and memory mechanics due to hysteresis. Through this link-
+ing, it can be theorized that, via physical entropy of ion distribution and information
+entropy of paddle states, an initial logical similarity can be established between the
+properties of EAP hydrogels and computational information theory.
+To contextualize the active medium’s interaction with the simulated environment
+within the control loop, external states of the environment inﬂuence internal states
+of the active medium. In the case of this study, the EAP hydrogel achieves this
+through a looped exchange of information called comparable to active inference.
+Active inference is a common theory of learning within the study of BNNs, often
+conceptualized through free energy minimization and FEP. Active inference analo-
+gizes an internal generative pseudo-model used to predict inputs that represent
+the external world,23,27,28 based on theories of Bayesian inference.61,62 Similarly,
+comparisons to theories of criticality can also be drawn. Criticality theorizes that
+ll
+OPEN ACCESS
+26
+Cell Reports Physical Science 5, 102151, September 18, 2024
+Article
+
+
+--- Page 28 ---
+learning coincides with reorganization of the active structure, and hydrogel presents
+reorganization or restructuring via the ions and charged polymer networks. This
+reorganization could be described as an induced phase transition when the system
+is provided energy via applied external stimulation, in line with a simpliﬁed view of
+theories of criticality. Figure 6 shows an increase in electric current level, as provided
+by the stimulation, that coincides with improved performance, as shown in
+Figures 7A and 7B. However, the comparison to theories of BNN learning falls
+beyond the scope of this study but provides an interesting avenue of exploration
+in future work.
+It is clear from Figure 10 that the minimization of the unique number of states and
+state frequency variance in both paddle and ball coincide with improved performance.
+In Figure 10, the state frequency variance of both the paddle and ball become closer as
+performance increases. This quantizationof information entropy is representative of the
+hydrogel memory, linked to ion distribution; as information is collected, the memory
+becomes saturated, leading to less impact on the overall system. Similarly, the minimi-
+zation of both measurements of information entropy align with the minimization of free
+energy resulting within the EAP hydrogel as ions migrate. These events also align with
+the simpliﬁcation of distributions shown in Figure 9A and maximization of accuracy,
+observed in the improved performance shown in Figure 7A. The parallel events shown
+here construct an interesting view of the role of memory within the system, highlighting
+how information provided to the EAP hydrogel emerges within the behavior of said EAP
+hydrogel via its actions in the simulated environment.
+The experimental results, presented in Figure 8, also show that, when an incorrect
+representation of the virtual environment is provided to the hydrogel or the actions
+of the hydrogel are altered, the performance is severely inhibited. This behavior can
+be explained through the memory mechanics as a result of ion interactions and
+migration. The hydrogel seeks to represent the information given via ion migration.
+If the environmental information provided to the hydrogel does not accurately
+represent the environment in which the hydrogel’s outputs are being applied, the
+ions will redistribute to represent this incorrect information.
+The implications of these results also support the earlier comparison to unsupervised
+learning techniques. If the same inference function was used for a different goal,
+then the performance would decrease. This is because the goal is provided to the
+hydrogel via the inference function and is how the error between internal and
+external states is used to alter actions. The control experiments show examples of
+altering the inference function without altering the goal and the reduced perfor-
+mance that follows.
+DISCUSSION
+This study applied the theories of memory and computation in BNNs to ionic EAP
+hydrogels using common mechanics of ion migration and structural reorganization.
+First, by measuring ion concentrations through conductivity of the EAP hydrogel af-
+ter periods of stimulation, the memory mechanics of the ionic EAP hydrogel were
+highlighted. This provided a basis that was then used in the integration of a
+closed-loop system in further experimentation.
+Second, utilizing techniques in reservoir computing and unsupervised learning, the
+ionic EAP hydrogel was embodied in the simulated game world of Pong through the
+ll
+OPEN ACCESS
+Cell Reports Physical Science 5, 102151, September 18, 2024
+27
+Article
+
+
+--- Page 29 ---
+use of a custom MEA. The game environment was encoded into stimulations
+provided to the hydrogel, and recorded ion concentrations were used as motor
+commands within the game world. Through analysis of the behavior of the EAP hy-
+drogel within this simulated environment, improved performance was observed
+through the course of the game. Additionally, through analysis of how performance
+improvement manifested through behavioral changes, the mechanisms of the EAP
+hydrogels were linked back to FEP and criticality.
+By investigating the chain of events leading from ion migration to game perfor-
+mance, the emergent MA of ionic EAP hydrogels was clariﬁed, showing how the
+integration of said memory emerged as beneﬁcial behavioral changes in the EAP hy-
+drogel’s action within the game. This was achieved by recording information from
+the various layers of abstraction, from electric ﬁeld stimulation to rally lengths,
+and analyzing the connections between these layers. The Pong game acts as a prob-
+lem to be solved. When this problem is provided to the hydrogel as an electric ﬁeld,
+it creates a gradient of increased free energy. Due to the active mechanics of the
+hydrogel and the memory functions, the hydrogel updates its memory of the envi-
+ronment via ion migration, effectively gaining information about the environment
+in which it is embodied. The ions within the hydrogel seek to minimize the free en-
+ergy gradient caused by the electric stimulation and redistribute; the redistribution
+of ions then becomes the solution to the problem. This minimization of free energy
+coincides with an increase in relative energy within the system and could be linked to
+current theories of learning in BNNs through future work.
+The way in which the solution is interpreted allows it to be applied to the problem; in
+this case, through conversion of localized ion concentration to paddle motion. As
+ions migrate to represent the game environment, presented as a series of changing
+electric ﬁelds, the memory in the hydrogel is ﬁlled, resulting in an increase in electric
+current draw. This then causes a change in paddle motion to better intercept the
+ball, which, in turn, improves the hit rate in the regions, which, in turn, increases
+the rally lengths.
+The results of this study demonstrate that certain active media, such as ionic EAP
+hydrogel, whose behavior is driven by mechanisms comparable to those found in
+computational systems, can be used in similar computational applications.
+Through the application to such a computational task, using current techniques
+in reservoir computing, EAP hydrogels were shown to demonstrate an emergent
+memory-like function that contributed to improved performance within the task.
+These results show a promising avenue for complex computation achievable within
+many
+more
+active
+media
+that
+also
+demonstrate
+similar
+free-energy-driven
+mechanisms.
+Future work
+This study demonstrated that a form of emergent memory and adaptation, when
+embodied in a computational task, is possible in media other than BNNs, when
+the behavior of the medium in question is also subject to the principles of free en-
+ergy. However, as an initial study of this behavior, the experimental setup used
+does not achieve the same spatial resolution that has been achieved with BNNs us-
+ing high-density MEAs. In future work, higher-resolution MEAs can be tested to gain
+a deeper understanding of the part that free energy and structure reorganization
+play in the observed memory functions. Furthermore, through the use of a higher-
+density MEA, comparisons to current theories of learning within BNNs can be
+explored.
+ll
+OPEN ACCESS
+28
+Cell Reports Physical Science 5, 102151, September 18, 2024
+Article
+
+
+--- Page 30 ---
+One such theory is that of FEP, which contextualizes the observed memory as a
+pseudo-internal model that updates with environmental feedback. Although FEP
+is generally discussed through BNNs, it only occurs in neurons as a network, not indi-
+vidually, associating the learning of neural networks with the framework of the FEP.
+Comparatively, EAPs are subject to free energy at the more integral physical chem-
+istry level, resulting in greater alignment with FEP and criticality theories. These
+future experiments would aim to highlight the similarities between the minimization
+of free energy within the EAP hydrogel and theories of minimization via active infer-
+ence and FEP using the sensory information for better performance.
+Another theory of learning that has shown similarities to the hydrogel’s behavior is
+that of dynamic criticality. Criticality contextualizes the restructuring of the active
+medium’s structure as the generation of long-range signaling pathways, improving
+sensory-motor information processing. Through understanding ionic mobility and
+EAP mechanics, the restructuring of the hydrogel, and how this impacts memory,
+can be described. However, to fully realize the impact of criticality in the possibility
+of learning, this reorganization would need to be monitored. In a future study, a
+higher-resolution MEA can also be used to monitor the ion distributions at higher
+spatial and temporal resolutions. This would allow the emergence of criticality to
+be studied alongside the demonstrated immediate adaptation and potential
+learning.
+Expanding on this potential for future work, both theories of the FEP and criticality
+rely on the restructuring of the active medium to result in learned behavior. As sen-
+sory inputs inﬂuence structural change, the system moves closer to a critical state.
+The new structure is representative of the sensory inputs and, by inference, is
+representative of the environment from which the inputs came. Restructuring and
+criticality present behaviorally as either action to reduce the difference between
+the internal model and sensed environment by making the environment match the
+model or by altering the internal model to better reﬂect the environment. Under
+this theory, BNNs hold ‘‘beliefs’’ about the state of the environment, and learning
+behavior emerges by minimizing internal free energy through either updating these
+beliefs or taking action to change the environment to match these beliefs.27,63 Simul-
+taneously, it is through the local reduction of free energy and FEP that a critical state
+is achieved and the actions and changing beliefs can be achieved globally. The
+aforementioned studies22,31,36 show these theories to hold merit, as the application
+of BNNs to the Pong game effectively allowed improved performance over time.22
+However, this learning is fundamentally achieved via FEP and criticality.23,28 The
+exploration of these theories of learning could highlight interesting links between
+current theories of learning within BNNs and links between these theories and other
+potential media whose mechanics are also driven through free energy and
+restructuring.
+Additionally, the method used in this study did not employ any form of active
+reward/punishment feedback as many neural based MEA systems do. It is possible
+that, through the addition of this kind of system, even greater performance could be
+achieved for a given purpose. Furthermore, additional applications can attempt to
+investigate how the learning behavior is inﬂuenced by task. Investigation of the syn-
+thesis procedure would also be a productive avenue of future work, experimenting
+with alternate polymer structures to expand the lifetime of the hydrogel and, thus,
+open up its application to additional situations. Expanding on this, free-energy-
+based mechanics are also found in many other forms of active matter and natural sys-
+tems. Through exploration of these alternatives, a medium that is more capable, and
+ll
+OPEN ACCESS
+Cell Reports Physical Science 5, 102151, September 18, 2024
+29
+Article
+
+
+--- Page 31 ---
+just as accessible, could be found. All of these avenues of research, however, fall
+outside of the goals of this study but describe an interesting path for future work
+and application of this technology.
+EXPERIMENTAL PROCEDURES
+Resource availability
+Lead contact
+Requests for further information, resources, and reagents should be directed to and
+will be fulﬁlled by the lead contact, Yoshikatsu Hayashi (y.hayashi@reading.ac.uk).
+Materials availability
+This study did not generate new unique reagents.
+Data and code availability
+ All generated data have been deposited at Zenodo under https://doi.org/10.
+5281/zenodo.12740409 and are publicly available as of the date of publication.
+ All original code has been deposited at Zenodo under https://doi.org/10.
+5281/zenodo.12740409 and is publicly available as of the date of publication.
+ Any additional information required to reanalyze the data reported in this pa-
+per is available from the lead contact upon request.
+SUPPLEMENTAL INFORMATION
+Supplemental information can be found online at https://doi.org/10.1016/j.xcrp.
+2024.102151.
+ACKNOWLEDGMENTS
+This project is fully funded by Process Vision Ltd. (https://www.processvision.com/).
+Y.H. would like to thank Prof. Wagstaff for the fruitful discussion alongside the
+Reading and Writing Retreats.
+AUTHOR CONTRIBUTIONS
+Conceptualization, V.S. and Y.H.; methodology, V.S. and Y.H.; software, V.S.; formal
+analysis, V.S.; investigation, V.S.; writing – original draft, V.S., Y.H., and W.H.;
+writing – review & editing, V.S., Y.H., and W.H.; supervision, Y.H. and W.H.
+DECLARATION OF INTERESTS
+The authors declare no competing interests.
+Received: June 13, 2024
+Revised: June 30, 2024
+Accepted: July 19, 2024
+Published: August 22, 2024
+REFERENCES
+1. Ruskin, H.J., and Walshe, R. (2006). Emergent
+computing-introduction to the special theme.
+ERCIM News 64, 24–25.
+2. Bondar, S., Hsu,J.C., Pfouga, A., and Stjepandic,
+J. (2017). Agile digitale transformation of
+enterprise architecture models in engineering
+collaboration. Procedia Manuf. 11, 1343–1350.
+3. Fernando, C., and Sojakka, S. (2003). Pattern
+Recognition in a Bucket. In European
+Conference on Artiﬁcial Life (Springer),
+pp. 588–597.
+4. Van der Sande, G., Brunner, D., and Soriano,
+M.C. (2017). Advances in photonic
+reservoir computing. Nanophotonics 6,
+561–576.
+5. Tero, A., Takagi, S., Saigusa, T., Ito, K., Bebber,
+D.P., Fricker, M.D., Yumiki, K., Kobayashi, R.,
+and Nakagaki, T. (2010). Rules for biologically
+inspired adaptive network design. Science 327,
+439–442.
+6. Duen˜ as-Dı´ez, M., and Pe´ rez-Mercader, J.
+(2019). How chemistry computes: language
+recognition by non-biochemical chemical
+automata. from ﬁnite automata to turing
+machines. iScience 19, 514–526.
+7. Wang, A.L., Gold, J.M., Tompkins, N.,
+Heymann, M., Harrington, K.I., and Fraden, S.
+ll
+OPEN ACCESS
+30
+Cell Reports Physical Science 5, 102151, September 18, 2024
+Article
+
+
+--- Page 32 ---
+(2016). Conﬁgurable nor gate arrays from
+belousov-zhabotinsky micro-droplets. Eur.
+Phys. J. Spec. Top. 225, 211–227.
+8. Misra, J., and Saha, I. (2010). Artiﬁcial
+neural networks in hardware: A survey of two
+decades of progress. Neurocomputing 74,
+239–255.
+9. Ve´ gh, J. (2019). How amdahl’s law limits the
+performance of large artiﬁcial neural networks.
+Brain informatics 6, 1–11.
+10. Mainzer, K. (2009). From embodied mind to
+embodied robotics: Humanities and system
+theoretical aspects. J. Physiol. Paris 103,
+296–304.
+11. Cangelosi, A., Bongard, J., Fischer, M.H., and
+Nolﬁ, S. (2015). Embodied Intelligence. In
+Springer Handbook of Computational
+Intelligence (Springer), pp. 697–714.
+12. Mu¨ ller, V.C., and Hoffmann, M. (2017). What Is
+Morphological Computation? On How the
+Body Contributes to Cognition and Control.
+Artif. Life 23, 1–24.
+13. Shapiro, L., and Spaulding, S. (2021).
+Embodied Cognition. In The Stanford
+Encyclopedia of Philosophy, E.N. Zalta, ed.
+(Metaphysics Research Lab, Stanford
+University). Winter 2021 edition.
+14. Tanaka, G., Yamane, T., He´ roux, J.B., Nakane,
+R., Kanazawa, N., Takeda, S., Numata, H.,
+Nakano, D., and Hirose, A. (2019).
+Recent advances in physical reservoir
+computing: A review. Neural Network. 115,
+100–123.
+15. Schrauwen, B., Verstraeten, D., and Van
+Campenhout, J. (2007). An overview of
+reservoir computing: theory, applications and
+implementations. In Proceedings of the 15th
+european symposium on artiﬁcial neural
+networks, pp. 471–482.
+16. Heiney, K., Ramstad, O.H., Sandvig, I., Sandvig,
+A., and Nichele, S. (2019). Assessment
+and manipulation of the computational
+capacity of in vitro neuronal networks
+through criticality in neuronal avalanches in
+2019. In IEEE Symposium Series on
+Computational Intelligence (SSCI) (IEEE),
+pp. 247–254.
+17. Aaser, P., Knudsen, M., Ramstad, O.H., van de
+Wijdeven, R., Nichele, S., Sandvig, I., Tufte, G.,
+Stefan Bauer, U., Halaas, Ø., Hendseth, S., et al.
+(2017). Towards making a cyborg: A closed-
+loop reservoir-neuro system. In ECAL 2017, the
+Fourteenth European Conference on Artiﬁcial
+Life, 14, pp. 430–437.
+18. Mateos-Aparicio, P., and Rodrı´guez-Moreno,
+A. (2019). The impact of studying
+brain plasticity. Front. Cell. Neurosci. 13, 66.
+19. Chao, Z.C., Bakkum, D.J., and Potter, S.M.
+(2008). Shaping embodied neural networks for
+adaptive goal-directed behavior. PLoS
+Comput. Biol. 4, e1000042.
+20. Bakkum, D.J., Chao, Z.C., and Potter, S.M.
+(2008). Spatio-temporal electrical stimuli shape
+behavior of an embodied cortical network in a
+goal-directed learning task. J. Neural. Eng. 5,
+310–323.
+21. DeMarse, T.B., and Dockendorf, K.P. (2005).
+Adaptive ﬂight control with living neuronal
+networks on microelectrode arrays. In
+Proceedings. 2005 IEEE International Joint
+Conference on Neural Networks, 2005,
+3Proceedings. 2005 IEEE International Joint
+Conference on Neural Networks, 2005 (IEEE),
+pp. 1548–1551.
+22. Kagan, B.J., Kitchen, A.C., Tran, N.T.,
+Habibollahi, F., Khajehnejad, M., Parker, B.J.,
+Bhat, A., Rollo, B., Razi, A., and Friston, K.J.
+(2021). In Vitro Neurons Learn and Exhibit
+Sentience when Embodied in a Simulated
+Game-World.
+23. Friston, K. (2010). The free-energy principle: a
+uniﬁed brain theory? Nat. Rev. Neurosci. 11,
+127–138.
+24. Demekas, D., Parr, T., and Friston, K.J. (2020).
+An investigation of the free energy principle for
+emotion recognition. Front. Comput.
+Neurosci. 14.
+25. Friston, K. (2009). The free-energy principle: a
+rough guide to the brain? Trends Cognit. Sci.
+13, 293–301.
+26. Friston, K., Kilner, J., and Harrison, L. (2006). A
+free energy principle for the brain. J. Physiol.
+Paris 100, 70–87.
+27. Parr, T., and Friston, K.J. (2019). Generalised
+free energy and active inference. Biol. Cybern.
+113, 495–513.
+28. Friston, K., Schwartenbeck, P., FitzGerald, T.,
+Moutoussis, M., Behrens, T., and Dolan, R.J.
+(2013). The anatomy of choice: active
+inference and agency. Front. Hum. Neurosci.
+7, 7.
+29. Isomura, T., Kotani, K., and Jimbo, Y. (2015).
+Cultured cortical neurons can perform
+blind source separation according to the free-
+energy principle. PLoS Comput. Biol. 11,
+e1004643.
+30. Isomura, T., and Friston, K. (2018). In vitro
+neural networks minimise variational free
+energy. Sci. Rep. 8, 16926.
+31. Habibollahi, F., Kagan, B.J., Burkitt, A.N., and
+French, C. (2023). Critical dynamics arise during
+structured information presentation within
+embodied in vitro neuronal networks. Nat.
+Commun. 14, 5287.
+32. Bak, P. (2013). How Nature Works: The Science
+of Self-Organized Criticality (Springer
+Science & Business Media).
+33. Bak, P., Tang, C., and Wiesenfeld, K. (1988).
+Self-organized criticality. Phys. Rev. 38,
+364–374.
+34. Bak, P., and Creutz, M. (1994). Fractals and Self-
+Organized Criticality. In Fractals in Science
+(Springer), pp. 27–48.
+35. Feder, J. (2013). Fractals (Springer Science &
+Business Media).
+36. Isomura, T., Kotani, K., Jimbo, Y., and Friston,
+K.J. (2023). Experimental validation of the free-
+energy principle with in vitro neural networks.
+Nat. Commun. 14, 4547.
+37. Ramaswamy, S. (2010). The mechanics and
+statistics of active matter. Annu. Rev. Condens.
+Matter Phys. 1, 323–345.
+38. Tanaka, T., Nishio, I., Sun, S.T., and Ueno-
+Nishio, S. (1982). Collapse of gels in an electric
+ﬁeld. Science 218, 467–469.
+39. Marchetti, M., Joanny, J.F., Ramaswamy, S.,
+Liverpool, T.B., Prost, J., Rao, M., and Simha,
+R.A. (2013). Hydrodynamics of soft active
+matter. Rev. Mod. Phys. 85, 1143.
+40. Otake, M., Kagami, Y., Inaba, M., and Inoue, H.
+(2002). Motion design of a starﬁsh-
+shaped gel robot made of electro-active
+polymer gel. Robot. Autonom. Syst. 40,
+185–191.
+41. Strong, V., Holderbaum, W., and Hayashi, Y.
+(2022). Electroactive polymer
+gels as probabilistic reservoir
+automata for computation. iScience 25,
+105558.
+42. Ku¨ rsten, R., Sushkov, V., and Ihle, T. (2017).
+Giant kovacs-like memory effect
+for active particles. Phys. Rev. Lett. 119,
+188001.
+43. Atkins, P., and De Paula, J. (2006). Atkins’
+Physical Chemistry, 8.
+44. Yashin, V.V., Suzuki, S., Yoshida, R., and Balazs,
+A.C. (2012). Controlling the dynamic behavior
+of heterogeneous self-oscillating gels.
+J. Mater. Chem. 22, 13625–13636.
+45. Kuksenok, O., Yashin, V.V., and Balazs, A.C.
+(2007). Mechanically induced chemical
+oscillations and motion in responsive gels. Soft
+Matter 3, 1138–1144.
+46. De Tommasi, D., Puglisi, G., and Zurlo, G.
+(2014). Hysteresis in electroactive polymers.
+Eur. J. Mech. Solid. 48, 16–22.
+47. Bassil, M., Davenas, J., and EL Tahchi, M.
+(2008). Electrochemical properties
+and actuation mechanisms of
+polyacrylamide hydrogel for artiﬁcial
+muscle application. Sensor. Actuator. B 134,
+496–501.
+48. Gray, J.R. (2004). Conductivity analyzers and
+their application. Environ. Instrum. Anal.
+Handb. 1, 491–510.
+49. Atkins, P., and De Paula, J. (2011). Physical
+Chemistry for the Life Sciences (Oxford
+University Press).
+50. Atkins, P., Atkins, P.W., and de Paula, J. (2014).
+Atkins’ Physical Chemistry (Oxford university
+press).
+51. Tanaka, T., Fillmore, D., Sun, S.T., Nishio, I.,
+Swislow, G., and Shah, A. (1980). Phase
+transitions in ionic gels. Phys. Rev. Lett. 45,
+1636–1639.
+52. Oyen, M.L. (2014). Mechanical characterisation
+of hydrogel materials. Int. Mater. Rev.
+59, 44–59.
+53. Bourtchouladze, R. (2002). Memories Are
+Made of This: How Memory Works in
+Humans and Animals (Columbia University
+Press).
+54. Schiavone, G., Kang, X., Fallegger, F., Gandar,
+J., Courtine, G., and Lacour, S.P. (2020).
+Guidelines to study and develop soft electrode
+systems for neural stimulation. Neuron 108,
+238–258.
+ll
+OPEN ACCESS
+Cell Reports Physical Science 5, 102151, September 18, 2024
+31
+Article
+
+
+--- Page 33 ---
+55. Jia, K., Li, X., and Wang, Y. (2021).
+Electrochemical breakdown in
+hydrogel ionotronic devices. Soft Matter 17,
+834–839.
+56. Mathworks, Polyﬁt. https://www.mathworks.
+com/help/matlab/ref/polyﬁt.html, Acessed 05/
+08/2024.
+57. Mao, Y., Cates, M., and Lekkerkerker, H. (1995).
+Depletion force in colloidal systems. Phys. Stat.
+Mech. Appl. 222, 10–24.
+58. Lekkerkerker, H.N., and Tuinier, R. (2011).
+Depletion Interaction. In Colloids and
+the Depletion Interaction (Springer),
+pp. 57–108.
+59. Schroeder, D.V. (2000). An Introduction
+to Thermal Physic, 57 (Addison Wesley).
+60. Ebrahimi, N., Maasoumi, E., and Sooﬁ, E.S.
+(1999). Ordering univariate distributions by
+entropy and variance. J. Econom. 90,
+317–336.
+61. Neal, R.M. (2012). Bayesian Learning for Neural
+Networks, 118 (Springer Science & Business
+Media).
+62. Knill, D.C., and Pouget, A. (2004). The bayesian
+brain: the role of uncertainty in neural coding
+and computation. Trends Neurosci. 27, 712–719.
+63. Parr, T., and Friston, K.J. (2018). The discrete
+and continuous brain: from decisions to
+movement—and back again. Neural Comput.
+30, 2319–2347.
+ll
+OPEN ACCESS
+32
+Cell Reports Physical Science 5, 102151, September 18, 2024
+Article

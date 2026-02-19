@@ -1,0 +1,32 @@
+[
+  {
+    "id": "recD8Vi4YrswL758R",
+    "Name": "Streptomycin",
+    "Reference Number": "SBR00068-10ML",
+    "Supplier": "Sigma",
+    "Link": "https://www.sigmaaldrich.com/FR/fr/product/sigma/sbr00068",
+    "Storage": "F1.2",
+    "Notes": "100 mg/mL in water",
+    "Type": [
+      "Antibiotic Solution"
+    ],
+    "Project": [
+      "Mycelium Music"
+    ]
+  },
+  {
+    "id": "recsqPTCNPoleb9UO",
+    "Name": "Potato Dextrose Agar",
+    "Reference Number": "P2182-250G",
+    "Supplier": "Sigma",
+    "Link": "https://www.sigmaaldrich.com/FR/fr/product/sial/p2182?srsltid=AfmBOor_FwspGnZo78mpD060PBdHaxdjSyxzwDT0dKBbkIWkhtaX33gD",
+    "Storage": "A1.3",
+    "Notes": "Solve 39 g in 1 litre distilled water. \n3.9g in 100mL\n7.8g in 200mL\n\nAutoclave 15 minutes at 121°C.",
+    "Type": [
+      "Powdered Media"
+    ],
+    "Project": [
+      "Mycelium Music"
+    ]
+  }
+]
