@@ -1,6 +1,7 @@
 "use client";
 
-import { apps, getAppUrl, type AppInfo } from "@/lib/apps";
+import React from "react";
+import { apps, type AppInfo } from "@/lib/apps";
 
 function StatusDot({ status }: { status: AppInfo["status"] }) {
   const colors = {
@@ -22,7 +23,11 @@ function StatusDot({ status }: { status: AppInfo["status"] }) {
 }
 
 function AppCard({ app }: { app: AppInfo }) {
-  const href = getAppUrl(app);
+  const [href, setHref] = React.useState(`http://localhost:${app.frontendPort}`);
+
+  React.useEffect(() => {
+    setHref(`http://${window.location.hostname}:${app.frontendPort}`);
+  }, [app.frontendPort]);
 
   return (
     <a
