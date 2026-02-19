@@ -24,7 +24,8 @@ export async function POST(req: NextRequest) {
         );
     }
 
-    const result = stopApp(slug);
+    const ports = app.startCommands.map((sc) => sc.port);
+    const result = stopApp(slug, ports);
 
     return NextResponse.json(result);
 }

@@ -81,6 +81,31 @@ export const apps: AppInfo[] = [
             },
         ],
     },
+    {
+        slug: "experiment-viewer",
+        name: "Experiment Notebooks",
+        description:
+            "Browse and read all experiment markdown files. Renders tables, code blocks, images, and GFM syntax in a polished dark-mode reader.",
+        icon: "📓",
+        backendPort: 8001,
+        frontendPort: 3002,
+        tags: ["experiments", "documentation", "markdown"],
+        managed: true,
+        startCommands: [
+            {
+                cwd: "applications/experiment-viewer/server",
+                cmd: "python3 -m uvicorn main:app --host 0.0.0.0 --port 8001",
+                port: 8001,
+                label: "backend",
+            },
+            {
+                cwd: "applications/experiment-viewer/dashboard",
+                cmd: "npm run dev -- -p 3002",
+                port: 3002,
+                label: "frontend",
+            },
+        ],
+    },
 ];
 
 /**

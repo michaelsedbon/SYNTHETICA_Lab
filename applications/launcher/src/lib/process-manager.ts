@@ -5,7 +5,7 @@
  * so that the start/stop API routes can manage app lifecycles.
  */
 
-import { spawn, ChildProcess } from "child_process";
+import { spawn, ChildProcess, execSync } from "child_process";
 import path from "path";
 
 interface ManagedProcess {
@@ -131,32 +131,65 @@ export interface StopResult {
     errors: string[];
 }
 
-export function stopApp(slug: string): StopResult {
+export function stopApp(slug: string, ports?: number[]): StopResult {
     const procs = runningProcesses.get(slug);
-    if (!procs || procs.length === 0) {
-        return { slug, killed: [], errors: ["Not running (no tracked processes)"] };
-    }
 
-    const killed: { label: string; pid: number }[] = [];
-    const errors: string[] = [];
+    // If we have tracked processes, kill them by PID
+    if (procs && procs.length > 0) {
+        const killed: { label: string; pid: number }[] = [];
+        const errors: string[] = [];
 
-    for (const p of procs) {
-        try {
-            // Kill the process group (negative PID kills the group)
-            process.kill(-p.pid, "SIGTERM");
-            killed.push({ label: p.label, pid: p.pid });
-        } catch (err) {
-            // Try killing just the process
+        for (const p of procs) {
             try {
-                process.kill(p.pid, "SIGTERM");
+                // Kill the process group (negative PID kills the group)
+                process.kill(-p.pid, "SIGTERM");
                 killed.push({ label: p.label, pid: p.pid });
-            } catch {
-                errors.push(`Failed to kill ${p.label} (PID ${p.pid}): ${err}`);
+            } catch (err) {
+                // Try killing just the process
+                try {
+                    process.kill(p.pid, "SIGTERM");
+                    killed.push({ label: p.label, pid: p.pid });
+                } catch {
+                    errors.push(`Failed to kill ${p.label} (PID ${p.pid}): ${err}`);
+                }
             }
         }
+
+        runningProcesses.delete(slug);
+        return { slug, killed, errors };
     }
 
-    runningProcesses.delete(slug);
+    // Fallback: kill by port using lsof (works for externally-started processes)
+    if (ports && ports.length > 0) {
+        const killed: { label: string; pid: number }[] = [];
+        const errors: string[] = [];
 
-    return { slug, killed, errors };
+        for (const port of ports) {
+            try {
+                const pids = execSync(`lsof -ti :${port}`, { encoding: "utf-8" })
+                    .trim()
+                    .split("\n")
+                    .filter(Boolean)
+                    .map((s) => parseInt(s, 10))
+                    .filter((n) => !isNaN(n));
+
+                for (const pid of pids) {
+                    try {
+                        process.kill(pid, "SIGTERM");
+                        killed.push({ label: `port:${port}`, pid });
+                    } catch {
+                        errors.push(`Failed to kill PID ${pid} on port ${port}`);
+                    }
+                }
+            } catch {
+                // lsof returns non-zero if no process is on the port — that's fine
+            }
+        }
+
+        runningProcesses.delete(slug);
+        return { slug, killed, errors: killed.length === 0 ? ["No processes found on ports"] : errors };
+    }
+
+    return { slug, killed: [], errors: ["Not running (no tracked processes)"] };
 }
+
