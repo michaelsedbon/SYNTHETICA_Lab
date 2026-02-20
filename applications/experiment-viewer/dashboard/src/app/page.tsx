@@ -14,12 +14,14 @@ interface MdFile {
   path: string;
   title: string;
   modified: number;
+  source: string;
 }
 
 interface ExperimentGroup {
   key: string;
   label: string;
   files: MdFile[];
+  source: string;
 }
 
 // ── API helpers ────────────────────────────────────────────────────
@@ -34,9 +36,9 @@ async function fetchExperiments(): Promise<ExperimentGroup[]> {
   return res.json();
 }
 
-async function fetchFile(path: string): Promise<string> {
+async function fetchFile(path: string, source: string): Promise<string> {
   const res = await fetch(
-    `${apiBase()}/api/file?path=${encodeURIComponent(path)}`
+    `${apiBase()}/api/file?path=${encodeURIComponent(path)}&source=${encodeURIComponent(source)}`
   );
   const data = await res.json();
   return data.content;
@@ -47,6 +49,7 @@ async function fetchFile(path: string): Promise<string> {
 export default function ExperimentViewer() {
   const [groups, setGroups] = useState<ExperimentGroup[]>([]);
   const [activePath, setActivePath] = useState<string | null>(null);
+  const [activeSource, setActiveSource] = useState<string>("Lab");
   const [content, setContent] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -59,17 +62,18 @@ export default function ExperimentViewer() {
       setGroups(data);
       // Auto-select first file
       if (data.length > 0 && data[0].files.length > 0) {
-        handleSelect(data[0].files[0].path);
+        handleSelect(data[0].files[0].path, data[0].source);
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleSelect = useCallback(async (path: string) => {
+  const handleSelect = useCallback(async (path: string, source: string) => {
     setActivePath(path);
+    setActiveSource(source);
     setLoading(true);
     try {
-      const md = await fetchFile(path);
+      const md = await fetchFile(path, source);
       setContent(md);
     } catch {
       setContent("# Error\n\nCould not load this file.");
@@ -93,13 +97,15 @@ export default function ExperimentViewer() {
     }))
     .filter((g) => g.files.length > 0);
 
+  // Group by source for sidebar section headers
+  const sources = [...new Set(filteredGroups.map((g) => g.source))];
+
   // Resolve image URLs in markdown to point to the API
   const resolveImageSrc = (src: string, filePath: string | null): string => {
     if (!filePath || src.startsWith("http")) return src;
-    // Compute relative to the file's directory
     const dir = filePath.split("/").slice(0, -1).join("/");
     const resolved = dir ? `${dir}/${src}` : src;
-    return `${apiBase()}/api/media?path=${encodeURIComponent(resolved)}`;
+    return `${apiBase()}/api/media?path=${encodeURIComponent(resolved)}&source=${encodeURIComponent(activeSource)}`;
   };
 
   return (
@@ -149,67 +155,83 @@ export default function ExperimentViewer() {
           </div>
         </div>
 
-        {/* File tree */}
+        {/* File tree — grouped by source */}
         <nav className="flex-1 overflow-y-auto px-2 pb-4">
-          {filteredGroups.map((group) => (
-            <div key={group.key} className="mb-1">
-              <button
-                onClick={() => toggleGroup(group.key)}
-                className="flex items-center gap-1.5 w-full px-2 py-1.5 text-xs font-semibold
-                           text-muted-foreground uppercase tracking-wider
-                           hover:text-foreground transition-colors rounded-md
-                           hover:bg-muted/40"
-              >
-                <svg
-                  className={`h-3 w-3 transition-transform duration-200 ${collapsed[group.key] ? "" : "rotate-90"
-                    }`}
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-                {group.label}
-              </button>
+          {sources.map((source) => (
+            <div key={source} className="mb-3">
+              {/* Source section header */}
+              {sources.length > 1 && (
+                <div className="flex items-center gap-2 px-2 pt-2 pb-1.5">
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
+                    {source}
+                  </span>
+                  <div className="flex-1 h-px bg-border/50" />
+                </div>
+              )}
 
-              {!collapsed[group.key] && (
-                <div className="ml-2 mt-0.5 space-y-0.5">
-                  {group.files.map((file) => (
+              {filteredGroups
+                .filter((g) => g.source === source)
+                .map((group) => (
+                  <div key={`${source}-${group.key}`} className="mb-1">
                     <button
-                      key={file.path}
-                      onClick={() => handleSelect(file.path)}
-                      className={`
-                        flex items-center gap-2 w-full px-3 py-2 text-sm rounded-md
-                        transition-all duration-150
-                        ${activePath === file.path
-                          ? "bg-accent text-accent-foreground font-medium shadow-sm"
-                          : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                        }
-                      `}
+                      onClick={() => toggleGroup(`${source}-${group.key}`)}
+                      className="flex items-center gap-1.5 w-full px-2 py-1.5 text-xs font-semibold
+                                 text-muted-foreground uppercase tracking-wider
+                                 hover:text-foreground transition-colors rounded-md
+                                 hover:bg-muted/40"
                     >
                       <svg
-                        className="h-4 w-4 flex-shrink-0 opacity-50"
+                        className={`h-3 w-3 transition-transform duration-200 ${collapsed[`${source}-${group.key}`] ? "" : "rotate-90"
+                          }`}
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
-                        strokeWidth={1.5}
+                        strokeWidth={2}
                       >
                         <path
                           strokeLinecap="round"
                           strokeLinejoin="round"
-                          d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+                          d="M9 5l7 7-7 7"
                         />
                       </svg>
-                      <span className="truncate">{file.title}</span>
+                      {group.label}
                     </button>
-                  ))}
-                </div>
-              )}
+
+                    {!collapsed[`${source}-${group.key}`] && (
+                      <div className="ml-2 mt-0.5 space-y-0.5">
+                        {group.files.map((file) => (
+                          <button
+                            key={`${source}-${file.path}`}
+                            onClick={() => handleSelect(file.path, source)}
+                            className={`
+                              flex items-center gap-2 w-full px-3 py-2 text-sm rounded-md
+                              transition-all duration-150
+                              ${activePath === file.path && activeSource === source
+                                ? "bg-accent text-accent-foreground font-medium shadow-sm"
+                                : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                              }
+                            `}
+                          >
+                            <svg
+                              className="h-4 w-4 flex-shrink-0 opacity-50"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                              strokeWidth={1.5}
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+                              />
+                            </svg>
+                            <span className="truncate">{file.title}</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
             </div>
           ))}
 
@@ -223,6 +245,7 @@ export default function ExperimentViewer() {
         {/* Footer */}
         <div className="px-4 py-3 border-t border-border text-xs text-muted-foreground">
           {groups.reduce((a, g) => a + g.files.length, 0)} files
+          {sources.length > 1 && ` · ${sources.length} sources`}
         </div>
       </aside>
 
@@ -252,7 +275,9 @@ export default function ExperimentViewer() {
 
           {activePath && (
             <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-              <span>experiments</span>
+              <span className="px-1.5 py-0.5 bg-muted/50 rounded text-xs font-medium">
+                {activeSource}
+              </span>
               {activePath.split("/").map((part, i, arr) => (
                 <span key={i} className="flex items-center gap-1.5">
                   <span className="opacity-40">/</span>

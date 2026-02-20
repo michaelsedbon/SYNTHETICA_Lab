@@ -1,6 +1,7 @@
 """
 Experiment Viewer — FastAPI backend
-Discovers .md files in experiments/ and serves their content + referenced media.
+Discovers .md files across multiple experiment directories and serves
+their content + referenced media. Supports grouping by source.
 """
 
 import os
@@ -12,9 +13,47 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 
-# ── Workspace root (two levels up from server/)
+# ── Experiment sources ──────────────────────────────────────────────
+# Each source is a (label, path) tuple.  The local workspace experiments/
+# folder is always included.  Additional folders can be added via the
+# EXTRA_EXPERIMENT_DIRS env var (comma-separated "label:path" pairs).
+#
+# Example:
+#   EXTRA_EXPERIMENT_DIRS="PhD:/Users/me/Documents/PhD/experiments"
+
 WORKSPACE = Path(__file__).resolve().parent.parent.parent.parent
-EXPERIMENTS_DIR = WORKSPACE / "experiments"
+LOCAL_EXPERIMENTS = WORKSPACE / "experiments"
+
+def _parse_sources() -> list[tuple[str, Path]]:
+    """Build the list of (label, directory) sources."""
+    sources: list[tuple[str, Path]] = []
+
+    # Always include the local workspace experiments folder
+    if LOCAL_EXPERIMENTS.is_dir():
+        sources.append(("Lab", LOCAL_EXPERIMENTS))
+
+    # Parse additional directories from env var
+    extra = os.environ.get("EXTRA_EXPERIMENT_DIRS", "")
+    if not extra:
+        # Default: include PhD folder if it exists
+        phd_dir = Path(os.path.expanduser("~/Documents/PhD/experiments"))
+        if phd_dir.is_dir():
+            sources.append(("PhD", phd_dir))
+    else:
+        for entry in extra.split(","):
+            entry = entry.strip()
+            if ":" in entry:
+                label, path_str = entry.split(":", 1)
+                p = Path(path_str.strip()).expanduser()
+                if p.is_dir():
+                    sources.append((label.strip(), p))
+
+    return sources
+
+SOURCES = _parse_sources()
+
+# Build a flat lookup: source_label -> Path  (used for file/media serving)
+SOURCE_MAP = {label: path for label, path in SOURCES}
 
 app = FastAPI(title="Experiment Viewer API")
 
@@ -39,67 +78,88 @@ def _title_from_md(path: Path) -> str:
     return path.stem
 
 
+# Directories to skip during traversal
+SKIP_DIRS = {".venv", "venv", "node_modules", "__pycache__", ".git", ".next", "data"}
+
+
 def _build_tree() -> list[dict]:
-    """Walk experiments/ and return a structured list of experiment groups."""
-    if not EXPERIMENTS_DIR.is_dir():
-        return []
+    """Walk all experiment sources and return a grouped list."""
+    all_groups: list[dict] = []
 
-    groups: dict[str, dict] = {}
+    for source_label, experiments_dir in SOURCES:
+        groups: dict[str, dict] = {}
 
-    # Directories to skip
-    SKIP_DIRS = {".venv", "venv", "node_modules", "__pycache__", ".git", ".next"}
+        for md_path in sorted(experiments_dir.rglob("*.md")):
+            # Skip files inside excluded directories
+            rel_parts = md_path.relative_to(experiments_dir).parts
+            if any(part in SKIP_DIRS or part.startswith(".") for part in rel_parts[:-1]):
+                continue
 
-    for md_path in sorted(EXPERIMENTS_DIR.rglob("*.md")):
-        # Skip files inside excluded directories
-        if any(part in SKIP_DIRS or part.startswith(".") for part in md_path.relative_to(EXPERIMENTS_DIR).parts[:-1]):
-            continue
+            rel = md_path.relative_to(experiments_dir)
+            parts = rel.parts
 
-        rel = md_path.relative_to(EXPERIMENTS_DIR)
-        parts = rel.parts
+            if len(parts) == 1:
+                group_key = "_root"
+                group_label = "General"
+            else:
+                group_key = parts[0]
+                group_label = parts[0]
 
-        # Group by top-level folder (EXP_001, etc.) or "root" for top-level files
-        if len(parts) == 1:
-            group_key = "_root"
-            group_label = "General"
-        else:
-            group_key = parts[0]
-            group_label = parts[0]
+            if group_key not in groups:
+                groups[group_key] = {
+                    "key": group_key,
+                    "label": group_label,
+                    "files": [],
+                }
 
-        if group_key not in groups:
-            groups[group_key] = {
-                "key": group_key,
-                "label": group_label,
-                "files": [],
-            }
+            groups[group_key]["files"].append({
+                "name": md_path.name,
+                "path": str(rel),
+                "title": _title_from_md(md_path),
+                "modified": md_path.stat().st_mtime,
+                "source": source_label,
+            })
 
-        groups[group_key]["files"].append({
-            "name": md_path.name,
-            "path": str(rel),
-            "title": _title_from_md(md_path),
-            "modified": md_path.stat().st_mtime,
-        })
+        # Collect groups for this source
+        source_groups = []
+        if "_root" in groups:
+            source_groups.append(groups.pop("_root"))
+        for key in sorted(groups):
+            source_groups.append(groups[key])
 
-    # Sort: root first, then alphabetical
-    result = []
-    if "_root" in groups:
-        result.append(groups.pop("_root"))
-    for key in sorted(groups):
-        result.append(groups[key])
-    return result
+        # Tag each group with its source
+        for g in source_groups:
+            g["source"] = source_label
+
+        all_groups.extend(source_groups)
+
+    return all_groups
 
 
 @app.get("/api/experiments")
 def list_experiments():
-    """Return the tree of experiment markdown files."""
+    """Return the tree of experiment markdown files from all sources."""
     return _build_tree()
 
 
+@app.get("/api/sources")
+def list_sources():
+    """Return the list of configured experiment sources."""
+    return [{"label": label, "path": str(path)} for label, path in SOURCES]
+
+
 @app.get("/api/file")
-def get_file(path: str = Query(..., description="Relative path within experiments/")):
+def get_file(
+    path: str = Query(..., description="Relative path within an experiments dir"),
+    source: str = Query("Lab", description="Source label"),
+):
     """Return raw markdown content for a given file."""
-    resolved = (EXPERIMENTS_DIR / path).resolve()
-    # Security: ensure it stays within experiments/
-    if not str(resolved).startswith(str(EXPERIMENTS_DIR)):
+    experiments_dir = SOURCE_MAP.get(source)
+    if not experiments_dir:
+        raise HTTPException(status_code=400, detail=f"Unknown source: {source}")
+
+    resolved = (experiments_dir / path).resolve()
+    if not str(resolved).startswith(str(experiments_dir)):
         raise HTTPException(status_code=403, detail="Access denied")
     if not resolved.is_file():
         raise HTTPException(status_code=404, detail="File not found")
@@ -107,10 +167,17 @@ def get_file(path: str = Query(..., description="Relative path within experiment
 
 
 @app.get("/api/media")
-def get_media(path: str = Query(..., description="Relative path to media within experiments/")):
+def get_media(
+    path: str = Query(..., description="Relative path to media"),
+    source: str = Query("Lab", description="Source label"),
+):
     """Serve images/media referenced from markdown files."""
-    resolved = (EXPERIMENTS_DIR / path).resolve()
-    if not str(resolved).startswith(str(EXPERIMENTS_DIR)):
+    experiments_dir = SOURCE_MAP.get(source)
+    if not experiments_dir:
+        raise HTTPException(status_code=400, detail=f"Unknown source: {source}")
+
+    resolved = (experiments_dir / path).resolve()
+    if not str(resolved).startswith(str(experiments_dir)):
         raise HTTPException(status_code=403, detail="Access denied")
     if not resolved.is_file():
         raise HTTPException(status_code=404, detail="File not found")

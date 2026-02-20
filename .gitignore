@@ -26,3 +26,7 @@ build/
 *.blend
 *.blend1
 package-lock.json
+*.csv
+*.hdf5
+*.ipynb
+*.png

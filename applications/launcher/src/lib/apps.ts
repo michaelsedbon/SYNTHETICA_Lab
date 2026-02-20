@@ -106,31 +106,6 @@ export const apps: AppInfo[] = [
             },
         ],
     },
-    {
-        slug: "phd-notebook",
-        name: "PhD Notebook",
-        description:
-            "Browse and read PhD experiment summaries. Reads summary.md files from the PhD folder in a polished dark-mode reader.",
-        icon: "🎓",
-        backendPort: 8002,
-        frontendPort: 3003,
-        tags: ["PhD", "experiments", "markdown"],
-        managed: true,
-        startCommands: [
-            {
-                cwd: "applications/phd-notebook/server",
-                cmd: "python3 -m uvicorn main:app --host 0.0.0.0 --port 8002",
-                port: 8002,
-                label: "backend",
-            },
-            {
-                cwd: "applications/phd-notebook/dashboard",
-                cmd: "npm run dev -- -p 3003",
-                port: 3003,
-                label: "frontend",
-            },
-        ],
-    },
 ];
 
 /**
