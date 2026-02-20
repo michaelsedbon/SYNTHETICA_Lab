@@ -129,7 +129,7 @@ function AppCard({
     setHref(`http://${window.location.hostname}:${app.frontendPort}`);
   }, [app.frontendPort]);
 
-  const isUp = health?.allUp ?? false;
+  const isUp = health?.anyUp ?? false;
 
   async function handleStart() {
     setLoading(true);
@@ -344,10 +344,10 @@ export default function Home() {
           <span className="flex items-center gap-1">
             <span
               className={`inline-block h-1.5 w-1.5 rounded-full ${Object.values(health).every((h) => h.allUp)
-                  ? "bg-emerald-400"
-                  : Object.values(health).some((h) => h.anyUp)
-                    ? "bg-amber-400"
-                    : "bg-zinc-500"
+                ? "bg-emerald-400"
+                : Object.values(health).some((h) => h.anyUp)
+                  ? "bg-amber-400"
+                  : "bg-zinc-500"
                 }`}
             />
             {Object.keys(health).length === 0
