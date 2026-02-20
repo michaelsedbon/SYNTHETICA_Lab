@@ -83,7 +83,12 @@ SKIP_DIRS = {".venv", "venv", "node_modules", "__pycache__", ".git", ".next", "d
 
 
 def _build_tree() -> list[dict]:
-    """Walk all experiment sources and return a grouped list."""
+    """Walk all experiment sources and return a grouped list.
+
+    Each group (EXP_xxx folder) has:
+      - summary: the summary.md file entry (or None)
+      - files:   all other .md files in the folder
+    """
     all_groups: list[dict] = []
 
     for source_label, experiments_dir in SOURCES:
@@ -109,16 +114,23 @@ def _build_tree() -> list[dict]:
                 groups[group_key] = {
                     "key": group_key,
                     "label": group_label,
+                    "summary": None,
                     "files": [],
                 }
 
-            groups[group_key]["files"].append({
+            file_entry = {
                 "name": md_path.name,
                 "path": str(rel),
                 "title": _title_from_md(md_path),
                 "modified": md_path.stat().st_mtime,
                 "source": source_label,
-            })
+            }
+
+            # summary.md is the primary file for the group
+            if md_path.name.lower() == "summary.md":
+                groups[group_key]["summary"] = file_entry
+            else:
+                groups[group_key]["files"].append(file_entry)
 
         # Collect groups for this source
         source_groups = []

@@ -20,6 +20,7 @@ interface MdFile {
 interface ExperimentGroup {
   key: string;
   label: string;
+  summary: MdFile | null;
   files: MdFile[];
   source: string;
 }
@@ -86,16 +87,23 @@ export default function ExperimentViewer() {
   };
 
   // Filter files by search
+  const q = searchQuery.toLowerCase();
   const filteredGroups = groups
-    .map((g) => ({
-      ...g,
-      files: g.files.filter(
-        (f) =>
-          f.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          f.name.toLowerCase().includes(searchQuery.toLowerCase())
-      ),
-    }))
-    .filter((g) => g.files.length > 0);
+    .map((g) => {
+      const matchesSearch = (f: MdFile) =>
+        f.title.toLowerCase().includes(q) ||
+        f.name.toLowerCase().includes(q);
+      const summaryMatches = g.summary && matchesSearch(g.summary);
+      const filteredFiles = g.files.filter(matchesSearch);
+      // Show group if summary or any child matches (or label matches)
+      const labelMatches = g.label.toLowerCase().includes(q);
+      return {
+        ...g,
+        summary: (summaryMatches || labelMatches || !q) ? g.summary : null,
+        files: (labelMatches || summaryMatches) && !q ? g.files : filteredFiles,
+      };
+    })
+    .filter((g) => g.summary || g.files.length > 0);
 
   // Group by source for sidebar section headers
   const sources = [...new Set(filteredGroups.map((g) => g.source))];
@@ -173,6 +181,7 @@ export default function ExperimentViewer() {
                 .filter((g) => g.source === source)
                 .map((group) => (
                   <div key={`${source}-${group.key}`} className="mb-1">
+                    {/* Group header (collapsible) */}
                     <button
                       onClick={() => toggleGroup(`${source}-${group.key}`)}
                       className="flex items-center gap-1.5 w-full px-2 py-1.5 text-xs font-semibold
@@ -199,14 +208,15 @@ export default function ExperimentViewer() {
 
                     {!collapsed[`${source}-${group.key}`] && (
                       <div className="ml-2 mt-0.5 space-y-0.5">
-                        {group.files.map((file) => (
+                        {/* Summary.md — primary entry */}
+                        {group.summary && (
                           <button
-                            key={`${source}-${file.path}`}
-                            onClick={() => handleSelect(file.path, source)}
+                            key={`${source}-${group.summary.path}`}
+                            onClick={() => handleSelect(group.summary!.path, source)}
                             className={`
                               flex items-center gap-2 w-full px-3 py-2 text-sm rounded-md
                               transition-all duration-150
-                              ${activePath === file.path && activeSource === source
+                              ${activePath === group.summary.path && activeSource === source
                                 ? "bg-accent text-accent-foreground font-medium shadow-sm"
                                 : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                               }
@@ -222,12 +232,47 @@ export default function ExperimentViewer() {
                               <path
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
-                                d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+                                d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"
                               />
                             </svg>
-                            <span className="truncate">{file.title}</span>
+                            <span className="truncate font-medium">{group.summary.title}</span>
                           </button>
-                        ))}
+                        )}
+
+                        {/* Child .md files — indented under summary */}
+                        {group.files.length > 0 && (
+                          <div className={group.summary ? "ml-4 border-l border-border/40 pl-2 space-y-0.5" : "space-y-0.5"}>
+                            {group.files.map((file) => (
+                              <button
+                                key={`${source}-${file.path}`}
+                                onClick={() => handleSelect(file.path, source)}
+                                className={`
+                                  flex items-center gap-2 w-full px-3 py-1.5 text-sm rounded-md
+                                  transition-all duration-150
+                                  ${activePath === file.path && activeSource === source
+                                    ? "bg-accent text-accent-foreground font-medium shadow-sm"
+                                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                                  }
+                                `}
+                              >
+                                <svg
+                                  className="h-3.5 w-3.5 flex-shrink-0 opacity-40"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke="currentColor"
+                                  strokeWidth={1.5}
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+                                  />
+                                </svg>
+                                <span className="truncate text-xs">{file.title}</span>
+                              </button>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
@@ -244,7 +289,7 @@ export default function ExperimentViewer() {
 
         {/* Footer */}
         <div className="px-4 py-3 border-t border-border text-xs text-muted-foreground">
-          {groups.reduce((a, g) => a + g.files.length, 0)} files
+          {groups.reduce((a, g) => a + g.files.length + (g.summary ? 1 : 0), 0)} files
           {sources.length > 1 && ` · ${sources.length} sources`}
         </div>
       </aside>
