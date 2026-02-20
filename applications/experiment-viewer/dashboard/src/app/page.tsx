@@ -157,8 +157,8 @@ export default function ExperimentViewer() {
 
         {/* File tree — grouped by source */}
         <nav className="flex-1 overflow-y-auto px-2 pb-4">
-          {sources.map((source) => (
-            <div key={source} className="mb-3">
+          {sources.map((source, sourceIdx) => (
+            <div key={`source-${sourceIdx}-${source}`} className="mb-3">
               {/* Source section header */}
               {sources.length > 1 && (
                 <div className="flex items-center gap-2 px-2 pt-2 pb-1.5">
