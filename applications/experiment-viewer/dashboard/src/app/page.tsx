@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
@@ -109,26 +109,12 @@ export default function ExperimentViewer() {
   const sources = [...new Set(filteredGroups.map((g) => g.source))];
 
   // Resolve relative URLs in markdown to point to the API
-  const resolveMediaUrl = useCallback((src: string, filePath: string | null, source?: string): string => {
-    const s = source || activeSource;
+  const resolveMediaUrl = (src: string, filePath: string | null): string => {
     if (!filePath || src.startsWith("http") || src.startsWith("mailto:") || src.startsWith("#")) return src;
     const dir = filePath.split("/").slice(0, -1).join("/");
     const resolved = dir ? `${dir}/${src}` : src;
-    return `${apiBase()}/api/media?path=${encodeURIComponent(resolved)}&source=${encodeURIComponent(s)}`;
-  }, [activeSource]);
-
-  // Pre-process markdown: replace image + interactive-link pairs with plotly embeds
-  const processedContent = useMemo(() => {
-    if (!content || !activePath) return content;
-    // Match: ![alt](path/to/img.png)\n\n[→ Interactive version](path/to/file.html)
-    return content.replace(
-      /!\[([^\]]*)\]\(([^)]+\.png)\)\s*\n\s*\n\s*\[→ Interactive version\]\(([^)]+\.html)\)/g,
-      (_match, alt, _imgSrc, htmlSrc) => {
-        const iframeSrc = resolveMediaUrl(htmlSrc, activePath);
-        return `<div class="plotly-embed" data-alt="${alt}"><iframe src="${iframeSrc}" loading="lazy"></iframe></div>`;
-      }
-    );
-  }, [content, activePath, resolveMediaUrl]);
+    return `${apiBase()}/api/media?path=${encodeURIComponent(resolved)}&source=${encodeURIComponent(activeSource)}`;
+  };
 
   // Keep backward-compat alias
   const resolveImageSrc = resolveMediaUrl;
@@ -405,7 +391,7 @@ export default function ExperimentViewer() {
                   },
                 }}
               >
-                {processedContent}
+                {content}
               </ReactMarkdown>
             </article>
           ) : (
