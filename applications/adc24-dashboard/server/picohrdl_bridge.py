@@ -28,25 +28,58 @@ Protocol: one JSON object per line on stdin/stdout.
 
 import ctypes
 import json
+import platform
 import sys
 import os
 
-# Ensure we can find the library
-LIB_PATHS = [
+# Library search paths by platform
+_MACOS_LIB_PATHS = [
     "/Library/Frameworks/PicoSDK.framework/Libraries/libpicohrdl/libpicohrdl.dylib",
     "/Library/Frameworks/PicoSDK.framework/Libraries/libpicohrdl/libpicohrdl.2.dylib",
 ]
 
+_LINUX_LIB_PATHS = [
+    "/opt/picoscope/lib/libpicohrdl.so",
+    "/opt/picoscope/lib/libpicohrdl.so.2",
+    "/usr/lib/libpicohrdl.so",
+    "/usr/local/lib/libpicohrdl.so",
+]
+
 
 def load_library():
-    """Load the picohrdl C library directly via ctypes."""
-    for path in LIB_PATHS:
+    """Load the picohrdl C library directly via ctypes.
+
+    Auto-detects the operating system and searches the appropriate
+    library paths (.dylib on macOS, .so on Linux).
+    """
+    system = platform.system()
+    if system == "Darwin":
+        lib_paths = _MACOS_LIB_PATHS
+        lib_name = "libpicohrdl.dylib"
+    elif system == "Linux":
+        lib_paths = _LINUX_LIB_PATHS
+        lib_name = "libpicohrdl.so"
+    else:
+        raise RuntimeError(f"Unsupported platform: {system}")
+
+    for path in lib_paths:
         if os.path.exists(path):
             try:
                 return ctypes.cdll.LoadLibrary(path)
             except OSError:
                 continue
-    raise RuntimeError("Could not load libpicohrdl.dylib")
+
+    # Last resort: let ctypes search system paths
+    try:
+        return ctypes.cdll.LoadLibrary(lib_name)
+    except OSError:
+        pass
+
+    raise RuntimeError(
+        f"Could not load {lib_name}. "
+        f"Searched: {lib_paths}. "
+        f"Install PicoSDK ({'brew' if system == 'Darwin' else 'apt install libpicohrdl'})."
+    )
 
 
 def reply(data):

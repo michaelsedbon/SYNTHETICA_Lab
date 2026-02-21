@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
@@ -108,13 +108,30 @@ export default function ExperimentViewer() {
   // Group by source for sidebar section headers
   const sources = [...new Set(filteredGroups.map((g) => g.source))];
 
-  // Resolve image URLs in markdown to point to the API
-  const resolveImageSrc = (src: string, filePath: string | null): string => {
-    if (!filePath || src.startsWith("http")) return src;
+  // Resolve relative URLs in markdown to point to the API
+  const resolveMediaUrl = useCallback((src: string, filePath: string | null, source?: string): string => {
+    const s = source || activeSource;
+    if (!filePath || src.startsWith("http") || src.startsWith("mailto:") || src.startsWith("#")) return src;
     const dir = filePath.split("/").slice(0, -1).join("/");
     const resolved = dir ? `${dir}/${src}` : src;
-    return `${apiBase()}/api/media?path=${encodeURIComponent(resolved)}&source=${encodeURIComponent(activeSource)}`;
-  };
+    return `${apiBase()}/api/media?path=${encodeURIComponent(resolved)}&source=${encodeURIComponent(s)}`;
+  }, [activeSource]);
+
+  // Pre-process markdown: replace image + interactive-link pairs with plotly embeds
+  const processedContent = useMemo(() => {
+    if (!content || !activePath) return content;
+    // Match: ![alt](path/to/img.png)\n\n[→ Interactive version](path/to/file.html)
+    return content.replace(
+      /!\[([^\]]*)\]\(([^)]+\.png)\)\s*\n\s*\n\s*\[→ Interactive version\]\(([^)]+\.html)\)/g,
+      (_match, alt, _imgSrc, htmlSrc) => {
+        const iframeSrc = resolveMediaUrl(htmlSrc, activePath);
+        return `<div class="plotly-embed" data-alt="${alt}"><iframe src="${iframeSrc}" loading="lazy"></iframe></div>`;
+      }
+    );
+  }, [content, activePath, resolveMediaUrl]);
+
+  // Keep backward-compat alias
+  const resolveImageSrc = resolveMediaUrl;
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">
@@ -357,27 +374,38 @@ export default function ExperimentViewer() {
                 rehypePlugins={[rehypeRaw, rehypeHighlight]}
                 components={{
                   img: ({ src, alt, ...props }) => (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={resolveImageSrc(String(src || ""), activePath)}
-                      alt={alt || ""}
-                      loading="lazy"
-                      {...props}
-                    />
+                    <figure className="figure-block">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={resolveImageSrc(String(src || ""), activePath)}
+                        alt={alt || ""}
+                        loading="lazy"
+                        {...props}
+                      />
+                      {alt && (
+                        <figcaption>{alt}</figcaption>
+                      )}
+                    </figure>
                   ),
-                  a: ({ href, children, ...props }) => (
-                    <a
-                      href={href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      {...props}
-                    >
-                      {children}
-                    </a>
-                  ),
+                  a: ({ href, children, ...props }) => {
+                    const resolvedHref =
+                      href && !href.startsWith("http") && !href.startsWith("mailto:") && !href.startsWith("#")
+                        ? resolveMediaUrl(href, activePath)
+                        : href;
+                    return (
+                      <a
+                        href={resolvedHref}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        {...props}
+                      >
+                        {children}
+                      </a>
+                    );
+                  },
                 }}
               >
-                {content}
+                {processedContent}
               </ReactMarkdown>
             </article>
           ) : (

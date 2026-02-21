@@ -63,11 +63,15 @@ export function Controls({
             <CardContent className="space-y-4">
                 {/* Connection */}
                 <div className="flex gap-2">
-                    {!connected ? (
+                    {recording ? (
+                        <div className="flex-1 flex items-center justify-center gap-2 h-9 rounded-md bg-red-950/30 border border-red-800/50 text-red-400 text-sm">
+                            <span className="inline-block w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                            Recording in progress
+                        </div>
+                    ) : !connected ? (
                         <Button
                             onClick={onConnect}
                             className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white"
-                            disabled={recording}
                         >
                             Connect ADC-24
                         </Button>
@@ -76,7 +80,6 @@ export function Controls({
                             onClick={onDisconnect}
                             variant="outline"
                             className="flex-1 border-zinc-700 text-zinc-300 hover:bg-zinc-800"
-                            disabled={recording}
                         >
                             Disconnect
                         </Button>

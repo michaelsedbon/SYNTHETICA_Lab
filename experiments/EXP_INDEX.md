@@ -16,4 +16,6 @@ scan the summaries below to decide which experiment folder(s) to load.
 Inoculated PDA petri dishes with King Oyster (*P. eryngii*) samples from Mycosphere (liquid and plate cultures). 
 Using PDA + Streptomycin (100 µM/ml final concentration).
 
+**System Characterization (2026-02-19):** Compared custom ADC-24 web app vs PicoLog commercial software for baseline noise (no biology). Custom app shows 68× lower noise (0.4 vs 27 µV std) and 41× lower DC offset. PicoLog settings need verification. See `summary.md` for full analysis.
+
 ---

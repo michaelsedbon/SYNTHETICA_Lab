@@ -12,6 +12,7 @@ import {
   startRecording,
   startDemo,
   stopRecording,
+  getStatus,
   createWebSocket,
   type StreamMessage,
 } from "@/lib/api";
@@ -52,6 +53,28 @@ export default function Dashboard() {
   // WebSocket ref
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimer = useRef<NodeJS.Timeout | null>(null);
+
+  // --- Sync with backend state on mount ---
+  useEffect(() => {
+    getStatus()
+      .then((status) => {
+        setConnected(status.connected);
+        setRecording(status.recording);
+        if (status.recording) {
+          setStats({
+            sampleCount: status.sample_count,
+            peakCount: status.peak_count,
+            elapsedS: status.elapsed_s,
+            spikeFreqHz: status.elapsed_s > 0 ? status.peak_count / status.elapsed_s : 0,
+            latestUv: 0,
+          });
+        }
+      })
+      .catch(() => {
+        // Backend not reachable — stay in disconnected state
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // --- WebSocket connection ---
   const connectWs = useCallback(() => {
@@ -121,10 +144,15 @@ export default function Dashboard() {
     }
   }, [recording]);
 
-  // Connect WebSocket when recording starts
+  // Connect WebSocket when recording starts or page rejoins an active session
   useEffect(() => {
     if (recording) {
-      connectWs();
+      // Small delay to ensure React state is settled after status sync
+      const timer = setTimeout(() => connectWs(), 100);
+      return () => {
+        clearTimeout(timer);
+        if (reconnectTimer.current) clearTimeout(reconnectTimer.current);
+      };
     }
     return () => {
       if (reconnectTimer.current) clearTimeout(reconnectTimer.current);

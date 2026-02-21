@@ -120,6 +120,7 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -178,6 +179,7 @@
   text-underline-offset: 2px;
   transition: color 0.15s;
 }
+
 .markdown-body a:hover {
   color: oklch(0.75 0.22 260);
 }
@@ -273,12 +275,48 @@
   background: oklch(1 0 0 / 3%);
 }
 
-/* images */
+/* images & figures */
+.markdown-body .figure-block {
+  margin: 1.5rem 0;
+  text-align: center;
+}
+
+.markdown-body .figure-block img {
+  max-width: 100%;
+  border-radius: 0.6rem;
+  border: 1px solid oklch(1 0 0 / 8%);
+  margin: 0 auto;
+  display: inline-block;
+}
+
+.markdown-body .figure-block figcaption {
+  margin-top: 0.5rem;
+  font-size: 0.82rem;
+  color: oklch(0.6 0 0);
+  font-style: italic;
+}
+
 .markdown-body img {
   max-width: 100%;
   border-radius: 0.6rem;
   border: 1px solid oklch(1 0 0 / 8%);
   margin: 1rem 0;
+}
+
+/* interactive plotly embeds */
+.markdown-body .plotly-embed {
+  margin: 1.5rem 0;
+  border-radius: 0.6rem;
+  border: 1px solid oklch(1 0 0 / 8%);
+  overflow: hidden;
+  background: rgb(13, 17, 23);
+}
+
+.markdown-body .plotly-embed iframe {
+  width: 100%;
+  height: 520px;
+  border: none;
+  display: block;
 }
 
 /* ── Custom scrollbar ───────────────────────────────────────────── */
@@ -287,13 +325,16 @@
   width: 6px;
   height: 6px;
 }
+
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
   background: oklch(1 0 0 / 12%);
   border-radius: 3px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: oklch(1 0 0 / 20%);
 }
