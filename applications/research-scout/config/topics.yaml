@@ -46,3 +46,56 @@ topics:
       - "bio-inspired soft actuators"
     sources: [openalex]
     max_results: 200
+
+  # ── V3: Weird engineered living things ──────────────────────
+
+  - name: "Xenobots & Living Machines"
+    queries:
+      - "xenobot living robot"
+      - "biohybrid robot living cells"
+      - "self-replicating biological robot"
+      - "programmable organism reconfigurable"
+      - "computer designed organism"
+    sources: [openalex]
+    max_results: 200
+
+  - name: "Bioluminescence Engineering"
+    queries:
+      - "bioluminescence synthetic biology"
+      - "engineered bioluminescent plant"
+      - "luciferase engineering organism"
+      - "autoluminescence genetic circuit"
+      - "glowing organism synthetic"
+    sources: [openalex]
+    max_results: 200
+
+  - name: "Organoid Intelligence & Biocomputing"
+    queries:
+      - "organoid intelligence computing"
+      - "biological neural network computation"
+      - "neurons dish computing learning"
+      - "biocomputer living cells"
+      - "wetware computing biological"
+    sources: [openalex]
+    max_results: 200
+
+  - name: "Living Materials & Engineered Organisms"
+    queries:
+      - "engineered living materials"
+      - "programmable living material"
+      - "self-healing biological material"
+      - "biofabrication living tissue design"
+      - "mycelium composite engineered"
+      - "bacterial cellulose design"
+    sources: [openalex]
+    max_results: 200
+
+  - name: "Genetic Circuit × Physical World"
+    queries:
+      - "genetic circuit actuator"
+      - "synthetic gene circuit mechanical"
+      - "biosensor actuator engineered"
+      - "synthetic biology responsive material"
+      - "cell-based sensor environmental"
+    sources: [openalex]
+    max_results: 200

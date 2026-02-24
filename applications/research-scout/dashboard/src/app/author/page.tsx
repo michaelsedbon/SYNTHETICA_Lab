@@ -38,6 +38,11 @@ const TOPIC_COLORS: Record<string, string> = {
     "AI for Wetlab": "#10b981",
     "DIYBio & Maker Biotech": "#f59e0b",
     "Soft Robotics × Biology": "#8b5cf6",
+    "Xenobots & Living Machines": "#ef4444",
+    "Bioluminescence Engineering": "#22d3ee",
+    "Organoid Intelligence & Biocomputing": "#14b8a6",
+    "Living Materials & Engineered Organisms": "#f97316",
+    "Genetic Circuit × Physical World": "#a3e635",
 };
 
 export default function AuthorProfilePage() {
