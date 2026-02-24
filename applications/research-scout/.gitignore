@@ -1,0 +1,17 @@
+# research-scout.db
+*.db
+*.db-wal
+*.db-shm
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Node
+node_modules/
+.next/
+out/
+
+# OS
+.DS_Store

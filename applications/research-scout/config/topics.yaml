@@ -1,0 +1,48 @@
+# Research Scout — Topic Configuration
+# Add new topics here. The scraper pipeline will pick them up automatically.
+# Each topic can target multiple API sources and use multiple search queries.
+
+topics:
+  - name: "Synthetic Biology × Robotics"
+    queries:
+      - "synthetic biology robotics"
+      - "biofabrication automation"
+      - "lab automation synthetic biology"
+    sources: [openalex]
+    max_results: 200
+
+  - name: "BioArt & Living Design"
+    queries:
+      - "bioart"
+      - "biodesign"
+      - "living materials art"
+      - "speculative biology design"
+    sources: [openalex]
+    max_results: 200
+
+  - name: "AI for Wetlab"
+    queries:
+      - "artificial intelligence laboratory automation"
+      - "machine learning protein engineering"
+      - "AI directed evolution"
+      - "deep learning synthetic biology"
+    sources: [openalex]
+    max_results: 200
+
+  - name: "DIYBio & Maker Biotech"
+    queries:
+      - "DIYbio"
+      - "community biology laboratory"
+      - "biohacking open source"
+      - "open source biology tools"
+    sources: [openalex]
+    max_results: 200
+
+  - name: "Soft Robotics × Biology"
+    queries:
+      - "soft robotics biological materials"
+      - "biohybrid robotics"
+      - "living machines robotics"
+      - "bio-inspired soft actuators"
+    sources: [openalex]
+    max_results: 200

@@ -82,6 +82,31 @@ export const apps: AppInfo[] = [
         ],
     },
     {
+        slug: "research-scout",
+        name: "Research Scout",
+        description:
+            "Scrape and map interdisciplinary research spaces. Identify key people at the intersection of synthetic biology, robotics, art/design, AI, and DIYbio for the Paris community.",
+        icon: "🔬",
+        backendPort: 8002,
+        frontendPort: 3003,
+        tags: ["research", "scraping", "community"],
+        managed: true,
+        startCommands: [
+            {
+                cwd: "applications/research-scout/server",
+                cmd: "python3 -m uvicorn main:app --host 0.0.0.0 --port 8002",
+                port: 8002,
+                label: "backend",
+            },
+            {
+                cwd: "applications/research-scout/dashboard",
+                cmd: "npm run dev -- -p 3003",
+                port: 3003,
+                label: "frontend",
+            },
+        ],
+    },
+    {
         slug: "experiment-viewer",
         name: "Experiment Notebooks",
         description:
