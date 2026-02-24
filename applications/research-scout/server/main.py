@@ -250,6 +250,93 @@ def get_cooccurrence():
         return db.get_topic_cooccurrence(conn)
 
 
+@app.post("/api/embed")
+def trigger_embedding():
+    """Run TF-IDF + UMAP embedding pipeline for niche map."""
+    from pipeline.embed import compute_embeddings
+    result = compute_embeddings()
+    return result
+
+
+@app.get("/api/niche-map")
+def get_niche_map():
+    """Get 2D scatter data for the niche map visualization."""
+    with db.get_db() as conn:
+        rows = conn.execute("""
+            SELECT p.id, p.title, p.year, p.citation_count, p.umap_x, p.umap_y,
+                   GROUP_CONCAT(DISTINCT pt.topic_name) as topics
+            FROM papers p
+            LEFT JOIN paper_topics pt ON p.id = pt.paper_id
+            WHERE p.umap_x IS NOT NULL AND p.umap_y IS NOT NULL
+            GROUP BY p.id
+        """).fetchall()
+        return [dict(r) for r in rows]
+
+
+# ── Author Profiles ─────────────────────────────────────────────────
+
+@app.get("/api/authors/{author_id:path}")
+def get_author_profile(author_id: str):
+    """Get full author profile with papers, co-authors, and timeline."""
+    with db.get_db() as conn:
+        # Author info
+        author = conn.execute("SELECT * FROM authors WHERE id = ?", (author_id,)).fetchone()
+        if not author:
+            raise HTTPException(status_code=404, detail="Author not found")
+
+        # Their papers
+        papers = conn.execute("""
+            SELECT p.id, p.title, p.year, p.citation_count, p.venue, p.doi, p.url,
+                   GROUP_CONCAT(DISTINCT pt.topic_name) as topics
+            FROM papers p
+            JOIN paper_authors pa ON p.id = pa.paper_id
+            LEFT JOIN paper_topics pt ON p.id = pt.paper_id
+            WHERE pa.author_id = ?
+            GROUP BY p.id
+            ORDER BY p.year DESC, p.citation_count DESC
+        """, (author_id,)).fetchall()
+
+        # Co-authors (other authors on similar papers)
+        coauthors = conn.execute("""
+            SELECT a.id, a.name, a.affiliation, COUNT(DISTINCT pa2.paper_id) as shared_papers
+            FROM paper_authors pa1
+            JOIN paper_authors pa2 ON pa1.paper_id = pa2.paper_id AND pa1.author_id != pa2.author_id
+            JOIN authors a ON pa2.author_id = a.id
+            WHERE pa1.author_id = ?
+            GROUP BY a.id
+            ORDER BY shared_papers DESC
+            LIMIT 20
+        """, (author_id,)).fetchall()
+
+        # Topics they span
+        topic_counts = conn.execute("""
+            SELECT pt.topic_name, COUNT(DISTINCT pa.paper_id) as paper_count
+            FROM paper_authors pa
+            JOIN paper_topics pt ON pa.paper_id = pt.paper_id
+            WHERE pa.author_id = ?
+            GROUP BY pt.topic_name
+            ORDER BY paper_count DESC
+        """, (author_id,)).fetchall()
+
+        # Year timeline
+        timeline = conn.execute("""
+            SELECT p.year, COUNT(*) as count
+            FROM papers p
+            JOIN paper_authors pa ON p.id = pa.paper_id
+            WHERE pa.author_id = ? AND p.year IS NOT NULL
+            GROUP BY p.year
+            ORDER BY p.year
+        """, (author_id,)).fetchall()
+
+        return {
+            "author": dict(author),
+            "papers": [dict(r) for r in papers],
+            "coauthors": [dict(r) for r in coauthors],
+            "topics": [dict(r) for r in topic_counts],
+            "timeline": [dict(r) for r in timeline],
+        }
+
+
 # ── Export ──────────────────────────────────────────────────────────
 
 @app.get("/api/export/authors")

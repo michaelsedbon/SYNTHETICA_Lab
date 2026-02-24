@@ -7,6 +7,7 @@ const nav = [
     { href: "/", label: "Dashboard", icon: "📊" },
     { href: "/papers", label: "Papers", icon: "📄" },
     { href: "/people", label: "People", icon: "👤" },
+    { href: "/niche-map", label: "Niche Map", icon: "🗺️" },
     { href: "/topics", label: "Topics", icon: "🧬" },
 ];
 
@@ -37,8 +38,8 @@ export function Sidebar() {
                             key={item.href}
                             href={item.href}
                             className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-all ${active
-                                    ? "bg-white/[0.06] text-white ring-1 ring-white/[0.06]"
-                                    : "text-[var(--muted)] hover:bg-white/[0.04] hover:text-white"
+                                ? "bg-white/[0.06] text-white ring-1 ring-white/[0.06]"
+                                : "text-[var(--muted)] hover:bg-white/[0.04] hover:text-white"
                                 }`}
                         >
                             <span className="text-base">{item.icon}</span>

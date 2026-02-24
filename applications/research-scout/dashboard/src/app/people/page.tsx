@@ -150,8 +150,8 @@ export default function PeoplePage() {
                                 setOffset(0);
                             }}
                             className={`px-3 py-2 text-xs font-medium transition-all ${sortBy === opt.key
-                                    ? "bg-indigo-500/10 text-indigo-400"
-                                    : "text-[var(--muted)] hover:bg-white/[0.04]"
+                                ? "bg-indigo-500/10 text-indigo-400"
+                                : "text-[var(--muted)] hover:bg-white/[0.04]"
                                 }`}
                         >
                             {opt.icon} {opt.label}
@@ -215,7 +215,14 @@ export default function PeoplePage() {
                                         <td className="px-4 py-3 font-mono text-xs text-[var(--muted)]">
                                             #{offset + i + 1}
                                         </td>
-                                        <td className="px-4 py-3 font-medium">{a.name}</td>
+                                        <td className="px-4 py-3 font-medium">
+                                            <a
+                                                href={`/author?id=${encodeURIComponent(a.id)}`}
+                                                className="hover:text-indigo-400 transition-colors"
+                                            >
+                                                {a.name}
+                                            </a>
+                                        </td>
                                         <td className="px-4 py-3 text-xs text-[var(--muted)] max-w-48 truncate">
                                             {a.affiliation || "—"}
                                         </td>
