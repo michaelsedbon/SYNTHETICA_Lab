@@ -89,6 +89,7 @@ export const api = {
         topic?: string;
         source?: string;
         year_min?: number;
+        q?: string;
         limit?: number;
         offset?: number;
     }) => {
@@ -96,6 +97,7 @@ export const api = {
         if (params?.topic) qs.set("topic", params.topic);
         if (params?.source) qs.set("source", params.source);
         if (params?.year_min) qs.set("year_min", String(params.year_min));
+        if (params?.q) qs.set("q", params.q);
         if (params?.limit) qs.set("limit", String(params.limit));
         if (params?.offset) qs.set("offset", String(params.offset));
         return fetchApi<{ papers: Paper[]; total: number }>(`/api/papers?${qs}`);

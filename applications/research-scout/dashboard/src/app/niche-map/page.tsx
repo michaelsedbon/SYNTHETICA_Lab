@@ -11,6 +11,8 @@ interface NichePoint {
     umap_x: number;
     umap_y: number;
     topics: string;
+    url: string | null;
+    doi: string | null;
 }
 
 const TOPIC_COLORS: Record<string, string> = {
@@ -39,6 +41,18 @@ export default function NicheMapPage() {
     const [embedding, setEmbedding] = React.useState(false);
     const [hovered, setHovered] = React.useState<NichePoint | null>(null);
     const [mousePos, setMousePos] = React.useState({ x: 0, y: 0 });
+    const [yearFilter, setYearFilter] = React.useState<number>(0);
+    const [hiddenTopics, setHiddenTopics] = React.useState<Set<string>>(new Set());
+
+    const currentYear = new Date().getFullYear();
+    const filteredPoints = points.filter((p) => {
+        if (yearFilter > 0 && (p.year === null || p.year < currentYear - yearFilter)) return false;
+        if (hiddenTopics.size > 0) {
+            const paperTopics = (p.topics || "").split(",").map((t) => t.trim());
+            if (paperTopics.every((t) => hiddenTopics.has(t))) return false;
+        }
+        return true;
+    });
 
     const loadData = React.useCallback(async () => {
         try {
@@ -82,19 +96,104 @@ export default function NicheMapPage() {
                 >
                     {embedding ? "⏳ Computing embeddings…" : "🧬 Compute Embeddings"}
                 </button>
+                <div className="flex rounded-lg border border-white/[0.08] overflow-hidden">
+                    {[
+                        { value: 0, label: "All" },
+                        { value: 3, label: "3 yr" },
+                        { value: 5, label: "5 yr" },
+                        { value: 10, label: "10 yr" },
+                    ].map((opt) => (
+                        <button
+                            key={opt.value}
+                            onClick={() => setYearFilter(opt.value)}
+                            className={`px-3 py-2 text-xs font-medium transition-all ${yearFilter === opt.value
+                                ? "bg-indigo-500/10 text-indigo-400"
+                                : "text-[var(--muted)] hover:bg-white/[0.04]"
+                                }`}
+                        >
+                            {opt.label}
+                        </button>
+                    ))}
+                </div>
             </div>
 
-            {/* Legend */}
-            <div className="mb-6 flex flex-wrap gap-4">
-                {Object.entries(TOPIC_COLORS).map(([topic, color]) => (
-                    <div key={topic} className="flex items-center gap-2 text-xs text-[var(--muted)]">
-                        <span
-                            className="inline-block h-3 w-3 rounded-full"
-                            style={{ backgroundColor: color }}
-                        />
-                        {topic}
+            {/* Legend & How it works */}
+            <div className="mb-6 space-y-4">
+                {/* Method explanation */}
+                <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] px-5 py-4">
+                    <h3 className="text-xs font-semibold uppercase tracking-widest text-[var(--muted)] mb-3">How to read this map</h3>
+                    <div className="grid grid-cols-1 gap-3 text-xs text-[var(--muted)] sm:grid-cols-2 lg:grid-cols-4">
+                        <div className="flex gap-2">
+                            <span className="text-base">📐</span>
+                            <div>
+                                <p className="font-medium text-white/80">Position = Abstract similarity</p>
+                                <p>Papers with similar abstracts cluster together (TF-IDF + UMAP)</p>
+                            </div>
+                        </div>
+                        <div className="flex gap-2">
+                            <span className="text-base">🎨</span>
+                            <div>
+                                <p className="font-medium text-white/80">Color = Topic</p>
+                                <p>Each dot is colored by its research topic category</p>
+                            </div>
+                        </div>
+                        <div className="flex gap-2">
+                            <span className="text-base">⭕</span>
+                            <div>
+                                <p className="font-medium text-white/80">Size = Citations</p>
+                                <p>Bigger dots = more cited papers (higher impact)</p>
+                            </div>
+                        </div>
+                        <div className="flex gap-2">
+                            <span className="text-base">🕳️</span>
+                            <div>
+                                <p className="font-medium text-white/80">Gaps = Opportunities</p>
+                                <p>Empty spaces between clusters are unexplored niches</p>
+                            </div>
+                        </div>
                     </div>
-                ))}
+                </div>
+
+                {/* Color legend — clickable to toggle */}
+                <div className="flex flex-wrap gap-2">
+                    {Object.entries(TOPIC_COLORS).map(([topic, color]) => {
+                        const hidden = hiddenTopics.has(topic);
+                        return (
+                            <button
+                                key={topic}
+                                onClick={() => {
+                                    setHiddenTopics((prev) => {
+                                        const next = new Set(prev);
+                                        if (next.has(topic)) next.delete(topic);
+                                        else next.add(topic);
+                                        return next;
+                                    });
+                                }}
+                                className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] transition-all ${hidden
+                                        ? "border-white/[0.04] text-zinc-600 opacity-40"
+                                        : "border-white/[0.08] text-[var(--muted)] hover:border-white/[0.15]"
+                                    }`}
+                            >
+                                <span
+                                    className="inline-block h-2.5 w-2.5 rounded-full transition-opacity"
+                                    style={{
+                                        backgroundColor: color,
+                                        opacity: hidden ? 0.2 : 1,
+                                    }}
+                                />
+                                {topic}
+                            </button>
+                        );
+                    })}
+                    {hiddenTopics.size > 0 && (
+                        <button
+                            onClick={() => setHiddenTopics(new Set())}
+                            className="rounded-full border border-white/[0.08] px-2.5 py-1 text-[11px] text-indigo-400 hover:bg-indigo-500/5 transition-all"
+                        >
+                            Show all
+                        </button>
+                    )}
+                </div>
             </div>
 
             {loading ? (
@@ -131,7 +230,7 @@ export default function NicheMapPage() {
                     </svg>
 
                     {/* Points */}
-                    {points.map((p) => {
+                    {filteredPoints.map((p) => {
                         const size = Math.max(4, Math.min(12, Math.sqrt(p.citation_count || 1) * 1.5));
                         const color = getColor(p.topics);
                         return (
@@ -149,6 +248,10 @@ export default function NicheMapPage() {
                                     transform: "translate(-50%, -50%)",
                                 }}
                                 onMouseEnter={() => setHovered(p)}
+                                onClick={() => {
+                                    const link = p.url || (p.doi ? `https://doi.org/${p.doi}` : null);
+                                    if (link) window.open(link, "_blank");
+                                }}
                             />
                         );
                     })}
@@ -187,7 +290,7 @@ export default function NicheMapPage() {
 
                     {/* Stats overlay */}
                     <div className="absolute bottom-4 right-4 text-[10px] font-mono text-[var(--muted)] opacity-50">
-                        {points.length} papers
+                        {filteredPoints.length} papers{yearFilter > 0 ? ` (last ${yearFilter}yr)` : ""}
                     </div>
                 </div>
             )}

@@ -193,14 +193,33 @@ def list_papers(
     topic: Optional[str] = Query(None),
     source: Optional[str] = Query(None),
     year_min: Optional[int] = Query(None),
+    q: Optional[str] = Query(None),
     limit: int = Query(50, ge=1, le=500),
     offset: int = Query(0, ge=0),
 ):
-    """List papers with optional filters."""
+    """List papers with optional filters and search."""
     with db.get_db() as conn:
         papers = db.get_papers(conn, topic=topic, source=source, year_min=year_min,
-                               limit=limit, offset=offset)
-        total = conn.execute("SELECT COUNT(*) FROM papers").fetchone()[0]
+                               search=q, limit=limit, offset=offset)
+        # Count with same filters
+        count_q = "SELECT COUNT(DISTINCT p.id) FROM papers p"
+        conds, params = [], []
+        if topic:
+            count_q += " JOIN paper_topics pt ON p.id = pt.paper_id"
+            conds.append("pt.topic_name = ?")
+            params.append(topic)
+        if source:
+            conds.append("p.source = ?")
+            params.append(source)
+        if year_min:
+            conds.append("p.year >= ?")
+            params.append(year_min)
+        if q:
+            conds.append("(p.title LIKE ? OR p.abstract LIKE ?)")
+            params.extend([f"%{q}%", f"%{q}%"])
+        if conds:
+            count_q += " WHERE " + " AND ".join(conds)
+        total = conn.execute(count_q, params).fetchone()[0]
 
     return {"papers": papers, "total": total, "limit": limit, "offset": offset}
 
@@ -263,7 +282,7 @@ def get_niche_map():
     """Get 2D scatter data for the niche map visualization."""
     with db.get_db() as conn:
         rows = conn.execute("""
-            SELECT p.id, p.title, p.year, p.citation_count, p.umap_x, p.umap_y,
+            SELECT p.id, p.title, p.year, p.citation_count, p.umap_x, p.umap_y, p.url, p.doi,
                    GROUP_CONCAT(DISTINCT pt.topic_name) as topics
             FROM papers p
             LEFT JOIN paper_topics pt ON p.id = pt.paper_id

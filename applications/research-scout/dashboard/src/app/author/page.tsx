@@ -113,6 +113,14 @@ export default function AuthorProfilePage() {
                     {author.misfit_score != null && author.misfit_score > 0 && (
                         <span className="text-amber-400">🎯 Misfit: {author.misfit_score.toFixed(0)}</span>
                     )}
+                    <a
+                        href={`https://scholar.google.com/scholar?q=author:"${encodeURIComponent(author.name)}"`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-1 rounded-full border border-white/[0.08] px-2.5 py-0.5 text-xs text-[var(--muted)] transition-all hover:border-indigo-500/30 hover:text-indigo-400"
+                    >
+                        🎓 Google Scholar
+                    </a>
                 </div>
             </div>
 

@@ -192,7 +192,7 @@ def finish_scrape_run(conn: sqlite3.Connection, run_id: int, papers_found: int, 
 # ── Query helpers ───────────────────────────────────────────────────
 
 def get_papers(conn: sqlite3.Connection, topic: str = None, source: str = None,
-               year_min: int = None, limit: int = 50, offset: int = 0) -> list[dict]:
+               year_min: int = None, search: str = None, limit: int = 50, offset: int = 0) -> list[dict]:
     """Get papers with optional filters."""
     query = "SELECT DISTINCT p.* FROM papers p"
     conditions = []
@@ -208,6 +208,9 @@ def get_papers(conn: sqlite3.Connection, topic: str = None, source: str = None,
     if year_min:
         conditions.append("p.year >= ?")
         params.append(year_min)
+    if search:
+        conditions.append("(p.title LIKE ? OR p.abstract LIKE ?)")
+        params.extend([f"%{search}%", f"%{search}%"])
 
     if conditions:
         query += " WHERE " + " AND ".join(conditions)
