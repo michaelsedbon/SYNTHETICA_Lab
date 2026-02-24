@@ -2,14 +2,14 @@
 Embedding pipeline — TF-IDF + UMAP for abstract clustering.
 
 Computes 2D coordinates for all papers based on their abstracts,
-coloring by topic to reveal research niches and gaps.
+including user seed papers from the papers_txt folder.
 """
 
 from __future__ import annotations
 
-import json
+import glob
 import logging
-from typing import Optional
+import os
 
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -19,13 +19,49 @@ import db
 
 logger = logging.getLogger(__name__)
 
+# Path to user's personal paper collection
+SEED_PAPERS_DIR = os.path.expanduser(
+    "~/Documents/PhD/papers_txt"
+)
+
+
+def _load_seed_papers() -> list[dict]:
+    """Load .txt files from the user's papers folder as seed papers."""
+    seeds = []
+    if not os.path.isdir(SEED_PAPERS_DIR):
+        logger.warning(f"Seed papers dir not found: {SEED_PAPERS_DIR}")
+        return seeds
+
+    for path in sorted(glob.glob(os.path.join(SEED_PAPERS_DIR, "*.txt"))):
+        basename = os.path.splitext(os.path.basename(path))[0]
+        try:
+            with open(path, "r", encoding="utf-8", errors="replace") as f:
+                text = f.read()
+            # Use first ~3000 chars as abstract equivalent
+            abstract = text[:3000].strip()
+            if len(abstract) < 100:
+                continue
+            # Derive a title from filename
+            title = basename.replace("_", " ").strip()
+            seeds.append({
+                "id": f"seed:{basename}",
+                "title": title,
+                "abstract": abstract,
+                "is_seed": True,
+            })
+        except Exception as e:
+            logger.warning(f"Skipping seed paper {basename}: {e}")
+    logger.info(f"Loaded {len(seeds)} seed papers from {SEED_PAPERS_DIR}")
+    return seeds
+
 
 def compute_embeddings() -> dict:
     """
     Compute 2D UMAP embeddings from paper abstracts using TF-IDF.
+    Includes user seed papers projected into the same space.
 
-    Stores x, y coordinates in the papers table (new columns).
-    Returns summary stats.
+    Stores x, y coordinates in the papers table.
+    Seed papers are stored in a separate seed_papers table.
     """
     with db.get_db() as conn:
         # Add embedding columns if they don't exist
@@ -38,7 +74,19 @@ def compute_embeddings() -> dict:
         except Exception:
             pass
 
-        # Fetch papers with abstracts
+        # Create seed_papers table
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS seed_papers (
+                id TEXT PRIMARY KEY,
+                title TEXT NOT NULL,
+                umap_x REAL,
+                umap_y REAL
+            )
+        """)
+        # Clear old seed embeddings
+        conn.execute("DELETE FROM seed_papers")
+
+        # Fetch scraped papers with abstracts
         rows = conn.execute("""
             SELECT p.id, p.abstract, GROUP_CONCAT(DISTINCT pt.topic_name) as topics
             FROM papers p
@@ -47,17 +95,29 @@ def compute_embeddings() -> dict:
             GROUP BY p.id
         """).fetchall()
 
-        if len(rows) < 10:
-            logger.warning(f"Only {len(rows)} papers with abstracts — need at least 10 for embedding")
-            return {"status": "skipped", "reason": "too few papers with abstracts"}
+        # Load seed papers
+        seeds = _load_seed_papers()
 
+        total_docs = len(rows) + len(seeds)
+        if total_docs < 10:
+            logger.warning(f"Only {total_docs} documents — need at least 10 for embedding")
+            return {"status": "skipped", "reason": "too few documents"}
+
+        # Build combined corpus: scraped papers + seed papers
         paper_ids = [r["id"] for r in rows]
         abstracts = [r["abstract"] for r in rows]
-        topics = [r["topics"] or "Unknown" for r in rows]
 
-        logger.info(f"Computing TF-IDF for {len(abstracts)} abstracts...")
+        seed_ids = [s["id"] for s in seeds]
+        seed_titles = [s["title"] for s in seeds]
+        seed_abstracts = [s["abstract"] for s in seeds]
 
-        # TF-IDF vectorization
+        all_texts = abstracts + seed_abstracts
+        n_scraped = len(abstracts)
+        n_seed = len(seed_abstracts)
+
+        logger.info(f"Computing TF-IDF for {n_scraped} scraped + {n_seed} seed papers...")
+
+        # TF-IDF vectorization on combined corpus
         tfidf = TfidfVectorizer(
             max_features=5000,
             stop_words="english",
@@ -65,12 +125,12 @@ def compute_embeddings() -> dict:
             max_df=0.95,
             ngram_range=(1, 2),
         )
-        tfidf_matrix = tfidf.fit_transform(abstracts)
+        tfidf_matrix = tfidf.fit_transform(all_texts)
 
         logger.info(f"TF-IDF matrix: {tfidf_matrix.shape}, running UMAP...")
 
         # UMAP reduction to 2D
-        n_neighbors = min(15, len(abstracts) - 1)
+        n_neighbors = min(15, len(all_texts) - 1)
         reducer = UMAP(
             n_components=2,
             n_neighbors=n_neighbors,
@@ -80,24 +140,39 @@ def compute_embeddings() -> dict:
         )
         coords = reducer.fit_transform(tfidf_matrix.toarray())
 
-        # Normalize to 0-100 for easy frontend rendering
+        # Normalize to 5-95 range (leave margin for seed markers)
         x_min, x_max = coords[:, 0].min(), coords[:, 0].max()
         y_min, y_max = coords[:, 1].min(), coords[:, 1].max()
         x_range = max(x_max - x_min, 0.001)
         y_range = max(y_max - y_min, 0.001)
 
+        def normalize(val, vmin, vrange):
+            return float(5 + (val - vmin) / vrange * 90)
+
+        # Store scraped paper coords
         for i, pid in enumerate(paper_ids):
-            nx = float((coords[i, 0] - x_min) / x_range * 100)
-            ny = float((coords[i, 1] - y_min) / y_range * 100)
+            nx = normalize(coords[i, 0], x_min, x_range)
+            ny = normalize(coords[i, 1], y_min, y_range)
             conn.execute(
                 "UPDATE papers SET umap_x = ?, umap_y = ? WHERE id = ?",
                 (round(nx, 2), round(ny, 2), pid),
             )
 
-        logger.info(f"Stored embeddings for {len(paper_ids)} papers")
+        # Store seed paper coords
+        for j, sid in enumerate(seed_ids):
+            idx = n_scraped + j
+            nx = normalize(coords[idx, 0], x_min, x_range)
+            ny = normalize(coords[idx, 1], y_min, y_range)
+            conn.execute(
+                "INSERT OR REPLACE INTO seed_papers (id, title, umap_x, umap_y) VALUES (?, ?, ?, ?)",
+                (sid, seed_titles[j], round(nx, 2), round(ny, 2)),
+            )
+
+        logger.info(f"Stored embeddings for {len(paper_ids)} scraped + {len(seed_ids)} seed papers")
 
     return {
         "status": "done",
         "papers_embedded": len(paper_ids),
+        "seed_papers_embedded": len(seed_ids),
         "tfidf_features": tfidf_matrix.shape[1],
     }

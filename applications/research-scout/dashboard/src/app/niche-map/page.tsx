@@ -13,6 +13,7 @@ interface NichePoint {
     topics: string;
     url: string | null;
     doi: string | null;
+    is_seed?: boolean;
 }
 
 const TOPIC_COLORS: Record<string, string> = {
@@ -26,6 +27,7 @@ const TOPIC_COLORS: Record<string, string> = {
     "Organoid Intelligence & Biocomputing": "#14b8a6",
     "Living Materials & Engineered Organisms": "#f97316",
     "Genetic Circuit × Physical World": "#a3e635",
+    "My Papers": "#ffffff",
 };
 
 function getColor(topics: string): string {
@@ -170,8 +172,8 @@ export default function NicheMapPage() {
                                     });
                                 }}
                                 className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] transition-all ${hidden
-                                        ? "border-white/[0.04] text-zinc-600 opacity-40"
-                                        : "border-white/[0.08] text-[var(--muted)] hover:border-white/[0.15]"
+                                    ? "border-white/[0.04] text-zinc-600 opacity-40"
+                                    : "border-white/[0.08] text-[var(--muted)] hover:border-white/[0.15]"
                                     }`}
                             >
                                 <span
@@ -231,21 +233,27 @@ export default function NicheMapPage() {
 
                     {/* Points */}
                     {filteredPoints.map((p) => {
-                        const size = Math.max(4, Math.min(12, Math.sqrt(p.citation_count || 1) * 1.5));
-                        const color = getColor(p.topics);
+                        const isSeed = p.is_seed === true;
+                        const size = isSeed ? 14 : Math.max(4, Math.min(12, Math.sqrt(p.citation_count || 1) * 1.5));
+                        const color = isSeed ? "#ffffff" : getColor(p.topics);
                         return (
                             <div
                                 key={p.id}
-                                className="absolute rounded-full transition-transform duration-150 hover:scale-[2] cursor-pointer"
+                                className={`absolute transition-transform duration-150 cursor-pointer ${isSeed
+                                        ? "rotate-45 rounded-sm ring-2 ring-white/60 hover:scale-[1.8] z-20"
+                                        : "rounded-full hover:scale-[2]"
+                                    }`}
                                 style={{
                                     left: `${p.umap_x}%`,
                                     top: `${p.umap_y}%`,
                                     width: `${size}px`,
                                     height: `${size}px`,
                                     backgroundColor: color,
-                                    opacity: hovered && hovered.id !== p.id ? 0.2 : 0.7,
-                                    boxShadow: `0 0 ${size}px ${color}40`,
-                                    transform: "translate(-50%, -50%)",
+                                    opacity: hovered && hovered.id !== p.id ? (isSeed ? 0.6 : 0.2) : (isSeed ? 1 : 0.7),
+                                    boxShadow: isSeed
+                                        ? `0 0 12px rgba(255,255,255,0.5), 0 0 24px rgba(255,255,255,0.2)`
+                                        : `0 0 ${size}px ${color}40`,
+                                    transform: `translate(-50%, -50%)${isSeed ? " rotate(45deg)" : ""}`,
                                 }}
                                 onMouseEnter={() => setHovered(p)}
                                 onClick={() => {
@@ -266,7 +274,14 @@ export default function NicheMapPage() {
                                 maxWidth: "320px",
                             }}
                         >
-                            <p className="text-sm font-medium leading-tight">{hovered.title}</p>
+                            <p className="text-sm font-medium leading-tight">
+                                {hovered.is_seed && (
+                                    <span className="mr-1.5 inline-flex items-center rounded bg-white/10 px-1.5 py-0.5 text-[10px] font-bold text-white">
+                                        ⭐ MY PAPER
+                                    </span>
+                                )}
+                                {hovered.title}
+                            </p>
                             <div className="mt-2 flex flex-wrap gap-1.5">
                                 {(hovered.topics || "").split(",").map((t) => (
                                     <span

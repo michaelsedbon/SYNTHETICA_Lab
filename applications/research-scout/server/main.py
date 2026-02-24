@@ -279,8 +279,9 @@ def trigger_embedding():
 
 @app.get("/api/niche-map")
 def get_niche_map():
-    """Get 2D scatter data for the niche map visualization."""
+    """Get 2D scatter data for the niche map visualization, including seed papers."""
     with db.get_db() as conn:
+        # Scraped papers
         rows = conn.execute("""
             SELECT p.id, p.title, p.year, p.citation_count, p.umap_x, p.umap_y, p.url, p.doi,
                    GROUP_CONCAT(DISTINCT pt.topic_name) as topics
@@ -289,7 +290,31 @@ def get_niche_map():
             WHERE p.umap_x IS NOT NULL AND p.umap_y IS NOT NULL
             GROUP BY p.id
         """).fetchall()
-        return [dict(r) for r in rows]
+        result = [{**dict(r), "is_seed": False} for r in rows]
+
+        # Seed papers (user's personal collection)
+        try:
+            seeds = conn.execute("""
+                SELECT id, title, umap_x, umap_y FROM seed_papers
+                WHERE umap_x IS NOT NULL AND umap_y IS NOT NULL
+            """).fetchall()
+            for s in seeds:
+                result.append({
+                    "id": s["id"],
+                    "title": s["title"],
+                    "year": None,
+                    "citation_count": 0,
+                    "umap_x": s["umap_x"],
+                    "umap_y": s["umap_y"],
+                    "url": None,
+                    "doi": None,
+                    "topics": "My Papers",
+                    "is_seed": True,
+                })
+        except Exception:
+            pass  # seed_papers table may not exist yet
+
+        return result
 
 
 # ── Author Profiles ─────────────────────────────────────────────────
