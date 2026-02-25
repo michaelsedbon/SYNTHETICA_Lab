@@ -520,15 +520,15 @@ export default function PlasmidMap({
             const aaFontSize = Math.max(4, Math.min(11, arcPx * 0.4));
             const aaR = r - strandOffset / 2; // AA blocks between complement and backbone
 
-            // Helper: text rotation — at high zoom use consistent direction (no flip)
-            // since the visible arc is nearly straight; at lower zoom flip at equator
+            // Helper: text rotation — at high zoom use consistent direction based on
+            // where the viewport center projects onto the circle (no flip discontinuity)
             const uprightAngle = (a: number) => {
-                if (z > 12) {
-                    // Very high zoom: use rotation of the visible center point
-                    const centerAngle = bpToAngle(Math.round(seqLen / 2));
-                    const centerNorm = ((centerAngle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
-                    const centerFlip = centerNorm > Math.PI / 2 && centerNorm < (3 * Math.PI) / 2;
-                    return centerFlip ? a - Math.PI / 2 : a + Math.PI / 2;
+                if (z > 8) {
+                    // Use viewport center angle as reference for consistent text direction
+                    const viewAngle = Math.atan2(size.h / 2 - cy, size.w / 2 - cx);
+                    const viewNorm = ((viewAngle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+                    const viewFlip = viewNorm > Math.PI / 2 && viewNorm < (3 * Math.PI) / 2;
+                    return viewFlip ? a - Math.PI / 2 : a + Math.PI / 2;
                 }
                 const norm = ((a % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
                 return (norm > Math.PI / 2 && norm < (3 * Math.PI) / 2)
