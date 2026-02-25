@@ -8,10 +8,11 @@ interface Props {
     features: Feature[];
     topology: string;
     selectedFeatureId: number | null;
-    onSelectFeature: (id: number | null) => void;
+    multiSelectedIds?: Set<number>;
+    onSelectFeature: (id: number | null, multiToggle?: boolean) => void;
     selectionRange: { start: number; end: number } | null;
     onSelectionRange: (range: { start: number; end: number } | null) => void;
-    onDeleteFeature?: (featureId: number) => void;
+    onDeleteFeature?: () => void;
     ghostOrfs?: Orf[];
 }
 
@@ -62,7 +63,8 @@ const CODON_TABLE: Record<string, string> = {
 
 export default function PlasmidMap({
     sequence, features, topology,
-    selectedFeatureId, onSelectFeature,
+    selectedFeatureId, multiSelectedIds,
+    onSelectFeature,
     selectionRange, onSelectionRange,
     onDeleteFeature, ghostOrfs,
 }: Props) {
@@ -117,12 +119,10 @@ export default function PlasmidMap({
     useEffect(() => {
         const handler = (e: KeyboardEvent) => {
             if (e.key === "Delete" || e.key === "Backspace") {
-                if (selectedFeatureId !== null && onDeleteFeature && !(e.target instanceof HTMLInputElement)) {
+                const hasSelection = selectedFeatureId !== null || (multiSelectedIds && multiSelectedIds.size > 0);
+                if (hasSelection && onDeleteFeature && !(e.target instanceof HTMLInputElement)) {
                     e.preventDefault();
-                    if (confirm("Delete selected feature?")) {
-                        onDeleteFeature(selectedFeatureId);
-                        onSelectFeature(null);
-                    }
+                    onDeleteFeature();
                 }
             }
             if (e.key === "Escape") {
@@ -133,7 +133,7 @@ export default function PlasmidMap({
         };
         window.addEventListener("keydown", handler);
         return () => window.removeEventListener("keydown", handler);
-    }, [selectedFeatureId, onDeleteFeature, onSelectFeature, onSelectionRange]);
+    }, [selectedFeatureId, multiSelectedIds, onDeleteFeature, onSelectFeature, onSelectionRange]);
 
     /* ── bp ↔ angle ── */
     const bpToAngle = useCallback(
@@ -278,7 +278,7 @@ export default function PlasmidMap({
                 : r - 8 - track * (18 + gap);
             if (featureR < 20) return;
 
-            const isSelected = feature.id === selectedFeatureId;
+            const isSelected = feature.id === selectedFeatureId || (multiSelectedIds?.has(feature.id) ?? false);
             const isHovered = feature.id === hoverFeature;
             const halfT = thickness / 2;
             const outerR = featureR + halfT;
@@ -319,13 +319,16 @@ export default function PlasmidMap({
             }
 
             if (isSelected) {
+                // Subtle glow instead of bounding box
+                ctx.save();
+                ctx.shadowColor = "#ffffff";
+                ctx.shadowBlur = 8;
                 ctx.beginPath();
-                ctx.arc(cx, cy, outerR + 1, startAngle, endAngle);
-                ctx.arc(cx, cy, innerR - 1, endAngle, startAngle, true);
-                ctx.closePath();
-                ctx.strokeStyle = "#ffffff";
-                ctx.lineWidth = 1.5;
+                ctx.arc(cx, cy, featureR, startAngle, endAngle);
+                ctx.strokeStyle = "rgba(255,255,255,0.6)";
+                ctx.lineWidth = thickness + 4;
                 ctx.stroke();
+                ctx.restore();
             }
 
             ctx.globalAlpha = 1;
@@ -466,19 +469,45 @@ export default function PlasmidMap({
                 ctx.stroke();
                 ctx.globalAlpha = 1;
 
-                // Label
-                ctx.save();
-                ctx.translate(lx, ly);
-                const textAngle = info.angle + Math.PI / 2;
+                // External label: render characters along the arc at offsetR
+                const labelR2 = offsetR;
+                const labelFontSize2 = info.selected ? 11 : 10;
+                ctx.font = `${info.selected ? "600" : "400"} ${labelFontSize2}px Inter, sans-serif`;
+                const chars2 = info.text.split("");
+                const charWidths2 = chars2.map((c: string) => ctx.measureText(c).width);
+                const totalW2 = charWidths2.reduce((a: number, b: number) => a + b, 0);
+                const totalArcAngle2 = totalW2 / labelR2;
+
                 const normMid = ((info.angle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
-                const flip = normMid > Math.PI / 2 && normMid < (3 * Math.PI) / 2;
-                ctx.rotate(flip ? textAngle + Math.PI : textAngle);
-                ctx.font = `${info.selected ? "600" : "400"} 11px Inter, sans-serif`;
-                ctx.fillStyle = info.selected ? "#fff" : LABEL_COLOR;
-                ctx.textAlign = "center";
-                ctx.textBaseline = "middle";
-                ctx.fillText(info.text, 0, 0);
-                ctx.restore();
+                const reverse2 = normMid > Math.PI / 2 && normMid < (3 * Math.PI) / 2;
+
+                let ca2 = reverse2 ? info.angle + totalArcAngle2 / 2 : info.angle - totalArcAngle2 / 2;
+                for (let ci = 0; ci < chars2.length; ci++) {
+                    const charA = charWidths2[ci] / labelR2;
+                    if (reverse2) {
+                        ca2 -= charA / 2;
+                        ctx.save();
+                        ctx.translate(cx + Math.cos(ca2) * labelR2, cy + Math.sin(ca2) * labelR2);
+                        ctx.rotate(ca2 - Math.PI / 2);
+                        ctx.fillStyle = info.selected ? "#fff" : LABEL_COLOR;
+                        ctx.textAlign = "center";
+                        ctx.textBaseline = "middle";
+                        ctx.fillText(chars2[ci], 0, 0);
+                        ctx.restore();
+                        ca2 -= charA / 2;
+                    } else {
+                        ca2 += charA / 2;
+                        ctx.save();
+                        ctx.translate(cx + Math.cos(ca2) * labelR2, cy + Math.sin(ca2) * labelR2);
+                        ctx.rotate(ca2 + Math.PI / 2);
+                        ctx.fillStyle = info.selected ? "#fff" : LABEL_COLOR;
+                        ctx.textAlign = "center";
+                        ctx.textBaseline = "middle";
+                        ctx.fillText(chars2[ci], 0, 0);
+                        ctx.restore();
+                        ca2 += charA / 2;
+                    }
+                }
             }
         }
 
@@ -491,8 +520,16 @@ export default function PlasmidMap({
             const aaFontSize = Math.max(4, Math.min(11, arcPx * 0.4));
             const aaR = r - strandOffset / 2; // AA blocks between complement and backbone
 
-            // Helper: upright rotation for text at any angle
+            // Helper: text rotation — at high zoom use consistent direction (no flip)
+            // since the visible arc is nearly straight; at lower zoom flip at equator
             const uprightAngle = (a: number) => {
+                if (z > 12) {
+                    // Very high zoom: use rotation of the visible center point
+                    const centerAngle = bpToAngle(Math.round(seqLen / 2));
+                    const centerNorm = ((centerAngle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+                    const centerFlip = centerNorm > Math.PI / 2 && centerNorm < (3 * Math.PI) / 2;
+                    return centerFlip ? a - Math.PI / 2 : a + Math.PI / 2;
+                }
                 const norm = ((a % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
                 return (norm > Math.PI / 2 && norm < (3 * Math.PI) / 2)
                     ? a - Math.PI / 2
@@ -706,9 +743,10 @@ export default function PlasmidMap({
         }
     }, [selectionRange, onSelectionRange]);
 
-    const handleClick = useCallback(() => {
+    const handleClick = useCallback((e: React.MouseEvent) => {
         if (!dragSelecting.current) {
-            onSelectFeature(hoverFeature);
+            const multi = e.ctrlKey || e.metaKey;
+            onSelectFeature(hoverFeature, multi);
         }
     }, [hoverFeature, onSelectFeature]);
 
@@ -816,7 +854,7 @@ export default function PlasmidMap({
                             </button>
                             <div className="ctx-divider" />
                             {onDeleteFeature && (
-                                <button className="ctx-item ctx-danger" onClick={() => { onDeleteFeature(ctxMenu.featureId!); setCtxMenu(null); }}>
+                                <button className="ctx-item ctx-danger" onClick={() => { onSelectFeature(ctxMenu.featureId!); onDeleteFeature(); setCtxMenu(null); }}>
                                     Delete Feature
                                 </button>
                             )}

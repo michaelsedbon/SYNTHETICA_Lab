@@ -2,12 +2,14 @@
 
 import React, { useState, useMemo } from "react";
 import { Feature } from "@/lib/api";
-import { Search, ArrowUpDown } from "lucide-react";
+import { Search, ArrowUpDown, Trash2 } from "lucide-react";
 
 interface Props {
     features: Feature[];
     selectedFeatureId: number | null;
-    onSelectFeature: (id: number | null) => void;
+    multiSelectedIds?: Set<number>;
+    onSelectFeature: (id: number | null, multiToggle?: boolean) => void;
+    onBulkDelete?: () => void;
 }
 
 type SortKey = "label" | "type" | "start" | "length";
@@ -16,7 +18,9 @@ type SortDir = "asc" | "desc";
 export default function AnnotationsTab({
     features,
     selectedFeatureId,
+    multiSelectedIds,
     onSelectFeature,
+    onBulkDelete,
 }: Props) {
     const [search, setSearch] = useState("");
     const [sortKey, setSortKey] = useState<SortKey>("start");
@@ -65,6 +69,8 @@ export default function AnnotationsTab({
         return list;
     }, [features, search, sortKey, sortDir]);
 
+    const selCount = multiSelectedIds ? multiSelectedIds.size : (selectedFeatureId !== null ? 1 : 0);
+
     if (features.length === 0) {
         return (
             <div className="empty-state">
@@ -87,6 +93,31 @@ export default function AnnotationsTab({
                 />
                 <span className="ann-count">{filtered.length}</span>
             </div>
+
+            {/* Bulk action toolbar */}
+            {selCount > 0 && (
+                <div style={{
+                    display: "flex", alignItems: "center", gap: 8, padding: "6px 12px",
+                    background: "rgba(255,255,255,0.05)", borderBottom: "1px solid var(--border)",
+                    fontSize: 12, color: "var(--text-secondary)",
+                }}>
+                    <span>{selCount} selected</span>
+                    <span style={{ flex: 1 }} />
+                    {onBulkDelete && (
+                        <button
+                            onClick={onBulkDelete}
+                            style={{
+                                display: "flex", alignItems: "center", gap: 4,
+                                background: "rgba(255,60,60,0.15)", border: "1px solid rgba(255,60,60,0.3)",
+                                color: "#ff6666", borderRadius: 4, padding: "3px 8px", cursor: "pointer",
+                                fontSize: 11,
+                            }}
+                        >
+                            <Trash2 size={12} /> Delete
+                        </button>
+                    )}
+                </div>
+            )}
 
             {/* Table */}
             <div className="ann-table-wrap">
@@ -111,13 +142,16 @@ export default function AnnotationsTab({
                     </thead>
                     <tbody>
                         {filtered.map((f) => {
-                            const isSelected = f.id === selectedFeatureId;
+                            const isSelected = f.id === selectedFeatureId || (multiSelectedIds?.has(f.id) ?? false);
                             const len = f.end > f.start ? f.end - f.start : f.end + 1;
                             return (
                                 <tr
                                     key={f.id}
                                     className={`ann-row ${isSelected ? "selected" : ""}`}
-                                    onClick={() => onSelectFeature(f.id)}
+                                    onClick={(e) => {
+                                        const multi = e.ctrlKey || e.metaKey;
+                                        onSelectFeature(f.id, multi);
+                                    }}
                                 >
                                     <td>
                                         <span

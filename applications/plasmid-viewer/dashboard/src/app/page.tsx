@@ -26,6 +26,7 @@ export default function Home() {
   const [activeId, setActiveId] = useState<number | null>(null);
   const [activeSeq, setActiveSeq] = useState<SequenceDetail | null>(null);
   const [selectedFeatureId, setSelectedFeatureId] = useState<number | null>(null);
+  const [multiSelectedIds, setMultiSelectedIds] = useState<Set<number>>(new Set());
   const [selectionRange, setSelectionRange] = useState<{ start: number; end: number } | null>(null);
   const [viewTab, setViewTab] = useState<ViewTab>("circular");
   const [loadGen, setLoadGen] = useState(0);
@@ -48,6 +49,7 @@ export default function Home() {
   const handleSelect = useCallback((id: number) => {
     setActiveId(id);
     setSelectedFeatureId(null);
+    setMultiSelectedIds(new Set());
     setSelectionRange(null);
   }, []);
 
@@ -82,9 +84,52 @@ export default function Home() {
     [handleDataChange]
   );
 
+  // Feature selection: supports multi-select with Ctrl/Cmd
+  const handleFeatureSelect = useCallback((id: number | null, multiToggle?: boolean) => {
+    if (id === null) {
+      setSelectedFeatureId(null);
+      setMultiSelectedIds(new Set());
+      return;
+    }
+    if (multiToggle) {
+      setMultiSelectedIds((prev) => {
+        const next = new Set(prev);
+        // Include current primary selection in multi set
+        if (selectedFeatureId !== null && !next.has(selectedFeatureId)) {
+          next.add(selectedFeatureId);
+        }
+        if (next.has(id)) {
+          next.delete(id);
+        } else {
+          next.add(id);
+        }
+        return next;
+      });
+      setSelectedFeatureId(id);
+    } else {
+      setSelectedFeatureId(id);
+      setMultiSelectedIds(new Set());
+    }
+  }, [selectedFeatureId]);
+
+  // Bulk delete all selected features
+  const handleBulkDelete = useCallback(async () => {
+    if (!activeId) return;
+    const ids = multiSelectedIds.size > 0
+      ? Array.from(multiSelectedIds)
+      : selectedFeatureId !== null ? [selectedFeatureId] : [];
+    if (ids.length === 0) return;
+    if (!confirm(`Delete ${ids.length} feature${ids.length > 1 ? "s" : ""}?`)) return;
+    for (const fid of ids) {
+      await deleteFeature(activeId, fid);
+    }
+    setSelectedFeatureId(null);
+    setMultiSelectedIds(new Set());
+    handleDataChange();
+  }, [activeId, multiSelectedIds, selectedFeatureId, handleDataChange]);
+
   return (
     <div className="app-layout">
-      {/* ── Left: Project Tree ── */}
       <ProjectTree
         sequences={sequences}
         activeId={activeId}
@@ -95,40 +140,21 @@ export default function Home() {
         onUploadComplete={handleUploadComplete}
       />
 
-      {/* ── Center: DNA View ── */}
       <div className="panel-center">
         <div className="view-tabs">
-          <button
-            className={`view-tab ${viewTab === "circular" ? "active" : ""}`}
-            onClick={() => setViewTab("circular")}
-          >
-            <Circle size={13} style={{ marginRight: 6, verticalAlign: -2 }} />
-            Circular
+          <button className={`view-tab ${viewTab === "circular" ? "active" : ""}`} onClick={() => setViewTab("circular")}>
+            <Circle size={13} style={{ marginRight: 6, verticalAlign: -2 }} /> Circular
           </button>
-          <button
-            className={`view-tab ${viewTab === "linear" ? "active" : ""}`}
-            onClick={() => setViewTab("linear")}
-          >
-            <AlignHorizontalSpaceAround size={13} style={{ marginRight: 6, verticalAlign: -2 }} />
-            Linear
+          <button className={`view-tab ${viewTab === "linear" ? "active" : ""}`} onClick={() => setViewTab("linear")}>
+            <AlignHorizontalSpaceAround size={13} style={{ marginRight: 6, verticalAlign: -2 }} /> Linear
           </button>
-          <button
-            className={`view-tab ${viewTab === "annotations" ? "active" : ""}`}
-            onClick={() => setViewTab("annotations")}
-          >
-            <List size={13} style={{ marginRight: 6, verticalAlign: -2 }} />
-            Annotations
-            {activeSeq && (
-              <span className="tab-badge">{activeSeq.features.length}</span>
-            )}
+          <button className={`view-tab ${viewTab === "annotations" ? "active" : ""}`} onClick={() => setViewTab("annotations")}>
+            <List size={13} style={{ marginRight: 6, verticalAlign: -2 }} /> Annotations
+            {activeSeq && <span className="tab-badge">{activeSeq.features.length}</span>}
           </button>
           {activeSeq && (
-            <div style={{
-              marginLeft: "auto", padding: "10px 16px", fontSize: 11,
-              color: "var(--text-tertiary)", display: "flex", alignItems: "center", gap: 6,
-            }}>
-              <Dna size={12} />
-              {activeSeq.name} · {activeSeq.length.toLocaleString()} bp
+            <div style={{ marginLeft: "auto", padding: "10px 16px", fontSize: 11, color: "var(--text-tertiary)", display: "flex", alignItems: "center", gap: 6 }}>
+              <Dna size={12} /> {activeSeq.name} · {activeSeq.length.toLocaleString()} bp
             </div>
           )}
         </div>
@@ -140,15 +166,11 @@ export default function Home() {
               features={activeSeq.features}
               topology={activeSeq.topology}
               selectedFeatureId={selectedFeatureId}
-              onSelectFeature={setSelectedFeatureId}
+              multiSelectedIds={multiSelectedIds}
+              onSelectFeature={handleFeatureSelect}
               selectionRange={selectionRange}
               onSelectionRange={setSelectionRange}
-              onDeleteFeature={async (fid) => {
-                if (activeId && confirm("Delete this feature?")) {
-                  await deleteFeature(activeId, fid);
-                  handleDataChange();
-                }
-              }}
+              onDeleteFeature={handleBulkDelete}
               ghostOrfs={ghostOrfs}
             />
           ) : viewTab === "linear" ? (
@@ -156,13 +178,15 @@ export default function Home() {
               sequence={activeSeq.sequence}
               features={activeSeq.features}
               selectedFeatureId={selectedFeatureId}
-              onSelectFeature={setSelectedFeatureId}
+              onSelectFeature={(id) => handleFeatureSelect(id)}
             />
           ) : (
             <AnnotationsTab
               features={activeSeq.features}
               selectedFeatureId={selectedFeatureId}
-              onSelectFeature={setSelectedFeatureId}
+              multiSelectedIds={multiSelectedIds}
+              onSelectFeature={handleFeatureSelect}
+              onBulkDelete={handleBulkDelete}
             />
           )
         ) : (
@@ -176,11 +200,10 @@ export default function Home() {
         )}
       </div>
 
-      {/* ── Right: Operations ── */}
       <OperationsPanel
         sequence={activeSeq}
         selectedFeatureId={selectedFeatureId}
-        onSelectFeature={setSelectedFeatureId}
+        onSelectFeature={(id) => handleFeatureSelect(id)}
         onDataChange={handleDataChange}
         onOrfPreview={setGhostOrfs}
       />
