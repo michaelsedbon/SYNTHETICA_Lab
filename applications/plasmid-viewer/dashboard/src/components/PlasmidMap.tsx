@@ -413,7 +413,7 @@ export default function PlasmidMap({
             ctx.globalAlpha = 1;
         }
 
-        /* ── Label collision avoidance: hide unplaceable labels ── */
+        /* ── Label collision avoidance: spread to distinct radii ── */
         if (labelInfos.length > 0) {
             // Priority: selected first, then non-ORF, then ORFs
             labelInfos.sort((a, b) => {
@@ -427,11 +427,11 @@ export default function PlasmidMap({
             });
 
             const labelPositions: { lx: number; ly: number; info: typeof labelInfos[0]; offsetR: number }[] = [];
-            const minGap = 20; // minimum pixel distance between labels
-            const maxOffset = 3; // max outward push attempts
+            const minGap = 28;
+            const maxOffset = 8;
 
             for (const info of labelInfos) {
-                let offsetR = r + 28;
+                let offsetR = r + 32;
                 let lx = cx + Math.cos(info.angle) * offsetR;
                 let ly = cy + Math.sin(info.angle) * offsetR;
                 let canPlace = true;
@@ -445,7 +445,7 @@ export default function PlasmidMap({
                     }
                     if (!collision) { canPlace = true; break; }
                     if (attempt === maxOffset) { canPlace = false; break; }
-                    offsetR += 16;
+                    offsetR += 20;
                     lx = cx + Math.cos(info.angle) * offsetR;
                     ly = cy + Math.sin(info.angle) * offsetR;
                 }
