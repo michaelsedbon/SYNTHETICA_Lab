@@ -1,0 +1,221 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Workspace {
+  id        String   @id @default(uuid())
+  name      String
+  slug      String   @unique
+  color      String   @default("#569cd6")
+  visibility String   @default("open")
+  createdAt  DateTime @default(now()) @map("created_at")
+  parts      Part[]
+  projects   Project[]
+  sharedParts WorkspacePart[]
+  settings    WorkspaceSettings[]
+  fields      WorkspaceField[]
+
+  @@map("workspaces")
+}
+
+model WorkspacePart {
+  id              String   @id @default(uuid())
+  workspaceId     String   @map("workspace_id")
+  partId          String   @map("part_id")
+  targetProjectId String?  @map("target_project_id")
+  localPriority   Int      @default(0) @map("local_priority")
+  sharedAt        DateTime @default(now()) @map("shared_at")
+  workspace       Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  part            Part      @relation(fields: [partId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, partId])
+  @@index([workspaceId])
+  @@index([partId])
+  @@map("workspace_parts")
+}
+
+model Project {
+  id          String    @id @default(uuid())
+  name        String
+  parentId    String?   @map("parent_id")
+  starred     Boolean   @default(false)
+  sortOrder   Int       @default(0) @map("sort_order")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  workspaceId String    @map("workspace_id")
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  parent      Project?  @relation("ProjectTree", fields: [parentId], references: [id], onDelete: Cascade)
+  children    Project[] @relation("ProjectTree")
+  parts       Part[]
+
+  @@index([workspaceId])
+  @@map("projects")
+}
+
+model Part {
+  id            String          @id @default(uuid())
+  uniqueId      String          @unique @map("unique_id")
+  airtableId    String?         @unique @map("airtable_id")
+  orderId       String?         @map("order_id")
+  partNumber    String?         @map("part_number")
+  partName      String          @map("part_name")
+  project       String?
+  client        String?
+  hospital      String?
+  status        String          @default("new")
+  material      String?
+  notes         String?
+  archivePath   String?         @map("archive_path")
+  who           String?
+  type          String?
+  quantity      Int             @default(1)
+  priorityOrder Int             @default(0) @map("priority_order")
+  dueDate       DateTime?       @map("due_date")
+  syncedAt      DateTime?       @map("synced_at")
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+  projectId     String?         @map("project_id")
+  fabMechanism  String?         @map("fab_mechanism")
+  completedAt   DateTime?       @map("completed_at")
+  workspaceId   String          @map("workspace_id")
+  workspace     Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  projectRef    Project?        @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  revisions     Revision[]
+  statusHistory StatusHistory[]
+  sharedTo      WorkspacePart[]
+  customFields  PartCustomField[]
+
+  @@index([projectId])
+  @@index([workspaceId])
+  @@map("parts")
+}
+
+model Revision {
+  id            String   @id @default(uuid())
+  partId        String   @map("part_id")
+  versionNumber Int      @map("version_number")
+  fileName      String   @map("file_name")
+  filePath      String   @map("file_path")
+  fileType      String   @map("file_type")
+  uploadedBy    String?  @map("uploaded_by")
+  uploadStage   String   @default("design") @map("upload_stage")
+  createdAt     DateTime @default(now()) @map("created_at")
+  part          Part     @relation(fields: [partId], references: [id], onDelete: Cascade)
+
+  @@map("revisions")
+}
+
+model Counter {
+  id    String @id @default("part_seq")
+  value Int    @default(0)
+
+  @@map("counters")
+}
+
+model LogEntry {
+  id        String   @id @default(uuid())
+  category  String
+  level     String   @default("info")
+  action    String
+  details   String?
+  partId    String?  @map("part_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("log_entries")
+}
+
+model FieldValue {
+  id    String @id @default(uuid())
+  field String
+  value String
+
+  @@unique([field, value])
+  @@map("field_values")
+}
+
+model StatusHistory {
+  id        String   @id @default(uuid())
+  partId    String   @map("part_id")
+  status    String
+  changedAt DateTime @default(now()) @map("changed_at")
+  part      Part     @relation(fields: [partId], references: [id], onDelete: Cascade)
+
+  @@index([partId])
+  @@map("status_history")
+}
+
+model WorkspaceSettings {
+  id          String    @id @default(uuid())
+  workspaceId String    @map("workspace_id")
+  key         String
+  value       String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, key])
+  @@map("workspace_settings")
+}
+
+model AppSettings {
+  key   String @id
+  value String
+
+  @@map("app_settings")
+}
+
+model WorkspaceField {
+  id          String    @id @default(uuid())
+  workspaceId String    @map("workspace_id")
+  key         String
+  label       String
+  icon        String    @default("📋")
+  fieldType   String    @default("select") @map("field_type")
+  builtIn     Boolean   @default(false) @map("built_in")
+  sortOrder   Int       @default(0) @map("sort_order")
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, key])
+  @@index([workspaceId])
+  @@map("workspace_fields")
+}
+
+model PartCustomField {
+  id       String @id @default(uuid())
+  partId   String @map("part_id")
+  fieldKey String @map("field_key")
+  value    String
+  part     Part   @relation(fields: [partId], references: [id], onDelete: Cascade)
+
+  @@unique([partId, fieldKey])
+  @@index([partId])
+  @@index([fieldKey])
+  @@map("part_custom_fields")
+}
+
+model Complaint {
+  id          String   @id @default(uuid())
+  text        String
+  author      String   @default("")
+  status      String   @default("open")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  attachments ComplaintAttachment[]
+
+  @@map("complaints")
+}
+
+model ComplaintAttachment {
+  id          String    @id @default(uuid())
+  complaintId String    @map("complaint_id")
+  fileName    String    @map("file_name")
+  filePath    String    @map("file_path")
+  fileType    String    @map("file_type")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  complaint   Complaint @relation(fields: [complaintId], references: [id], onDelete: Cascade)
+
+  @@index([complaintId])
+  @@map("complaint_attachments")
+}
