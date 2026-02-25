@@ -280,8 +280,8 @@ export default function PlasmidMap({
         const hiZoom = z > 6 && r > 100;
         const hiArcPerBp = (Math.PI * 2) / seqLen;
         const hiArcPx = r * hiArcPerBp;
-        const hiFontSize = Math.max(5, Math.min(14, hiArcPx * 0.55));
-        const hiStrandOff = hiFontSize * 0.7 + 3;
+        const hiFontSize = Math.max(7, Math.min(18, hiArcPx * 0.75));
+        const hiStrandOff = hiFontSize * 0.8 + 4;
 
         // Viewport-based text direction: at high zoom all text reads the same way
         // (visible arc is always near 12 o'clock so angle + π/2 ≈ horizontal)
@@ -537,10 +537,9 @@ export default function PlasmidMap({
         if (z > 6 && r > 100) {
             const arcPerBp = (Math.PI * 2) / seqLen;
             const arcPx = r * arcPerBp;
-            const fontSize = Math.max(5, Math.min(14, arcPx * 0.55));
-            const strandOffset = fontSize * 0.7 + 3;
-            const aaFontSize = Math.max(4, Math.min(11, arcPx * 0.4));
-            const aaR = r - strandOffset / 2; // AA blocks between complement and backbone
+            const fontSize = Math.max(7, Math.min(18, arcPx * 0.75));
+            const strandOffset = fontSize * 0.8 + 4;
+            const aaFontSize = Math.max(6, Math.min(14, arcPx * 0.55));
 
             // At high zoom: always a + π/2 (text faces outward, reads L→R at top)
             // At lower zoom: per-character flip at equator
@@ -550,6 +549,23 @@ export default function PlasmidMap({
                 return (norm > Math.PI / 2 && norm < (3 * Math.PI) / 2)
                     ? a - Math.PI / 2
                     : a + Math.PI / 2;
+            };
+
+            // Amino acid color map by property
+            const AA_COLORS: Record<string, string> = {
+                // Hydrophobic (cyan/teal)
+                A: "#00CED1", V: "#00CED1", L: "#00CED1", I: "#00CED1", M: "#00CED1",
+                F: "#00BFFF", W: "#00BFFF", P: "#20B2AA",
+                // Polar uncharged (green)
+                S: "#66FF66", T: "#66FF66", N: "#66FF66", Q: "#66FF66", Y: "#50C878", C: "#50C878",
+                // Positively charged (orange)
+                K: "#FFA500", R: "#FFA500", H: "#FFD700",
+                // Negatively charged (red/pink)
+                D: "#FF6B6B", E: "#FF6B6B",
+                // Special
+                G: "#C0C0C0", // glycine — gray
+                "*": "#FF0000", // stop — red
+                "?": "#666666",
             };
 
             for (let i = 0; i < seqLen; i++) {
@@ -565,7 +581,7 @@ export default function PlasmidMap({
                 ctx.save();
                 ctx.translate(fwdX, fwdY);
                 ctx.rotate(uprightAngle(angle));
-                ctx.font = `600 ${fontSize}px JetBrains Mono, Menlo, monospace`;
+                ctx.font = `700 ${fontSize}px JetBrains Mono, Menlo, monospace`;
                 ctx.fillStyle = SEQ_COLORS[char] || "#888";
                 ctx.textAlign = "center";
                 ctx.textBaseline = "middle";
@@ -578,9 +594,9 @@ export default function PlasmidMap({
                 ctx.save();
                 ctx.translate(compX, compY);
                 ctx.rotate(uprightAngle(angle));
-                ctx.font = `400 ${fontSize}px JetBrains Mono, Menlo, monospace`;
+                ctx.font = `400 ${fontSize * 0.85}px JetBrains Mono, Menlo, monospace`;
                 ctx.fillStyle = SEQ_COLORS[comp] || "#888";
-                ctx.globalAlpha = 0.6;
+                ctx.globalAlpha = 0.5;
                 ctx.textAlign = "center";
                 ctx.textBaseline = "middle";
                 ctx.fillText(comp, 0, 0);
@@ -588,9 +604,9 @@ export default function PlasmidMap({
                 ctx.globalAlpha = 1;
             }
 
-            // Amino acid translation — codon-spanning arc blocks between complement & backbone
+            // Amino acid translation — codon blocks ON the backbone
             if (arcPx > 3) {
-                const aaBlockH = Math.max(6, strandOffset * 0.55);
+                const aaBlockH = Math.max(8, strandOffset * 0.7);
                 for (let i = 0; i + 2 < seqLen; i += 3) {
                     const codon = sequence.slice(i, i + 3);
                     const aa = CODON_TABLE[codon] || "?";
@@ -599,28 +615,27 @@ export default function PlasmidMap({
                     const midAngle = (sa + ea) / 2;
 
                     // Check if midpoint is on screen
-                    const mx = cx + Math.cos(midAngle) * aaR;
-                    const my = cy + Math.sin(midAngle) * aaR;
+                    const mx = cx + Math.cos(midAngle) * r;
+                    const my = cy + Math.sin(midAngle) * r;
                     if (mx < -30 || mx > size.w + 30 || my < -30 || my > size.h + 30) continue;
 
-                    // Draw arc block spanning full codon
+                    // Draw arc block spanning full codon ON the backbone
                     const isStop = aa === "*";
-                    const evenCodon = (Math.floor(i / 3) % 2) === 0;
                     ctx.beginPath();
-                    ctx.arc(cx, cy, aaR + aaBlockH / 2, sa, ea);
-                    ctx.arc(cx, cy, aaR - aaBlockH / 2, ea, sa, true);
+                    ctx.arc(cx, cy, r + aaBlockH / 2, sa, ea);
+                    ctx.arc(cx, cy, r - aaBlockH / 2, ea, sa, true);
                     ctx.closePath();
                     ctx.fillStyle = isStop
-                        ? "rgba(255,60,60,0.5)"
-                        : evenCodon ? "rgba(255,255,255,0.10)" : "rgba(255,255,255,0.18)";
+                        ? "rgba(255,60,60,0.35)"
+                        : `${AA_COLORS[aa] || "#888"}22`;
                     ctx.fill();
 
-                    // AA letter centered in the block
+                    // AA letter centered on backbone
                     ctx.save();
                     ctx.translate(mx, my);
                     ctx.rotate(uprightAngle(midAngle));
-                    ctx.font = `600 ${aaFontSize}px JetBrains Mono, Menlo, monospace`;
-                    ctx.fillStyle = isStop ? "#ff6666" : "#ddd";
+                    ctx.font = `700 ${aaFontSize}px JetBrains Mono, Menlo, monospace`;
+                    ctx.fillStyle = AA_COLORS[aa] || "#aaa";
                     ctx.textAlign = "center";
                     ctx.textBaseline = "middle";
                     ctx.fillText(aa, 0, 0);
@@ -732,8 +747,8 @@ export default function PlasmidMap({
             const hiZ2 = z2 > 6 && r > 100;
             const hiArcPerBp2 = (Math.PI * 2) / seqLen;
             const hiArcPx2 = r * hiArcPerBp2;
-            const hiFontSize2 = Math.max(5, Math.min(14, hiArcPx2 * 0.55));
-            const hiStrandOff2 = hiFontSize2 * 0.7 + 3;
+            const hiFontSize2 = Math.max(7, Math.min(18, hiArcPx2 * 0.75));
+            const hiStrandOff2 = hiFontSize2 * 0.8 + 4;
             const tracks2 = assignTracks(features, seqLen);
             let found: number | null = null;
             for (const { feature, track } of tracks2) {
