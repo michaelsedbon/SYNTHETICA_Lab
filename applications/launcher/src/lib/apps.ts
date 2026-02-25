@@ -27,11 +27,11 @@ export const apps: AppInfo[] = [
         icon: "🏭",
         frontendPort: 3000,
         tags: ["production", "planning", "fabrication"],
-        managed: false, // runs via systemd on server, or standalone
+        managed: true,
         startCommands: [
             {
-                cwd: ".",
-                cmd: "echo 'Fab Planner is managed externally'",
+                cwd: "applications/fab-planner",
+                cmd: "npm run dev -- -p 3000",
                 port: 3000,
                 label: "frontend",
             },
@@ -127,6 +127,31 @@ export const apps: AppInfo[] = [
                 cwd: "applications/experiment-viewer/dashboard",
                 cmd: "npm run dev -- -p 3002",
                 port: 3002,
+                label: "frontend",
+            },
+        ],
+    },
+    {
+        slug: "plasmid-viewer",
+        name: "Plasmid Viewer",
+        description:
+            "Visualize and annotate plasmid DNA sequences. Import GenBank files, explore circular and linear maps, detect ORFs, and edit annotations.",
+        icon: "🧬",
+        backendPort: 8003,
+        frontendPort: 3004,
+        tags: ["biology", "plasmid", "visualisation"],
+        managed: true,
+        startCommands: [
+            {
+                cwd: "applications/plasmid-viewer/server",
+                cmd: "python3 -c \"import uvicorn; uvicorn.run('main:app', host='0.0.0.0', port=8003)\"",
+                port: 8003,
+                label: "backend",
+            },
+            {
+                cwd: "applications/plasmid-viewer/dashboard",
+                cmd: "npm run dev -- -p 3004",
+                port: 3004,
                 label: "frontend",
             },
         ],
