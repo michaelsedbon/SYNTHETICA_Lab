@@ -225,11 +225,20 @@ export default function PlasmidMap({
         const z = zoomRef.current;
 
         /* ── Backbone ── */
-        ctx.beginPath();
-        ctx.arc(cx, cy, r, 0, Math.PI * 2);
-        ctx.strokeStyle = BACKBONE_COLOR;
-        ctx.lineWidth = BACKBONE_WIDTH;
-        ctx.stroke();
+        // At high zoom, AA blocks replace the backbone; draw thin version
+        if (z > 6 && r > 100) {
+            ctx.beginPath();
+            ctx.arc(cx, cy, r, 0, Math.PI * 2);
+            ctx.strokeStyle = "rgba(60,60,80,0.3)";
+            ctx.lineWidth = 1;
+            ctx.stroke();
+        } else {
+            ctx.beginPath();
+            ctx.arc(cx, cy, r, 0, Math.PI * 2);
+            ctx.strokeStyle = BACKBONE_COLOR;
+            ctx.lineWidth = BACKBONE_WIDTH;
+            ctx.stroke();
+        }
 
         /* ── Selection arc overlay ── */
         if (selectionRange) {
@@ -604,42 +613,63 @@ export default function PlasmidMap({
                 ctx.globalAlpha = 1;
             }
 
-            // Amino acid translation — codon blocks ON the backbone
+            // Amino acid translation — from ORF reading frames, replaces backbone
             if (arcPx > 3) {
                 const aaBlockH = Math.max(8, strandOffset * 0.7);
-                for (let i = 0; i + 2 < seqLen; i += 3) {
-                    const codon = sequence.slice(i, i + 3);
-                    const aa = CODON_TABLE[codon] || "?";
-                    const sa = bpToAngle(i);
-                    const ea = bpToAngle(i + 3);
-                    const midAngle = (sa + ea) / 2;
 
-                    // Check if midpoint is on screen
-                    const mx = cx + Math.cos(midAngle) * r;
-                    const my = cy + Math.sin(midAngle) * r;
-                    if (mx < -30 || mx > size.w + 30 || my < -30 || my > size.h + 30) continue;
+                // Build a map: for each bp, which CDS/ORF covers it and in which frame
+                const cdsFeatures = features.filter(f =>
+                    f.type === "CDS" || f.type === "gene" || f.label.startsWith("ORF")
+                );
 
-                    // Draw arc block spanning full codon ON the backbone
-                    const isStop = aa === "*";
-                    ctx.beginPath();
-                    ctx.arc(cx, cy, r + aaBlockH / 2, sa, ea);
-                    ctx.arc(cx, cy, r - aaBlockH / 2, ea, sa, true);
-                    ctx.closePath();
-                    ctx.fillStyle = isStop
-                        ? "rgba(255,60,60,0.35)"
-                        : `${AA_COLORS[aa] || "#888"}22`;
-                    ctx.fill();
+                // For each CDS feature, translate in its reading frame
+                for (const feat of cdsFeatures) {
+                    const fStart = feat.start;
+                    const fEnd = feat.end;
+                    const fLen = fEnd > fStart ? fEnd - fStart : seqLen - fStart + fEnd;
+                    // Extract the feature's sequence
+                    const featSeq = fEnd > fStart
+                        ? sequence.slice(fStart, fEnd)
+                        : sequence.slice(fStart) + sequence.slice(0, fEnd);
 
-                    // AA letter centered on backbone
-                    ctx.save();
-                    ctx.translate(mx, my);
-                    ctx.rotate(uprightAngle(midAngle));
-                    ctx.font = `700 ${aaFontSize}px JetBrains Mono, Menlo, monospace`;
-                    ctx.fillStyle = AA_COLORS[aa] || "#aaa";
-                    ctx.textAlign = "center";
-                    ctx.textBaseline = "middle";
-                    ctx.fillText(aa, 0, 0);
-                    ctx.restore();
+                    // Translate codon by codon
+                    for (let ci = 0; ci + 2 < featSeq.length; ci += 3) {
+                        const codon = featSeq.slice(ci, ci + 3).toUpperCase();
+                        const aa = CODON_TABLE[codon] || "?";
+                        const bpPos = (fStart + ci) % seqLen;
+                        const bpEnd = (fStart + ci + 3) % seqLen;
+
+                        const sa = bpToAngle(bpPos);
+                        const ea = bpToAngle(bpEnd);
+                        const midAngle = (sa + ea) / 2;
+
+                        // Visibility check
+                        const mx = cx + Math.cos(midAngle) * r;
+                        const my = cy + Math.sin(midAngle) * r;
+                        if (mx < -30 || mx > size.w + 30 || my < -30 || my > size.h + 30) continue;
+
+                        // Colored block on backbone
+                        const isStop = aa === "*";
+                        ctx.beginPath();
+                        ctx.arc(cx, cy, r + aaBlockH / 2, sa, ea);
+                        ctx.arc(cx, cy, r - aaBlockH / 2, ea, sa, true);
+                        ctx.closePath();
+                        ctx.fillStyle = isStop
+                            ? "rgba(255,40,40,0.45)"
+                            : `${AA_COLORS[aa] || "#888"}33`;
+                        ctx.fill();
+
+                        // AA letter
+                        ctx.save();
+                        ctx.translate(mx, my);
+                        ctx.rotate(uprightAngle(midAngle));
+                        ctx.font = `700 ${aaFontSize}px JetBrains Mono, Menlo, monospace`;
+                        ctx.fillStyle = AA_COLORS[aa] || "#aaa";
+                        ctx.textAlign = "center";
+                        ctx.textBaseline = "middle";
+                        ctx.fillText(aa, 0, 0);
+                        ctx.restore();
+                    }
                 }
             }
         }
