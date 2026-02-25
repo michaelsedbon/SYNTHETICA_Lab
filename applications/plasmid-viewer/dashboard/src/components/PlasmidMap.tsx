@@ -312,26 +312,58 @@ export default function PlasmidMap({
 
             ctx.globalAlpha = 1;
 
-            // Inline label: render inside the arc if it fits
+            // Inline label: render along the arc curve if it fits
             if (feature.label) {
-                const arcSpan = (endAngle - startAngle) * featureR; // arc length in px
+                const arcSpan = (endAngle - startAngle) * featureR;
                 const midAngle = (startAngle + endAngle) / 2;
-                ctx.font = `600 ${Math.min(thickness - 2, 11)}px Inter, sans-serif`;
-                const tw = ctx.measureText(feature.label).width;
-                if (arcSpan > tw + 8) {
-                    // Render inside the arc
-                    ctx.save();
+                const labelFontSize = Math.min(thickness - 2, 11);
+                ctx.font = `600 ${labelFontSize}px Inter, sans-serif`;
+                const charWidths = feature.label.split("").map((c: string) => ctx.measureText(c).width);
+                const totalWidth = charWidths.reduce((a: number, b: number) => a + b, 0);
+
+                if (arcSpan > totalWidth + 8) {
+                    // Render each character along the arc
                     const labelR = featureR;
-                    ctx.translate(cx + Math.cos(midAngle) * labelR, cy + Math.sin(midAngle) * labelR);
-                    const textAngle2 = midAngle + Math.PI / 2;
-                    const normMid2 = ((midAngle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
-                    const flip2 = normMid2 > Math.PI / 2 && normMid2 < (3 * Math.PI) / 2;
-                    ctx.rotate(flip2 ? textAngle2 + Math.PI : textAngle2);
-                    ctx.fillStyle = "#fff";
-                    ctx.textAlign = "center";
-                    ctx.textBaseline = "middle";
-                    ctx.fillText(feature.label, 0, 0);
-                    ctx.restore();
+                    // Check if text is on bottom half → flip for readability
+                    const normMid = ((midAngle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+                    const flip = normMid > Math.PI / 2 && normMid < (3 * Math.PI) / 2;
+
+                    const totalArcAngle = totalWidth / labelR;
+                    const chars = feature.label.split("");
+                    let currentAngle: number;
+
+                    if (flip) {
+                        // Reverse character order when flipped
+                        currentAngle = midAngle + totalArcAngle / 2;
+                        for (let ci = 0; ci < chars.length; ci++) {
+                            const charAngle = charWidths[ci] / labelR;
+                            currentAngle -= charAngle / 2;
+                            ctx.save();
+                            ctx.translate(cx + Math.cos(currentAngle) * labelR, cy + Math.sin(currentAngle) * labelR);
+                            ctx.rotate(currentAngle - Math.PI / 2);
+                            ctx.fillStyle = "#fff";
+                            ctx.textAlign = "center";
+                            ctx.textBaseline = "middle";
+                            ctx.fillText(chars[ci], 0, 0);
+                            ctx.restore();
+                            currentAngle -= charAngle / 2;
+                        }
+                    } else {
+                        currentAngle = midAngle - totalArcAngle / 2;
+                        for (let ci = 0; ci < chars.length; ci++) {
+                            const charAngle = charWidths[ci] / labelR;
+                            currentAngle += charAngle / 2;
+                            ctx.save();
+                            ctx.translate(cx + Math.cos(currentAngle) * labelR, cy + Math.sin(currentAngle) * labelR);
+                            ctx.rotate(currentAngle + Math.PI / 2);
+                            ctx.fillStyle = "#fff";
+                            ctx.textAlign = "center";
+                            ctx.textBaseline = "middle";
+                            ctx.fillText(chars[ci], 0, 0);
+                            ctx.restore();
+                            currentAngle += charAngle / 2;
+                        }
+                    }
                 } else {
                     // External label with leader line
                     labelInfos.push({ angle: midAngle, r: outerR, text: feature.label, color: feature.color, selected: isSelected });
