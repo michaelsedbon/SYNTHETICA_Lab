@@ -994,6 +994,55 @@ export default function Home() {
               ⬇ Download All
             </Button>
           )}
+          {data.filteredParts.length > 0 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                // Build CSV from filtered parts with visible columns
+                const COLUMN_LABELS: Record<string, string> = {
+                  status: "Status", material: "Material", dueDate: "Due Date",
+                  client: "Client", quantity: "Quantity", who: "Assignee",
+                  fabMechanism: "Fab Mechanism", hospital: "Hospital",
+                  orderId: "Order ID", type: "Type", notes: "Notes",
+                };
+                const cols = ["partName", "uniqueId", ...visibleColumns.filter(c => c !== "files"), "notes"];
+                const headers = cols.map(c =>
+                  c === "partName" ? "Part Name" : c === "uniqueId" ? "Part ID" : (COLUMN_LABELS[c] || c)
+                );
+                const rows = data.filteredParts.map(p => {
+                  return cols.map(col => {
+                    let val: unknown;
+                    if (col === "partName" || col === "uniqueId" || col === "status" || col === "material" ||
+                      col === "client" || col === "hospital" || col === "orderId" || col === "type" ||
+                      col === "notes" || col === "who" || col === "fabMechanism" || col === "dueDate" ||
+                      col === "quantity") {
+                      val = (p as unknown as Record<string, unknown>)[col];
+                    } else {
+                      val = p.customFields?.[col];
+                    }
+                    if (val === null || val === undefined) return "";
+                    const s = String(val);
+                    // Escape CSV: quote fields containing commas, quotes, or newlines
+                    return s.includes(",") || s.includes('"') || s.includes("\n")
+                      ? `"${s.replace(/"/g, '""')}"` : s;
+                  }).join(",");
+                });
+                const csv = [headers.join(","), ...rows].join("\n");
+                const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                const date = new Date().toISOString().split("T")[0];
+                a.href = url;
+                a.download = `order_export_${date}.csv`;
+                a.click();
+                URL.revokeObjectURL(url);
+              }}
+              title="Export displayed parts as CSV for ordering"
+            >
+              📋 Export for Order
+            </Button>
+          )}
           <span style={{ fontSize: 11, color: "var(--text-muted)" }}>
             {data.filteredParts.length} part{data.filteredParts.length !== 1 ? "s" : ""}
           </span>
