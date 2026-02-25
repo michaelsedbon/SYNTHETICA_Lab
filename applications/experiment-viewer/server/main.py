@@ -2,8 +2,10 @@
 Experiment Viewer — FastAPI backend
 Discovers .md files across multiple experiment directories and serves
 their content + referenced media. Supports grouping by source.
+Settings are persisted in settings.json alongside this file.
 """
 
+import json
 import os
 import re
 from pathlib import Path
@@ -12,48 +14,91 @@ from typing import Optional
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
+from pydantic import BaseModel
 
-# ── Experiment sources ──────────────────────────────────────────────
-# Each source is a (label, path) tuple.  The local workspace experiments/
-# folder is always included.  Additional folders can be added via the
-# EXTRA_EXPERIMENT_DIRS env var (comma-separated "label:path" pairs).
-#
-# Example:
-#   EXTRA_EXPERIMENT_DIRS="PhD:/Users/me/Documents/PhD/experiments"
+# ── Paths ───────────────────────────────────────────────────────────
 
 WORKSPACE = Path(__file__).resolve().parent.parent.parent.parent
 LOCAL_EXPERIMENTS = WORKSPACE / "experiments"
+SETTINGS_FILE = Path(__file__).resolve().parent / "settings.json"
 
-def _parse_sources() -> list[tuple[str, Path]]:
-    """Build the list of (label, directory) sources."""
-    sources: list[tuple[str, Path]] = []
+# ── Settings persistence ────────────────────────────────────────────
 
-    # Always include the local workspace experiments folder
+def _default_sources() -> list[dict]:
+    """Build the default sources list (used on first run)."""
+    sources: list[dict] = []
+
     if LOCAL_EXPERIMENTS.is_dir():
-        sources.append(("Lab", LOCAL_EXPERIMENTS))
+        sources.append({"label": "Lab", "path": str(LOCAL_EXPERIMENTS)})
 
-    # Parse additional directories from env var
+    phd_dir = Path(os.path.expanduser("~/Documents/PhD/experiments"))
+    if phd_dir.is_dir():
+        sources.append({"label": "PhD", "path": str(phd_dir)})
+
+    # Parse additional directories from env var (backward compat)
     extra = os.environ.get("EXTRA_EXPERIMENT_DIRS", "")
-    if not extra:
-        # Default: include PhD folder if it exists
-        phd_dir = Path(os.path.expanduser("~/Documents/PhD/experiments"))
-        if phd_dir.is_dir():
-            sources.append(("PhD", phd_dir))
-    else:
+    if extra:
         for entry in extra.split(","):
             entry = entry.strip()
             if ":" in entry:
                 label, path_str = entry.split(":", 1)
                 p = Path(path_str.strip()).expanduser()
                 if p.is_dir():
-                    sources.append((label.strip(), p))
+                    sources.append({"label": label.strip(), "path": str(p)})
 
     return sources
 
-SOURCES = _parse_sources()
 
-# Build a flat lookup: source_label -> Path  (used for file/media serving)
+def _load_settings() -> dict:
+    """Load settings from disk, creating defaults if missing."""
+    if SETTINGS_FILE.is_file():
+        try:
+            data = json.loads(SETTINGS_FILE.read_text(encoding="utf-8"))
+            if "sources" in data and isinstance(data["sources"], list):
+                return data
+        except (json.JSONDecodeError, IOError):
+            pass
+
+    # First run — write defaults
+    defaults = {"sources": _default_sources()}
+    _save_settings(defaults)
+    return defaults
+
+
+def _save_settings(data: dict) -> None:
+    """Write settings to disk."""
+    SETTINGS_FILE.write_text(
+        json.dumps(data, indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+
+
+def _sources_from_settings() -> list[tuple[str, Path]]:
+    """Return (label, Path) pairs from the current settings."""
+    settings = _load_settings()
+    result: list[tuple[str, Path]] = []
+    for s in settings.get("sources", []):
+        label = s.get("label", "")
+        p = Path(s.get("path", ""))
+        if label and p.is_dir():
+            result.append((label, p))
+    return result
+
+
+# ── Runtime state ───────────────────────────────────────────────────
+
+SOURCES = _sources_from_settings()
 SOURCE_MAP = {label: path for label, path in SOURCES}
+
+
+def _reload_sources() -> None:
+    """Reload SOURCES and SOURCE_MAP from settings file."""
+    global SOURCES, SOURCE_MAP
+    SOURCES = _sources_from_settings()
+    SOURCE_MAP = {label: path for label, path in SOURCES}
+
+
+# ── App ─────────────────────────────────────────────────────────────
 
 app = FastAPI(title="Experiment Viewer API")
 
@@ -148,6 +193,8 @@ def _build_tree() -> list[dict]:
     return all_groups
 
 
+# ── API routes ──────────────────────────────────────────────────────
+
 @app.get("/api/experiments")
 def list_experiments():
     """Return the tree of experiment markdown files from all sources."""
@@ -194,3 +241,55 @@ def get_media(
     if not resolved.is_file():
         raise HTTPException(status_code=404, detail="File not found")
     return FileResponse(resolved)
+
+
+# ── Settings API ────────────────────────────────────────────────────
+
+class SourceEntry(BaseModel):
+    label: str
+    path: str
+
+class SettingsPayload(BaseModel):
+    sources: list[SourceEntry]
+
+@app.get("/api/settings")
+def get_settings():
+    """Return the current settings (sources list)."""
+    settings = _load_settings()
+    return settings
+
+@app.post("/api/settings")
+def update_settings(payload: SettingsPayload):
+    """Update the sources list. Validates that paths exist."""
+    errors: list[str] = []
+    valid_sources: list[dict] = []
+
+    for s in payload.sources:
+        label = s.label.strip()
+        path_str = s.path.strip()
+
+        if not label:
+            errors.append("Source label cannot be empty")
+            continue
+        if not path_str:
+            errors.append(f"Path for '{label}' cannot be empty")
+            continue
+
+        p = Path(path_str).expanduser()
+        if not p.is_dir():
+            errors.append(f"Directory not found: {path_str}")
+            continue
+
+        valid_sources.append({"label": label, "path": str(p.resolve())})
+
+    if errors:
+        raise HTTPException(status_code=400, detail={"errors": errors})
+
+    if not valid_sources:
+        raise HTTPException(status_code=400, detail={"errors": ["At least one valid source is required"]})
+
+    new_settings = {"sources": valid_sources}
+    _save_settings(new_settings)
+    _reload_sources()
+
+    return {"ok": True, "sources": valid_sources}

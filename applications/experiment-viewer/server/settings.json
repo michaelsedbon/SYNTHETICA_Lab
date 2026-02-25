@@ -1,0 +1,12 @@
+{
+  "sources": [
+    {
+      "label": "Lab",
+      "path": "/Users/michaelsedbon/Documents/SYNTHETIC_PERSONAL_LAB/experiments"
+    },
+    {
+      "label": "PhD",
+      "path": "/Users/michaelsedbon/Documents/PhD/experiments"
+    }
+  ]
+}
