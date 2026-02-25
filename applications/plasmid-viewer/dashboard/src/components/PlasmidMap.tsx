@@ -130,10 +130,26 @@ export default function PlasmidMap({
                 onSelectionRange(null);
                 setCtxMenu(null);
             }
+            // Ctrl+C / Cmd+C: copy selected sequence
+            if ((e.ctrlKey || e.metaKey) && e.key === "c" && !(e.target instanceof HTMLInputElement)) {
+                if (selectionRange) {
+                    const { start, end } = selectionRange;
+                    const sub = start < end ? sequence.slice(start, end) : sequence.slice(start) + sequence.slice(0, end);
+                    navigator.clipboard.writeText(sub);
+                } else if (selectedFeatureId !== null) {
+                    const feat = features.find((f) => f.id === selectedFeatureId);
+                    if (feat) {
+                        const sub = feat.start < feat.end
+                            ? sequence.slice(feat.start, feat.end)
+                            : sequence.slice(feat.start) + sequence.slice(0, feat.end);
+                        navigator.clipboard.writeText(sub);
+                    }
+                }
+            }
         };
         window.addEventListener("keydown", handler);
         return () => window.removeEventListener("keydown", handler);
-    }, [selectedFeatureId, multiSelectedIds, onDeleteFeature, onSelectFeature, onSelectionRange]);
+    }, [selectedFeatureId, multiSelectedIds, onDeleteFeature, onSelectFeature, onSelectionRange, selectionRange, sequence, features]);
 
     /* ── bp ↔ angle ── */
     const bpToAngle = useCallback(
@@ -267,10 +283,17 @@ export default function PlasmidMap({
         const hiFontSize = Math.max(5, Math.min(14, hiArcPx * 0.55));
         const hiStrandOff = hiFontSize * 0.7 + 3;
 
+        // Viewport center angle for consistent text direction
+        const viewAngle = Math.atan2(size.h / 2 - cy, size.w / 2 - cx);
+        const viewNorm = ((viewAngle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+        const viewFlip = viewNorm > Math.PI / 2 && viewNorm < (3 * Math.PI) / 2;
+
         tracks.forEach(({ feature, track }) => {
             const startAngle = bpToAngle(feature.start);
             const endAngle = bpToAngle(feature.end);
-            const thickness = TRACK_THICK[feature.type] || TRACK_DEFAULT;
+            // At high zoom: enforce minimum 14px thickness so all features are readable
+            const rawThickness = TRACK_THICK[feature.type] || TRACK_DEFAULT;
+            const thickness = hiZoom ? Math.max(14, rawThickness) : rawThickness;
             const gap = 3;
             // At high zoom: place arcs OUTSIDE nucleotides. At low zoom: inside backbone.
             const featureR = hiZoom
@@ -347,22 +370,21 @@ export default function PlasmidMap({
                     const totalArcAngle = totalWidth / labelR;
                     const chars = feature.label.split("");
 
-                    // Determine reading direction based on midpoint of the TEXT
-                    // (not the annotation) — if mid of text is in bottom half, reverse
-                    const textMidNorm = ((midAngle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
-                    const reverseDirection = textMidNorm > Math.PI / 2 && textMidNorm < (3 * Math.PI) / 2;
+                    // Use viewport-center approach at high zoom for consistent text direction
+                    const reverseDirection = hiZoom ? viewFlip : (() => {
+                        const textMidNorm = ((midAngle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+                        return textMidNorm > Math.PI / 2 && textMidNorm < (3 * Math.PI) / 2;
+                    })();
 
                     let currentAngle: number;
 
                     if (reverseDirection) {
-                        // Start from right side going counter-clockwise
                         currentAngle = midAngle + totalArcAngle / 2;
                         for (let ci = 0; ci < chars.length; ci++) {
                             const charAngle = charWidths[ci] / labelR;
                             currentAngle -= charAngle / 2;
                             ctx.save();
                             ctx.translate(cx + Math.cos(currentAngle) * labelR, cy + Math.sin(currentAngle) * labelR);
-                            // Each character individually faces up
                             ctx.rotate(currentAngle - Math.PI / 2);
                             ctx.fillStyle = "#fff";
                             ctx.textAlign = "center";
@@ -372,14 +394,12 @@ export default function PlasmidMap({
                             currentAngle -= charAngle / 2;
                         }
                     } else {
-                        // Start from left side going clockwise
                         currentAngle = midAngle - totalArcAngle / 2;
                         for (let ci = 0; ci < chars.length; ci++) {
                             const charAngle = charWidths[ci] / labelR;
                             currentAngle += charAngle / 2;
                             ctx.save();
                             ctx.translate(cx + Math.cos(currentAngle) * labelR, cy + Math.sin(currentAngle) * labelR);
-                            // Each character individually faces up
                             ctx.rotate(currentAngle + Math.PI / 2);
                             ctx.fillStyle = "#fff";
                             ctx.textAlign = "center";
@@ -478,8 +498,11 @@ export default function PlasmidMap({
                 const totalW2 = charWidths2.reduce((a: number, b: number) => a + b, 0);
                 const totalArcAngle2 = totalW2 / labelR2;
 
-                const normMid = ((info.angle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
-                const reverse2 = normMid > Math.PI / 2 && normMid < (3 * Math.PI) / 2;
+                // Use viewport-center approach at high zoom for consistent text direction
+                const reverse2 = hiZoom ? viewFlip : (() => {
+                    const normMid = ((info.angle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+                    return normMid > Math.PI / 2 && normMid < (3 * Math.PI) / 2;
+                })();
 
                 let ca2 = reverse2 ? info.angle + totalArcAngle2 / 2 : info.angle - totalArcAngle2 / 2;
                 for (let ci = 0; ci < chars2.length; ci++) {
@@ -711,12 +734,22 @@ export default function PlasmidMap({
             const bp = angleToBp(mouseAngle);
             setHoverBp(Math.abs(dist - r) < r * 0.3 ? bp : null);
 
-            // Hit test features
+            // Hit test features — match rendering radius logic
+            const z2 = zoomRef.current;
+            const hiZ2 = z2 > 6 && r > 100;
+            const hiArcPerBp2 = (Math.PI * 2) / seqLen;
+            const hiArcPx2 = r * hiArcPerBp2;
+            const hiFontSize2 = Math.max(5, Math.min(14, hiArcPx2 * 0.55));
+            const hiStrandOff2 = hiFontSize2 * 0.7 + 3;
             const tracks2 = assignTracks(features, seqLen);
             let found: number | null = null;
             for (const { feature, track } of tracks2) {
-                const thickness = TRACK_THICK[feature.type] || TRACK_DEFAULT;
-                const featureR = r - 8 - track * 21;
+                const rawThickness = TRACK_THICK[feature.type] || TRACK_DEFAULT;
+                const thickness = hiZ2 ? Math.max(14, rawThickness) : rawThickness;
+                const gap = 3;
+                const featureR = hiZ2
+                    ? r + hiStrandOff2 + 6 + track * (thickness + gap)
+                    : r - 8 - track * (18 + gap);
                 const halfT = thickness / 2 + 3;
                 if (Math.abs(dist - featureR) < halfT) {
                     const sa = bpToAngle(feature.start);
@@ -861,6 +894,20 @@ export default function PlasmidMap({
                         </>
                     ) : ctxMenu.bp !== null ? (
                         <>
+                            {selectionRange && (
+                                <>
+                                    <button className="ctx-item" onClick={() => {
+                                        const { start, end } = selectionRange;
+                                        const sub = start < end ? sequence.slice(start, end) : sequence.slice(start) + sequence.slice(0, end);
+                                        const len = start < end ? end - start : seqLen - start + end;
+                                        navigator.clipboard.writeText(sub);
+                                        setCtxMenu(null);
+                                    }}>
+                                        Copy Selection ({(() => { const { start, end } = selectionRange; return start < end ? end - start : seqLen - start + end; })().toLocaleString()} bp)
+                                    </button>
+                                    <div className="ctx-divider" />
+                                </>
+                            )}
                             <button className="ctx-item" onClick={() => copyPosition(ctxMenu.bp!)}>
                                 Copy Position ({ctxMenu.bp!.toLocaleString()} bp)
                             </button>
