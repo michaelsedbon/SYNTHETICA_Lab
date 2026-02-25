@@ -698,3 +698,55 @@ body {
 .btn-group .btn {
   flex: 1;
 }
+
+/* ── Status bar ──────────────────────────────────────────────────── */
+.status-bar {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius);
+  padding: 5px 12px;
+  box-shadow: var(--shadow-md);
+  font-size: 11px;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  z-index: 10;
+}
+
+.status-nt {
+  font-weight: 700;
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-size: 11px;
+}
+
+.nt-A {
+  color: #5CB85C;
+  background: rgba(92, 184, 92, 0.12);
+}
+
+.nt-T {
+  color: #D9534F;
+  background: rgba(217, 83, 79, 0.12);
+}
+
+.nt-G {
+  color: #F0AD4E;
+  background: rgba(240, 173, 78, 0.12);
+}
+
+.nt-C {
+  color: #4A90D9;
+  background: rgba(74, 144, 217, 0.12);
+}
+
+.status-feat {
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-weight: 500;
+}
