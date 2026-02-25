@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useEffect, useCallback, useState } from "react";
-import { Feature } from "@/lib/api";
+import { Feature, Orf } from "@/lib/api";
 
 interface Props {
     sequence: string;
@@ -11,6 +11,8 @@ interface Props {
     onSelectFeature: (id: number | null) => void;
     selectionRange: { start: number; end: number } | null;
     onSelectionRange: (range: { start: number; end: number } | null) => void;
+    onDeleteFeature?: (featureId: number) => void;
+    ghostOrfs?: Orf[];
 }
 
 /* ── Constants ─────────────────────────────────────────────────────── */
@@ -20,7 +22,7 @@ const BACKBONE_WIDTH = 2;
 const TICK_COLOR = "#3a3a4a";
 const LABEL_COLOR = "#b0b0c8";
 const SEQ_COLORS: Record<string, string> = {
-    A: "#5CB85C", T: "#D9534F", G: "#F0AD4E", C: "#4A90D9",
+    A: "#39FF14", T: "#FF3131", G: "#FFD700", C: "#00D4FF",
 };
 const COMPLEMENT: Record<string, string> = { A: "T", T: "A", G: "C", C: "G" };
 
@@ -33,9 +35,20 @@ const TRACK_DEFAULT = 10;
 
 const MIN_ZOOM = 0.3;
 const MAX_ZOOM = 80;
-const TRANSITION_START = 2.5; // zoom level where 12-o'clock centering begins
-const TRANSITION_END = 5;     // zoom level where it's fully anchored at 12
-const ROTATE_SPEED = 0.0015;
+const ZOOM_TRANSITION_START = 1.2;
+const ZOOM_TRANSITION_END = 1.7;
+const ROTATE_SPEED = 0.002;
+
+const CODON_TABLE: Record<string, string> = {
+    TTT: "F", TTC: "F", TTA: "L", TTG: "L", CTT: "L", CTC: "L", CTA: "L", CTG: "L",
+    ATT: "I", ATC: "I", ATA: "I", ATG: "M", GTT: "V", GTC: "V", GTA: "V", GTG: "V",
+    TCT: "S", TCC: "S", TCA: "S", TCG: "S", CCT: "P", CCC: "P", CCA: "P", CCG: "P",
+    ACT: "T", ACC: "T", ACA: "T", ACG: "T", GCT: "A", GCC: "A", GCA: "A", GCG: "A",
+    TAT: "Y", TAC: "Y", TAA: "*", TAG: "*", CAT: "H", CAC: "H", CAA: "Q", CAG: "Q",
+    AAT: "N", AAC: "N", AAA: "K", AAG: "K", GAT: "D", GAC: "D", GAA: "E", GAG: "E",
+    TGT: "C", TGC: "C", TGA: "*", TGG: "W", CGT: "R", CGC: "R", CGA: "R", CGG: "R",
+    AGT: "S", AGC: "S", AGA: "R", AGG: "R", GGT: "G", GGC: "G", GGA: "G", GGG: "G",
+};
 
 /* ── Component ─────────────────────────────────────────────────────── */
 
@@ -43,17 +56,16 @@ export default function PlasmidMap({
     sequence, features, topology,
     selectedFeatureId, onSelectFeature,
     selectionRange, onSelectionRange,
+    onDeleteFeature, ghostOrfs,
 }: Props) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
     const zoomRef = useRef(1);
     const rotationRef = useRef(0);
-    const panRef = useRef({ x: 0, y: 0 });
 
     const [zoom, setZoom] = useState(1);
     const [rotation, setRotation] = useState(0);
-    const [pan, setPan] = useState({ x: 0, y: 0 });
     const [size, setSize] = useState({ w: 800, h: 600 });
     const [hoverFeature, setHoverFeature] = useState<number | null>(null);
     const [hoverBp, setHoverBp] = useState<number | null>(null);
@@ -61,6 +73,16 @@ export default function PlasmidMap({
     // Drag-select state
     const dragSelecting = useRef(false);
     const dragStart = useRef<number | null>(null);
+
+    // Context menu
+    const [ctxMenu, setCtxMenu] = useState<{
+        x: number; y: number;
+        featureId: number | null;
+        bp: number | null;
+    } | null>(null);
+
+    // Track whether selection was auto-rotated already
+    const autoRotatedFor = useRef<number | null>(null);
 
     const seqLen = sequence.length;
 
@@ -75,6 +97,35 @@ export default function PlasmidMap({
         obs.observe(el);
         return () => obs.disconnect();
     }, []);
+
+    // Close context menu on click anywhere
+    useEffect(() => {
+        const handler = () => setCtxMenu(null);
+        window.addEventListener("click", handler);
+        return () => window.removeEventListener("click", handler);
+    }, []);
+
+    // Keyboard shortcuts
+    useEffect(() => {
+        const handler = (e: KeyboardEvent) => {
+            if (e.key === "Delete" || e.key === "Backspace") {
+                if (selectedFeatureId !== null && onDeleteFeature && !(e.target instanceof HTMLInputElement)) {
+                    e.preventDefault();
+                    if (confirm("Delete selected feature?")) {
+                        onDeleteFeature(selectedFeatureId);
+                        onSelectFeature(null);
+                    }
+                }
+            }
+            if (e.key === "Escape") {
+                onSelectFeature(null);
+                onSelectionRange(null);
+                setCtxMenu(null);
+            }
+        };
+        window.addEventListener("keydown", handler);
+        return () => window.removeEventListener("keydown", handler);
+    }, [selectedFeatureId, onDeleteFeature, onSelectFeature, onSelectionRange]);
 
     /* ── bp ↔ angle ── */
     const bpToAngle = useCallback(
@@ -91,35 +142,46 @@ export default function PlasmidMap({
         [seqLen]
     );
 
-    /* ── Layout helpers ── */
-    const getNaturalR = useCallback(() => Math.min(size.w, size.h) * 0.38, [size]);
-
+    /* ── Layout: camera-only translation ── */
     const getLayout = useCallback(() => {
         const z = zoomRef.current;
-        const naturalR = getNaturalR();
+        const naturalR = Math.min(size.w, size.h) * 0.38;
         const r = naturalR * z;
 
-        // At low zoom: circle center = viewport center
-        // At high zoom: 12-o'clock point = viewport center
-        const t = Math.min(1, Math.max(0, (z - TRANSITION_START) / (TRANSITION_END - TRANSITION_START)));
-        // Smooth ease
-        const ease = t * t * (3 - 2 * t);
+        // Transition factor: 0 at ≤120%, 1 at ≥170%
+        const t = Math.min(1, Math.max(0, (z - ZOOM_TRANSITION_START) / (ZOOM_TRANSITION_END - ZOOM_TRANSITION_START)));
+        const ease = t * t * (3 - 2 * t); // smoothstep
 
-        // Circle center position
-        const baseCx = size.w / 2 + panRef.current.x;
-        const baseCy = size.h / 2 + panRef.current.y;
-
-        // 12-o'clock anchor: the top of the backbone (angle = -π/2 + rotation)
-        const topAngle = -Math.PI / 2 + rotationRef.current;
-        // If we want the 12-o'clock point at viewport center, the circle center must be:
-        const anchoredCx = size.w / 2 - Math.cos(topAngle) * r;
-        const anchoredCy = size.h / 2 - Math.sin(topAngle) * r;
-
-        const cx = baseCx * (1 - ease) + anchoredCx * ease;
-        const cy = baseCy * (1 - ease) + anchoredCy * ease;
+        // At ease=0: circle center = viewport center
+        // At ease=1: 12 o'clock point on backbone = viewport center
+        //   → circle center is at (vpW/2, vpH/2 + r)  since 12 o'clock = top = center - r in Y
+        const cx = size.w / 2;
+        const cy = size.h / 2 + ease * r;
 
         return { cx, cy, r };
-    }, [size, getNaturalR]);
+    }, [size]);
+
+    /* ── Auto-rotate selection to 12 o'clock ── */
+    // When a feature is selected AND we haven't auto-rotated for it yet,
+    // rotate so its midpoint sits at 12 o'clock
+    useEffect(() => {
+        if (selectedFeatureId !== null && autoRotatedFor.current !== selectedFeatureId) {
+            const feat = features.find((f) => f.id === selectedFeatureId);
+            if (feat) {
+                const midBp = feat.start < feat.end
+                    ? (feat.start + feat.end) / 2
+                    : ((feat.start + feat.end + seqLen) / 2) % seqLen;
+                // Rotate so midBp is at 12 o'clock (angle = -π/2)
+                // bpToAngle(midBp) = (midBp/seqLen)*2π − π/2 + rotation = −π/2
+                // → rotation = −(midBp/seqLen)*2π
+                rotationRef.current = -(midBp / seqLen) * Math.PI * 2;
+                setRotation(rotationRef.current);
+                autoRotatedFor.current = selectedFeatureId;
+            }
+        } else if (selectedFeatureId === null) {
+            autoRotatedFor.current = null;
+        }
+    }, [selectedFeatureId, features, seqLen]);
 
     /* ── DRAW ─────────────────────────────────────────────────────────── */
     useEffect(() => {
@@ -188,9 +250,7 @@ export default function PlasmidMap({
 
         /* ── Feature arcs ── */
         const tracks = assignTracks(features, seqLen);
-
-        // Collect label info for collision avoidance
-        const labelInfos: { angle: number; r: number; text: string; color: string; selected: boolean; feature: Feature }[] = [];
+        const labelInfos: { angle: number; r: number; text: string; color: string; selected: boolean }[] = [];
 
         tracks.forEach(({ feature, track }) => {
             const startAngle = bpToAngle(feature.start);
@@ -211,7 +271,10 @@ export default function PlasmidMap({
             const isDirectional = ["CDS", "gene", "mRNA", "promoter", "primer_bind"].includes(feature.type);
 
             if (isDirectional) {
-                const arrowAngle = Math.min(0.08, (endAngle - startAngle) * 0.25);
+                // Clamp arrow tip to max 12px arc length
+                const maxTipPx = 12;
+                const maxTipAngle = featureR > 0 ? maxTipPx / featureR : 0.08;
+                const arrowAngle = Math.min(maxTipAngle, (endAngle - startAngle) * 0.25);
                 const tipAngle = feature.strand === 1 ? endAngle : startAngle;
                 const bodyEnd = feature.strand === 1 ? endAngle - arrowAngle : startAngle + arrowAngle;
 
@@ -249,64 +312,107 @@ export default function PlasmidMap({
 
             ctx.globalAlpha = 1;
 
-            // Collect label for later collision-aware rendering
+            // Inline label: render inside the arc if it fits
             if (feature.label) {
+                const arcSpan = (endAngle - startAngle) * featureR; // arc length in px
                 const midAngle = (startAngle + endAngle) / 2;
-                labelInfos.push({ angle: midAngle, r: outerR, text: feature.label, color: feature.color, selected: isSelected, feature });
+                ctx.font = `600 ${Math.min(thickness - 2, 11)}px Inter, sans-serif`;
+                const tw = ctx.measureText(feature.label).width;
+                if (arcSpan > tw + 8) {
+                    // Render inside the arc
+                    ctx.save();
+                    const labelR = featureR;
+                    ctx.translate(cx + Math.cos(midAngle) * labelR, cy + Math.sin(midAngle) * labelR);
+                    const textAngle2 = midAngle + Math.PI / 2;
+                    const normMid2 = ((midAngle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+                    const flip2 = normMid2 > Math.PI / 2 && normMid2 < (3 * Math.PI) / 2;
+                    ctx.rotate(flip2 ? textAngle2 + Math.PI : textAngle2);
+                    ctx.fillStyle = "#fff";
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
+                    ctx.fillText(feature.label, 0, 0);
+                    ctx.restore();
+                } else {
+                    // External label with leader line
+                    labelInfos.push({ angle: midAngle, r: outerR, text: feature.label, color: feature.color, selected: isSelected });
+                }
             }
         });
 
-        /* ── Label collision avoidance and rendering ── */
+        /* ── Ghost ORF preview arcs (before commit) ── */
+        if (ghostOrfs && ghostOrfs.length > 0) {
+            ctx.globalAlpha = 0.3;
+            ctx.setLineDash([6, 4]);
+            for (const orf of ghostOrfs) {
+                const sa = bpToAngle(orf.start);
+                const ea = bpToAngle(orf.end);
+                ctx.beginPath();
+                ctx.arc(cx, cy, r - 4, sa, ea);
+                ctx.strokeStyle = orf.color;
+                ctx.lineWidth = 8;
+                ctx.stroke();
+            }
+            ctx.setLineDash([]);
+            ctx.globalAlpha = 1;
+        }
+
+        /* ── Label collision avoidance: hide unplaceable labels ── */
         if (labelInfos.length > 0) {
-            // Sort by angle for overlap detection
+            // Priority: selected first, then non-ORF, then ORFs
             labelInfos.sort((a, b) => {
+                if (a.selected !== b.selected) return a.selected ? -1 : 1;
+                const aIsOrf = a.text.startsWith("ORF");
+                const bIsOrf = b.text.startsWith("ORF");
+                if (aIsOrf !== bIsOrf) return aIsOrf ? 1 : -1;
                 const na = ((a.angle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
                 const nb = ((b.angle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
                 return na - nb;
             });
 
-            // Assign staggered offset to avoid overlaps
             const labelPositions: { lx: number; ly: number; info: typeof labelInfos[0]; offsetR: number }[] = [];
-            const minGap = 14; // min vertical gap between labels
+            const minGap = 20; // minimum pixel distance between labels
+            const maxOffset = 3; // max outward push attempts
 
             for (const info of labelInfos) {
                 let offsetR = r + 28;
                 let lx = cx + Math.cos(info.angle) * offsetR;
                 let ly = cy + Math.sin(info.angle) * offsetR;
+                let canPlace = true;
 
-                // Check against already placed labels
-                for (let attempt = 0; attempt < 5; attempt++) {
+                for (let attempt = 0; attempt <= maxOffset; attempt++) {
                     let collision = false;
                     for (const placed of labelPositions) {
-                        const dist = Math.sqrt((lx - placed.lx) ** 2 + (ly - placed.ly) ** 2);
-                        if (dist < minGap) {
-                            collision = true;
-                            break;
+                        if (Math.sqrt((lx - placed.lx) ** 2 + (ly - placed.ly) ** 2) < minGap) {
+                            collision = true; break;
                         }
                     }
-                    if (!collision) break;
-                    offsetR += 14;
+                    if (!collision) { canPlace = true; break; }
+                    if (attempt === maxOffset) { canPlace = false; break; }
+                    offsetR += 16;
                     lx = cx + Math.cos(info.angle) * offsetR;
                     ly = cy + Math.sin(info.angle) * offsetR;
                 }
+
+                // Always show selected labels, skip unplaceable others
+                if (!canPlace && !info.selected) continue;
                 labelPositions.push({ lx, ly, info, offsetR });
             }
 
-            // Render labels with leader lines
             for (const { lx, ly, info, offsetR } of labelPositions) {
+                // Skip labels far off-screen
+                if (lx < -50 || lx > size.w + 50 || ly < -50 || ly > size.h + 50) continue;
+
                 // Leader line
-                const lineStartR = info.r + 2;
-                const lineEndR = offsetR - 6;
                 ctx.beginPath();
-                ctx.moveTo(cx + Math.cos(info.angle) * lineStartR, cy + Math.sin(info.angle) * lineStartR);
-                ctx.lineTo(cx + Math.cos(info.angle) * lineEndR, cy + Math.sin(info.angle) * lineEndR);
+                ctx.moveTo(cx + Math.cos(info.angle) * (info.r + 2), cy + Math.sin(info.angle) * (info.r + 2));
+                ctx.lineTo(cx + Math.cos(info.angle) * (offsetR - 6), cy + Math.sin(info.angle) * (offsetR - 6));
                 ctx.strokeStyle = info.color;
                 ctx.globalAlpha = 0.35;
                 ctx.lineWidth = 1;
                 ctx.stroke();
                 ctx.globalAlpha = 1;
 
-                // Label text
+                // Label
                 ctx.save();
                 ctx.translate(lx, ly);
                 const textAngle = info.angle + Math.PI / 2;
@@ -322,54 +428,79 @@ export default function PlasmidMap({
             }
         }
 
-        /* ── Sequence letters + complementary strand (high zoom) ── */
+        /* ── Sequence letters + complementary strand + amino acids (high zoom) ── */
         if (z > 6 && r > 100) {
             const arcPerBp = (Math.PI * 2) / seqLen;
-            const fontSize = Math.min(14, r * arcPerBp * 0.65);
-            if (fontSize > 3) {
-                const outerOffset = 10;  // forward strand: outside backbone
-                const innerOffset = -10; // complement: inside backbone
-                for (let i = 0; i < seqLen; i++) {
-                    const angle = bpToAngle(i);
-                    // Forward strand
-                    const fwdX = cx + Math.cos(angle) * (r + outerOffset);
-                    const fwdY = cy + Math.sin(angle) * (r + outerOffset);
-                    if (fwdX < -20 || fwdX > size.w + 20 || fwdY < -20 || fwdY > size.h + 20) continue;
+            const arcPx = r * arcPerBp;
+            const fontSize = Math.max(5, Math.min(14, arcPx * 0.55));
+            const strandOffset = fontSize * 0.7 + 3;
+            const aaFontSize = Math.max(4, Math.min(11, arcPx * 0.4));
 
-                    const char = sequence[i];
-                    const comp = COMPLEMENT[char] || "N";
+            for (let i = 0; i < seqLen; i++) {
+                const angle = bpToAngle(i);
+                const fwdX = cx + Math.cos(angle) * (r + strandOffset);
+                const fwdY = cy + Math.sin(angle) * (r + strandOffset);
+                if (fwdX < -20 || fwdX > size.w + 20 || fwdY < -20 || fwdY > size.h + 20) continue;
 
-                    // Forward strand letter
+                const char = sequence[i];
+                const comp = COMPLEMENT[char] || "N";
+
+                // Forward strand (outside backbone)
+                ctx.save();
+                ctx.translate(fwdX, fwdY);
+                ctx.rotate(angle + Math.PI / 2);
+                ctx.font = `600 ${fontSize}px JetBrains Mono, Menlo, monospace`;
+                ctx.fillStyle = SEQ_COLORS[char] || "#888";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillText(char, 0, 0);
+                ctx.restore();
+
+                // Complement strand (inside backbone)
+                const compX = cx + Math.cos(angle) * (r - strandOffset);
+                const compY = cy + Math.sin(angle) * (r - strandOffset);
+                ctx.save();
+                ctx.translate(compX, compY);
+                ctx.rotate(angle + Math.PI / 2);
+                ctx.font = `400 ${fontSize}px JetBrains Mono, Menlo, monospace`;
+                ctx.fillStyle = SEQ_COLORS[comp] || "#888";
+                ctx.globalAlpha = 0.6;
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillText(comp, 0, 0);
+                ctx.restore();
+                ctx.globalAlpha = 1;
+            }
+
+            // Amino acid translation (every 3rd base, rendered at backbone centerline)
+            if (arcPx > 3) {
+                for (let i = 0; i + 2 < seqLen; i += 3) {
+                    const codon = sequence.slice(i, i + 3);
+                    const aa = CODON_TABLE[codon] || "?";
+                    const midAngle = bpToAngle(i + 1);
+                    const aaX = cx + Math.cos(midAngle) * r;
+                    const aaY = cy + Math.sin(midAngle) * r;
+                    if (aaX < -20 || aaX > size.w + 20 || aaY < -20 || aaY > size.h + 20) continue;
+
+                    // Small colored box behind amino acid letter
+                    const boxSize = aaFontSize + 2;
                     ctx.save();
-                    ctx.translate(fwdX, fwdY);
-                    ctx.rotate(angle + Math.PI / 2);
-                    ctx.font = `${fontSize}px JetBrains Mono, Menlo, monospace`;
-                    ctx.fillStyle = SEQ_COLORS[char] || "#888";
+                    ctx.translate(aaX, aaY);
+                    ctx.rotate(midAngle + Math.PI / 2);
+                    ctx.fillStyle = aa === "*" ? "rgba(255,60,60,0.5)" : "rgba(255,255,255,0.12)";
+                    ctx.fillRect(-boxSize / 2, -boxSize / 2, boxSize, boxSize);
+                    ctx.font = `600 ${aaFontSize}px JetBrains Mono, Menlo, monospace`;
+                    ctx.fillStyle = aa === "*" ? "#ff6666" : "#ccc";
                     ctx.textAlign = "center";
                     ctx.textBaseline = "middle";
-                    ctx.fillText(char, 0, 0);
+                    ctx.fillText(aa, 0, 0);
                     ctx.restore();
-
-                    // Complement strand letter (inside)
-                    const compX = cx + Math.cos(angle) * (r + innerOffset);
-                    const compY = cy + Math.sin(angle) * (r + innerOffset);
-                    ctx.save();
-                    ctx.translate(compX, compY);
-                    ctx.rotate(angle + Math.PI / 2);
-                    ctx.font = `${fontSize}px JetBrains Mono, Menlo, monospace`;
-                    ctx.fillStyle = SEQ_COLORS[comp] || "#888";
-                    ctx.globalAlpha = 0.6;
-                    ctx.textAlign = "center";
-                    ctx.textBaseline = "middle";
-                    ctx.fillText(comp, 0, 0);
-                    ctx.restore();
-                    ctx.globalAlpha = 1;
                 }
             }
         }
 
         /* ── Center text ── */
-        if (z < 5 && cx > -100 && cx < size.w + 100 && cy > -100 && cy < size.h + 100) {
+        if (z < 3 && cx > -100 && cx < size.w + 100 && cy > -100 && cy < size.h + 100) {
             ctx.font = "600 14px Inter, sans-serif";
             ctx.fillStyle = "#e0e0e8";
             ctx.textAlign = "center";
@@ -404,32 +535,21 @@ export default function PlasmidMap({
                 }
             }
         }
-    }, [sequence, features, zoom, rotation, pan, size, selectedFeatureId, hoverFeature, selectionRange, bpToAngle, seqLen, topology, getLayout]);
+    }, [sequence, features, zoom, rotation, size, selectedFeatureId, hoverFeature, selectionRange, bpToAngle, seqLen, topology, getLayout]);
 
-    /* ── MOUSE: scroll=rotate, ctrl+scroll=zoom with 12-o'clock centering ── */
+    /* ── SCROLL: always rotate ── */
+    /* ── CTRL+SCROLL: zoom ── */
     const handleWheel = useCallback((e: React.WheelEvent) => {
         e.preventDefault();
 
         if (e.ctrlKey || e.metaKey) {
-            // ── Zoom ──
+            // Zoom
             const factor = e.deltaY > 0 ? 1 / 1.08 : 1.08;
-            const oldZ = zoomRef.current;
-            const newZ = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, oldZ * factor));
-
-            // At low zoom, keep circle centered in viewport (pan stays at 0,0)
-            // The getLayout() function handles the 12-o'clock transition automatically
-            // We just need to keep pan near (0,0) at low zoom and let the layout fn do the rest
-            if (newZ < TRANSITION_START) {
-                // Below transition: keep center of circle at viewport center
-                panRef.current = { x: 0, y: 0 };
-            }
-            // During/above transition: pan stays as-is, getLayout blends to 12-o'clock
-
+            const newZ = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoomRef.current * factor));
             zoomRef.current = newZ;
             setZoom(newZ);
-            setPan({ ...panRef.current });
         } else {
-            // ── Rotate ──
+            // Rotate
             const delta = e.deltaY * ROTATE_SPEED;
             rotationRef.current += delta;
             setRotation(rotationRef.current);
@@ -438,6 +558,7 @@ export default function PlasmidMap({
 
     /* ── Drag-select on backbone ── */
     const handleMouseDown = useCallback((e: React.MouseEvent) => {
+        if (e.button !== 0) return; // left click only
         const canvas = canvasRef.current;
         if (!canvas) return;
         const rect = canvas.getBoundingClientRect();
@@ -446,7 +567,6 @@ export default function PlasmidMap({
         const { cx, cy, r } = getLayout();
         const dist = Math.sqrt((mx - cx) ** 2 + (my - cy) ** 2);
 
-        // Start drag-select only if clicking near the backbone (within 20px)
         if (Math.abs(dist - r) < 20) {
             const mouseAngle = Math.atan2(my - cy, mx - cx);
             const bp = angleToBp(mouseAngle);
@@ -467,7 +587,6 @@ export default function PlasmidMap({
             const dist = Math.sqrt((mx - cx) ** 2 + (my - cy) ** 2);
             const mouseAngle = Math.atan2(my - cy, mx - cx);
 
-            // Update drag-select
             if (dragSelecting.current && dragStart.current !== null) {
                 const bp = angleToBp(mouseAngle);
                 onSelectionRange({ start: dragStart.current, end: bp });
@@ -475,7 +594,6 @@ export default function PlasmidMap({
                 return;
             }
 
-            // Hover bp
             const bp = angleToBp(mouseAngle);
             setHoverBp(Math.abs(dist - r) < r * 0.3 ? bp : null);
 
@@ -487,12 +605,12 @@ export default function PlasmidMap({
                 const featureR = r - 8 - track * 21;
                 const halfT = thickness / 2 + 3;
                 if (Math.abs(dist - featureR) < halfT) {
-                    const startAngle = bpToAngle(feature.start);
-                    const endAngle = bpToAngle(feature.end);
-                    let normM = ((mouseAngle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
-                    let normS = ((startAngle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
-                    let normE = ((endAngle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
-                    const hit = normS <= normE ? normM >= normS && normM <= normE : normM >= normS || normM <= normE;
+                    const sa = bpToAngle(feature.start);
+                    const ea = bpToAngle(feature.end);
+                    let nM = ((mouseAngle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+                    let nS = ((sa % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+                    let nE = ((ea % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+                    const hit = nS <= nE ? nM >= nS && nM <= nE : nM >= nS || nM <= nE;
                     if (hit) { found = feature.id; break; }
                 }
             }
@@ -505,7 +623,6 @@ export default function PlasmidMap({
     const handleMouseUp = useCallback(() => {
         if (dragSelecting.current) {
             dragSelecting.current = false;
-            // If start === end, clear selection
             if (selectionRange && selectionRange.start === selectionRange.end) {
                 onSelectionRange(null);
             }
@@ -518,53 +635,55 @@ export default function PlasmidMap({
         }
     }, [hoverFeature, onSelectFeature]);
 
-    /* ── Zoom-to-selection: rotate midpoint to 12-o'clock, then zoom ── */
-    const zoomToRange = useCallback((startBp: number, endBp: number) => {
-        const midBp = startBp < endBp ? (startBp + endBp) / 2 : ((startBp + endBp + seqLen) / 2) % seqLen;
-        const spanBp = startBp < endBp ? endBp - startBp : seqLen - startBp + endBp;
+    /* ── Right-click context menu ── */
+    const handleContextMenu = useCallback((e: React.MouseEvent) => {
+        e.preventDefault();
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        const rect = canvas.getBoundingClientRect();
+        const mx = e.clientX - rect.left;
+        const my = e.clientY - rect.top;
+        const { cx, cy, r } = getLayout();
+        const mouseAngle = Math.atan2(my - cy, mx - cx);
+        const bp = angleToBp(mouseAngle);
 
-        // Target zoom so the span fills ~60% of the viewport
-        const naturalR = getNaturalR();
-        const targetArc = size.w * 0.6;
-        const arcFraction = spanBp / seqLen;
-        const targetR = targetArc / (arcFraction * Math.PI * 2);
-        const targetZ = Math.min(MAX_ZOOM, Math.max(2, targetR / naturalR));
+        setCtxMenu({
+            x: e.clientX,
+            y: e.clientY,
+            featureId: hoverFeature,
+            bp: Math.abs(Math.sqrt((mx - cx) ** 2 + (my - cy) ** 2) - r) < r * 0.3 ? bp : null,
+        });
+    }, [getLayout, angleToBp, hoverFeature]);
 
-        // Rotate so the midpoint of the selection ends up at 12 o'clock (angle = -π/2)
-        // bpToAngle(midBp) = (midBp/seqLen) * 2π - π/2 + rotation
-        // We want this to equal -π/2, so: rotation = -(midBp/seqLen) * 2π
-        const targetRotation = -(midBp / seqLen) * Math.PI * 2;
+    const copyFeatureSeq = (featId: number) => {
+        const feat = features.find((f) => f.id === featId);
+        if (!feat) return;
+        const sub = feat.start < feat.end
+            ? sequence.slice(feat.start, feat.end)
+            : sequence.slice(feat.start) + sequence.slice(0, feat.end);
+        navigator.clipboard.writeText(sub);
+        setCtxMenu(null);
+    };
 
-        // Pan stays at 0 — the getLayout() transition handles centering at 12 o'clock
-        zoomRef.current = targetZ;
-        rotationRef.current = targetRotation;
-        panRef.current = { x: 0, y: 0 };
-        setZoom(targetZ);
-        setRotation(targetRotation);
-        setPan({ x: 0, y: 0 });
-    }, [seqLen, size, getNaturalR]);
-
-    // Auto-zoom when a feature is selected
-    useEffect(() => {
-        if (selectedFeatureId !== null) {
-            const feat = features.find((f) => f.id === selectedFeatureId);
-            if (feat) zoomToRange(feat.start, feat.end);
-        }
-    }, [selectedFeatureId, features, zoomToRange]); // eslint-disable-line react-hooks/exhaustive-deps
+    const copyPosition = (bp: number) => {
+        navigator.clipboard.writeText(String(bp));
+        setCtxMenu(null);
+    };
 
     /* ── Zoom buttons ── */
     const zoomBtn = (factor: number) => {
         const newZ = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoomRef.current * factor));
-        if (newZ < TRANSITION_START) panRef.current = { x: 0, y: 0 };
         zoomRef.current = newZ;
         setZoom(newZ);
-        setPan({ ...panRef.current });
     };
 
     const resetView = () => {
-        zoomRef.current = 1; rotationRef.current = 0; panRef.current = { x: 0, y: 0 };
-        setZoom(1); setRotation(0); setPan({ x: 0, y: 0 });
+        zoomRef.current = 1;
+        rotationRef.current = 0;
+        setZoom(1);
+        setRotation(0);
         onSelectionRange(null);
+        onSelectFeature(null);
     };
 
     /* ── Status bar info ── */
@@ -584,6 +703,7 @@ export default function PlasmidMap({
                 onMouseUp={handleMouseUp}
                 onMouseLeave={handleMouseUp}
                 onClick={handleClick}
+                onContextMenu={handleContextMenu}
                 style={{ cursor: "default" }}
             />
             <div className="zoom-controls">
@@ -605,6 +725,43 @@ export default function PlasmidMap({
                     <span>Scroll to rotate · Ctrl+scroll to zoom</span>
                 )}
             </div>
+
+            {/* Context Menu */}
+            {ctxMenu && (
+                <div className="ctx-menu" style={{ top: ctxMenu.y, left: ctxMenu.x }} onClick={(e) => e.stopPropagation()}>
+                    {ctxMenu.featureId !== null ? (
+                        <>
+                            <button className="ctx-item" onClick={() => copyFeatureSeq(ctxMenu.featureId!)}>
+                                Copy Feature Sequence
+                            </button>
+                            <button className="ctx-item" onClick={() => { onSelectFeature(ctxMenu.featureId); setCtxMenu(null); }}>
+                                Select Feature
+                            </button>
+                            <div className="ctx-divider" />
+                            {onDeleteFeature && (
+                                <button className="ctx-item ctx-danger" onClick={() => { onDeleteFeature(ctxMenu.featureId!); setCtxMenu(null); }}>
+                                    Delete Feature
+                                </button>
+                            )}
+                        </>
+                    ) : ctxMenu.bp !== null ? (
+                        <>
+                            <button className="ctx-item" onClick={() => copyPosition(ctxMenu.bp!)}>
+                                Copy Position ({ctxMenu.bp!.toLocaleString()} bp)
+                            </button>
+                            <button className="ctx-item" onClick={() => {
+                                const sub = sequence.slice(Math.max(0, ctxMenu.bp! - 50), Math.min(seqLen, ctxMenu.bp! + 50));
+                                navigator.clipboard.writeText(sub);
+                                setCtxMenu(null);
+                            }}>
+                                Copy ±50bp Region
+                            </button>
+                        </>
+                    ) : (
+                        <button className="ctx-item" onClick={() => setCtxMenu(null)}>No actions</button>
+                    )}
+                </div>
+            )}
         </div>
     );
 }
@@ -627,7 +784,7 @@ function formatBp(bp: number): string {
     return bp.toString();
 }
 
-function assignTracks(features: Feature[], seqLen: number) {
+function assignTracks(features: Feature[], _seqLen: number) {
     const sorted = [...features].sort((a, b) => a.start - b.start);
     const result: { feature: Feature; track: number }[] = [];
     const trackEnds: number[] = [];

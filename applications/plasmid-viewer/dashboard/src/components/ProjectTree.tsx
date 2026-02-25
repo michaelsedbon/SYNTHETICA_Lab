@@ -285,6 +285,22 @@ export default function ProjectTree({
                             }}>Rename</button>
                             <button className="ctx-item" onClick={() => { onDuplicate(ctxMenu.id as number); setCtxMenu(null); }}>Duplicate</button>
                             <button className="ctx-item" onClick={() => handleCopySeq(ctxMenu.id as number)}>Copy Name</button>
+                            <button className="ctx-item" onClick={() => {
+                                const seq = sequences.find((s) => s.id === ctxMenu.id);
+                                if (seq) {
+                                    navigator.clipboard.writeText(`>${seq.name}\n(sequence data)`);
+                                }
+                                setCtxMenu(null);
+                            }}>Copy as FASTA Header</button>
+                            <div className="ctx-divider" />
+                            <button className="ctx-item" onClick={() => {
+                                // Export as .gb download
+                                const a = document.createElement("a");
+                                a.href = `http://localhost:8003/api/sequences/${ctxMenu.id}/export`;
+                                a.download = `sequence_${ctxMenu.id}.gb`;
+                                a.click();
+                                setCtxMenu(null);
+                            }}>Export GenBank</button>
                             <div className="ctx-divider" />
                             <button className="ctx-item ctx-danger" onClick={() => { onDelete(ctxMenu.id as number); setCtxMenu(null); }}>Delete</button>
                         </>

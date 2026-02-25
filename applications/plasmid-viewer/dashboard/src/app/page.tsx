@@ -4,11 +4,13 @@ import React, { useState, useEffect, useCallback } from "react";
 import {
   SequenceSummary,
   SequenceDetail,
+  Orf,
   listSequences,
   getSequence,
   deleteSequence,
   renameSequence,
   duplicateSequence,
+  deleteFeature,
 } from "@/lib/api";
 import ProjectTree from "@/components/ProjectTree";
 import PlasmidMap from "@/components/PlasmidMap";
@@ -27,6 +29,7 @@ export default function Home() {
   const [selectionRange, setSelectionRange] = useState<{ start: number; end: number } | null>(null);
   const [viewTab, setViewTab] = useState<ViewTab>("circular");
   const [loadGen, setLoadGen] = useState(0);
+  const [ghostOrfs, setGhostOrfs] = useState<Orf[]>([]);
 
   useEffect(() => {
     listSequences().then(setSequences).catch(console.error);
@@ -140,6 +143,13 @@ export default function Home() {
               onSelectFeature={setSelectedFeatureId}
               selectionRange={selectionRange}
               onSelectionRange={setSelectionRange}
+              onDeleteFeature={async (fid) => {
+                if (activeId && confirm("Delete this feature?")) {
+                  await deleteFeature(activeId, fid);
+                  handleDataChange();
+                }
+              }}
+              ghostOrfs={ghostOrfs}
             />
           ) : viewTab === "linear" ? (
             <LinearViewer
@@ -152,10 +162,7 @@ export default function Home() {
             <AnnotationsTab
               features={activeSeq.features}
               selectedFeatureId={selectedFeatureId}
-              onSelectFeature={(id) => {
-                setSelectedFeatureId(id);
-                if (id !== null) setViewTab("circular"); // switch to map to see highlight
-              }}
+              onSelectFeature={setSelectedFeatureId}
             />
           )
         ) : (
@@ -175,6 +182,7 @@ export default function Home() {
         selectedFeatureId={selectedFeatureId}
         onSelectFeature={setSelectedFeatureId}
         onDataChange={handleDataChange}
+        onOrfPreview={setGhostOrfs}
       />
     </div>
   );
