@@ -176,3 +176,51 @@ async def insert_features_batch(features: list[dict]) -> list[int]:
         return ids
     finally:
         await db.close()
+
+
+async def rename_sequence(seq_id: int, name: str) -> bool:
+    db = await get_db()
+    try:
+        cursor = await db.execute(
+            "UPDATE sequences SET name = ? WHERE id = ?", (name, seq_id)
+        )
+        await db.commit()
+        return cursor.rowcount > 0
+    finally:
+        await db.close()
+
+
+async def duplicate_sequence(seq_id: int) -> int | None:
+    """Duplicate a sequence and all its features. Returns new sequence ID."""
+    db = await get_db()
+    try:
+        cursor = await db.execute("SELECT * FROM sequences WHERE id = ?", (seq_id,))
+        row = await cursor.fetchone()
+        if not row:
+            return None
+        seq = dict(row)
+        # Insert copy
+        cursor = await db.execute(
+            "INSERT INTO sequences (name, description, sequence, topology, length, organism) "
+            "VALUES (?, ?, ?, ?, ?, ?)",
+            (seq["name"] + " (copy)", seq["description"], seq["sequence"],
+             seq["topology"], seq["length"], seq["organism"]),
+        )
+        new_id = cursor.lastrowid
+        # Copy features
+        feat_cursor = await db.execute(
+            "SELECT * FROM features WHERE seq_id = ? ORDER BY start", (seq_id,)
+        )
+        features = await feat_cursor.fetchall()
+        for f in features:
+            await db.execute(
+                "INSERT INTO features (seq_id, type, label, start, end, strand, color, qualifiers, source) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (new_id, f["type"], f["label"], f["start"], f["end"],
+                 f["strand"], f["color"], f["qualifiers"], f["source"]),
+            )
+        await db.commit()
+        return new_id
+    finally:
+        await db.close()
+

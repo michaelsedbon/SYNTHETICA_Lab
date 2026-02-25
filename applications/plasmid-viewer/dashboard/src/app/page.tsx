@@ -7,67 +7,75 @@ import {
   listSequences,
   getSequence,
   deleteSequence,
+  renameSequence,
+  duplicateSequence,
 } from "@/lib/api";
 import ProjectTree from "@/components/ProjectTree";
 import PlasmidMap from "@/components/PlasmidMap";
 import LinearViewer from "@/components/LinearViewer";
+import AnnotationsTab from "@/components/AnnotationsTab";
 import OperationsPanel from "@/components/OperationsPanel";
-import { Circle, AlignHorizontalSpaceAround, Dna } from "lucide-react";
+import { Circle, AlignHorizontalSpaceAround, Dna, List } from "lucide-react";
 
-type ViewTab = "circular" | "linear";
+type ViewTab = "circular" | "linear" | "annotations";
 
 export default function Home() {
   const [sequences, setSequences] = useState<SequenceSummary[]>([]);
   const [activeId, setActiveId] = useState<number | null>(null);
   const [activeSeq, setActiveSeq] = useState<SequenceDetail | null>(null);
   const [selectedFeatureId, setSelectedFeatureId] = useState<number | null>(null);
+  const [selectionRange, setSelectionRange] = useState<{ start: number; end: number } | null>(null);
   const [viewTab, setViewTab] = useState<ViewTab>("circular");
-  const [loadGen, setLoadGen] = useState(0); // bump to reload
+  const [loadGen, setLoadGen] = useState(0);
 
-  // ── Load sequence list ──
   useEffect(() => {
-    listSequences()
-      .then(setSequences)
-      .catch(console.error);
+    listSequences().then(setSequences).catch(console.error);
   }, [loadGen]);
 
-  // ── Load active sequence ──
   useEffect(() => {
     if (activeId !== null) {
-      getSequence(activeId)
-        .then(setActiveSeq)
-        .catch(console.error);
+      getSequence(activeId).then(setActiveSeq).catch(console.error);
     } else {
       setActiveSeq(null);
     }
   }, [activeId, loadGen]);
 
-  const handleDataChange = useCallback(() => {
-    setLoadGen((g) => g + 1);
-  }, []);
+  const handleDataChange = useCallback(() => setLoadGen((g) => g + 1), []);
 
   const handleSelect = useCallback((id: number) => {
     setActiveId(id);
     setSelectedFeatureId(null);
+    setSelectionRange(null);
   }, []);
 
   const handleDelete = useCallback(
     async (id: number) => {
       await deleteSequence(id);
-      if (activeId === id) {
-        setActiveId(null);
-        setActiveSeq(null);
-      }
+      if (activeId === id) { setActiveId(null); setActiveSeq(null); }
       handleDataChange();
     },
     [activeId, handleDataChange]
   );
 
-  const handleUploadComplete = useCallback(
-    (id: number) => {
-      setActiveId(id);
+  const handleRename = useCallback(
+    async (id: number, name: string) => {
+      await renameSequence(id, name);
       handleDataChange();
     },
+    [handleDataChange]
+  );
+
+  const handleDuplicate = useCallback(
+    async (id: number) => {
+      const result = await duplicateSequence(id);
+      setActiveId(result.id);
+      handleDataChange();
+    },
+    [handleDataChange]
+  );
+
+  const handleUploadComplete = useCallback(
+    (id: number) => { setActiveId(id); handleDataChange(); },
     [handleDataChange]
   );
 
@@ -79,10 +87,9 @@ export default function Home() {
         activeId={activeId}
         onSelect={handleSelect}
         onDelete={handleDelete}
+        onRename={handleRename}
+        onDuplicate={handleDuplicate}
         onUploadComplete={handleUploadComplete}
-        features={activeSeq?.features || []}
-        selectedFeatureId={selectedFeatureId}
-        onSelectFeature={setSelectedFeatureId}
       />
 
       {/* ── Center: DNA View ── */}
@@ -102,15 +109,20 @@ export default function Home() {
             <AlignHorizontalSpaceAround size={13} style={{ marginRight: 6, verticalAlign: -2 }} />
             Linear
           </button>
+          <button
+            className={`view-tab ${viewTab === "annotations" ? "active" : ""}`}
+            onClick={() => setViewTab("annotations")}
+          >
+            <List size={13} style={{ marginRight: 6, verticalAlign: -2 }} />
+            Annotations
+            {activeSeq && (
+              <span className="tab-badge">{activeSeq.features.length}</span>
+            )}
+          </button>
           {activeSeq && (
             <div style={{
-              marginLeft: "auto",
-              padding: "10px 16px",
-              fontSize: 11,
-              color: "var(--text-tertiary)",
-              display: "flex",
-              alignItems: "center",
-              gap: 6,
+              marginLeft: "auto", padding: "10px 16px", fontSize: 11,
+              color: "var(--text-tertiary)", display: "flex", alignItems: "center", gap: 6,
             }}>
               <Dna size={12} />
               {activeSeq.name} · {activeSeq.length.toLocaleString()} bp
@@ -126,13 +138,24 @@ export default function Home() {
               topology={activeSeq.topology}
               selectedFeatureId={selectedFeatureId}
               onSelectFeature={setSelectedFeatureId}
+              selectionRange={selectionRange}
+              onSelectionRange={setSelectionRange}
             />
-          ) : (
+          ) : viewTab === "linear" ? (
             <LinearViewer
               sequence={activeSeq.sequence}
               features={activeSeq.features}
               selectedFeatureId={selectedFeatureId}
               onSelectFeature={setSelectedFeatureId}
+            />
+          ) : (
+            <AnnotationsTab
+              features={activeSeq.features}
+              selectedFeatureId={selectedFeatureId}
+              onSelectFeature={(id) => {
+                setSelectedFeatureId(id);
+                if (id !== null) setViewTab("circular"); // switch to map to see highlight
+              }}
             />
           )
         ) : (

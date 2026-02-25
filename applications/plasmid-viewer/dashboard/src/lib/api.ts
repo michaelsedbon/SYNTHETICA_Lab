@@ -116,3 +116,21 @@ export async function commitOrfs(
     });
     return res.json();
 }
+
+export async function renameSequence(id: number, name: string): Promise<void> {
+    const res = await fetch(`${API_BASE}/api/sequences/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name }),
+    });
+    if (!res.ok) throw new Error("Rename failed");
+}
+
+export async function duplicateSequence(id: number): Promise<SequenceDetail> {
+    const res = await fetch(`${API_BASE}/api/sequences/${id}/duplicate`, {
+        method: "POST",
+    });
+    if (!res.ok) throw new Error("Duplicate failed");
+    return res.json();
+}
+

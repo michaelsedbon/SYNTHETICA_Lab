@@ -12,7 +12,8 @@ from contextlib import asynccontextmanager
 import json
 
 from database import init_db, insert_sequence, get_all_sequences, get_sequence, \
-    delete_sequence, insert_feature, update_feature, delete_feature, insert_features_batch
+    delete_sequence, insert_feature, update_feature, delete_feature, insert_features_batch, \
+    rename_sequence as db_rename_sequence, duplicate_sequence as db_duplicate_sequence
 from genbank_parser import parse_genbank
 from orf_finder import find_orfs
 
@@ -137,6 +138,29 @@ async def remove_sequence(seq_id: int):
     if not ok:
         raise HTTPException(404, "Sequence not found")
     return {"deleted": True}
+
+
+class SequenceRename(BaseModel):
+    name: str
+
+
+@app.patch("/api/sequences/{seq_id}")
+async def rename_seq(seq_id: int, data: SequenceRename):
+    """Rename a sequence."""
+    ok = await db_rename_sequence(seq_id, data.name)
+    if not ok:
+        raise HTTPException(404, "Sequence not found")
+    return {"renamed": True}
+
+
+@app.post("/api/sequences/{seq_id}/duplicate")
+async def duplicate_seq(seq_id: int):
+    """Duplicate a sequence and all its features."""
+    new_id = await db_duplicate_sequence(seq_id)
+    if new_id is None:
+        raise HTTPException(404, "Sequence not found")
+    result = await get_sequence(new_id)
+    return result
 
 
 # ── Feature CRUD ───────────────────────────────────────────────────

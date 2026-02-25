@@ -9,6 +9,8 @@ interface Props {
     topology: string;
     selectedFeatureId: number | null;
     onSelectFeature: (id: number | null) => void;
+    selectionRange: { start: number; end: number } | null;
+    onSelectionRange: (range: { start: number; end: number } | null) => void;
 }
 
 /* ── Constants ─────────────────────────────────────────────────────── */
@@ -20,8 +22,8 @@ const LABEL_COLOR = "#b0b0c8";
 const SEQ_COLORS: Record<string, string> = {
     A: "#5CB85C", T: "#D9534F", G: "#F0AD4E", C: "#4A90D9",
 };
+const COMPLEMENT: Record<string, string> = { A: "T", T: "A", G: "C", C: "G" };
 
-// Track thickness by feature type (Geneious-style: CDS thick, misc thin)
 const TRACK_THICK: Record<string, number> = {
     CDS: 16, gene: 16, mRNA: 14,
     promoter: 10, terminator: 10, RBS: 8,
@@ -30,25 +32,24 @@ const TRACK_THICK: Record<string, number> = {
 const TRACK_DEFAULT = 10;
 
 const MIN_ZOOM = 0.3;
-const MAX_ZOOM = 50;
-const ROTATE_SPEED = 0.0015; // radians per px of scroll
+const MAX_ZOOM = 80;
+const TRANSITION_START = 2.5; // zoom level where 12-o'clock centering begins
+const TRANSITION_END = 5;     // zoom level where it's fully anchored at 12
+const ROTATE_SPEED = 0.0015;
 
 /* ── Component ─────────────────────────────────────────────────────── */
 
 export default function PlasmidMap({
-    sequence,
-    features,
-    topology,
-    selectedFeatureId,
-    onSelectFeature,
+    sequence, features, topology,
+    selectedFeatureId, onSelectFeature,
+    selectionRange, onSelectionRange,
 }: Props) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    // View state — stored in refs for smooth animation, mirrored to state for re-renders
     const zoomRef = useRef(1);
     const rotationRef = useRef(0);
-    const panRef = useRef({ x: 0, y: 0 }); // offset from natural center
+    const panRef = useRef({ x: 0, y: 0 });
 
     const [zoom, setZoom] = useState(1);
     const [rotation, setRotation] = useState(0);
@@ -57,9 +58,13 @@ export default function PlasmidMap({
     const [hoverFeature, setHoverFeature] = useState<number | null>(null);
     const [hoverBp, setHoverBp] = useState<number | null>(null);
 
+    // Drag-select state
+    const dragSelecting = useRef(false);
+    const dragStart = useRef<number | null>(null);
+
     const seqLen = sequence.length;
 
-    /* ── Resize observer ── */
+    /* ── Resize ── */
     useEffect(() => {
         const el = containerRef.current;
         if (!el) return;
@@ -77,14 +82,44 @@ export default function PlasmidMap({
         [seqLen]
     );
 
-    /* ── Compute layout params ── */
+    const angleToBp = useCallback(
+        (angle: number) => {
+            let delta = angle - (-Math.PI / 2 + rotationRef.current);
+            delta = ((delta % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+            return Math.round((delta / (Math.PI * 2)) * seqLen) % seqLen;
+        },
+        [seqLen]
+    );
+
+    /* ── Layout helpers ── */
+    const getNaturalR = useCallback(() => Math.min(size.w, size.h) * 0.38, [size]);
+
     const getLayout = useCallback(() => {
-        const cx = size.w / 2 + panRef.current.x;
-        const cy = size.h / 2 + panRef.current.y;
-        const naturalR = Math.min(size.w, size.h) * 0.38;
-        const r = naturalR * zoomRef.current;
+        const z = zoomRef.current;
+        const naturalR = getNaturalR();
+        const r = naturalR * z;
+
+        // At low zoom: circle center = viewport center
+        // At high zoom: 12-o'clock point = viewport center
+        const t = Math.min(1, Math.max(0, (z - TRANSITION_START) / (TRANSITION_END - TRANSITION_START)));
+        // Smooth ease
+        const ease = t * t * (3 - 2 * t);
+
+        // Circle center position
+        const baseCx = size.w / 2 + panRef.current.x;
+        const baseCy = size.h / 2 + panRef.current.y;
+
+        // 12-o'clock anchor: the top of the backbone (angle = -π/2 + rotation)
+        const topAngle = -Math.PI / 2 + rotationRef.current;
+        // If we want the 12-o'clock point at viewport center, the circle center must be:
+        const anchoredCx = size.w / 2 - Math.cos(topAngle) * r;
+        const anchoredCy = size.h / 2 - Math.sin(topAngle) * r;
+
+        const cx = baseCx * (1 - ease) + anchoredCx * ease;
+        const cy = baseCy * (1 - ease) + anchoredCy * ease;
+
         return { cx, cy, r };
-    }, [size]);
+    }, [size, getNaturalR]);
 
     /* ── DRAW ─────────────────────────────────────────────────────────── */
     useEffect(() => {
@@ -109,6 +144,18 @@ export default function PlasmidMap({
         ctx.strokeStyle = BACKBONE_COLOR;
         ctx.lineWidth = BACKBONE_WIDTH;
         ctx.stroke();
+
+        /* ── Selection arc overlay ── */
+        if (selectionRange) {
+            const sAngle = bpToAngle(selectionRange.start);
+            const eAngle = bpToAngle(selectionRange.end);
+            ctx.beginPath();
+            ctx.arc(cx, cy, r, sAngle, eAngle);
+            ctx.strokeStyle = "rgba(74, 124, 255, 0.6)";
+            ctx.lineWidth = 6;
+            ctx.stroke();
+            ctx.lineWidth = 1;
+        }
 
         /* ── Ruler ticks ── */
         const bpPerTick = getTickInterval(seqLen, z);
@@ -139,8 +186,11 @@ export default function PlasmidMap({
             }
         }
 
-        /* ── Feature arcs (Geneious-style filled shapes) ── */
+        /* ── Feature arcs ── */
         const tracks = assignTracks(features, seqLen);
+
+        // Collect label info for collision avoidance
+        const labelInfos: { angle: number; r: number; text: string; color: string; selected: boolean; feature: Feature }[] = [];
 
         tracks.forEach(({ feature, track }) => {
             const startAngle = bpToAngle(feature.start);
@@ -152,18 +202,15 @@ export default function PlasmidMap({
 
             const isSelected = feature.id === selectedFeatureId;
             const isHovered = feature.id === hoverFeature;
-
             const halfT = thickness / 2;
             const outerR = featureR + halfT;
             const innerR = featureR - halfT;
 
             ctx.globalAlpha = isSelected ? 1 : isHovered ? 0.9 : 0.75;
 
-            // Determine if this feature type gets a directional arrow
             const isDirectional = ["CDS", "gene", "mRNA", "promoter", "primer_bind"].includes(feature.type);
 
             if (isDirectional) {
-                // Draw filled arc with arrowhead
                 const arrowAngle = Math.min(0.08, (endAngle - startAngle) * 0.25);
                 const tipAngle = feature.strand === 1 ? endAngle : startAngle;
                 const bodyEnd = feature.strand === 1 ? endAngle - arrowAngle : startAngle + arrowAngle;
@@ -171,26 +218,17 @@ export default function PlasmidMap({
                 ctx.beginPath();
                 if (feature.strand === 1) {
                     ctx.arc(cx, cy, outerR, startAngle, bodyEnd);
-                    // Arrow tip
-                    ctx.lineTo(
-                        cx + Math.cos(tipAngle) * featureR,
-                        cy + Math.sin(tipAngle) * featureR
-                    );
+                    ctx.lineTo(cx + Math.cos(tipAngle) * featureR, cy + Math.sin(tipAngle) * featureR);
                     ctx.arc(cx, cy, innerR, bodyEnd, startAngle, true);
                 } else {
                     ctx.arc(cx, cy, outerR, bodyEnd, endAngle);
                     ctx.arc(cx, cy, innerR, endAngle, bodyEnd, true);
-                    // Arrow tip
-                    ctx.lineTo(
-                        cx + Math.cos(tipAngle) * featureR,
-                        cy + Math.sin(tipAngle) * featureR
-                    );
+                    ctx.lineTo(cx + Math.cos(tipAngle) * featureR, cy + Math.sin(tipAngle) * featureR);
                 }
                 ctx.closePath();
                 ctx.fillStyle = feature.color;
                 ctx.fill();
             } else {
-                // Non-directional: filled arc band (terminator, rep_origin, misc, etc.)
                 ctx.beginPath();
                 ctx.arc(cx, cy, outerR, startAngle, endAngle);
                 ctx.arc(cx, cy, innerR, endAngle, startAngle, true);
@@ -199,7 +237,6 @@ export default function PlasmidMap({
                 ctx.fill();
             }
 
-            // Selection border
             if (isSelected) {
                 ctx.beginPath();
                 ctx.arc(cx, cy, outerR + 1, startAngle, endAngle);
@@ -212,57 +249,99 @@ export default function PlasmidMap({
 
             ctx.globalAlpha = 1;
 
-            // ── Label (positioned OUTSIDE the backbone ring) ──
+            // Collect label for later collision-aware rendering
             if (feature.label) {
                 const midAngle = (startAngle + endAngle) / 2;
-                const labelR = r + 28;
-                const lx = cx + Math.cos(midAngle) * labelR;
-                const ly = cy + Math.sin(midAngle) * labelR;
+                labelInfos.push({ angle: midAngle, r: outerR, text: feature.label, color: feature.color, selected: isSelected, feature });
+            }
+        });
 
-                // Leader line from outer arc to label
-                const lineStartR = outerR + 2;
-                const lineEndR = labelR - 6;
+        /* ── Label collision avoidance and rendering ── */
+        if (labelInfos.length > 0) {
+            // Sort by angle for overlap detection
+            labelInfos.sort((a, b) => {
+                const na = ((a.angle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+                const nb = ((b.angle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+                return na - nb;
+            });
+
+            // Assign staggered offset to avoid overlaps
+            const labelPositions: { lx: number; ly: number; info: typeof labelInfos[0]; offsetR: number }[] = [];
+            const minGap = 14; // min vertical gap between labels
+
+            for (const info of labelInfos) {
+                let offsetR = r + 28;
+                let lx = cx + Math.cos(info.angle) * offsetR;
+                let ly = cy + Math.sin(info.angle) * offsetR;
+
+                // Check against already placed labels
+                for (let attempt = 0; attempt < 5; attempt++) {
+                    let collision = false;
+                    for (const placed of labelPositions) {
+                        const dist = Math.sqrt((lx - placed.lx) ** 2 + (ly - placed.ly) ** 2);
+                        if (dist < minGap) {
+                            collision = true;
+                            break;
+                        }
+                    }
+                    if (!collision) break;
+                    offsetR += 14;
+                    lx = cx + Math.cos(info.angle) * offsetR;
+                    ly = cy + Math.sin(info.angle) * offsetR;
+                }
+                labelPositions.push({ lx, ly, info, offsetR });
+            }
+
+            // Render labels with leader lines
+            for (const { lx, ly, info, offsetR } of labelPositions) {
+                // Leader line
+                const lineStartR = info.r + 2;
+                const lineEndR = offsetR - 6;
                 ctx.beginPath();
-                ctx.moveTo(cx + Math.cos(midAngle) * lineStartR, cy + Math.sin(midAngle) * lineStartR);
-                ctx.lineTo(cx + Math.cos(midAngle) * lineEndR, cy + Math.sin(midAngle) * lineEndR);
-                ctx.strokeStyle = feature.color;
-                ctx.globalAlpha = 0.4;
+                ctx.moveTo(cx + Math.cos(info.angle) * lineStartR, cy + Math.sin(info.angle) * lineStartR);
+                ctx.lineTo(cx + Math.cos(info.angle) * lineEndR, cy + Math.sin(info.angle) * lineEndR);
+                ctx.strokeStyle = info.color;
+                ctx.globalAlpha = 0.35;
                 ctx.lineWidth = 1;
                 ctx.stroke();
                 ctx.globalAlpha = 1;
 
+                // Label text
                 ctx.save();
                 ctx.translate(lx, ly);
-                const textAngle = midAngle + Math.PI / 2;
-                // Flip text if upside-down
-                const normMid = ((midAngle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+                const textAngle = info.angle + Math.PI / 2;
+                const normMid = ((info.angle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
                 const flip = normMid > Math.PI / 2 && normMid < (3 * Math.PI) / 2;
                 ctx.rotate(flip ? textAngle + Math.PI : textAngle);
-                ctx.font = `${isSelected ? "600" : "400"} 11px Inter, sans-serif`;
-                ctx.fillStyle = isSelected ? "#fff" : LABEL_COLOR;
+                ctx.font = `${info.selected ? "600" : "400"} 11px Inter, sans-serif`;
+                ctx.fillStyle = info.selected ? "#fff" : LABEL_COLOR;
                 ctx.textAlign = "center";
                 ctx.textBaseline = "middle";
-                ctx.fillText(feature.label, 0, 0);
+                ctx.fillText(info.text, 0, 0);
                 ctx.restore();
             }
-        });
+        }
 
-        /* ── Sequence letters (high zoom) ── */
+        /* ── Sequence letters + complementary strand (high zoom) ── */
         if (z > 6 && r > 100) {
             const arcPerBp = (Math.PI * 2) / seqLen;
-            const fontSize = Math.min(14, r * arcPerBp * 0.7);
+            const fontSize = Math.min(14, r * arcPerBp * 0.65);
             if (fontSize > 3) {
-                // Only render visible arc
+                const outerOffset = 10;  // forward strand: outside backbone
+                const innerOffset = -10; // complement: inside backbone
                 for (let i = 0; i < seqLen; i++) {
                     const angle = bpToAngle(i);
-                    const px = cx + Math.cos(angle) * r;
-                    const py = cy + Math.sin(angle) * r;
-                    // Cull off-screen
-                    if (px < -20 || px > size.w + 20 || py < -20 || py > size.h + 20) continue;
+                    // Forward strand
+                    const fwdX = cx + Math.cos(angle) * (r + outerOffset);
+                    const fwdY = cy + Math.sin(angle) * (r + outerOffset);
+                    if (fwdX < -20 || fwdX > size.w + 20 || fwdY < -20 || fwdY > size.h + 20) continue;
 
                     const char = sequence[i];
+                    const comp = COMPLEMENT[char] || "N";
+
+                    // Forward strand letter
                     ctx.save();
-                    ctx.translate(px, py);
+                    ctx.translate(fwdX, fwdY);
                     ctx.rotate(angle + Math.PI / 2);
                     ctx.font = `${fontSize}px JetBrains Mono, Menlo, monospace`;
                     ctx.fillStyle = SEQ_COLORS[char] || "#888";
@@ -270,13 +349,27 @@ export default function PlasmidMap({
                     ctx.textBaseline = "middle";
                     ctx.fillText(char, 0, 0);
                     ctx.restore();
+
+                    // Complement strand letter (inside)
+                    const compX = cx + Math.cos(angle) * (r + innerOffset);
+                    const compY = cy + Math.sin(angle) * (r + innerOffset);
+                    ctx.save();
+                    ctx.translate(compX, compY);
+                    ctx.rotate(angle + Math.PI / 2);
+                    ctx.font = `${fontSize}px JetBrains Mono, Menlo, monospace`;
+                    ctx.fillStyle = SEQ_COLORS[comp] || "#888";
+                    ctx.globalAlpha = 0.6;
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
+                    ctx.fillText(comp, 0, 0);
+                    ctx.restore();
+                    ctx.globalAlpha = 1;
                 }
             }
         }
 
         /* ── Center text ── */
-        // Only show when center is visible
-        if (cx > -100 && cx < size.w + 100 && cy > -100 && cy < size.h + 100) {
+        if (z < 5 && cx > -100 && cx < size.w + 100 && cy > -100 && cy < size.h + 100) {
             ctx.font = "600 14px Inter, sans-serif";
             ctx.fillStyle = "#e0e0e8";
             ctx.textAlign = "center";
@@ -287,27 +380,23 @@ export default function PlasmidMap({
             ctx.fillText(topology, cx, cy + 10);
         }
 
-        /* ── Selection tooltip (bp length) ── */
+        /* ── Selection tooltip ── */
         if (selectedFeatureId !== null) {
             const selFeat = features.find((f) => f.id === selectedFeatureId);
             if (selFeat) {
                 const midAngle = (bpToAngle(selFeat.start) + bpToAngle(selFeat.end)) / 2;
-                const tipR = r - 8 - 18 * 0 - 28; // just inside
+                const tipR = r - 32;
                 const tipX = cx + Math.cos(midAngle) * tipR;
                 const tipY = cy + Math.sin(midAngle) * tipR;
                 if (tipR > 20) {
-                    const spanBp = selFeat.end > selFeat.start
-                        ? selFeat.end - selFeat.start
-                        : seqLen - selFeat.start + selFeat.end;
+                    const spanBp = selFeat.end > selFeat.start ? selFeat.end - selFeat.start : seqLen - selFeat.start + selFeat.end;
                     const text = `${spanBp.toLocaleString()} bp`;
                     ctx.font = "600 11px Inter, sans-serif";
                     const tw = ctx.measureText(text).width;
                     const pad = 6;
-
                     ctx.fillStyle = "rgba(0,0,0,0.75)";
                     roundRect(ctx, tipX - tw / 2 - pad, tipY - 8 - pad / 2, tw + pad * 2, 16 + pad, 4);
                     ctx.fill();
-
                     ctx.fillStyle = "#fff";
                     ctx.textAlign = "center";
                     ctx.textBaseline = "middle";
@@ -315,44 +404,58 @@ export default function PlasmidMap({
                 }
             }
         }
-    }, [sequence, features, zoom, rotation, pan, size, selectedFeatureId, hoverFeature, bpToAngle, seqLen, topology, getLayout]);
+    }, [sequence, features, zoom, rotation, pan, size, selectedFeatureId, hoverFeature, selectionRange, bpToAngle, seqLen, topology, getLayout]);
 
-    /* ── MOUSE: scroll=rotate, ctrl+scroll=zoom toward cursor ── */
+    /* ── MOUSE: scroll=rotate, ctrl+scroll=zoom with 12-o'clock centering ── */
     const handleWheel = useCallback((e: React.WheelEvent) => {
         e.preventDefault();
 
         if (e.ctrlKey || e.metaKey) {
-            // ── Zoom toward cursor ──
-            const canvas = canvasRef.current;
-            if (!canvas) return;
-            const rect = canvas.getBoundingClientRect();
-            const mx = e.clientX - rect.left;
-            const my = e.clientY - rect.top;
-
+            // ── Zoom ──
             const factor = e.deltaY > 0 ? 1 / 1.08 : 1.08;
             const oldZ = zoomRef.current;
             const newZ = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, oldZ * factor));
-            const scale = newZ / oldZ;
 
-            // Zoom toward mouse: shift pan so the point under cursor stays fixed
-            const oldCx = size.w / 2 + panRef.current.x;
-            const oldCy = size.h / 2 + panRef.current.y;
-            const newPanX = mx - scale * (mx - oldCx) - size.w / 2;
-            const newPanY = my - scale * (my - oldCy) - size.h / 2;
+            // At low zoom, keep circle centered in viewport (pan stays at 0,0)
+            // The getLayout() function handles the 12-o'clock transition automatically
+            // We just need to keep pan near (0,0) at low zoom and let the layout fn do the rest
+            if (newZ < TRANSITION_START) {
+                // Below transition: keep center of circle at viewport center
+                panRef.current = { x: 0, y: 0 };
+            }
+            // During/above transition: pan stays as-is, getLayout blends to 12-o'clock
 
             zoomRef.current = newZ;
-            panRef.current = { x: newPanX, y: newPanY };
             setZoom(newZ);
-            setPan({ x: newPanX, y: newPanY });
+            setPan({ ...panRef.current });
         } else {
             // ── Rotate ──
             const delta = e.deltaY * ROTATE_SPEED;
             rotationRef.current += delta;
             setRotation(rotationRef.current);
         }
-    }, [size]);
+    }, []);
 
-    /* ── MOUSE: hover for hit-testing (no drag) ── */
+    /* ── Drag-select on backbone ── */
+    const handleMouseDown = useCallback((e: React.MouseEvent) => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        const rect = canvas.getBoundingClientRect();
+        const mx = e.clientX - rect.left;
+        const my = e.clientY - rect.top;
+        const { cx, cy, r } = getLayout();
+        const dist = Math.sqrt((mx - cx) ** 2 + (my - cy) ** 2);
+
+        // Start drag-select only if clicking near the backbone (within 20px)
+        if (Math.abs(dist - r) < 20) {
+            const mouseAngle = Math.atan2(my - cy, mx - cx);
+            const bp = angleToBp(mouseAngle);
+            dragSelecting.current = true;
+            dragStart.current = bp;
+            onSelectionRange({ start: bp, end: bp });
+        }
+    }, [getLayout, angleToBp, onSelectionRange]);
+
     const handleMouseMove = useCallback(
         (e: React.MouseEvent) => {
             const canvas = canvasRef.current;
@@ -360,108 +463,143 @@ export default function PlasmidMap({
             const rect = canvas.getBoundingClientRect();
             const mx = e.clientX - rect.left;
             const my = e.clientY - rect.top;
-
             const { cx, cy, r } = getLayout();
             const dist = Math.sqrt((mx - cx) ** 2 + (my - cy) ** 2);
             const mouseAngle = Math.atan2(my - cy, mx - cx);
 
-            // Compute hover bp
-            let angleDelta = mouseAngle - (-Math.PI / 2 + rotationRef.current);
-            angleDelta = ((angleDelta % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
-            const bp = Math.round((angleDelta / (Math.PI * 2)) * seqLen) % seqLen;
+            // Update drag-select
+            if (dragSelecting.current && dragStart.current !== null) {
+                const bp = angleToBp(mouseAngle);
+                onSelectionRange({ start: dragStart.current, end: bp });
+                canvas.style.cursor = "crosshair";
+                return;
+            }
+
+            // Hover bp
+            const bp = angleToBp(mouseAngle);
             setHoverBp(Math.abs(dist - r) < r * 0.3 ? bp : null);
 
             // Hit test features
-            const tracks = assignTracks(features, seqLen);
+            const tracks2 = assignTracks(features, seqLen);
             let found: number | null = null;
-            for (const { feature, track } of tracks) {
+            for (const { feature, track } of tracks2) {
                 const thickness = TRACK_THICK[feature.type] || TRACK_DEFAULT;
                 const featureR = r - 8 - track * 21;
-                const halfT = thickness / 2 + 3; // generous hit zone
+                const halfT = thickness / 2 + 3;
                 if (Math.abs(dist - featureR) < halfT) {
                     const startAngle = bpToAngle(feature.start);
                     const endAngle = bpToAngle(feature.end);
                     let normM = ((mouseAngle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
                     let normS = ((startAngle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
                     let normE = ((endAngle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
-                    const hit = normS <= normE
-                        ? normM >= normS && normM <= normE
-                        : normM >= normS || normM <= normE;
+                    const hit = normS <= normE ? normM >= normS && normM <= normE : normM >= normS || normM <= normE;
                     if (hit) { found = feature.id; break; }
                 }
             }
             setHoverFeature(found);
-            canvas.style.cursor = found ? "pointer" : "default";
+            canvas.style.cursor = found ? "pointer" : Math.abs(dist - r) < 20 ? "crosshair" : "default";
         },
-        [features, seqLen, bpToAngle, getLayout]
+        [features, seqLen, bpToAngle, getLayout, angleToBp, onSelectionRange]
     );
 
+    const handleMouseUp = useCallback(() => {
+        if (dragSelecting.current) {
+            dragSelecting.current = false;
+            // If start === end, clear selection
+            if (selectionRange && selectionRange.start === selectionRange.end) {
+                onSelectionRange(null);
+            }
+        }
+    }, [selectionRange, onSelectionRange]);
+
     const handleClick = useCallback(() => {
-        onSelectFeature(hoverFeature);
+        if (!dragSelecting.current) {
+            onSelectFeature(hoverFeature);
+        }
     }, [hoverFeature, onSelectFeature]);
 
+    /* ── Zoom-to-selection: rotate midpoint to 12-o'clock, then zoom ── */
+    const zoomToRange = useCallback((startBp: number, endBp: number) => {
+        const midBp = startBp < endBp ? (startBp + endBp) / 2 : ((startBp + endBp + seqLen) / 2) % seqLen;
+        const spanBp = startBp < endBp ? endBp - startBp : seqLen - startBp + endBp;
+
+        // Target zoom so the span fills ~60% of the viewport
+        const naturalR = getNaturalR();
+        const targetArc = size.w * 0.6;
+        const arcFraction = spanBp / seqLen;
+        const targetR = targetArc / (arcFraction * Math.PI * 2);
+        const targetZ = Math.min(MAX_ZOOM, Math.max(2, targetR / naturalR));
+
+        // Rotate so the midpoint of the selection ends up at 12 o'clock (angle = -π/2)
+        // bpToAngle(midBp) = (midBp/seqLen) * 2π - π/2 + rotation
+        // We want this to equal -π/2, so: rotation = -(midBp/seqLen) * 2π
+        const targetRotation = -(midBp / seqLen) * Math.PI * 2;
+
+        // Pan stays at 0 — the getLayout() transition handles centering at 12 o'clock
+        zoomRef.current = targetZ;
+        rotationRef.current = targetRotation;
+        panRef.current = { x: 0, y: 0 };
+        setZoom(targetZ);
+        setRotation(targetRotation);
+        setPan({ x: 0, y: 0 });
+    }, [seqLen, size, getNaturalR]);
+
+    // Auto-zoom when a feature is selected
+    useEffect(() => {
+        if (selectedFeatureId !== null) {
+            const feat = features.find((f) => f.id === selectedFeatureId);
+            if (feat) zoomToRange(feat.start, feat.end);
+        }
+    }, [selectedFeatureId, features, zoomToRange]); // eslint-disable-line react-hooks/exhaustive-deps
+
     /* ── Zoom buttons ── */
-    const zoomTo = (factor: number) => {
-        const oldZ = zoomRef.current;
-        const newZ = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, oldZ * factor));
-        // Zoom toward center of viewport
-        const scale = newZ / oldZ;
-        const cx = size.w / 2 + panRef.current.x;
-        const cy = size.h / 2 + panRef.current.y;
-        const mx = size.w / 2;
-        const my = size.h / 2;
-        const newPanX = mx - scale * (mx - cx) - size.w / 2;
-        const newPanY = my - scale * (my - cy) - size.h / 2;
+    const zoomBtn = (factor: number) => {
+        const newZ = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoomRef.current * factor));
+        if (newZ < TRANSITION_START) panRef.current = { x: 0, y: 0 };
         zoomRef.current = newZ;
-        panRef.current = { x: newPanX, y: newPanY };
         setZoom(newZ);
-        setPan({ x: newPanX, y: newPanY });
+        setPan({ ...panRef.current });
     };
 
     const resetView = () => {
-        zoomRef.current = 1;
-        rotationRef.current = 0;
-        panRef.current = { x: 0, y: 0 };
-        setZoom(1);
-        setRotation(0);
-        setPan({ x: 0, y: 0 });
+        zoomRef.current = 1; rotationRef.current = 0; panRef.current = { x: 0, y: 0 };
+        setZoom(1); setRotation(0); setPan({ x: 0, y: 0 });
+        onSelectionRange(null);
     };
 
     /* ── Status bar info ── */
     const hoverChar = hoverBp !== null ? sequence[hoverBp] : null;
-    const hoverFeatName = hoverFeature !== null
-        ? features.find((f) => f.id === hoverFeature)?.label || null
-        : null;
+    const hoverFeatName = hoverFeature !== null ? features.find((f) => f.id === hoverFeature)?.label || null : null;
+    const selSpan = selectionRange ? (selectionRange.end >= selectionRange.start
+        ? selectionRange.end - selectionRange.start
+        : seqLen - selectionRange.start + selectionRange.end) : 0;
 
     return (
         <div ref={containerRef} className="view-canvas-container">
             <canvas
                 ref={canvasRef}
                 onWheel={handleWheel}
+                onMouseDown={handleMouseDown}
                 onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseUp}
                 onClick={handleClick}
                 style={{ cursor: "default" }}
             />
-
-            {/* Zoom controls */}
             <div className="zoom-controls">
-                <button onClick={() => zoomTo(1.4)}>+</button>
+                <button onClick={() => zoomBtn(1.4)}>+</button>
                 <span className="zoom-label">{Math.round(zoom * 100)}%</span>
-                <button onClick={() => zoomTo(1 / 1.4)}>−</button>
+                <button onClick={() => zoomBtn(1 / 1.4)}>−</button>
                 <button onClick={resetView} title="Reset">⟲</button>
             </div>
-
-            {/* Status bar */}
             <div className="status-bar">
-                {hoverBp !== null ? (
+                {selectionRange && selSpan > 0 ? (
+                    <span>Selected: {selectionRange.start.toLocaleString()}–{selectionRange.end.toLocaleString()} ({selSpan.toLocaleString()} bp)</span>
+                ) : hoverBp !== null ? (
                     <>
                         <span>Base {hoverBp.toLocaleString()}</span>
-                        {hoverChar && (
-                            <span className={`status-nt nt-${hoverChar}`}>{hoverChar}</span>
-                        )}
-                        {hoverFeatName && (
-                            <span className="status-feat">· {hoverFeatName}</span>
-                        )}
+                        {hoverChar && <span className={`status-nt nt-${hoverChar}`}>{hoverChar}</span>}
+                        {hoverFeatName && <span className="status-feat">· {hoverFeatName}</span>}
                     </>
                 ) : (
                     <span>Scroll to rotate · Ctrl+scroll to zoom</span>
@@ -493,7 +631,6 @@ function assignTracks(features: Feature[], seqLen: number) {
     const sorted = [...features].sort((a, b) => a.start - b.start);
     const result: { feature: Feature; track: number }[] = [];
     const trackEnds: number[] = [];
-
     for (const feat of sorted) {
         let placed = false;
         for (let t = 0; t < trackEnds.length; t++) {
@@ -512,16 +649,16 @@ function assignTracks(features: Feature[], seqLen: number) {
     return result;
 }
 
-function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
+function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, rad: number) {
     ctx.beginPath();
-    ctx.moveTo(x + r, y);
-    ctx.lineTo(x + w - r, y);
-    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-    ctx.lineTo(x + w, y + h - r);
-    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-    ctx.lineTo(x + r, y + h);
-    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-    ctx.lineTo(x, y + r);
-    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.moveTo(x + rad, y);
+    ctx.lineTo(x + w - rad, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + rad);
+    ctx.lineTo(x + w, y + h - rad);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - rad, y + h);
+    ctx.lineTo(x + rad, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - rad);
+    ctx.lineTo(x, y + rad);
+    ctx.quadraticCurveTo(x, y, x + rad, y);
     ctx.closePath();
 }
