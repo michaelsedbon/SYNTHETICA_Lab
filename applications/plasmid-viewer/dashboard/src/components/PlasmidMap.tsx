@@ -283,10 +283,9 @@ export default function PlasmidMap({
         const hiFontSize = Math.max(5, Math.min(14, hiArcPx * 0.55));
         const hiStrandOff = hiFontSize * 0.7 + 3;
 
-        // Viewport center angle for consistent text direction
-        const viewAngle = Math.atan2(size.h / 2 - cy, size.w / 2 - cx);
-        const viewNorm = ((viewAngle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
-        const viewFlip = viewNorm > Math.PI / 2 && viewNorm < (3 * Math.PI) / 2;
+        // Viewport-based text direction: at high zoom all text reads the same way
+        // (visible arc is always near 12 o'clock so angle + π/2 ≈ horizontal)
+        const viewFlip = false; // at high zoom: never flip
 
         tracks.forEach(({ feature, track }) => {
             const startAngle = bpToAngle(feature.start);
@@ -543,16 +542,10 @@ export default function PlasmidMap({
             const aaFontSize = Math.max(4, Math.min(11, arcPx * 0.4));
             const aaR = r - strandOffset / 2; // AA blocks between complement and backbone
 
-            // Helper: text rotation — at high zoom use consistent direction based on
-            // where the viewport center projects onto the circle (no flip discontinuity)
+            // At high zoom: always a + π/2 (text faces outward, reads L→R at top)
+            // At lower zoom: per-character flip at equator
             const uprightAngle = (a: number) => {
-                if (z > 8) {
-                    // Use viewport center angle as reference for consistent text direction
-                    const viewAngle = Math.atan2(size.h / 2 - cy, size.w / 2 - cx);
-                    const viewNorm = ((viewAngle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
-                    const viewFlip = viewNorm > Math.PI / 2 && viewNorm < (3 * Math.PI) / 2;
-                    return viewFlip ? a - Math.PI / 2 : a + Math.PI / 2;
-                }
+                if (z > 6) return a + Math.PI / 2;
                 const norm = ((a % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
                 return (norm > Math.PI / 2 && norm < (3 * Math.PI) / 2)
                     ? a - Math.PI / 2
