@@ -297,7 +297,7 @@ export default function PlasmidMap({
             const gap = 3;
             // At high zoom: place arcs OUTSIDE nucleotides. At low zoom: inside backbone.
             const featureR = hiZoom
-                ? r + hiStrandOff + 6 + track * (thickness + gap)
+                ? r + hiStrandOff + 22 + track * (thickness + gap)
                 : r - 8 - track * (18 + gap);
             if (featureR < 20) return;
 
@@ -748,7 +748,7 @@ export default function PlasmidMap({
                 const thickness = hiZ2 ? Math.max(14, rawThickness) : rawThickness;
                 const gap = 3;
                 const featureR = hiZ2
-                    ? r + hiStrandOff2 + 6 + track * (thickness + gap)
+                    ? r + hiStrandOff2 + 22 + track * (thickness + gap)
                     : r - 8 - track * (18 + gap);
                 const halfT = thickness / 2 + 3;
                 if (Math.abs(dist - featureR) < halfT) {
