@@ -340,24 +340,26 @@ export default function PlasmidMap({
                 const totalWidth = charWidths.reduce((a: number, b: number) => a + b, 0);
 
                 if (arcSpan > totalWidth + 8) {
-                    // Render each character along the arc
                     const labelR = featureR;
-                    // Check if text is on bottom half → flip for readability
-                    const normMid = ((midAngle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
-                    const flip = normMid > Math.PI / 2 && normMid < (3 * Math.PI) / 2;
-
                     const totalArcAngle = totalWidth / labelR;
                     const chars = feature.label.split("");
+
+                    // Determine reading direction based on midpoint of the TEXT
+                    // (not the annotation) — if mid of text is in bottom half, reverse
+                    const textMidNorm = ((midAngle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+                    const reverseDirection = textMidNorm > Math.PI / 2 && textMidNorm < (3 * Math.PI) / 2;
+
                     let currentAngle: number;
 
-                    if (flip) {
-                        // Reverse character order when flipped
+                    if (reverseDirection) {
+                        // Start from right side going counter-clockwise
                         currentAngle = midAngle + totalArcAngle / 2;
                         for (let ci = 0; ci < chars.length; ci++) {
                             const charAngle = charWidths[ci] / labelR;
                             currentAngle -= charAngle / 2;
                             ctx.save();
                             ctx.translate(cx + Math.cos(currentAngle) * labelR, cy + Math.sin(currentAngle) * labelR);
+                            // Each character individually faces up
                             ctx.rotate(currentAngle - Math.PI / 2);
                             ctx.fillStyle = "#fff";
                             ctx.textAlign = "center";
@@ -367,12 +369,14 @@ export default function PlasmidMap({
                             currentAngle -= charAngle / 2;
                         }
                     } else {
+                        // Start from left side going clockwise
                         currentAngle = midAngle - totalArcAngle / 2;
                         for (let ci = 0; ci < chars.length; ci++) {
                             const charAngle = charWidths[ci] / labelR;
                             currentAngle += charAngle / 2;
                             ctx.save();
                             ctx.translate(cx + Math.cos(currentAngle) * labelR, cy + Math.sin(currentAngle) * labelR);
+                            // Each character individually faces up
                             ctx.rotate(currentAngle + Math.PI / 2);
                             ctx.fillStyle = "#fff";
                             ctx.textAlign = "center";
