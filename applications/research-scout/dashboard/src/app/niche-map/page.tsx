@@ -45,9 +45,13 @@ export default function NicheMapPage() {
     const [mousePos, setMousePos] = React.useState({ x: 0, y: 0 });
     const [yearFilter, setYearFilter] = React.useState<number>(0);
     const [hiddenTopics, setHiddenTopics] = React.useState<Set<string>>(new Set());
+    const [zoom, setZoom] = React.useState(1);
+    const [panOffset, setPanOffset] = React.useState({ x: 0, y: 0 });
+    const [dragging, setDragging] = React.useState(false);
 
     const currentYear = new Date().getFullYear();
     const filteredPoints = points.filter((p) => {
+        if (p.is_seed) return !hiddenTopics.has("My Papers");
         if (yearFilter > 0 && (p.year === null || p.year < currentYear - yearFilter)) return false;
         if (hiddenTopics.size > 0) {
             const paperTopics = (p.topics || "").split(",").map((t) => t.trim());
@@ -214,57 +218,84 @@ export default function NicheMapPage() {
                 </div>
             ) : (
                 <div
-                    className="relative aspect-square max-h-[70vh] w-full rounded-xl border border-white/[0.06] bg-gradient-to-br from-white/[0.02] to-transparent overflow-hidden"
+                    className="relative aspect-square max-h-[70vh] w-full rounded-xl border border-white/[0.06] bg-gradient-to-br from-white/[0.02] to-transparent overflow-hidden select-none"
                     onMouseMove={(e) => {
                         const rect = e.currentTarget.getBoundingClientRect();
                         setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+                        if (dragging) {
+                            setPanOffset((prev) => ({
+                                x: prev.x + e.movementX,
+                                y: prev.y + e.movementY,
+                            }));
+                        }
                     }}
-                    onMouseLeave={() => setHovered(null)}
+                    onMouseLeave={() => { setHovered(null); setDragging(false); }}
+                    onMouseDown={(e) => {
+                        if (e.button === 0) { setDragging(true); e.preventDefault(); }
+                    }}
+                    onMouseUp={() => setDragging(false)}
+                    onWheel={(e) => {
+                        e.stopPropagation();
+                        const delta = e.deltaY > 0 ? 0.9 : 1.1;
+                        setZoom((prev) => Math.min(10, Math.max(1, prev * delta)));
+                    }}
+                    onDoubleClick={() => { setZoom(1); setPanOffset({ x: 0, y: 0 }); }}
+                    style={{ cursor: dragging ? "grabbing" : "grab" }}
                 >
-                    {/* Grid lines */}
-                    <svg className="absolute inset-0 w-full h-full opacity-[0.03]">
-                        {[10, 20, 30, 40, 50, 60, 70, 80, 90].map((p) => (
-                            <React.Fragment key={p}>
-                                <line x1={`${p}%`} y1="0" x2={`${p}%`} y2="100%" stroke="white" />
-                                <line x1="0" y1={`${p}%`} x2="100%" y2={`${p}%`} stroke="white" />
-                            </React.Fragment>
-                        ))}
-                    </svg>
+                    {/* Zoomable layer */}
+                    <div
+                        className="absolute inset-0 w-full h-full origin-center"
+                        style={{
+                            transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoom})`,
+                            transition: dragging ? "none" : "transform 0.15s ease-out",
+                        }}
+                    >
+                        {/* Grid lines */}
+                        <svg className="absolute inset-0 w-full h-full opacity-[0.03]">
+                            {[10, 20, 30, 40, 50, 60, 70, 80, 90].map((p) => (
+                                <React.Fragment key={p}>
+                                    <line x1={`${p}%`} y1="0" x2={`${p}%`} y2="100%" stroke="white" />
+                                    <line x1="0" y1={`${p}%`} x2="100%" y2={`${p}%`} stroke="white" />
+                                </React.Fragment>
+                            ))}
+                        </svg>
 
-                    {/* Points */}
-                    {filteredPoints.map((p) => {
-                        const isSeed = p.is_seed === true;
-                        const size = isSeed ? 14 : Math.max(4, Math.min(12, Math.sqrt(p.citation_count || 1) * 1.5));
-                        const color = isSeed ? "#ffffff" : getColor(p.topics);
-                        return (
-                            <div
-                                key={p.id}
-                                className={`absolute transition-transform duration-150 cursor-pointer ${isSeed
+                        {/* Points */}
+                        {filteredPoints.map((p) => {
+                            const isSeed = p.is_seed === true;
+                            const size = isSeed ? 14 : Math.max(4, Math.min(12, Math.sqrt(p.citation_count || 1) * 1.5));
+                            const color = isSeed ? "#ffffff" : getColor(p.topics);
+                            return (
+                                <div
+                                    key={p.id}
+                                    className={`absolute transition-transform duration-150 cursor-pointer ${isSeed
                                         ? "rotate-45 rounded-sm ring-2 ring-white/60 hover:scale-[1.8] z-20"
                                         : "rounded-full hover:scale-[2]"
-                                    }`}
-                                style={{
-                                    left: `${p.umap_x}%`,
-                                    top: `${p.umap_y}%`,
-                                    width: `${size}px`,
-                                    height: `${size}px`,
-                                    backgroundColor: color,
-                                    opacity: hovered && hovered.id !== p.id ? (isSeed ? 0.6 : 0.2) : (isSeed ? 1 : 0.7),
-                                    boxShadow: isSeed
-                                        ? `0 0 12px rgba(255,255,255,0.5), 0 0 24px rgba(255,255,255,0.2)`
-                                        : `0 0 ${size}px ${color}40`,
-                                    transform: `translate(-50%, -50%)${isSeed ? " rotate(45deg)" : ""}`,
-                                }}
-                                onMouseEnter={() => setHovered(p)}
-                                onClick={() => {
-                                    const link = p.url || (p.doi ? `https://doi.org/${p.doi}` : null);
-                                    if (link) window.open(link, "_blank");
-                                }}
-                            />
-                        );
-                    })}
+                                        }`}
+                                    style={{
+                                        left: `${p.umap_x}%`,
+                                        top: `${p.umap_y}%`,
+                                        width: `${size}px`,
+                                        height: `${size}px`,
+                                        backgroundColor: color,
+                                        opacity: hovered && hovered.id !== p.id ? (isSeed ? 0.6 : 0.2) : (isSeed ? 1 : 0.7),
+                                        boxShadow: isSeed
+                                            ? `0 0 12px rgba(255,255,255,0.5), 0 0 24px rgba(255,255,255,0.2)`
+                                            : `0 0 ${size}px ${color}40`,
+                                        transform: `translate(-50%, -50%)${isSeed ? " rotate(45deg)" : ""}`,
+                                    }}
+                                    onMouseEnter={() => setHovered(p)}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        const link = p.url || (p.doi ? `https://doi.org/${p.doi}` : null);
+                                        if (link) window.open(link, "_blank");
+                                    }}
+                                />
+                            );
+                        })}
+                    </div>
 
-                    {/* Tooltip */}
+                    {/* Tooltip (outside zoom layer so it stays at screen coords) */}
                     {hovered && (
                         <div
                             className="absolute z-50 pointer-events-none rounded-lg border border-white/[0.1] bg-[var(--card)] px-4 py-3 shadow-2xl"
@@ -303,9 +334,34 @@ export default function NicheMapPage() {
                         </div>
                     )}
 
+                    {/* Zoom controls */}
+                    <div className="absolute bottom-4 left-4 flex gap-1.5 z-30">
+                        <button
+                            onClick={() => setZoom((z) => Math.min(10, z * 1.3))}
+                            className="flex items-center justify-center h-7 w-7 rounded-lg border border-white/[0.08] bg-black/60 text-xs text-[var(--muted)] hover:text-white hover:border-white/[0.2] transition-all backdrop-blur-sm"
+                        >
+                            +
+                        </button>
+                        <button
+                            onClick={() => setZoom((z) => Math.max(1, z / 1.3))}
+                            className="flex items-center justify-center h-7 w-7 rounded-lg border border-white/[0.08] bg-black/60 text-xs text-[var(--muted)] hover:text-white hover:border-white/[0.2] transition-all backdrop-blur-sm"
+                        >
+                            −
+                        </button>
+                        {zoom > 1.05 && (
+                            <button
+                                onClick={() => { setZoom(1); setPanOffset({ x: 0, y: 0 }); }}
+                                className="flex items-center justify-center h-7 px-2 rounded-lg border border-white/[0.08] bg-black/60 text-[10px] text-[var(--muted)] hover:text-white hover:border-white/[0.2] transition-all backdrop-blur-sm"
+                            >
+                                Reset
+                            </button>
+                        )}
+                    </div>
+
                     {/* Stats overlay */}
-                    <div className="absolute bottom-4 right-4 text-[10px] font-mono text-[var(--muted)] opacity-50">
+                    <div className="absolute bottom-4 right-4 text-[10px] font-mono text-[var(--muted)] opacity-50 z-30">
                         {filteredPoints.length} papers{yearFilter > 0 ? ` (last ${yearFilter}yr)` : ""}
+                        {zoom > 1.05 && ` · ${zoom.toFixed(1)}×`}
                     </div>
                 </div>
             )}

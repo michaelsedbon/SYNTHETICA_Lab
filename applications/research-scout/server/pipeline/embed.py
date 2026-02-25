@@ -21,36 +21,60 @@ logger = logging.getLogger(__name__)
 
 # Path to user's personal paper collection
 SEED_PAPERS_DIR = os.path.expanduser(
-    "~/Documents/PhD/papers_txt"
+    "~/Documents/SYNTHETIC_PERSONAL_LAB/papers"
 )
 
 
+def _extract_pdf_text(path: str, max_chars: int = 3000) -> str:
+    """Extract text from a PDF file using pymupdf."""
+    try:
+        import pymupdf
+        doc = pymupdf.open(path)
+        text = ""
+        for page in doc:
+            text += page.get_text()
+            if len(text) >= max_chars:
+                break
+        doc.close()
+        return text[:max_chars].strip()
+    except Exception as e:
+        logger.warning(f"Failed to extract PDF text from {path}: {e}")
+        return ""
+
+
 def _load_seed_papers() -> list[dict]:
-    """Load .txt files from the user's papers folder as seed papers."""
+    """Load .txt and .pdf files from the user's papers folder as seed papers."""
     seeds = []
     if not os.path.isdir(SEED_PAPERS_DIR):
         logger.warning(f"Seed papers dir not found: {SEED_PAPERS_DIR}")
         return seeds
 
-    for path in sorted(glob.glob(os.path.join(SEED_PAPERS_DIR, "*.txt"))):
+    for path in sorted(glob.glob(os.path.join(SEED_PAPERS_DIR, "*"))):
+        ext = os.path.splitext(path)[1].lower()
         basename = os.path.splitext(os.path.basename(path))[0]
-        try:
-            with open(path, "r", encoding="utf-8", errors="replace") as f:
-                text = f.read()
-            # Use first ~3000 chars as abstract equivalent
-            abstract = text[:3000].strip()
-            if len(abstract) < 100:
+
+        if ext == ".txt":
+            try:
+                with open(path, "r", encoding="utf-8", errors="replace") as f:
+                    abstract = f.read()[:3000].strip()
+            except Exception:
                 continue
-            # Derive a title from filename
-            title = basename.replace("_", " ").strip()
-            seeds.append({
-                "id": f"seed:{basename}",
-                "title": title,
-                "abstract": abstract,
-                "is_seed": True,
-            })
-        except Exception as e:
-            logger.warning(f"Skipping seed paper {basename}: {e}")
+        elif ext == ".pdf":
+            abstract = _extract_pdf_text(path)
+        else:
+            continue
+
+        if len(abstract) < 100:
+            continue
+
+        title = basename.replace("_", " ").strip()
+        seeds.append({
+            "id": f"seed:{basename}",
+            "title": title,
+            "abstract": abstract,
+            "is_seed": True,
+        })
+
     logger.info(f"Loaded {len(seeds)} seed papers from {SEED_PAPERS_DIR}")
     return seeds
 
