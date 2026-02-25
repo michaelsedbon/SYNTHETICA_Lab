@@ -17,8 +17,16 @@ interface Props {
 
 /* ── Constants ─────────────────────────────────────────────────────── */
 
-const BACKBONE_COLOR = "#444458";
-const BACKBONE_WIDTH = 2;
+const BACKBONE_COLOR = "#5a5a70";
+const BACKBONE_WIDTH = 4;
+
+const NEON_FEATURE_COLORS: Record<string, string> = {
+    CDS: "#00FF88", gene: "#00CCFF", promoter: "#FF00FF", terminator: "#FF3333",
+    primer_bind: "#FFFF00", rep_origin: "#FF8800", RBS: "#AA00FF",
+    misc_feature: "#00FFCC", regulatory: "#FF66CC", mRNA: "#66FF66",
+    sig_peptide: "#FFAA00", misc_binding: "#00FFAA", protein_bind: "#FF88FF",
+    "5'UTR": "#88FFFF", "3'UTR": "#FFFF88", enhancer: "#FF6688",
+};
 const TICK_COLOR = "#3a3a4a";
 const LABEL_COLOR = "#b0b0c8";
 const SEQ_COLORS: Record<string, string> = {
@@ -252,12 +260,22 @@ export default function PlasmidMap({
         const tracks = assignTracks(features, seqLen);
         const labelInfos: { angle: number; r: number; text: string; color: string; selected: boolean }[] = [];
 
+        // At high zoom, compute strandOffset for placing arcs above nucleotides
+        const hiZoom = z > 6 && r > 100;
+        const hiArcPerBp = (Math.PI * 2) / seqLen;
+        const hiArcPx = r * hiArcPerBp;
+        const hiFontSize = Math.max(5, Math.min(14, hiArcPx * 0.55));
+        const hiStrandOff = hiFontSize * 0.7 + 3;
+
         tracks.forEach(({ feature, track }) => {
             const startAngle = bpToAngle(feature.start);
             const endAngle = bpToAngle(feature.end);
             const thickness = TRACK_THICK[feature.type] || TRACK_DEFAULT;
             const gap = 3;
-            const featureR = r - 8 - track * (18 + gap);
+            // At high zoom: place arcs OUTSIDE nucleotides. At low zoom: inside backbone.
+            const featureR = hiZoom
+                ? r + hiStrandOff + 6 + track * (thickness + gap)
+                : r - 8 - track * (18 + gap);
             if (featureR < 20) return;
 
             const isSelected = feature.id === selectedFeatureId;
@@ -289,14 +307,14 @@ export default function PlasmidMap({
                     ctx.lineTo(cx + Math.cos(tipAngle) * featureR, cy + Math.sin(tipAngle) * featureR);
                 }
                 ctx.closePath();
-                ctx.fillStyle = feature.color;
+                ctx.fillStyle = NEON_FEATURE_COLORS[feature.type] || feature.color;
                 ctx.fill();
             } else {
                 ctx.beginPath();
                 ctx.arc(cx, cy, outerR, startAngle, endAngle);
                 ctx.arc(cx, cy, innerR, endAngle, startAngle, true);
                 ctx.closePath();
-                ctx.fillStyle = feature.color;
+                ctx.fillStyle = NEON_FEATURE_COLORS[feature.type] || feature.color;
                 ctx.fill();
             }
 
@@ -467,6 +485,15 @@ export default function PlasmidMap({
             const fontSize = Math.max(5, Math.min(14, arcPx * 0.55));
             const strandOffset = fontSize * 0.7 + 3;
             const aaFontSize = Math.max(4, Math.min(11, arcPx * 0.4));
+            const aaR = r - strandOffset / 2; // AA blocks between complement and backbone
+
+            // Helper: upright rotation for text at any angle
+            const uprightAngle = (a: number) => {
+                const norm = ((a % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+                return (norm > Math.PI / 2 && norm < (3 * Math.PI) / 2)
+                    ? a - Math.PI / 2
+                    : a + Math.PI / 2;
+            };
 
             for (let i = 0; i < seqLen; i++) {
                 const angle = bpToAngle(i);
@@ -477,10 +504,10 @@ export default function PlasmidMap({
                 const char = sequence[i];
                 const comp = COMPLEMENT[char] || "N";
 
-                // Forward strand (outside backbone)
+                // Forward strand (outside backbone) — always upright
                 ctx.save();
                 ctx.translate(fwdX, fwdY);
-                ctx.rotate(angle + Math.PI / 2);
+                ctx.rotate(uprightAngle(angle));
                 ctx.font = `600 ${fontSize}px JetBrains Mono, Menlo, monospace`;
                 ctx.fillStyle = SEQ_COLORS[char] || "#888";
                 ctx.textAlign = "center";
@@ -488,12 +515,12 @@ export default function PlasmidMap({
                 ctx.fillText(char, 0, 0);
                 ctx.restore();
 
-                // Complement strand (inside backbone)
+                // Complement strand (inside backbone) — always upright
                 const compX = cx + Math.cos(angle) * (r - strandOffset);
                 const compY = cy + Math.sin(angle) * (r - strandOffset);
                 ctx.save();
                 ctx.translate(compX, compY);
-                ctx.rotate(angle + Math.PI / 2);
+                ctx.rotate(uprightAngle(angle));
                 ctx.font = `400 ${fontSize}px JetBrains Mono, Menlo, monospace`;
                 ctx.fillStyle = SEQ_COLORS[comp] || "#888";
                 ctx.globalAlpha = 0.6;
@@ -504,25 +531,39 @@ export default function PlasmidMap({
                 ctx.globalAlpha = 1;
             }
 
-            // Amino acid translation (every 3rd base, rendered at backbone centerline)
+            // Amino acid translation — codon-spanning arc blocks between complement & backbone
             if (arcPx > 3) {
+                const aaBlockH = Math.max(6, strandOffset * 0.55);
                 for (let i = 0; i + 2 < seqLen; i += 3) {
                     const codon = sequence.slice(i, i + 3);
                     const aa = CODON_TABLE[codon] || "?";
-                    const midAngle = bpToAngle(i + 1);
-                    const aaX = cx + Math.cos(midAngle) * r;
-                    const aaY = cy + Math.sin(midAngle) * r;
-                    if (aaX < -20 || aaX > size.w + 20 || aaY < -20 || aaY > size.h + 20) continue;
+                    const sa = bpToAngle(i);
+                    const ea = bpToAngle(i + 3);
+                    const midAngle = (sa + ea) / 2;
 
-                    // Small colored box behind amino acid letter
-                    const boxSize = aaFontSize + 2;
+                    // Check if midpoint is on screen
+                    const mx = cx + Math.cos(midAngle) * aaR;
+                    const my = cy + Math.sin(midAngle) * aaR;
+                    if (mx < -30 || mx > size.w + 30 || my < -30 || my > size.h + 30) continue;
+
+                    // Draw arc block spanning full codon
+                    const isStop = aa === "*";
+                    const evenCodon = (Math.floor(i / 3) % 2) === 0;
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, aaR + aaBlockH / 2, sa, ea);
+                    ctx.arc(cx, cy, aaR - aaBlockH / 2, ea, sa, true);
+                    ctx.closePath();
+                    ctx.fillStyle = isStop
+                        ? "rgba(255,60,60,0.5)"
+                        : evenCodon ? "rgba(255,255,255,0.10)" : "rgba(255,255,255,0.18)";
+                    ctx.fill();
+
+                    // AA letter centered in the block
                     ctx.save();
-                    ctx.translate(aaX, aaY);
-                    ctx.rotate(midAngle + Math.PI / 2);
-                    ctx.fillStyle = aa === "*" ? "rgba(255,60,60,0.5)" : "rgba(255,255,255,0.12)";
-                    ctx.fillRect(-boxSize / 2, -boxSize / 2, boxSize, boxSize);
+                    ctx.translate(mx, my);
+                    ctx.rotate(uprightAngle(midAngle));
                     ctx.font = `600 ${aaFontSize}px JetBrains Mono, Menlo, monospace`;
-                    ctx.fillStyle = aa === "*" ? "#ff6666" : "#ccc";
+                    ctx.fillStyle = isStop ? "#ff6666" : "#ddd";
                     ctx.textAlign = "center";
                     ctx.textBaseline = "middle";
                     ctx.fillText(aa, 0, 0);
