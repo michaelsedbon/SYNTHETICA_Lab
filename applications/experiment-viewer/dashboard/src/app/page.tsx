@@ -1,12 +1,238 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import rehypeHighlight from "rehype-highlight";
+import mermaid from "mermaid";
 import "highlight.js/styles/github-dark-dimmed.css";
+
+// Initialize mermaid with dark theme
+mermaid.initialize({
+  startOnLoad: false,
+  theme: "dark",
+  themeVariables: {
+    primaryColor: "#3b82f6",
+    primaryTextColor: "#e2e8f0",
+    primaryBorderColor: "#475569",
+    lineColor: "#64748b",
+    secondaryColor: "#1e293b",
+    tertiaryColor: "#0f172a",
+    background: "#0f172a",
+    mainBkg: "#1e293b",
+    nodeBorder: "#475569",
+    clusterBkg: "#1e293b",
+    titleColor: "#e2e8f0",
+    edgeLabelBackground: "#1e293b",
+  },
+});
+
+let mermaidCounter = 0;
+
+function MermaidDiagram({ code }: { code: string }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [svg, setSvg] = useState<string>("");
+  const [error, setError] = useState<string>("");
+
+  useEffect(() => {
+    const id = `mermaid-${Date.now()}-${mermaidCounter++}`;
+    mermaid
+      .render(id, code)
+      .then((result) => {
+        setSvg(result.svg);
+      })
+      .catch((err) => {
+        setError(String(err));
+      });
+  }, [code]);
+
+  if (error) {
+    return (
+      <pre className="text-red-400 text-sm p-4 bg-red-950/20 rounded-lg border border-red-900/30">
+        <code>{code}</code>
+        <div className="mt-2 text-xs opacity-60">Mermaid error: {error}</div>
+      </pre>
+    );
+  }
+
+  return (
+    <div
+      ref={containerRef}
+      className="mermaid-diagram my-6 flex justify-center overflow-x-auto"
+      dangerouslySetInnerHTML={{ __html: svg }}
+    />
+  );
+}
+
+// ── Code panel types ────────────────────────────────────────────────
+
+interface CodePanelState {
+  open: boolean;
+  content: string;
+  filename: string;
+  language: string;
+  lineStart: number | null;
+  lineEnd: number | null;
+  loading: boolean;
+}
+
+const CODE_EXTENSIONS = [
+  ".py", ".js", ".ts", ".tsx", ".jsx", ".json", ".yaml", ".yml",
+  ".toml", ".sh", ".bash", ".r", ".java", ".c", ".cpp", ".h",
+  ".go", ".rs", ".csv", ".tsv", ".sql", ".html", ".css", ".xml",
+];
+
+function isCodeFileLink(href: string): boolean {
+  if (!href.startsWith("file:///")) return false;
+  const pathPart = href.replace(/#.*$/, "");
+  return CODE_EXTENSIONS.some((ext) => pathPart.endsWith(ext));
+}
+
+function parseFileLink(href: string): { path: string; lineStart: number | null; lineEnd: number | null } {
+  const [pathPart, fragment] = href.split("#");
+  const filePath = pathPart.replace("file://", "");
+  let lineStart: number | null = null;
+  let lineEnd: number | null = null;
+
+  if (fragment) {
+    // Parse #L141-L149 or #L141 or #L141-149
+    const match = fragment.match(/^L(\d+)(?:[-–]L?(\d+))?$/);
+    if (match) {
+      lineStart = parseInt(match[1], 10);
+      lineEnd = match[2] ? parseInt(match[2], 10) : lineStart;
+    }
+  }
+
+  return { path: filePath, lineStart, lineEnd };
+}
+
+// ── Code Panel Component ────────────────────────────────────────────
+
+function CodePanel({
+  state,
+  onClose,
+}: {
+  state: CodePanelState;
+  onClose: () => void;
+}) {
+  const codeAreaRef = useRef<HTMLDivElement>(null);
+
+  // Scroll to highlighted lines when content loads
+  useEffect(() => {
+    if (state.lineStart && codeAreaRef.current) {
+      const targetLine = codeAreaRef.current.querySelector(
+        `[data-line="${state.lineStart}"]`
+      );
+      if (targetLine) {
+        targetLine.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
+  }, [state.content, state.lineStart]);
+
+  const lines = state.content.split("\n");
+
+  return (
+    <aside
+      className="flex flex-col border-l border-border bg-sidebar
+                 w-[500px] min-w-[400px] max-w-[50vw]"
+      style={{ resize: "horizontal", overflow: "hidden", direction: "rtl" }}
+    >
+      <div style={{ direction: "ltr" }} className="flex flex-col h-full">
+        {/* Header */}
+        <div className="flex items-center justify-between px-4 py-3 border-b border-border gap-2">
+          <div className="flex items-center gap-2 min-w-0">
+            <svg
+              className="h-4 w-4 flex-shrink-0 text-muted-foreground"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={1.5}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"
+              />
+            </svg>
+            <span className="text-sm font-medium text-foreground truncate">
+              {state.filename}
+            </span>
+            {state.lineStart && (
+              <span className="text-xs text-muted-foreground flex-shrink-0">
+                L{state.lineStart}
+                {state.lineEnd && state.lineEnd !== state.lineStart
+                  ? `–${state.lineEnd}`
+                  : ""}
+              </span>
+            )}
+          </div>
+          <button
+            onClick={onClose}
+            className="p-1 rounded-md hover:bg-muted/60 transition-colors text-muted-foreground hover:text-foreground flex-shrink-0"
+            title="Close code panel"
+          >
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Code content */}
+        <div ref={codeAreaRef} className="flex-1 overflow-auto text-sm font-mono">
+          {state.loading ? (
+            <div className="flex items-center justify-center h-32">
+              <div className="flex items-center gap-3 text-muted-foreground">
+                <div className="h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                <span className="text-xs">Loading…</span>
+              </div>
+            </div>
+          ) : (
+            <table className="w-full border-collapse">
+              <tbody>
+                {lines.map((line, i) => {
+                  const lineNum = i + 1;
+                  const isHighlighted =
+                    state.lineStart !== null &&
+                    state.lineEnd !== null &&
+                    lineNum >= state.lineStart &&
+                    lineNum <= state.lineEnd;
+
+                  return (
+                    <tr
+                      key={lineNum}
+                      data-line={lineNum}
+                      className={isHighlighted ? "bg-yellow-500/15" : "hover:bg-muted/30"}
+                    >
+                      <td
+                        className={`
+                          select-none text-right pr-4 pl-4 py-0 align-top
+                          border-r border-border/40 whitespace-nowrap
+                          ${isHighlighted ? "text-yellow-400/80" : "text-muted-foreground/40"}
+                        `}
+                        style={{ width: "1px", fontSize: "12px", lineHeight: "20px" }}
+                      >
+                        {lineNum}
+                      </td>
+                      <td
+                        className="px-4 py-0 whitespace-pre"
+                        style={{ fontSize: "12px", lineHeight: "20px" }}
+                      >
+                        {line || " "}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
+        </div>
+      </div>
+    </aside>
+  );
+}
+
 
 // ── Types ──────────────────────────────────────────────────────────
 
@@ -46,6 +272,16 @@ async function fetchFile(path: string, source: string): Promise<string> {
   return data.content;
 }
 
+async function fetchCodeFile(
+  absPath: string
+): Promise<{ content: string; filename: string; language: string }> {
+  const res = await fetch(
+    `${apiBase()}/api/code?path=${encodeURIComponent(absPath)}`
+  );
+  if (!res.ok) throw new Error(`Failed to load code file: ${res.status}`);
+  return res.json();
+}
+
 // ── Component ──────────────────────────────────────────────────────
 
 export default function ExperimentViewer() {
@@ -59,6 +295,47 @@ export default function ExperimentViewer() {
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const [expandedFiles, setExpandedFiles] = useState<Record<string, boolean>>({});
   const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  // Code panel state
+  const [codePanel, setCodePanel] = useState<CodePanelState>({
+    open: false,
+    content: "",
+    filename: "",
+    language: "text",
+    lineStart: null,
+    lineEnd: null,
+    loading: false,
+  });
+
+  const openCodePanel = useCallback(async (href: string) => {
+    const { path, lineStart, lineEnd } = parseFileLink(href);
+    setCodePanel({
+      open: true,
+      content: "",
+      filename: path.split("/").pop() || "file",
+      language: "text",
+      lineStart,
+      lineEnd,
+      loading: true,
+    });
+
+    try {
+      const data = await fetchCodeFile(path);
+      setCodePanel((prev) => ({
+        ...prev,
+        content: data.content,
+        filename: data.filename,
+        language: data.language,
+        loading: false,
+      }));
+    } catch {
+      setCodePanel((prev) => ({
+        ...prev,
+        content: "// Error: Could not load this file.",
+        loading: false,
+      }));
+    }
+  }, []);
 
   // Load experiment tree
   useEffect(() => {
@@ -449,6 +726,15 @@ export default function ExperimentViewer() {
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 rehypePlugins={[rehypeRaw, rehypeHighlight]}
+                urlTransform={(url) => {
+                  // Allow file:/// URLs through (used for code file links)
+                  if (url.startsWith("file:///")) return url;
+                  // Default sanitization for everything else
+                  if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("mailto:") || url.startsWith("#") || url.startsWith("/") || url.startsWith("./") || url.startsWith("../")) return url;
+                  // Relative paths
+                  if (!url.includes(":")) return url;
+                  return "";
+                }}
                 components={{
                   img: ({ src, alt, ...props }) => (
                     <figure className="figure-block">
@@ -465,6 +751,37 @@ export default function ExperimentViewer() {
                     </figure>
                   ),
                   a: ({ href, children, ...props }) => {
+                    // Intercept file:// links to code files → open side panel
+                    if (href && isCodeFileLink(href)) {
+                      return (
+                        <a
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            openCodePanel(href);
+                          }}
+                          className="code-link"
+                          title="Open in code panel"
+                          {...props}
+                        >
+                          <svg
+                            className="inline-block h-3.5 w-3.5 mr-1 -mt-0.5 opacity-50"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={1.5}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"
+                            />
+                          </svg>
+                          {children}
+                        </a>
+                      );
+                    }
+
                     // Intercept relative .md links to navigate within the app
                     if (
                       href &&
@@ -517,6 +834,19 @@ export default function ExperimentViewer() {
                       </a>
                     );
                   },
+                  code: ({ className, children, ...props }) => {
+                    // Detect mermaid code blocks
+                    const match = /language-mermaid/.exec(className || "");
+                    if (match) {
+                      const code = String(children).replace(/\n$/, "");
+                      return <MermaidDiagram code={code} />;
+                    }
+                    return (
+                      <code className={className} {...props}>
+                        {children}
+                      </code>
+                    );
+                  },
                 }}
               >
                 {content}
@@ -534,6 +864,14 @@ export default function ExperimentViewer() {
           )}
         </div>
       </main>
+
+      {/* ── Code Panel (right side) ── */}
+      {codePanel.open && (
+        <CodePanel
+          state={codePanel}
+          onClose={() => setCodePanel((prev) => ({ ...prev, open: false }))}
+        />
+      )}
     </div>
   );
 }

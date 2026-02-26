@@ -303,6 +303,23 @@
   margin: 1rem 0;
 }
 
+/* code file links */
+.markdown-body .code-link {
+  color: oklch(0.72 0.12 190);
+  text-decoration: underline;
+  text-decoration-style: dashed;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+  padding: 0.1rem 0.25rem;
+  border-radius: 0.2rem;
+}
+
+.markdown-body .code-link:hover {
+  color: oklch(0.82 0.14 190);
+  background: oklch(0.72 0.12 190 / 10%);
+}
+
 
 /* ── Custom scrollbar ───────────────────────────────────────────── */
 

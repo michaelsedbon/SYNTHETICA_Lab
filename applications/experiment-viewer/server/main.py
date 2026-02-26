@@ -249,6 +249,70 @@ def get_media(
     return FileResponse(resolved)
 
 
+# ── Code file viewer API ────────────────────────────────────────────
+
+# File extensions considered "code" (served by /api/code)
+CODE_EXTENSIONS = {
+    ".py", ".js", ".ts", ".tsx", ".jsx", ".json", ".yaml", ".yml",
+    ".toml", ".sh", ".bash", ".r", ".R", ".pl", ".rb", ".java",
+    ".c", ".cpp", ".h", ".hpp", ".go", ".rs", ".csv", ".tsv",
+    ".sql", ".html", ".css", ".xml", ".ini", ".cfg", ".conf",
+}
+
+EXTENSION_TO_LANG = {
+    ".py": "python", ".js": "javascript", ".ts": "typescript",
+    ".tsx": "tsx", ".jsx": "jsx", ".json": "json",
+    ".yaml": "yaml", ".yml": "yaml", ".toml": "toml",
+    ".sh": "bash", ".bash": "bash", ".r": "r", ".R": "r",
+    ".java": "java", ".c": "c", ".cpp": "cpp", ".h": "c",
+    ".go": "go", ".rs": "rust", ".sql": "sql",
+    ".html": "html", ".css": "css", ".xml": "xml",
+    ".csv": "text", ".tsv": "text",
+}
+
+
+@app.get("/api/code")
+def get_code_file(
+    path: str = Query(..., description="Absolute path to a code file"),
+):
+    """Serve raw content of a code file for the side-panel viewer.
+
+    Only allows files whose path falls under one of the configured
+    source parent directories (e.g. ~/Documents/PhD/).
+    """
+    file_path = Path(path).resolve()
+
+    # Security: only serve files under a known source parent dir
+    allowed = False
+    for _, source_dir in SOURCES:
+        # Allow anything under the source dir's parent (covers scripts/, data/ siblings)
+        parent = source_dir.parent
+        if str(file_path).startswith(str(parent)):
+            allowed = True
+            break
+    if not allowed:
+        raise HTTPException(status_code=403, detail="Access denied — file is outside allowed directories")
+
+    if not file_path.is_file():
+        raise HTTPException(status_code=404, detail="File not found")
+
+    suffix = file_path.suffix.lower()
+    if suffix not in CODE_EXTENSIONS:
+        raise HTTPException(status_code=400, detail=f"Unsupported file type: {suffix}")
+
+    try:
+        content = file_path.read_text(encoding="utf-8")
+    except UnicodeDecodeError:
+        raise HTTPException(status_code=400, detail="Cannot read file as text")
+
+    return {
+        "content": content,
+        "path": str(file_path),
+        "filename": file_path.name,
+        "language": EXTENSION_TO_LANG.get(suffix, "text"),
+    }
+
+
 # ── Settings API ────────────────────────────────────────────────────
 
 class SourceEntry(BaseModel):
