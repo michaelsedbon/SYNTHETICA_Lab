@@ -1197,12 +1197,16 @@ export default function ExperimentViewer() {
           </button>
           <button
             className="flex items-center gap-2 w-full px-3 py-2 text-sm text-foreground hover:bg-muted/60 transition-colors text-left"
-            onClick={() => {
+            onClick={async () => {
               const { path, lineStart } = parseFileLink(contextMenu.href);
-              const vscodeUrl = lineStart
-                ? `vscode://file${path}:${lineStart}`
-                : `vscode://file${path}`;
-              window.open(vscodeUrl, "_blank");
+              try {
+                await fetch(
+                  `http://localhost:8001/api/open-in-editor?path=${encodeURIComponent(path)}&line=${lineStart || 1}`,
+                  { method: "POST" }
+                );
+              } catch {
+                // silently fail
+              }
               setContextMenu(null);
             }}
           >

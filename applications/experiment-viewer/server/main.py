@@ -313,6 +313,47 @@ def get_code_file(
     }
 
 
+@app.post("/api/open-in-editor")
+def open_in_editor(
+    path: str = Query(..., description="Absolute path to a code file"),
+    line: int = Query(1, description="Line number to open at"),
+):
+    """Open a file in the user's code editor (VS Code, Cursor, or default)."""
+    import subprocess, shutil
+
+    file_path = Path(path).resolve()
+
+    # Security: same check as /api/code
+    settings = _load_settings()
+    allowed = False
+    for src in settings.get("sources", []):
+        src_path = Path(src["path"]).resolve()
+        if str(file_path).startswith(str(src_path.parent)):
+            allowed = True
+            break
+    if not allowed:
+        raise HTTPException(status_code=403, detail="Access denied")
+    if not file_path.is_file():
+        raise HTTPException(status_code=404, detail="File not found")
+
+    # Try editors in order: code (VS Code), cursor, then macOS open
+    editors = []
+    if shutil.which("code"):
+        editors.append(["code", "--goto", f"{file_path}:{line}"])
+    if shutil.which("cursor"):
+        editors.append(["cursor", "--goto", f"{file_path}:{line}"])
+    editors.append(["open", "-t", str(file_path)])
+
+    for cmd in editors:
+        try:
+            subprocess.Popen(cmd)
+            return {"ok": True, "editor": cmd[0], "path": str(file_path)}
+        except Exception:
+            continue
+
+    raise HTTPException(status_code=500, detail="No editor found")
+
+
 # ── Settings API ────────────────────────────────────────────────────
 
 class SourceEntry(BaseModel):
