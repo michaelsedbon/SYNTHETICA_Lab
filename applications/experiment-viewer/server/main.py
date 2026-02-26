@@ -336,19 +336,19 @@ def open_in_editor(
     if not file_path.is_file():
         raise HTTPException(status_code=404, detail="File not found")
 
-    # Try editors in order: VS Code app, code CLI, cursor CLI, then macOS default
+    # Try editors in order: VS Code internal CLI (reuse window), code CLI, cursor, fallback
     editors = []
-    # macOS: open with VS Code app directly (works even without CLI in PATH)
-    vscode_app = Path("/Applications/Visual Studio Code.app")
-    if vscode_app.exists():
-        editors.append(["open", "-a", "Visual Studio Code", "--args", "--goto", f"{file_path}:{line}"])
+    # macOS: VS Code's CLI binary inside the app bundle (reuses existing window with -r)
+    vscode_cli = Path("/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code")
+    if vscode_cli.exists():
+        editors.append([str(vscode_cli), "-r", "--goto", f"{file_path}:{line}"])
     if shutil.which("code"):
-        editors.append(["code", "--goto", f"{file_path}:{line}"])
-    cursor_app = Path("/Applications/Cursor.app")
-    if cursor_app.exists():
-        editors.append(["open", "-a", "Cursor", "--args", "--goto", f"{file_path}:{line}"])
+        editors.append(["code", "-r", "--goto", f"{file_path}:{line}"])
+    cursor_cli = Path("/Applications/Cursor.app/Contents/Resources/app/bin/cursor")
+    if cursor_cli.exists():
+        editors.append([str(cursor_cli), "-r", "--goto", f"{file_path}:{line}"])
     if shutil.which("cursor"):
-        editors.append(["cursor", "--goto", f"{file_path}:{line}"])
+        editors.append(["cursor", "-r", "--goto", f"{file_path}:{line}"])
     editors.append(["open", "-t", str(file_path)])
 
     for cmd in editors:
