@@ -57,6 +57,7 @@ export default function ExperimentViewer() {
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
+  const [expandedFiles, setExpandedFiles] = useState<Record<string, boolean>>({});
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   // Load experiment tree
@@ -75,6 +76,24 @@ export default function ExperimentViewer() {
     setActivePath(path);
     setActiveSource(source);
     setLoading(true);
+
+    // Auto-expand the sidebar group containing this file
+    setGroups((currentGroups) => {
+      for (const group of currentGroups) {
+        if (group.source !== source) continue;
+        const isChild = group.files.some((f) => f.path === path);
+        if (isChild) {
+          const groupKey = `${source}-${group.key}`;
+          // Expand child files list
+          setExpandedFiles((prev) => ({ ...prev, [groupKey]: true }));
+          // Un-collapse group (for groups without summary that use the old toggle)
+          setCollapsed((prev) => ({ ...prev, [groupKey]: false }));
+          break;
+        }
+      }
+      return currentGroups;
+    });
+
     try {
       const md = await fetchFile(path, source);
       setContent(md);
@@ -86,6 +105,10 @@ export default function ExperimentViewer() {
 
   const toggleGroup = (key: string) => {
     setCollapsed((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const toggleFiles = (key: string) => {
+    setExpandedFiles((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
   // Filter files by search
@@ -186,99 +209,153 @@ export default function ExperimentViewer() {
                 .filter((g) => g.source === source)
                 .map((group) => (
                   <div key={`${source}-${group.key}`} className="mb-1">
-                    {/* Group header (collapsible) */}
-                    <button
-                      onClick={() => toggleGroup(`${source}-${group.key}`)}
-                      className="flex items-center gap-1.5 w-full px-2 py-1.5 text-xs font-semibold
-                                 text-muted-foreground uppercase tracking-wider
-                                 hover:text-foreground transition-colors rounded-md
-                                 hover:bg-muted/40"
-                    >
-                      <svg
-                        className={`h-3 w-3 transition-transform duration-200 ${collapsed[`${source}-${group.key}`] ? "" : "rotate-90"
-                          }`}
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                      {group.label}
-                    </button>
-
-                    {!collapsed[`${source}-${group.key}`] && (
-                      <div className="ml-2 mt-0.5 space-y-0.5">
-                        {/* Summary.md — primary entry */}
-                        {group.summary && (
+                    {/* Group header */}
+                    {group.summary ? (
+                      <div className="flex items-center gap-0">
+                        {/* Expand/collapse arrow for child files */}
+                        {group.files.length > 0 && (
                           <button
-                            key={`${source}-${group.summary.path}`}
-                            onClick={() => handleSelect(group.summary!.path, source)}
-                            className={`
-                              flex items-center gap-2 w-full px-3 py-2 text-sm rounded-md
-                              transition-all duration-150
-                              ${activePath === group.summary.path && activeSource === source
-                                ? "bg-accent text-accent-foreground font-medium shadow-sm"
-                                : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                              }
-                            `}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleFiles(`${source}-${group.key}`);
+                            }}
+                            className="p-1.5 rounded hover:bg-muted/60 transition-colors text-muted-foreground hover:text-foreground flex-shrink-0"
+                            title={expandedFiles[`${source}-${group.key}`] ? "Collapse files" : "Expand files"}
                           >
                             <svg
-                              className="h-4 w-4 flex-shrink-0 opacity-50"
+                              className={`h-3 w-3 transition-transform duration-200 ${expandedFiles[`${source}-${group.key}`] ? "rotate-90" : ""}`}
                               fill="none"
                               viewBox="0 0 24 24"
                               stroke="currentColor"
-                              strokeWidth={1.5}
+                              strokeWidth={2}
                             >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"
-                              />
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                             </svg>
-                            <span className="truncate font-medium">{group.summary.title}</span>
                           </button>
                         )}
-
-                        {/* Child .md files — indented under summary */}
-                        {group.files.length > 0 && (
-                          <div className={group.summary ? "ml-4 border-l border-border/40 pl-2 space-y-0.5" : "space-y-0.5"}>
-                            {group.files.map((file) => (
-                              <button
-                                key={`${source}-${file.path}`}
-                                onClick={() => handleSelect(file.path, source)}
-                                className={`
-                                  flex items-center gap-2 w-full px-3 py-1.5 text-sm rounded-md
-                                  transition-all duration-150
-                                  ${activePath === file.path && activeSource === source
-                                    ? "bg-accent text-accent-foreground font-medium shadow-sm"
-                                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                                  }
-                                `}
-                              >
-                                <svg
-                                  className="h-3.5 w-3.5 flex-shrink-0 opacity-40"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  stroke="currentColor"
-                                  strokeWidth={1.5}
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
-                                  />
-                                </svg>
-                                <span className="truncate text-xs">{file.title}</span>
-                              </button>
-                            ))}
-                          </div>
-                        )}
+                        {/* Summary title — clicking loads the summary file */}
+                        <button
+                          onClick={() => handleSelect(group.summary!.path, source)}
+                          className={`
+                            flex items-center gap-2 flex-1 min-w-0 px-2 py-1.5 text-sm rounded-md
+                            transition-all duration-150
+                            ${activePath === group.summary.path && activeSource === source
+                              ? "bg-accent text-accent-foreground font-medium shadow-sm"
+                              : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                            }
+                          `}
+                        >
+                          <svg
+                            className="h-4 w-4 flex-shrink-0 opacity-50"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={1.5}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"
+                            />
+                          </svg>
+                          <span className="truncate font-medium">{group.label}</span>
+                        </button>
                       </div>
+                    ) : (
+                      <button
+                        onClick={() => toggleGroup(`${source}-${group.key}`)}
+                        className="flex items-center gap-1.5 w-full px-2 py-1.5 text-xs font-semibold
+                                   text-muted-foreground uppercase tracking-wider
+                                   hover:text-foreground transition-colors rounded-md
+                                   hover:bg-muted/40"
+                      >
+                        <svg
+                          className={`h-3 w-3 transition-transform duration-200 ${collapsed[`${source}-${group.key}`] ? "" : "rotate-90"
+                            }`}
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={2}
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M9 5l7 7-7 7"
+                          />
+                        </svg>
+                        {group.label}
+                      </button>
+                    )}
+
+                    {/* Child .md files — collapsible, hidden by default */}
+                    {group.summary ? (
+                      group.files.length > 0 && expandedFiles[`${source}-${group.key}`] && (
+                        <div className="ml-5 border-l border-border/40 pl-2 mt-0.5 space-y-0.5">
+                          {group.files.map((file) => (
+                            <button
+                              key={`${source}-${file.path}`}
+                              onClick={() => handleSelect(file.path, source)}
+                              className={`
+                                flex items-center gap-2 w-full px-3 py-1.5 text-sm rounded-md
+                                transition-all duration-150
+                                ${activePath === file.path && activeSource === source
+                                  ? "bg-accent text-accent-foreground font-medium shadow-sm"
+                                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                                }
+                              `}
+                            >
+                              <svg
+                                className="h-3.5 w-3.5 flex-shrink-0 opacity-40"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                strokeWidth={1.5}
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+                                />
+                              </svg>
+                              <span className="truncate text-xs">{file.title}</span>
+                            </button>
+                          ))}
+                        </div>
+                      )
+                    ) : (
+                      !collapsed[`${source}-${group.key}`] && (
+                        <div className="ml-2 mt-0.5 space-y-0.5">
+                          {group.files.map((file) => (
+                            <button
+                              key={`${source}-${file.path}`}
+                              onClick={() => handleSelect(file.path, source)}
+                              className={`
+                                flex items-center gap-2 w-full px-3 py-1.5 text-sm rounded-md
+                                transition-all duration-150
+                                ${activePath === file.path && activeSource === source
+                                  ? "bg-accent text-accent-foreground font-medium shadow-sm"
+                                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                                }
+                              `}
+                            >
+                              <svg
+                                className="h-3.5 w-3.5 flex-shrink-0 opacity-40"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                strokeWidth={1.5}
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+                                />
+                              </svg>
+                              <span className="truncate text-xs">{file.title}</span>
+                            </button>
+                          ))}
+                        </div>
+                      )
                     )}
                   </div>
                 ))}
@@ -388,6 +465,43 @@ export default function ExperimentViewer() {
                     </figure>
                   ),
                   a: ({ href, children, ...props }) => {
+                    // Intercept relative .md links to navigate within the app
+                    if (
+                      href &&
+                      !href.startsWith("http") &&
+                      !href.startsWith("mailto:") &&
+                      !href.startsWith("#") &&
+                      href.endsWith(".md")
+                    ) {
+                      const dir = activePath ? activePath.split("/").slice(0, -1).join("/") : "";
+                      const resolved = dir ? `${dir}/${href}` : href;
+                      // Normalize path (resolve ../ and ./)
+                      const parts = resolved.split("/");
+                      const normalized: string[] = [];
+                      for (const part of parts) {
+                        if (part === "." || part === "") continue;
+                        if (part === ".." && normalized.length > 0) {
+                          normalized.pop();
+                        } else if (part !== "..") {
+                          normalized.push(part);
+                        }
+                      }
+                      const targetPath = normalized.join("/");
+                      return (
+                        <a
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleSelect(targetPath, activeSource);
+                          }}
+                          className="internal-link"
+                          {...props}
+                        >
+                          {children}
+                        </a>
+                      );
+                    }
+
                     const resolvedHref =
                       href && !href.startsWith("http") && !href.startsWith("mailto:") && !href.startsWith("#")
                         ? resolveMediaUrl(href, activePath)

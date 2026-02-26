@@ -180,9 +180,15 @@ def _build_tree() -> list[dict]:
         # Collect groups for this source
         source_groups = []
         if "_root" in groups:
-            source_groups.append(groups.pop("_root"))
+            root_group = groups.pop("_root")
+            root_group["label"] = "Index"
+            source_groups.append(root_group)
         for key in sorted(groups):
-            source_groups.append(groups[key])
+            g = groups[key]
+            # Use summary title as group label when available
+            if g["summary"]:
+                g["label"] = g["summary"]["title"]
+            source_groups.append(g)
 
         # Tag each group with its source
         for g in source_groups:
