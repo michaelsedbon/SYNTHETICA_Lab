@@ -555,6 +555,26 @@ export default function ExperimentViewer() {
   const [expandedFiles, setExpandedFiles] = useState<Record<string, boolean>>({});
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
+  // Context menu state for code links
+  const [contextMenu, setContextMenu] = useState<{
+    x: number;
+    y: number;
+    href: string;
+  } | null>(null);
+
+  // Close context menu on click outside or Escape
+  useEffect(() => {
+    if (!contextMenu) return;
+    const close = () => setContextMenu(null);
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") close(); };
+    window.addEventListener("click", close);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("click", close);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [contextMenu]);
+
   // Code panel state
   const [codePanel, setCodePanel] = useState<CodePanelState>({
     open: false,
@@ -1039,6 +1059,10 @@ export default function ExperimentViewer() {
                             e.preventDefault();
                             openCodePanel(href);
                           }}
+                          onContextMenu={(e) => {
+                            e.preventDefault();
+                            setContextMenu({ x: e.clientX, y: e.clientY, href });
+                          }}
                           className="code-link"
                           title="Open in code panel"
                           {...props}
@@ -1150,6 +1174,58 @@ export default function ExperimentViewer() {
           state={codePanel}
           onClose={closeCodePanel}
         />
+      )}
+
+      {/* Custom context menu for code links */}
+      {contextMenu && (
+        <div
+          className="fixed z-50 bg-popover border border-border rounded-lg shadow-xl py-1 min-w-[200px]"
+          style={{ left: contextMenu.x, top: contextMenu.y }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button
+            className="flex items-center gap-2 w-full px-3 py-2 text-sm text-foreground hover:bg-muted/60 transition-colors text-left"
+            onClick={() => {
+              openCodePanel(contextMenu.href);
+              setContextMenu(null);
+            }}
+          >
+            <svg className="h-4 w-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
+            </svg>
+            Open in code panel
+          </button>
+          <button
+            className="flex items-center gap-2 w-full px-3 py-2 text-sm text-foreground hover:bg-muted/60 transition-colors text-left"
+            onClick={() => {
+              const { path, lineStart } = parseFileLink(contextMenu.href);
+              const vscodeUrl = lineStart
+                ? `vscode://file${path}:${lineStart}`
+                : `vscode://file${path}`;
+              window.open(vscodeUrl, "_blank");
+              setContextMenu(null);
+            }}
+          >
+            <svg className="h-4 w-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+            </svg>
+            Open in Antigravity
+          </button>
+          <div className="border-t border-border/50 my-1" />
+          <button
+            className="flex items-center gap-2 w-full px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors text-left"
+            onClick={() => {
+              const { path } = parseFileLink(contextMenu.href);
+              navigator.clipboard.writeText(path);
+              setContextMenu(null);
+            }}
+          >
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9.75a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
+            </svg>
+            Copy file path
+          </button>
+        </div>
       )}
     </div>
   );
