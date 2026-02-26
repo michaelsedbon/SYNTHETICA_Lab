@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import rehypeHighlight from "rehype-highlight";
 import mermaid from "mermaid";
+import hljs from "highlight.js";
 import "highlight.js/styles/github-dark-dimmed.css";
 
 // Initialize mermaid with dark theme
@@ -110,6 +111,29 @@ function parseFileLink(href: string): { path: string; lineStart: number | null; 
 
 // ── Code Panel Component ────────────────────────────────────────────
 
+// Map backend language names to highlight.js aliases
+const HLJS_LANG_MAP: Record<string, string> = {
+  python: "python",
+  javascript: "javascript",
+  typescript: "typescript",
+  tsx: "typescript",
+  jsx: "javascript",
+  json: "json",
+  yaml: "yaml",
+  toml: "ini",
+  bash: "bash",
+  r: "r",
+  java: "java",
+  c: "c",
+  cpp: "cpp",
+  go: "go",
+  rust: "rust",
+  sql: "sql",
+  html: "xml",
+  css: "css",
+  xml: "xml",
+};
+
 function CodePanel({
   state,
   onClose,
@@ -118,116 +142,172 @@ function CodePanel({
   onClose: () => void;
 }) {
   const codeAreaRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const [panelWidth, setPanelWidth] = useState(520);
+  const isDragging = useRef(false);
+
+  // Syntax-highlight the entire file once
+  const highlightedLines = useMemo(() => {
+    if (!state.content) return [];
+    const lang = HLJS_LANG_MAP[state.language] || state.language;
+    let html: string;
+    try {
+      const result = hljs.highlight(state.content, { language: lang, ignoreIllegals: true });
+      html = result.value;
+    } catch {
+      // Fallback: escape HTML
+      html = state.content
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+    // Split highlighted HTML by newline, preserving span tags
+    return html.split("\n");
+  }, [state.content, state.language]);
 
   // Scroll to highlighted lines when content loads
   useEffect(() => {
     if (state.lineStart && codeAreaRef.current) {
-      const targetLine = codeAreaRef.current.querySelector(
-        `[data-line="${state.lineStart}"]`
-      );
-      if (targetLine) {
-        targetLine.scrollIntoView({ behavior: "smooth", block: "center" });
-      }
+      setTimeout(() => {
+        const targetLine = codeAreaRef.current?.querySelector(
+          `[data-line="${state.lineStart}"]`
+        );
+        if (targetLine) {
+          targetLine.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }, 50);
     }
   }, [state.content, state.lineStart]);
 
-  const lines = state.content.split("\n");
+  // Drag to resize
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    isDragging.current = true;
+    const startX = e.clientX;
+    const startWidth = panelRef.current?.offsetWidth || panelWidth;
+
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      if (!isDragging.current) return;
+      const delta = startX - moveEvent.clientX;
+      const newWidth = Math.max(300, Math.min(startWidth + delta, window.innerWidth * 0.7));
+      setPanelWidth(newWidth);
+    };
+
+    const handleMouseUp = () => {
+      isDragging.current = false;
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+    };
+
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+  }, [panelWidth]);
 
   return (
     <aside
-      className="flex flex-col border-l border-border bg-sidebar
-                 w-[500px] min-w-[400px] max-w-[50vw]"
-      style={{ resize: "horizontal", overflow: "hidden", direction: "rtl" }}
+      ref={panelRef}
+      className="flex flex-col border-l border-border bg-sidebar relative"
+      style={{ width: `${panelWidth}px`, minWidth: "300px", maxWidth: "70vw" }}
     >
-      <div style={{ direction: "ltr" }} className="flex flex-col h-full">
-        {/* Header */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-border gap-2">
-          <div className="flex items-center gap-2 min-w-0">
-            <svg
-              className="h-4 w-4 flex-shrink-0 text-muted-foreground"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={1.5}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"
-              />
-            </svg>
-            <span className="text-sm font-medium text-foreground truncate">
-              {state.filename}
+      {/* Resize handle */}
+      <div
+        className="absolute left-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-blue-500/30 active:bg-blue-500/50 transition-colors z-10"
+        onMouseDown={handleMouseDown}
+      />
+
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 py-3 border-b border-border gap-2">
+        <div className="flex items-center gap-2 min-w-0">
+          <svg
+            className="h-4 w-4 flex-shrink-0 text-muted-foreground"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={1.5}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"
+            />
+          </svg>
+          <span className="text-sm font-medium text-foreground truncate">
+            {state.filename}
+          </span>
+          {state.lineStart && (
+            <span className="text-xs text-muted-foreground flex-shrink-0">
+              L{state.lineStart}
+              {state.lineEnd && state.lineEnd !== state.lineStart
+                ? `–${state.lineEnd}`
+                : ""}
             </span>
-            {state.lineStart && (
-              <span className="text-xs text-muted-foreground flex-shrink-0">
-                L{state.lineStart}
-                {state.lineEnd && state.lineEnd !== state.lineStart
-                  ? `–${state.lineEnd}`
-                  : ""}
-              </span>
-            )}
-          </div>
+          )}
+        </div>
+        <div className="flex items-center gap-1">
+          <span className="text-[10px] text-muted-foreground/50 mr-1">ESC</span>
           <button
             onClick={onClose}
             className="p-1 rounded-md hover:bg-muted/60 transition-colors text-muted-foreground hover:text-foreground flex-shrink-0"
-            title="Close code panel"
+            title="Close (Esc)"
           >
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
+      </div>
 
-        {/* Code content */}
-        <div ref={codeAreaRef} className="flex-1 overflow-auto text-sm font-mono">
-          {state.loading ? (
-            <div className="flex items-center justify-center h-32">
-              <div className="flex items-center gap-3 text-muted-foreground">
-                <div className="h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                <span className="text-xs">Loading…</span>
-              </div>
+      {/* Code content */}
+      <div ref={codeAreaRef} className="flex-1 overflow-auto text-sm font-mono">
+        {state.loading ? (
+          <div className="flex items-center justify-center h-32">
+            <div className="flex items-center gap-3 text-muted-foreground">
+              <div className="h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+              <span className="text-xs">Loading…</span>
             </div>
-          ) : (
-            <table className="w-full border-collapse">
-              <tbody>
-                {lines.map((line, i) => {
-                  const lineNum = i + 1;
-                  const isHighlighted =
-                    state.lineStart !== null &&
-                    state.lineEnd !== null &&
-                    lineNum >= state.lineStart &&
-                    lineNum <= state.lineEnd;
+          </div>
+        ) : (
+          <table className="w-full border-collapse">
+            <tbody>
+              {highlightedLines.map((lineHtml, i) => {
+                const lineNum = i + 1;
+                const isHighlighted =
+                  state.lineStart !== null &&
+                  state.lineEnd !== null &&
+                  lineNum >= state.lineStart &&
+                  lineNum <= state.lineEnd;
 
-                  return (
-                    <tr
-                      key={lineNum}
-                      data-line={lineNum}
-                      className={isHighlighted ? "bg-yellow-500/15" : "hover:bg-muted/30"}
+                return (
+                  <tr
+                    key={lineNum}
+                    data-line={lineNum}
+                    className={isHighlighted ? "bg-yellow-500/15" : "hover:bg-muted/30"}
+                  >
+                    <td
+                      className={`
+                        select-none text-right pr-4 pl-4 py-0 align-top
+                        border-r border-border/40 whitespace-nowrap
+                        ${isHighlighted ? "text-yellow-400/80" : "text-muted-foreground/40"}
+                      `}
+                      style={{ width: "1px", fontSize: "12px", lineHeight: "20px" }}
                     >
-                      <td
-                        className={`
-                          select-none text-right pr-4 pl-4 py-0 align-top
-                          border-r border-border/40 whitespace-nowrap
-                          ${isHighlighted ? "text-yellow-400/80" : "text-muted-foreground/40"}
-                        `}
-                        style={{ width: "1px", fontSize: "12px", lineHeight: "20px" }}
-                      >
-                        {lineNum}
-                      </td>
-                      <td
-                        className="px-4 py-0 whitespace-pre"
-                        style={{ fontSize: "12px", lineHeight: "20px" }}
-                      >
-                        {line || " "}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          )}
-        </div>
+                      {lineNum}
+                    </td>
+                    <td
+                      className="px-4 py-0 whitespace-pre hljs"
+                      style={{ fontSize: "12px", lineHeight: "20px" }}
+                      dangerouslySetInnerHTML={{ __html: lineHtml || " " }}
+                    />
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        )}
       </div>
     </aside>
   );
@@ -336,6 +416,26 @@ export default function ExperimentViewer() {
       }));
     }
   }, []);
+
+  const closeCodePanel = useCallback(() => {
+    setCodePanel((prev) => ({ ...prev, open: false }));
+  }, []);
+
+  // Escape key handler
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        // Close code panel first, then navigate back from settings
+        if (codePanel.open) {
+          closeCodePanel();
+        } else if (window.location.pathname === "/settings") {
+          router.push("/");
+        }
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [codePanel.open, closeCodePanel, router]);
 
   // Load experiment tree
   useEffect(() => {
@@ -869,7 +969,7 @@ export default function ExperimentViewer() {
       {codePanel.open && (
         <CodePanel
           state={codePanel}
-          onClose={() => setCodePanel((prev) => ({ ...prev, open: false }))}
+          onClose={closeCodePanel}
         />
       )}
     </div>
