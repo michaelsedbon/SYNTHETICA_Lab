@@ -33,6 +33,36 @@ async function saveSettings(sources: SourceEntry[]): Promise<{ ok?: boolean; det
 
 // ── Component ──────────────────────────────────────────────────────
 
+function DocSection({ title, defaultOpen, children }: { title: string; defaultOpen?: boolean; children: React.ReactNode }) {
+    const [open, setOpen] = useState(!!defaultOpen);
+    return (
+        <div className="border border-border/50 rounded-lg overflow-hidden">
+            <button
+                onClick={() => setOpen(!open)}
+                className="flex items-center justify-between w-full px-4 py-3 text-sm font-medium text-foreground hover:bg-muted/30 transition-colors text-left"
+            >
+                {title}
+                <svg className={`h-4 w-4 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                </svg>
+            </button>
+            {open && (
+                <div className="px-4 pb-4 text-xs text-muted-foreground leading-relaxed">
+                    {children}
+                </div>
+            )}
+        </div>
+    );
+}
+
+function Kbd({ children }: { children: React.ReactNode }) {
+    return (
+        <kbd className="px-2 py-1 rounded bg-muted/60 border border-border/50 text-[11px] font-mono text-foreground/80 whitespace-nowrap">
+            {children}
+        </kbd>
+    );
+}
+
 export default function SettingsPage() {
     const router = useRouter();
     const [sources, setSources] = useState<SourceEntry[]>([]);
@@ -272,6 +302,153 @@ export default function SettingsPage() {
                         containing experiment folders (e.g. <code className="px-1 py-0.5 rounded bg-muted/60 text-[11px]">EXP_001/</code>)
                         with <code className="px-1 py-0.5 rounded bg-muted/60 text-[11px]">.md</code> files inside.
                     </p>
+                </div>
+
+                {/* ── Documentation ──────────────────────────────────────── */}
+                <div className="mt-12 border-t border-border pt-8">
+                    <h2 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-6 flex items-center gap-2">
+                        <span>📖</span> Documentation
+                    </h2>
+
+                    <div className="space-y-4">
+                        {/* Overview */}
+                        <DocSection title="Overview" defaultOpen>
+                            <p>
+                                <strong>Experiment Notebooks</strong> is a local viewer for Markdown-based lab notebooks.
+                                It organizes your experiment files into a browsable sidebar and renders rich Markdown with
+                                support for tables, Mermaid diagrams, inline code links, and an integrated code panel.
+                            </p>
+                            <p className="mt-2">
+                                <strong>Architecture:</strong> A FastAPI backend (port 8001) serves experiment files and settings.
+                                A Next.js frontend (port 3002) renders the UI. Both run locally on your machine.
+                            </p>
+                        </DocSection>
+
+                        {/* Getting Started */}
+                        <DocSection title="Getting Started">
+                            <ol className="list-decimal list-inside space-y-1.5">
+                                <li>Add one or more <strong>source directories</strong> above (e.g. your lab or PhD folder).</li>
+                                <li>Each source should contain experiment folders like <code>EXP_001/</code>, <code>EXP_002/</code>.</li>
+                                <li>Place <code>.md</code> files inside each experiment folder. The first file named <code>summary.md</code> becomes the group header.</li>
+                                <li>Click <strong>Save Changes</strong>, then navigate back to the viewer.</li>
+                            </ol>
+                        </DocSection>
+
+                        {/* File Organization */}
+                        <DocSection title="File Organization">
+                            <p>Expected directory structure:</p>
+                            <pre className="mt-2 bg-muted/40 rounded-lg p-3 text-[11px] leading-relaxed overflow-x-auto">{`source_directory/
+├── EXP_001 — My Experiment/
+│   ├── summary.md          ← group header (loaded on click)
+│   ├── ANALYSIS.md          ← additional notebook files
+│   ├── PROTOCOL.md
+│   └── SCRIPTS.md
+├── EXP_002 — Another One/
+│   ├── summary.md
+│   └── RESULTS.md
+└── ...`}</pre>
+                            <p className="mt-2">
+                                Files are grouped by their parent folder. The folder name becomes the sidebar group title.
+                                Clicking the group header loads <code>summary.md</code>.
+                            </p>
+                        </DocSection>
+
+                        {/* Keyboard Shortcuts */}
+                        <DocSection title="Keyboard Shortcuts">
+                            <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2">
+                                <Kbd>Esc</Kbd>
+                                <span>Close the code panel, or navigate back from settings</span>
+                                <Kbd>⌘ + Click</Kbd>
+                                <span>Go to definition of a function/class/variable (in code panel)</span>
+                            </div>
+                        </DocSection>
+
+                        {/* Code Panel */}
+                        <DocSection title="Code Panel">
+                            <p>
+                                Markdown files can link to source code using <code>file:///</code> URLs with optional line ranges
+                                (e.g. <code>file:///path/to/file.py#L51-L85</code>). These render as <span className="text-teal-400">teal</span> links
+                                with a <code>&lt;/&gt;</code> icon.
+                            </p>
+                            <h4 className="font-medium text-foreground mt-3 mb-1">Features</h4>
+                            <ul className="list-disc list-inside space-y-1">
+                                <li><strong>Syntax highlighting</strong> — powered by highlight.js with multiple themes</li>
+                                <li><strong>Line highlighting</strong> — specified line ranges get a yellow background</li>
+                                <li><strong>Drag to resize</strong> — grab the left edge of the panel</li>
+                                <li><strong>Theme selector</strong> — dropdown in header (6 themes, persisted to localStorage)</li>
+                                <li><strong>Go to definition</strong> — ⌘+Click on function/class names jumps to their definition</li>
+                                <li><strong>Back navigation</strong> — arrow button appears after navigating definitions</li>
+                            </ul>
+                            <h4 className="font-medium text-foreground mt-3 mb-1">Supported languages</h4>
+                            <p className="text-[11px]">
+                                Python, JavaScript, TypeScript, JSON, YAML, TOML, Bash, R, Java, C, C++, Go, Rust, SQL, HTML, CSS, XML
+                            </p>
+                        </DocSection>
+
+                        {/* Right-Click Menu */}
+                        <DocSection title="Right-Click Context Menu">
+                            <p>Right-click on any code link to access:</p>
+                            <ul className="list-disc list-inside space-y-1 mt-2">
+                                <li><strong>Open in code panel</strong> — view the file inline (same as left-click)</li>
+                                <li><strong>Open in Antigravity</strong> — opens the file in VS Code at the correct line</li>
+                                <li><strong>Copy file path</strong> — copies the absolute path to clipboard</li>
+                            </ul>
+                        </DocSection>
+
+                        {/* Mermaid Diagrams */}
+                        <DocSection title="Mermaid Diagrams">
+                            <p>Code blocks with <code>```mermaid</code> are automatically rendered as SVG diagrams using the dark theme. Supported diagram types include flowcharts, sequence diagrams, class diagrams, state diagrams, and more.</p>
+                        </DocSection>
+
+                        {/* Markdown Link Format */}
+                        <DocSection title="Markdown Link Format">
+                            <h4 className="font-medium text-foreground mb-1">Code file links</h4>
+                            <pre className="bg-muted/40 rounded-lg p-3 text-[11px] overflow-x-auto">{`[L51–L85](file:///absolute/path/to/script.py#L51-L85)
+[my_function()](file:///path/to/module.py#L120-L145)`}</pre>
+                            <p className="mt-2">Supported extensions: <code>.py .js .ts .tsx .jsx .json .yaml .yml .toml .sh .r .java .c .cpp .go .rs .sql .html .css .xml</code></p>
+
+                            <h4 className="font-medium text-foreground mt-3 mb-1">Internal notebook links</h4>
+                            <pre className="bg-muted/40 rounded-lg p-3 text-[11px] overflow-x-auto">{`[See results](./RESULTS.md)
+[Protocol](../EXP_002/PROTOCOL.md)`}</pre>
+                            <p className="mt-2">Relative <code>.md</code> links navigate within the app without full page reload.</p>
+                        </DocSection>
+
+                        {/* API Reference */}
+                        <DocSection title="API Reference (Backend)">
+                            <div className="space-y-2 text-[11px] font-mono">
+                                <div className="flex gap-2 items-baseline">
+                                    <span className="px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-400 text-[10px] font-semibold">GET</span>
+                                    <span className="text-foreground">/api/experiments</span>
+                                    <span className="text-muted-foreground font-sans text-[11px] ml-auto">List all experiments</span>
+                                </div>
+                                <div className="flex gap-2 items-baseline">
+                                    <span className="px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-400 text-[10px] font-semibold">GET</span>
+                                    <span className="text-foreground">/api/file?path=…</span>
+                                    <span className="text-muted-foreground font-sans text-[11px] ml-auto">Read a markdown file</span>
+                                </div>
+                                <div className="flex gap-2 items-baseline">
+                                    <span className="px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-400 text-[10px] font-semibold">GET</span>
+                                    <span className="text-foreground">/api/code?path=…</span>
+                                    <span className="text-muted-foreground font-sans text-[11px] ml-auto">Read a code file</span>
+                                </div>
+                                <div className="flex gap-2 items-baseline">
+                                    <span className="px-1.5 py-0.5 rounded bg-blue-500/15 text-blue-400 text-[10px] font-semibold">POST</span>
+                                    <span className="text-foreground">/api/open-in-editor?path=…&line=…</span>
+                                    <span className="text-muted-foreground font-sans text-[11px] ml-auto">Open in VS Code</span>
+                                </div>
+                                <div className="flex gap-2 items-baseline">
+                                    <span className="px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-400 text-[10px] font-semibold">GET</span>
+                                    <span className="text-foreground">/api/settings</span>
+                                    <span className="text-muted-foreground font-sans text-[11px] ml-auto">Read settings</span>
+                                </div>
+                                <div className="flex gap-2 items-baseline">
+                                    <span className="px-1.5 py-0.5 rounded bg-blue-500/15 text-blue-400 text-[10px] font-semibold">POST</span>
+                                    <span className="text-foreground">/api/settings</span>
+                                    <span className="text-muted-foreground font-sans text-[11px] ml-auto">Save settings</span>
+                                </div>
+                            </div>
+                        </DocSection>
+                    </div>
                 </div>
             </main>
         </div>
