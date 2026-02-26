@@ -145,6 +145,9 @@ function CodePanel({
   const panelRef = useRef<HTMLDivElement>(null);
   const [panelWidth, setPanelWidth] = useState(520);
   const isDragging = useRef(false);
+  const [cmdHeld, setCmdHeld] = useState(false);
+  const [navStack, setNavStack] = useState<number[]>([]);
+  const [focusLine, setFocusLine] = useState<number | null>(null);
 
   // Syntax-highlight the entire file once
   const highlightedLines = useMemo(() => {
@@ -164,6 +167,123 @@ function CodePanel({
     // Split highlighted HTML by newline, preserving span tags
     return html.split("\n");
   }, [state.content, state.language]);
+
+  // Raw lines for definition search
+  const rawLines = useMemo(() => state.content.split("\n"), [state.content]);
+
+  // Track Cmd/Ctrl key state
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => { if (e.metaKey || e.ctrlKey) setCmdHeld(true); };
+    const up = (e: KeyboardEvent) => { if (!e.metaKey && !e.ctrlKey) setCmdHeld(false); };
+    const blur = () => setCmdHeld(false);
+    window.addEventListener("keydown", down);
+    window.addEventListener("keyup", up);
+    window.addEventListener("blur", blur);
+    return () => {
+      window.removeEventListener("keydown", down);
+      window.removeEventListener("keyup", up);
+      window.removeEventListener("blur", blur);
+    };
+  }, []);
+
+  // Reset nav stack when file changes
+  useEffect(() => {
+    setNavStack([]);
+    setFocusLine(null);
+  }, [state.filename, state.content]);
+
+  // Find definition of a word in the file (supports Python, JS/TS, Go, Rust, Java, C/C++)
+  const findDefinition = useCallback((word: string): number | null => {
+    if (!word || word.length < 2) return null;
+    // Patterns: def word(, class word, async def word(, function word(,
+    //           const/let/var word, word = (top-level assignment)
+    const patterns = [
+      new RegExp(`^\\s*(async\\s+)?def\\s+${word}\\s*\\(`),          // Python def
+      new RegExp(`^\\s*class\\s+${word}[\\s:(]`),                    // class
+      new RegExp(`^\\s*(export\\s+)?(async\\s+)?function\\s+${word}\\s*[(<]`), // JS function
+      new RegExp(`^\\s*(export\\s+)?(const|let|var)\\s+${word}\\s*[=:]`),      // JS const/let/var
+      new RegExp(`^\\s*func\\s+${word}\\s*[(<]`),                    // Go func
+      new RegExp(`^\\s*(pub\\s+)?fn\\s+${word}\\s*[(<]`),            // Rust fn
+      new RegExp(`^[A-Z_]+\\s*=`),                                    // Python constant (skip)
+      new RegExp(`^${word}\\s*=\\s*[^=]`),                           // Top-level assignment (Python)
+    ];
+    for (let i = 0; i < rawLines.length; i++) {
+      const line = rawLines[i];
+      for (const pattern of patterns) {
+        if (pattern.test(line)) {
+          // For top-level assignment pattern, only match if it's actually for the word
+          if (pattern === patterns[patterns.length - 1]) {
+            if (line.trimStart().startsWith(word)) return i + 1;
+          } else if (pattern !== patterns[patterns.length - 2]) {
+            return i + 1;
+          }
+        }
+      }
+    }
+    return null;
+  }, [rawLines]);
+
+  // Get word at click position from text content of the target
+  const getWordAtClick = useCallback((e: React.MouseEvent<HTMLTableElement>) => {
+    const sel = window.getSelection();
+    if (!sel) return null;
+    // Use caretPositionFromPoint or caretRangeAtPoint
+    const range = document.caretRangeFromPoint(e.clientX, e.clientY);
+    if (!range) return null;
+    const textNode = range.startContainer;
+    if (textNode.nodeType !== Node.TEXT_NODE) return null;
+    const text = textNode.textContent || "";
+    const offset = range.startOffset;
+    // Find word boundaries around the offset
+    let start = offset;
+    let end = offset;
+    while (start > 0 && /[a-zA-Z0-9_]/.test(text[start - 1])) start--;
+    while (end < text.length && /[a-zA-Z0-9_]/.test(text[end])) end++;
+    const word = text.slice(start, end);
+    // Get the line number from the closest <tr>
+    const target = e.target as HTMLElement;
+    const tr = target.closest("tr");
+    const lineNum = tr ? parseInt(tr.getAttribute("data-line") || "0", 10) : 0;
+    return { word, lineNum };
+  }, []);
+
+  // Scroll to a specific line
+  const scrollToLine = useCallback((line: number) => {
+    if (!codeAreaRef.current) return;
+    setFocusLine(line);
+    setTimeout(() => {
+      const targetRow = codeAreaRef.current?.querySelector(`[data-line="${line}"]`);
+      if (targetRow) {
+        targetRow.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+      // Clear focus highlight after a moment
+      setTimeout(() => setFocusLine(null), 2000);
+    }, 30);
+  }, []);
+
+  // Handle Cmd+click for go-to-definition
+  const handleCodeClick = useCallback((e: React.MouseEvent<HTMLTableElement>) => {
+    if (!(e.metaKey || e.ctrlKey)) return;
+    const result = getWordAtClick(e);
+    if (!result || !result.word) return;
+    const defLine = findDefinition(result.word);
+    if (defLine !== null && defLine !== result.lineNum) {
+      // Push current visible line to nav stack for back navigation
+      setNavStack((prev) => [...prev, result.lineNum]);
+      scrollToLine(defLine);
+    }
+  }, [getWordAtClick, findDefinition, scrollToLine]);
+
+  // Navigate back
+  const navigateBack = useCallback(() => {
+    setNavStack((prev) => {
+      if (prev.length === 0) return prev;
+      const newStack = [...prev];
+      const line = newStack.pop()!;
+      scrollToLine(line);
+      return newStack;
+    });
+  }, [scrollToLine]);
 
   // Scroll to highlighted lines when content loads
   useEffect(() => {
@@ -222,6 +342,18 @@ function CodePanel({
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-border gap-2">
         <div className="flex items-center gap-2 min-w-0">
+          {/* Back button */}
+          {navStack.length > 0 && (
+            <button
+              onClick={navigateBack}
+              className="p-1 rounded-md hover:bg-muted/60 transition-colors text-muted-foreground hover:text-foreground flex-shrink-0"
+              title="Go back (navigate history)"
+            >
+              <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+              </svg>
+            </button>
+          )}
           <svg
             className="h-4 w-4 flex-shrink-0 text-muted-foreground"
             fill="none"
@@ -248,6 +380,7 @@ function CodePanel({
           )}
         </div>
         <div className="flex items-center gap-1">
+          <span className="text-[10px] text-muted-foreground/50 mr-1">⌘+click to go to def</span>
           <span className="text-[10px] text-muted-foreground/50 mr-1">ESC</span>
           <button
             onClick={onClose}
@@ -262,7 +395,7 @@ function CodePanel({
       </div>
 
       {/* Code content */}
-      <div ref={codeAreaRef} className="flex-1 overflow-auto text-sm font-mono">
+      <div ref={codeAreaRef} className={`flex-1 overflow-auto text-sm font-mono ${cmdHeld ? "cmd-held" : ""}`}>
         {state.loading ? (
           <div className="flex items-center justify-center h-32">
             <div className="flex items-center gap-3 text-muted-foreground">
@@ -271,7 +404,7 @@ function CodePanel({
             </div>
           </div>
         ) : (
-          <table className="w-full border-collapse">
+          <table className="w-full border-collapse" onClick={handleCodeClick}>
             <tbody>
               {highlightedLines.map((lineHtml, i) => {
                 const lineNum = i + 1;
@@ -280,18 +413,25 @@ function CodePanel({
                   state.lineEnd !== null &&
                   lineNum >= state.lineStart &&
                   lineNum <= state.lineEnd;
+                const isFocused = focusLine === lineNum;
 
                 return (
                   <tr
                     key={lineNum}
                     data-line={lineNum}
-                    className={isHighlighted ? "bg-yellow-500/15" : "hover:bg-muted/30"}
+                    className={
+                      isFocused
+                        ? "bg-blue-500/20"
+                        : isHighlighted
+                          ? "bg-yellow-500/15"
+                          : "hover:bg-muted/30"
+                    }
                   >
                     <td
                       className={`
                         select-none text-right pr-4 pl-4 py-0 align-top
                         border-r border-border/40 whitespace-nowrap
-                        ${isHighlighted ? "text-yellow-400/80" : "text-muted-foreground/40"}
+                        ${isFocused ? "text-blue-400/80" : isHighlighted ? "text-yellow-400/80" : "text-muted-foreground/40"}
                       `}
                       style={{ width: "1px", fontSize: "12px", lineHeight: "20px" }}
                     >

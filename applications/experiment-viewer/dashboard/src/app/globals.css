@@ -320,6 +320,16 @@
   background: oklch(0.72 0.12 190 / 10%);
 }
 
+/* Cmd-held state for go-to-definition */
+.cmd-held td.hljs {
+  cursor: pointer;
+}
+
+.cmd-held td.hljs span:hover {
+  text-decoration: underline;
+  text-decoration-color: oklch(0.65 0.2 260);
+}
+
 
 /* ── Custom scrollbar ───────────────────────────────────────────── */
 
