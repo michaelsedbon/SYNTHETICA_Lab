@@ -8,7 +8,18 @@ import rehypeRaw from "rehype-raw";
 import rehypeHighlight from "rehype-highlight";
 import mermaid from "mermaid";
 import hljs from "highlight.js";
-import "highlight.js/styles/github-dark-dimmed.css";
+
+// ── Theme definitions ──────────────────────────────────────────────
+const CODE_THEMES = [
+  { id: "github-dark-dimmed", label: "GitHub Dark Dimmed" },
+  { id: "atom-one-dark", label: "Atom One Dark" },
+  { id: "night-owl", label: "Night Owl" },
+  { id: "tokyo-night-dark", label: "Tokyo Night" },
+  { id: "vs2015", label: "VS 2015" },
+  { id: "monokai", label: "Monokai" },
+] as const;
+const DEFAULT_THEME = "github-dark-dimmed";
+const HLJS_CDN = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles";
 
 // Initialize mermaid with dark theme
 mermaid.initialize({
@@ -148,6 +159,25 @@ function CodePanel({
   const [cmdHeld, setCmdHeld] = useState(false);
   const [navStack, setNavStack] = useState<number[]>([]);
   const [focusLine, setFocusLine] = useState<number | null>(null);
+
+  // Dynamic theme loading
+  const [codeTheme, setCodeTheme] = useState(DEFAULT_THEME);
+  useEffect(() => {
+    const saved = localStorage.getItem("code-theme");
+    if (saved && CODE_THEMES.some((t) => t.id === saved)) setCodeTheme(saved);
+  }, []);
+  useEffect(() => {
+    const linkId = "hljs-theme-link";
+    let link = document.getElementById(linkId) as HTMLLinkElement | null;
+    if (!link) {
+      link = document.createElement("link");
+      link.id = linkId;
+      link.rel = "stylesheet";
+      document.head.appendChild(link);
+    }
+    link.href = `${HLJS_CDN}/${codeTheme}.min.css`;
+    localStorage.setItem("code-theme", codeTheme);
+  }, [codeTheme]);
 
   // Syntax-highlight the entire file once
   const highlightedLines = useMemo(() => {
@@ -380,11 +410,20 @@ function CodePanel({
           )}
         </div>
         <div className="flex items-center gap-1">
-          <span className="text-[10px] text-muted-foreground/50 mr-1">⌘+click to go to def</span>
-          <span className="text-[10px] text-muted-foreground/50 mr-1">ESC</span>
+          <select
+            value={codeTheme}
+            onChange={(e) => setCodeTheme(e.target.value)}
+            className="text-[11px] bg-muted/40 text-muted-foreground border border-border/50 rounded px-1.5 py-0.5 outline-none hover:bg-muted/60 transition-colors cursor-pointer"
+            title="Syntax theme"
+          >
+            {CODE_THEMES.map((t) => (
+              <option key={t.id} value={t.id}>{t.label}</option>
+            ))}
+          </select>
+          <span className="text-[10px] text-muted-foreground/50 ml-1">⌘+click → def</span>
           <button
             onClick={onClose}
-            className="p-1 rounded-md hover:bg-muted/60 transition-colors text-muted-foreground hover:text-foreground flex-shrink-0"
+            className="p-1 rounded-md hover:bg-muted/60 transition-colors text-muted-foreground hover:text-foreground flex-shrink-0 ml-1"
             title="Close (Esc)"
           >
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
