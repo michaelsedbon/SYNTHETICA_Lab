@@ -313,6 +313,42 @@ def get_code_file(
     }
 
 
+@app.get("/api/raw")
+def get_raw_file(
+    path: str = Query(..., description="Absolute path to a code file"),
+):
+    """Serve a code file as plain text for viewing in a browser tab."""
+    from fastapi.responses import PlainTextResponse
+
+    file_path = Path(path).resolve()
+
+    # Security: same check as /api/code
+    allowed = False
+    for _, source_dir in SOURCES:
+        parent = source_dir.parent
+        if str(file_path).startswith(str(parent)):
+            allowed = True
+            break
+    if not allowed:
+        raise HTTPException(status_code=403, detail="Access denied — file is outside allowed directories")
+
+    if not file_path.is_file():
+        raise HTTPException(status_code=404, detail="File not found")
+
+    suffix = file_path.suffix.lower()
+    if suffix not in CODE_EXTENSIONS:
+        raise HTTPException(status_code=400, detail=f"Unsupported file type: {suffix}")
+
+    try:
+        content = file_path.read_text(encoding="utf-8")
+    except UnicodeDecodeError:
+        raise HTTPException(status_code=400, detail="Cannot read file as text")
+
+    return PlainTextResponse(content, headers={
+        "Content-Disposition": f'inline; filename="{file_path.name}"',
+    })
+
+
 @app.post("/api/open-in-editor")
 def open_in_editor(
     path: str = Query(..., description="Absolute path to a code file"),

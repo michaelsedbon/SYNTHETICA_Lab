@@ -97,9 +97,16 @@ const CODE_EXTENSIONS = [
 ];
 
 function isCodeFileLink(href: string): boolean {
-  if (!href.startsWith("file:///")) return false;
-  const pathPart = href.replace(/#.*$/, "");
-  return CODE_EXTENSIONS.some((ext) => pathPart.endsWith(ext));
+  const cleanHref = href.replace(/#.*$/, "");
+  // file:/// protocol links to code files
+  if (href.startsWith("file:///")) {
+    return CODE_EXTENSIONS.some((ext) => cleanHref.endsWith(ext));
+  }
+  // Skip external, mailto, anchor, and md links
+  if (href.startsWith("http") || href.startsWith("mailto:") || href.startsWith("#")) return false;
+  if (cleanHref.endsWith(".md")) return false;
+  // Relative links to code files
+  return CODE_EXTENSIONS.some((ext) => cleanHref.endsWith(ext));
 }
 
 function parseFileLink(href: string): { path: string; lineStart: number | null; lineEnd: number | null } {
@@ -523,6 +530,11 @@ async function fetchExperiments(): Promise<ExperimentGroup[]> {
   return res.json();
 }
 
+async function fetchSources(): Promise<{ label: string; path: string }[]> {
+  const res = await fetch(`${apiBase()}/api/sources`);
+  return res.json();
+}
+
 async function fetchFile(path: string, source: string): Promise<string> {
   const res = await fetch(
     `${apiBase()}/api/file?path=${encodeURIComponent(path)}&source=${encodeURIComponent(source)}`
@@ -554,6 +566,9 @@ export default function ExperimentViewer() {
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const [expandedFiles, setExpandedFiles] = useState<Record<string, boolean>>({});
   const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  // Map source labels to their absolute directory paths (for resolving relative code links)
+  const [sourceMap, setSourceMap] = useState<Record<string, string>>({});
 
   // Context menu state for code links
   const [contextMenu, setContextMenu] = useState<{
@@ -636,7 +651,43 @@ export default function ExperimentViewer() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [codePanel.open, closeCodePanel, router]);
 
-  // Load experiment tree
+  // Resolve a relative code file link to an absolute file:/// URL
+  const resolveRelativeCodeHref = useCallback(
+    (href: string): string => {
+      if (href.startsWith("file:///")) return href;
+      if (!activePath || !activeSource) return href;
+
+      // Get the source directory absolute path
+      const sourceDir = sourceMap[activeSource];
+      if (!sourceDir) return href;
+
+      // Resolve relative to the current file's directory
+      const dir = activePath.split("/").slice(0, -1).join("/");
+      const relPath = dir ? `${dir}/${href}` : href;
+
+      // Normalize path (resolve ../ and ./)
+      const parts = relPath.split("/");
+      const normalized: string[] = [];
+      for (const part of parts) {
+        if (part === "." || part === "") continue;
+        if (part === ".." && normalized.length > 0) {
+          normalized.pop();
+        } else if (part !== "..") {
+          normalized.push(part);
+        }
+      }
+      const resolvedRelPath = normalized.join("/");
+      const absolutePath = `${sourceDir}/${resolvedRelPath}`;
+
+      // Preserve any fragment (line numbers like #L141-L149)
+      const hashIdx = href.indexOf("#");
+      const fragment = hashIdx >= 0 ? href.slice(hashIdx) : "";
+      return `file://${absolutePath}${fragment}`;
+    },
+    [activePath, activeSource, sourceMap]
+  );
+
+  // Load experiment tree + source paths
   useEffect(() => {
     fetchExperiments().then((data) => {
       setGroups(data);
@@ -644,6 +695,11 @@ export default function ExperimentViewer() {
       if (data.length > 0 && data[0].files.length > 0) {
         handleSelect(data[0].files[0].path, data[0].source);
       }
+    });
+    fetchSources().then((sources) => {
+      const map: Record<string, string> = {};
+      for (const s of sources) map[s.label] = s.path;
+      setSourceMap(map);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -1050,18 +1106,19 @@ export default function ExperimentViewer() {
                     </figure>
                   ),
                   a: ({ href, children, ...props }) => {
-                    // Intercept file:// links to code files → open side panel
+                    // Intercept code file links (file:// or relative) → open side panel
                     if (href && isCodeFileLink(href)) {
+                      const resolvedHref = resolveRelativeCodeHref(href);
                       return (
                         <a
                           href="#"
                           onClick={(e) => {
                             e.preventDefault();
-                            openCodePanel(href);
+                            openCodePanel(resolvedHref);
                           }}
                           onContextMenu={(e) => {
                             e.preventDefault();
-                            setContextMenu({ x: e.clientX, y: e.clientY, href });
+                            setContextMenu({ x: e.clientX, y: e.clientY, href: resolvedHref });
                           }}
                           className="code-link"
                           title="Open in code panel"
@@ -1194,6 +1251,36 @@ export default function ExperimentViewer() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
             </svg>
             Open in code panel
+          </button>
+          <button
+            className="flex items-center gap-2 w-full px-3 py-2 text-sm text-foreground hover:bg-muted/60 transition-colors text-left"
+            onClick={() => {
+              const { path } = parseFileLink(contextMenu.href);
+              window.open(`${apiBase()}/api/raw?path=${encodeURIComponent(path)}`, "_blank");
+              setContextMenu(null);
+            }}
+          >
+            <svg className="h-4 w-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+            </svg>
+            Open as plain text
+          </button>
+          <button
+            className="flex items-center gap-2 w-full px-3 py-2 text-sm text-foreground hover:bg-muted/60 transition-colors text-left"
+            onClick={() => {
+              const { path, lineStart, lineEnd } = parseFileLink(contextMenu.href);
+              const params = new URLSearchParams({ path });
+              if (lineStart) {
+                params.set("line", lineEnd && lineEnd !== lineStart ? `${lineStart}-${lineEnd}` : `${lineStart}`);
+              }
+              window.open(`/code?${params.toString()}`, "_blank");
+              setContextMenu(null);
+            }}
+          >
+            <svg className="h-4 w-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
+            </svg>
+            Open in code viewer
           </button>
           <button
             className="flex items-center gap-2 w-full px-3 py-2 text-sm text-foreground hover:bg-muted/60 transition-colors text-left"

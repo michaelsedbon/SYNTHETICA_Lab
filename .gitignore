@@ -30,3 +30,4 @@ package-lock.json
 *.hdf5
 *.ipynb
 *.png
+applications/fab-planner/public/wasm/occt-import-js.wasm
