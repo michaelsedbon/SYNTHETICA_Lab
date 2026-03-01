@@ -1,0 +1,1034 @@
+Global Decline of and Threats to Aegagropila linnaei, with Special Reference to the Lake Ball
+Habit
+Author(s): Christian Boedeker, Anja Eggert, Anne Immers, Erik Smets
+Source: BioScience, Vol. 60, No. 3 (March 2010), pp. 187-198
+Published by: Oxford University Press on behalf of the American Institute of Biological Sciences
+Stable URL: http://www.jstor.org/stable/10.1525/bio.2010.60.3.5 .
+Accessed: 21/06/2014 10:14
+Your use of the JSTOR archive indicates your acceptance of the Terms & Conditions of Use, available at .
+http://www.jstor.org/page/info/about/policies/terms.jsp
+ .
+JSTOR is a not-for-profit service that helps scholars, researchers, and students discover, use, and build upon a wide range of
+content in a trusted digital archive. We use information technology and tools to increase productivity and facilitate new forms
+of scholarship. For more information about JSTOR, please contact support@jstor.org.
+ .
+Oxford University Press and American Institute of Biological Sciences are collaborating with JSTOR to
+digitize, preserve and extend access to BioScience.
+http://www.jstor.org 
+This content downloaded from 195.34.79.174 on Sat, 21 Jun 2014 10:14:46 AM
+All use subject to JSTOR Terms and Conditions
+
+www.biosciencemag.org 	
+March 2010 / Vol. 60 No. 3  •  BioScience   187 
+Articles
+Global Decline of and Threats to  
+Aegagropila linnaei, with Special 
+Reference to the Lake Ball Habit
+Christian Boedeker, Anja Eggert, Anne Immers, and Erik Smets
+The freshwater macroalga Aegagropila linnaei can occur attached or unattached, but is best known for its free-floating spherical growth form 
+(“lake balls,” “Cladophora balls,” or “marimo”). The worldwide distribution of this species was reconstructed using more than 1200 specimens 
+from 28 herbaria, an extensive literature survey, and field observations. Aegagropila linnaei was found in 283 locations, with the majority located 
+in central and northern Europe. Few records of A. linnaei exist from North America, but it is relatively widespread in Japan. The preferred habitat 
+is inferred to be oligomesotrophic lakes with moderate to high calcium levels. In more than 50% of the known locations, A. linnaei has not been 
+found in the last 30 years, and this decline is assumed to be correlated with changes in trophic conditions in those lakes. The unattached growth 
+forms show a stronger decline than attached populations as a result of the habitat types in which they can occur. 
+Keywords: aquarium trade, Cladophora balls, eutrophication, freshwater, unattached growth form
+a “special natural monument” in Japan (Kurogi 1980), and 
+the lake balls are shown on postage stamps from Japan and 
+Iceland. In Japan, a whole range of marimo merchandise 
+exists, ranging from souvenirs and lucky charms with live 
+specimens to toys and cartoons. Aegagropila linnaei balls 
+have also become extremely popular in the aquarium trade 
+in recent years. 
+In contrast to most other freshwater algae, A. linnaei has a 
+restricted distribution, and is found mainly in previously glaci-
+ated areas of Europe. In addition, A. linnaei has been identified 
+in a range of locations in Japan, whereas only few records are 
+known from North America. In most countries it is regarded 
+as a rare species. Freshwater algae that are not widespread 
+are often restricted in their distribution by specific ecological 
+demand, such as desmids (Coesel et al. 1978) or macroscopic 
+Nostoc species (Mollenhauer et al. 1999). On the other hand, 
+a restricted distribution can also be the result of a limited dis-
+persal capacity. Migrating birds are one of the most important 
+dispersal vectors for freshwater algae (Schlichting 1960, Green 
+et al. 2002), transporting desiccation-resistant stages such as 
+akinetes. However, akinetes are basically unknown in A. lin-
+naei (Brand 1902, Acton 1916, van den Hoek 1963). Limited 
+dispersal abilities and competition effects have most likely 
+shaped the current distribution of A. linnaei more than has 
+the availability of habitats.
+Even though the species was initially assumed to occur mainly 
+in eutrophic waters (van den Hoek 1963), eutrophication is 
+T
+he 
+freshwater 
+green 
+alga 
+Aegagropila 
+linnaei  
+(Cladophorophyceae, Chlorophyta) is best known for 
+its unattached spherical growth form, also referred to as 
+“marimo,” “lake balls,” or “Cladophora balls” (figure 1a). 
+These lake balls can develop under certain hydrographic 
+and topographic conditions either directly from the attached 
+growth form (figure 1b), from floating unattached mats, or 
+from fragmented, older balls (Brand 1902, Kurogi 1980). 
+Individual filaments of A. linnaei have a simple morphology 
+of uniseriate branched filaments similar to Cladophora spe-
+cies (figure 1c). The filaments can be attached by a holdfast 
+or secondary rhizoids to the substratum, forming low turfs 
+on submerged rocks or bivalves, or can be intermingled and 
+free floating as mats or balls (van den Hoek 1963, Leliaert 
+and Boedeker 2007). The lake balls are radially organized 
+and increase in size by the vegetative growth of the inter-
+woven filaments. The stiff texture of the filaments and the 
+production of secondary rhizoids are features that facilitate 
+entanglement and subsequent ball formation. Water motion 
+is the main shape-giving factor, and balls occur typically 
+in shallow lakes with sandy bottoms. Rolling movements 
+on the sediment and abrasion of apical cells induce radial 
+growth and profuse lateral branching (Acton 1916). Differ-
+ent growth forms can co-occur under different conditions in 
+the same lake (Luther 1951, Kurogi 1980).
+The spherical growth form has attained considerable 
+popularity. Aegagropila linnaei has been given the status of 
+BioScience 60: 187–198. ISSN 0006-3568, electronic ISSN 1525-3244. © 2010 by American Institute of Biological Sciences. All rights reserved. Request  
+permission to photocopy or reproduce article content at the University of California Press’s Rights and Permissions Web site at www.ucpressjournals.com/
+reprintinfo.asp. doi:10.1525/bio.2010.60.3.5
+This content downloaded from 195.34.79.174 on Sat, 21 Jun 2014 10:14:46 AM
+All use subject to JSTOR Terms and Conditions
+
+Articles
+188   BioScience  •  March 2010 / Vol. 60 No. 3	
+www.biosciencemag.org
+mentioned as a threat in several more recent studies report-
+ing declining populations of A. linnaei. Partly because of the 
+popularity of the intriguing ball form, this is one of the few 
+freshwater algal species that has been listed as threatened on 
+several red lists of endangered species. Aegagropila linnaei is 
+included in the national red lists of Belarus (MINPRIRODA 
+2006), Estonia (Lilleleht 1998), Germany (Ludwig and Schnit-
+tler 1996), Japan (EAJ 2000), Russia (Noskov 2000), and 
+Sweden (Gärdenfors 2005). In addition, A. linnaei is explicitly 
+mentioned in the Ramsar specifications of Lake Akan, Japan 
+Figure 1. (a) A lake ball, ordered from an online aquarium shop. (b) Attached growth form of Aegagropila linnaei from 
+Lake Erken, Sweden. Photograph: Roland Bengtsson. (c) Microscopical characters of A. linnaei filaments with typical  
+subterminal and serial insertion of branches. (d) Herbarium box (in botanical Garden and Museum Berlin-Dahlem,  
+Germany) with old specimens (such as Aegagropila sauteri) from a lake in Sweden. 
+1 cm
+a
+b
+c
+200 µm
+5 cm
+d
+0.5 cm
+This content downloaded from 195.34.79.174 on Sat, 21 Jun 2014 10:14:46 AM
+All use subject to JSTOR Terms and Conditions
+
+www.biosciencemag.org 	
+March 2010 / Vol. 60 No. 3  •  BioScience   189 
+Articles
+(Moriwake 2005) and Lake Mývatn, Iceland (Gíslason 1992). 
+In the United Kingdom, A. linnaei is included the list of rare 
+algae and in the assessments of Important Plant Areas by 
+Plantlife (Brodie et al. 2008). 
+For several locations, this species is already assumed or 
+known to be extinct. In four out of the five locations in the 
+Netherlands where A. linnaei was found 60 years ago, it is 
+now absent, and the unattached forms seem to have disap-
+peared altogether as a result of the effects of eutrophication 
+(Boedeker and Immers 2009). Balls of A. linnaei have been 
+extinct in Lake Zeller in Austria since around 1910, most 
+likely due to effects of human activity (Nakazawa 1974), and 
+only the attached filamentous form has been reported since 
+then (Kann and Sauer 1982). The attached growth form 
+is still present in several larger rivers of northern England 
+and Scotland, but the ball-shaped growth form is found 
+only in a few unchanged locations (John 2002). There is 
+only one location in Denmark (Sorø Sø, Sjæland) where A. 
+linnaei occurs, although the species had been found previ-
+ously in more locations there (van den Hoek 1963). In Lake 
+Galenbecker, in northeastern Germany, carp cultivation and 
+intensified agriculture in the 1960s led to eutrophication and 
+extinction of the species (Pankow 1985). In Japan, where 
+the species is still relatively widespread, human activities 
+have led to the destruction of many of A. linnaei’s natural 
+habitats. Populations of A. linnaei have disappeared from 
+two bays in Lake Akan, most likely as a result of increased 
+mud deposition (Wakana et al. 2006). Population declines 
+(both in population density and distribution area) have been 
+monitored in the Takkobu Marsh, Japan, between 1996 and 
+2004, and are probably a result of the effects of eutrophica-
+tion, such as higher nutrient load, accumulating layers of 
+mud and silt on the marsh bottom, shading by phytoplank-
+ton blooms, and an increase in the depth limit of freshwater 
+bivalves (Wakana et al. 2005). Declining populations have 
+also been observed in several other small swamp lakes for 
+the same reasons (Wakana et al. 2001). The Red Data Book of 
+Estonia lists eutrophication, changes in water hydrology, and 
+dredging as factors that threaten the survival of A. linnaei 
+(Lilleleht 1998).
+In this study, we used detailed information on the distri-
+bution of A. linnaei compiled from herbarium specimens 
+(figure 1d), literature data, and field observations to assess 
+whether there is a global trend of declining populations. 
+Habitat preferences with regard to trophic level are inferred, 
+and we discuss possible deleterious effects of eutrophication. 
+Furthermore, we evaluated whether unattached popula-
+tions, including the ball form, are more threatened than the 
+attached growth form.
+Location survey
+We surveyed herbarium collections to produce detailed 
+distribution maps of A. linnaei. Fifty-nine herbaria re-
+sponded to our inquiries, of which 28 had collections of A. 
+linnaei (for a list of A. linnaei synonyms, see appendix S1 
+in the supplementary material at www.nationaalherbarium.
+nl/supplements/boedeker/BioScience_2010; see appendix S2 
+for a complete list of herbaria). We borrowed from or 
+visited collections, and identified the samples using a light 
+microscope (Olympus BH2) after resoaking fragments in 
+water. In total, we checked approximately 1200 herbarium 
+specimens of A. linnaei, about half of which had location 
+details, and a third of which (about 400 specimens) had a 
+collection date (table 1). Almost all specimens with missing 
+information seem to be about a century old, judging from 
+the general appearance of the vouchers and the handwrit-
+ing. In addition to the location and collection date, we 
+recorded the growth form wherever possible. The resulting 
+data set was amended by an extensive literature survey and 
+direct inquiries with local and national water-monitoring 
+organizations, or with limnological departments in coun-
+tries where A. linnaei was known or suspected to occur. 
+These inquiries were particularly useful in obtaining infor-
+mation on the existence of extant populations and on past 
+and present trophic levels of the habitats. We reduced this 
+data set to a digest listing all locations (see appendix S3 in 
+the supplementary material at www.nationaalherbarium.
+nl/supplements/boedeker/BioScience_2010), and georefer-
+enced the locations. Excluded specimens, locations, and 
+synonyms are listed in appendices S1 and S3 online. We 
+created maps using Manifold GIS (geographic information 
+system) software, and displayed data using the World Geo-
+detic 1984 projection. We treated multiple records from 
+the same lake—that is, in different years or in different 
+areas of the same lake—as one location. Almost one-fifth 
+of the locations are from the Baltic Sea, so these locations 
+were grouped together as Baltic proper, western Gulf of 
+Bothnia, eastern Gulf of Bothnia, Gulf of Finland, and Bay 
+of Bothnia, each counting as one location to deflate total 
+location numbers, since individual lakes represent loca-
+tions in freshwater environments. Records younger than 30 
+years have been classified as “extant populations” and are 
+listed separately in appendix S4 in the supplementary ma-
+terial (www.nationaalherbarium.nl/supplements/boedeker/
+BioScience_2010). 
+Origin of A. linnaei balls in the aquarium trade
+We contacted more than 20 aquatic plant traders in Belgium, 
+Denmark, Germany, Japan, the Netherlands, Singapore, 
+Ukraine, and the United States to find out about the origin 
+of A. linnaei balls for sale in commercial aquarium shops, 
+and to learn about the possible supply from wild stocks.
+Results of the location survey
+Table 1 shows an overview of the herbarium and literature 
+survey. In total, A. linnaei had been recorded from 283 loca-
+tions (see S3 at www.nationaalherbarium.nl/supplements/
+boedeker/BioScience_2010), or 233 locations when the list is 
+corrected for the continuous coastline of the Baltic Sea. We 
+sorted the dated herbarium specimens of A. linnaei in inter-
+vals of 25 years to illustrate the distribution of collections 
+over time (figure 2a, 2b, 2c). The first two time intervals 
+This content downloaded from 195.34.79.174 on Sat, 21 Jun 2014 10:14:46 AM
+All use subject to JSTOR Terms and Conditions
+
+Articles
+190   BioScience  •  March 2010 / Vol. 60 No. 3	
+www.biosciencemag.org
+in each diagram are underrepresented, since about 600 
+herbarium specimens did not have a date but were clearly 
+very old, as indicated by the dashed lines. Both the number 
+of specimens (figure 2a) and their locations (figure 2b, 2c) 
+show a decrease since the beginning of the last century. This 
+decrease is most pronounced from 1900 onward, and again 
+from 1975 onward. The number of locations represented 
+by herbarium specimens dropped from 32 (1875–1899) to 
+7 (1975–2007), representing a decline in locations of 78%. 
+The number of locations for ball-shaped specimens dropped 
+from 27 to 5 in the same time interval (figure 2b, 2c). Since 
+herbarium collections reflect not only the occurrence of 
+species at a particular time and place but also the degree of 
+collecting activity, we complemented the herbarium data set 
+with a comprehensive literature survey and field observa-
+tions, which yielded an additional 152 locations (see S3 in 
+the supplementary material at www.nationaalherbarium.
+nl/supplements/boedeker/BioScience_2010; combined data 
+shown in figure 2d). 
+We classified records from less than 30 years ago as 
+“extant populations,” and these are listed by the most 
+recent collection date in the supplementary material 
+S4 (www.nationaalherbarium.nl/supplements/boedeker/
+BioScience_2010). Aegagropila linnaei has been found in 
+107 locations since 1976; 101 locations when correcting 
+this number for multiple locations within the same area 
+of the Baltic Sea (table 1; S4 online). Of the 235 total 
+locations where A. linnaei had been found originally, it 
+has not been recorded in the last 30 years in about 57% 
+of those locations (figure 2d). All extant populations are 
+indicated in figure 3. Outside Europe, extant populations 
+of A. linnaei can be found in a considerable number of 
+locations in both Iceland and Japan (figure 3a). Within 
+Europe, the majority of extant populations exist in Swe-
+den, Great Britain, Ireland, and northeastern Germany 
+(figure 3b)—thus in areas that also had the highest den-
+sity of original habitats. In the Alps, one of the clusters of 
+original habitats, A. linnaei has been reported from only 
+a single location in the last 30 years (Lake Zeller). For 
+the majority of European locations, no recent findings of 
+A. linnaei have been made.
+Differences in A. linnaei population declines have been 
+found for the different growth forms (figure 2d). The pre-
+sumed loss of locations is less pronounced for the attached 
+growth form (48% decline) than for the unattached forms 
+(59% decline; ball form only, 60% decline).
+Table 1. Number of herbarium specimens, locations, and extant populations of Aegagropila linnaei.
+Type
+Number
+Herbarium specimens
+1200
+Herbarium specimens with recorded location
+661
+Herbarium specimens with recorded date
+404
+“Ball-shaped” herbarium specimens 
+310
+Locations
+Locations (including literature and field observations)
+283
+Locations corrected for Baltic Seaa
+233
+Locations with known growth formsa
+185
+Locations with attached growth forma
+61
+Locations with unattached growth form (ball-shaped)a
+124 (90)
+Extant locations (< 30 years)
+Extant locationsa (percent decline)
+101 (57)
+Extant locations with attached growth forma (percent decline)
+33 (46)
+Extant locationsa with unattached/ball-shaped form (percent decline)
+51/36 (60)
+Top six countries (extant locations)
+Swedena
+51 (23)
+Germany
+33 (8)
+Great Britain and Ireland
+32 (16)
+Japan
+21 (20)
+Russiaa
+19 (2)
+Iceland
+10 (9)
+a. The Baltic Sea is divided into five areas: Baltic proper, Gulf of Bothnia West, Gulf of Bothnia East, Gulf of Finland, and Bay of Bothnia, each counting 
+as one location.
+This content downloaded from 195.34.79.174 on Sat, 21 Jun 2014 10:14:46 AM
+All use subject to JSTOR Terms and Conditions
+
+www.biosciencemag.org 	
+March 2010 / Vol. 60 No. 3  •  BioScience   191 
+Articles
+A direct comparison of original and extant European 
+locations in relation to the growth forms of A. linnaei is 
+given in figure 4. Figure 4a and 4b show all known attached 
+populations (historical and current) and the extant attached 
+populations, respectively. For about 48% of the locations 
+(corrected) with the attached growth form, A. linnaei has 
+not been reported in the last 30 years. In figure 4c and 4d, 
+both the original and the extant unattached populations 
+are compared, further broken down into floating and ball-
+forming populations. Unattached growth forms have been 
+found more commonly in Europe than the attached growth 
+form (figure 4a, 4c). However, when comparing the number 
+of extant ball-forming populations with the number of 
+historical habitats for this growth form, A. linnaei has not 
+been reported in about 60% of those locations in the last 30 
+years (59% for all unattached growth forms combined). 
+Origin of A. linnaei balls in the aquarium trade: Results
+Of more than 20 contacted aquarium shops and aquatic 
+plant trading companies, 13 were willing to share at least 
+some information concerning the origin of the “lake balls” in 
+their product line. Generally, companies were very reluctant 
+to reveal their suppliers, growers, or wholesalers. However, 
+in all instances where information was obtained, Ukraine 
+was given as the country of origin, sometimes specified as 
+Lake Svityaz, or the Shatsk lakes, in northwestern Ukraine. 
+Figure 2. (a) Number of herbarium specimens of Aegagropila linnaei over time. Black bars indicate the total number of 
+herbarium specimens, gray bars indicate the number of herbarium specimens corrected for doublettes. (b) Number of loca-
+tions of A. linnaei over time based on herbarium specimens. (c) Number of herbarium specimens (black bars) and loca-
+tions based on herbarium specimens (gray bars) of the ball-shaped growth form of A. linnaei. (d) Total number of known 
+locations of A. linnaei (black bars) and known extant populations (< 30 years; gray bars), based on herbarium specimens, 
+literature, and field data. Dashed lines indicate the large number of very old herbarium specimens that had no date.
+This content downloaded from 195.34.79.174 on Sat, 21 Jun 2014 10:14:46 AM
+All use subject to JSTOR Terms and Conditions
+
+Articles
+192   BioScience  •  March 2010 / Vol. 60 No. 3	
+www.biosciencemag.org
+Local  Ukrainian sellers of A. linnaei balls in Odessa and 
+Kyiv said they receive their material periodically from Lake 
+Svityaz, but claimed that they grow the majority of balls 
+themselves. Most companies grow balls vegetatively from 
+fragments to market size, but receive stocks from Ukraine. 
+Balls from Lake Svityaz are shipped even to aquatic plant-
+breeding facilities in Southeast Asia before they are returned 
+to the European market. Japanese aquarium shops sell 
+balls only of European origin. No other natural source of 
+A. linnaei balls other than the Shatsk lakes (including Lake 
+Figure 3. (a) All known locations of Aegagropila linnaei (black dots) and extant populations (< 30 years; white dots). (b) A 
+more detailed map of Europe.
+This content downloaded from 195.34.79.174 on Sat, 21 Jun 2014 10:14:46 AM
+All use subject to JSTOR Terms and Conditions
+
+www.biosciencemag.org 	
+March 2010 / Vol. 60 No. 3  •  BioScience   193 
+Articles
+Svityaz) was ever mentioned by people in the aquarium 
+plant-trade business.
+Evidence for decline of A. linnaei populations
+Detailed knowledge of the distribution of a species is a 
+prerequisite for (a) assessing the status of that species, (b) 
+monitoring (a decline of) its populations, (c) identifying 
+general threats, and (d) employing most conservation ef-
+forts. Typical difficulties in reconstructing the area of dis-
+tribution are related to incomplete or inaccessible records, 
+patchy local knowledge, and to verifying observations made 
+by third parties. Many organisms, especially among the al-
+gae, must be regarded as underrecorded, and are frequently 
+misidentified. This is most likely also the case with A. linnaei, 
+despite all efforts to assemble as complete a data set as pos-
+sible. Even though this species has for a long time intrigued 
+scientists (e.g., Brand 1902, Wesenberg-Lund 1903, Acton 
+1916, Kindle 1934, Waern 1952), very few reports have 
+provided anything more than scanty lists of findings (Palik 
+1963, van den Hoek 1963, Pankow 1965, Getzen 1967). All 
+biogeographic reconstructions are hampered by incomplete 
+distribution records, and for most algal species, the knowl-
+edge of the global distribution is poor and based on many 
+assumptions. Although some regions of the world are well 
+sampled, such as (western) Europe, the largest parts of the 
+globe are not. The absence of A. linnaei in northern North 
+America and Siberia (figure 3a) could be an artifact of un-
+dersampling, despite our efforts to locate records from those 
+areas. Even though it seems unlikely that A. linnaei would 
+occur in South America, suitable habitats are potentially 
+abundant in the Andes region, but nobody has looked. 
+The studies on the extinction or decline of A. linnaei cited 
+above are all restricted to a confined area, mostly one individual 
+location. We analyzed as many findings as possible to investi-
+gate whether there is a general trend of declining populations. 
+Nevertheless, our record of A. linnaei is most likely incomplete, 
+despite the fact that the occurrence of the enigmatic balls in a 
+lake is frequently recorded or commented upon, as illustrated 
+by a wealth of historical scientific and amateur literature. Thus, 
+we assume underrecording is less of a problem for A. linnaei 
+than for most other algal species, at least for its unattached 
+growth forms. Even though the observed decline in herbarium 
+specimens does probably also reflect a decline in the submis-
+sion of voucher specimens, the herbarium collections show the 
+same declining trend as the more comprehensive survey, which 
+also includes data from the literature and communicated field 
+observations (figures 2d, 3). Extant populations are known 
+for less than half of the original locations (see figure 3a). The 
+inferred decline might be affected by another methodological 
+problem; that is, for some regions (e.g., Russia), old literature 
+is available but no or few personal contacts exist, and recent 
+literature is difficult to obtain (see table 1). 
+d
+b
+a
+c
+Figure 4. Direct comparisons of all known and extant locations of Aegagropila linnaei in Europe, shown separately for 
+attached and unattached growth forms. (a) All known locations of attached populations. (b) Extant locations of attached 
+populations. (c) All known locations of unattached growth forms (black dots: unattached filaments or mats; white dots: 
+balls). (d) Extant locations of unattached growth forms (black dots: unattached filaments or mats; white dots: balls).
+This content downloaded from 195.34.79.174 on Sat, 21 Jun 2014 10:14:46 AM
+All use subject to JSTOR Terms and Conditions
+
+Articles
+194   BioScience  •  March 2010 / Vol. 60 No. 3	
+www.biosciencemag.org
+We found differences in the degree of decline between 
+attached and unattached growth forms, with the loss of 
+unattached forms being more pronounced (figure 2d). 
+Unattached forms usually float just above the sediment, and 
+therefore occur only in shallow lakes or shallow parts of a 
+deeper lake, where the euphotic zone reaches the bottom. 
+It seems that the stronger decline of unattached growth 
+forms is not caused by a higher sensitivity to environmental 
+changes compared with the attached forms, but rather by a 
+higher threat to their shallow habitats. The attached form 
+most commonly occurs on submerged rocks or freshwater 
+bivalves (Luther 1951, Waern 1952, Pankow and Bolbrinker 
+1984, Wakana et al. 2001), and has been found in depths 
+of 20 meters (maximum depth 50 meters) in deep lakes 
+(Brand 1902, Kindle 1915), as well as in a number of rivers 
+(Holmes and Whitton 1975, 1977, 1981, Gardavský 1986, 
+Whitton et al. 1998). The attached form might be able to 
+escape greater sedimentation and better cope with decreas-
+ing underwater light availability by colonizing substrates 
+closer to the surface, and therefore increasing chances of 
+survival in disturbed habitats. In addition, the ability to sur-
+vive in deep and steep lakes increases the absolute number 
+of potential habitats for the attached form, and those lakes 
+are generally less sensitive to anthropogenic changes than 
+shallow, lowland lakes are (e.g., Taranu and Gregory-Eaves 
+2008). The attached form is distributed continuously only in 
+the low-salinity areas of the northern Baltic Sea (figure 2b), 
+where species numbers and competition are low. Aegagropila 
+linnaei forms dense carpets on rocks in the Bay and Gulf of 
+Bothnia, and can be the dominant macroalga in areas with a 
+salinity below 4 practical salinity units (Bergström and Berg-
+ström 1999). However, the number of recent records from 
+that area indicates a declining population as well (figures 3, 
+4). The decline of unattached growth forms is most obvious 
+in central Sweden, northeastern Germany, and the subalpine 
+region of the European Alps (figure 4c, 4d). 
+Eutrophication as the main cause for the decline  
+of A. linnaei
+Human activities increase and accelerate the external supply 
+of nutrients to aquatic ecosystems worldwide (e.g., Smith 
+et al. 1999, MEA 2005). Freshwater habitats especially face 
+increasing threats from physical alteration, changes in water 
+level and salinity, overexploitation, introduction of non-
+native species, herbicide and other biocide runoff, airborne 
+pollution, and nutrient loading (MEA 2005, Revenga et al. 
+2005). Eutrophication of aquatic ecosystems is a common 
+process worldwide and leads to the loss of unique habitats 
+and a reduction in biodiversity (e.g., Bayly and Williams 
+1973, Smith et al. 1999). 
+Enrichment of nitrogen and phosphorus loadings selects 
+for fast-growing algae (phytoplankton, macroalgae such as 
+Ulva or Cladophora species) at the expense of slower-growing 
+species (Duarte 1995), such as some charophytes, for example, 
+or A. linnaei. Shallow lakes are especially prone to the regime 
+shift from aquatic macrophytes to phytoplankton dominance. 
+The decline of several freshwater algal groups has been 
+attributed to eutrophication effects; such groups include 
+macroscopic Nostoc species (Mollenhauer 1998, Mollenhauer 
+et al. 1999), desmids (Coesel et al. 1978, Geissler 1988), and 
+charophytes (Geissler 1988, Blindow 1992, Nagasaka et al. 
+2002). A number of reports on the local decline or extinc-
+tion of populations of A. linnaei mention eutrophication as 
+a responsible factor (Pankow 1985, Wakana et al. 2001, 2005, 
+2006, Boedeker and Immers 2009).
+Our literature study showed that A. linnaei occurs in 
+several different lake types, but most typically in shallow, 
+oligomesotrophic, glaciofluvial lakes with reed stands, dense 
+charophyte vegetation, a pH greater than 7, and moderate to 
+high calcium levels. However, the ecological preferences or 
+requirements of A. linnaei have never been fully character-
+ized, and conflicting views can be found in the literature with 
+regard to nutrient levels. In a classic volume on European 
+Cladophora species, van den Hoek stated that A. linnaei (as 
+Cladophora aegagropila) “seems to occur only in more or less 
+eutrophic water” (1963). In this study, we collected informa-
+tion on trophic-level changes for a considerable number of 
+lakes where A. linnaei occurred historically or still occurs 
+(summarized in table 2). Information on the pristine state 
+(i.e., the trophic level of a water body without anthropogenic 
+influences) was available for 74 lakes (table 2). Ninety-two 
+percent of these lakes were either oligo- or mesotrophic in 
+their pristine state, indicating typical habitats of A. linnaei 
+(with regard to the trophic level) that contrast with van 
+den Hoek’s conclusion, above. For 61 lakes, information on 
+both the pristine state and the current trophic level could 
+be compared. Of these lakes, 92% were originally oligo- or 
+mesotrophic, but more than half of those 61 lakes (57%) 
+are currently eutrophic; therefore, dramatic changes have 
+occurred in the recent past in many habitats of A. linnaei. 
+When looking at all lakes with available information on the 
+current trophic state (n = 80), the numbers are even more 
+dramatic. Sixty-six percent of the lakes are now eutrophic, 
+or had been in the recent past, and A. linnaei still occurs in 
+only 39% of those 80 lakes. These numbers correspond to 
+the general findings presented in figure 2, and strongly sug-
+gest that A. linnaei occurs mainly in oligomesotrophic habi-
+tats, and that eutrophication is correlated with the observed 
+decline of A. linnaei populations. 
+Seemingly contrary to this inferred habitat preference is the 
+finding of populations of A. linnaei in 15 eutrophic locations 
+(each addressed below). However, in five of these locations 
+(Takkobu marsh, Pon swamp, Kimoma swamp, Lake Akan, 
+and Boven Wijde; see S3 and S4 at www.nationaalherbarium.
+nl/supplements/boedeker/BioScience_2010) a strong decline in 
+population size has been observed (Wakana et al. 2001, 2005, 
+2006, and Boedeker and Immers 2009, respectively), and 
+the future of these populations must be regarded as uncer-
+tain. Generally, most eutrophic lakes are turbid and have 
+a poor underwater light climate, but eutrophic clear-water 
+lakes also exist. Shallow lakes, with abundant submerged 
+macrophyte vegetation, may have very clear water with 
+This content downloaded from 195.34.79.174 on Sat, 21 Jun 2014 10:14:46 AM
+All use subject to JSTOR Terms and Conditions
+
+www.biosciencemag.org 	
+March 2010 / Vol. 60 No. 3  •  BioScience   195 
+Articles
+sparse phytoplankton despite relatively high nutrient load-
+ings in lowland areas with soft rock (Phillips et al. 1978). 
+Biological interactions in clear-water lakes differ markedly 
+from “regular” eutrophic lakes (e.g., Jeppesen et al. 1999). 
+The eutrophic clear-water lake Mývatn (Iceland) is well 
+known for its population of A. linnaei balls (Einarsson et al. 
+2004). In Germany, A. linnaei has been found in a couple of 
+eutrophic clear-water lakes (Neuklostersee and Teterower 
+See). In Lake Biwa and Lake Kawaguchi (both in Japan), only 
+restricted parts of the lake are eutrophic, while large parts 
+are still mesotrophic (Nagasaka et al. 2002). Two brackish 
+locations of A. linnaei are classified as (slightly) eutrophic 
+(Pojo Bay, Finland, and Lake Mälaren, Sweden), as well as 
+one river (River Wear, Scotland). The only “regular” eutro-
+phic lakes where A. linnaei was found were Lake Ülemiste 
+(Estonia) and Lake Tiefwarensee (Germany), but the latter 
+had been recently restored to mesotrophic conditions. Even 
+though the evidence is correlative, these numbers strongly 
+suggest that A. linnaei occurs mainly in oligomesotrophic 
+habitats but can persist in eutrophic, clear-water lakes, and 
+that indirect effects of eutrophication caused the observed 
+loss of A. linnaei populations.
+The possible role of lake acidification in the decline 
+of A. linnaei
+Other factors besides eutrophication may play a role in the 
+decline of A. linnaei, such as the widespread and serious 
+problem of lake acidification. Acidification is caused mainly 
+by the transfer of airborne pollutants by wind from heavily 
+industrialized centers to distant areas where they precipi-
+tate as acid rain. Especially in areas where lakes have a low 
+buffering capacity, the effects of acid rain can be drastic, 
+with pH values dropping below 5. Acidification can be a 
+primary and serious problem resulting from airborne dis-
+persal of acidifying pollutants in habitats in remote areas 
+that are not affected by agricultural eutrophication. Many 
+lakes in eastern North America, Great Britain and Ireland, 
+and Scandinavia (except southern Sweden) are charac-
+terized by low calcium values and thus a low buffering 
+capacity, which makes them very sensitive to acidification 
+(Jørgensen 1997, Arts 2002). The vegetation of those soft-
+water lakes is highly endangered, and 90% of the habitats 
+of soft-water vegetation in the Atlantic region have already 
+disappeared (Brouwer et al. 2002). Typical soft-water envi-
+ronments are oligotrophic, with a pH between 5.5 and 7, 
+and have a low buffering capacity (Arts 2002). However, 
+A. linnaei is not a typical soft-water organism; instead, the 
+vast majority of habitats are well buffered and character-
+ized by moderate to high calcium levels and an alkaline 
+pH between 7 and 9. No records exist from known acidic 
+habitats. Generally, even less information is available on 
+(historical) acidity than on trophic levels. In the course of 
+this study, only five habitats of A. linnaei were found with a 
+pH below 7 (the lowest known pH is 6.3; historical data for 
+Lake Bültsee, Germany), and only eight lakes were reported 
+to have low calcium levels. This indicates that A. linnaei 
+Table 2. Trophic conditions of lakes where Aegagropila linnaei occurs or occurred historically. 
+Lakes with information available on the pristine state (n = 74)
+Percentage
+Oligotrophic (including dystrophic)
+37
+Oligomesotrophic
+8
+Mesotrophic
+47
+Slightly eutrophic
+7
+Eutrophic
+1
+Lakes with information available on both the pristine and current state (n = 61)a
+Pristine state oligotrophic (including dystrophic and oligomesotrophic)
+39
+Pristine state mesotrophic
+53
+Pristine state eutrophic (including slightly eutrophic)
+8
+Current state oligotrophic 
+20
+Current state mesotrophic
+23
+Current eutrophic 
+57
+Lakes with information available on the current state (n = 80)a 
+Current state oligotrophic 
+16
+Current state mesotrophic
+18
+Current eutrophic 
+66
+Aegagropila linnaei still present
+39
+a. If a lake had a history of eutrophication but has been restored to a lower nutrient load, it is filed under the most severe stage of eutrophication in 
+its history.
+This content downloaded from 195.34.79.174 on Sat, 21 Jun 2014 10:14:46 AM
+All use subject to JSTOR Terms and Conditions
+
+Articles
+196   BioScience  •  March 2010 / Vol. 60 No. 3	
+www.biosciencemag.org
+typically occurs in habitats that are not strongly affected by 
+acidification. Furthermore, most lakes in Scandinavia have 
+naturally low conductivity, low calcium content, and low 
+pH (Henriksen et al. 1988, Jørgensen 1997), which could 
+possibly explain the absence of A. linnaei in Norway and 
+Finland (figure 3b). 
+Acidification has been shown to be a serious problem 
+in remote mountain lakes that are otherwise unaffected by 
+direct pollution (Curtis et al. 2005). Although several lakes 
+in the Alps region in which A. linnaei was historically found 
+were clearly subject to eutrophication (e.g., Ammersee, Lago 
+di Como, Lago Maggiore, Lago di Varese, Starnberger See), 
+it cannot be excluded that acidification might pose an addi-
+tional threat in more remote mountain areas in noncalcare-
+ous parts of the Alps, the Pyrenees, or central Asia. Likewise, 
+acidification might negatively affect A. linnaei populations 
+in otherwise unpolluted lakes elsewhere, and thus pose an 
+additional threat of eutrophication in some regions. How-
+ever, no conclusive data are currently available.
+Which effects of eutrophiction might cause the  
+observed decline?
+Competitive exclusion in the face of increased nutrient 
+loading appears to be the main mechanism responsible for 
+the local decline or even extinction of species in temperate 
+freshwater ecosystems (Barker et al. 2008); that is, species 
+better adapted to high trophic levels outcompete others 
+when nutrient loads increase. It had been proposed that 
+high levels of phosphorus have a toxic effect on charophytes 
+(Forsberg 1965), but this was not confirmed in other stud-
+ies (Blindow 1992). Even though direct deleterious effects 
+of high nutrient availability are discussed in terrestrial 
+ecosystems, changes in the light climate of aquatic systems 
+seem to be the most important (Smith et al. 1999). The find-
+ing of A. linnaei in several eutrophic clearwater lakes (see 
+above) could be an indicator that the increase of nutrient 
+levels itself does not negatively affect A. linnaei. Shading 
+by increased phytoplankton densities or by opportunistic 
+microalgal epiphytes might be especially significant for A. 
+linnaei as a very slow-growing species (Acton 1916, van den 
+Hoek 1963). However, this species survives relatively long 
+and dark winters under the ice in high-latitude lakes such as 
+in Iceland (Jónnson 1992, Einarsson et al. 2004), and healthy 
+balls of A. linnaei were found below the shallow photic zone 
+in Lake Teterow, Germany (Pankow and Bolbrinker 1984). 
+This illustrates the capacity of this species to cope with 
+low-light conditions, suggesting that other factors than light 
+limitation might play a more important role in the decline of 
+A. linnaei populations. 
+The attached growth form has been found in several 
+eutrophicated environments such as the Seine in Paris (van 
+den Hoek 1963), Lake Boven Wijde in the Netherlands 
+(Boedeker and Immers 2009), and several Japanese swamp 
+lakes (Wakana et al. 2001, 2005). It is possible for the attached 
+form to survive if it grows on rocks or bivalves close enough 
+to the surface to still receive sufficient light while the water 
+body becomes more turbid. In Lake Mývatn in Iceland, it 
+has been proposed that variation in the size of submerged A. 
+linnaei mats is negatively correlated with (shading) blooms 
+of the cyanobacterium Anabaena flos-aquae (Einarsson et 
+al. 2004). Toxins released by blooming cyanobacteria could 
+also be responsible for or contribute to the decline of A. 
+linnaei in eutrophicated lakes. Other phenomena correlated 
+with eutrophication that could be linked to the decline of A. 
+linnaei are (a) increased feeding of herbivorous fish such as 
+bream, carp, and roach (ten Winkel and Meulemans 1984); 
+(b) local benthic anoxia; (c) higher levels of herbicides 
+and pesticides; (d) greater organic sedimentation; and (e) 
+increased mechanical damage and turbidity caused by rec-
+reational boats. 
+Threat assessment and conservation
+Although the exact effects of eutrophication that cause a 
+decline in populations of A. linnaei are unclear and require 
+further experimental studies, it seems evident that the de-
+cline is correlated with eutrophication. This of course is a 
+general problem that is not easily solved, since the process is 
+closely linked to agriculture, tourism, and human demand 
+and population growth, and is therefore linked to politics 
+and economies. In addition, the populations of A. linnaei in 
+several regions and habitats may face specific local problems; 
+for instance, the acid rain degradation of unpolluted, remote 
+habitats. The most famous location of lake balls, Lake Akan, 
+in Japan, is struggling not only with eutrophication and 
+general pollution but also the collection of Aegagropila balls 
+as souvenirs. This practice had become so popular that in 
+1977 the species was classified as critically endangered, and 
+the government asked people to return collected balls to the 
+lake (Soejima et al. 2008, TMLA 2009). Since the popula-
+tions from the Shatsk lakes in Ukraine seem to be the sole 
+source of the popular A. linnaei balls for the entire aquarium 
+trade, these populations must be under considerable, if not 
+extreme, harvesting pressure, especially considering the slow 
+growth rates and longevity of the species (see van den Hoek 
+1963). In this context it is interesting to note that a Canadian 
+study on nonindigenous plants showed A. linnaei to be one 
+of the most common species in the Saint Lawrence Seaway 
+(Cohen et al. 2007), most likely anthropogenically intro-
+duced balls originating from amateur aquaria.
+Very few molecular studies on A. linnaei exist to date. 
+Recently, it has been shown that Lake Akan contains most 
+of the genetic diversity of A. linnaei in Japan, as inferred by 
+isozyme studies; therefore Lake Akan is the most important 
+target of conservation efforts (Soejima et al. 2008). Loss 
+of genetic diversity might have occurred already through 
+habitat degradation and extinction of local populations, 
+and further reduction in genetic diversity is to be expected. 
+In many areas, formerly eutrophicated water bodies have 
+been restored to more-or-less natural conditions (van Liere 
+and Gulati 1992, de Bernardo and Giussani 1995). Even 
+after restoration, ecosystems do not necessarily return to 
+their original diversity and community structure (Entwisle 
+This content downloaded from 195.34.79.174 on Sat, 21 Jun 2014 10:14:46 AM
+All use subject to JSTOR Terms and Conditions
+
+www.biosciencemag.org 	
+March 2010 / Vol. 60 No. 3  •  BioScience   197 
+Articles
+1997). Because of the absence of desiccation-resistant stages 
+in A. linnaei, in combination with the species’ slow growth 
+and the rarity of spore formation (Leliaert and Boedeker 
+2007), this species must be regarded as a poor disperser and 
+a poor competitor. Therefore, recolonization of restored 
+habitats might not be very likely. Once a habitat is success-
+fully recolonized by A. linnaei, it might take decades before 
+populations are large enough to develop into the typical 
+unattached mats or lake balls. Even if a restored habitat were 
+recolonized, genetic diversity might still be lost. Most extant 
+populations must be regarded as threatened by eutrophi-
+cation, except in some remote locations. The widespread 
+attached form of A. linnaei in the northern Baltic Sea seems 
+to be a stable component of the local algal flora, even though 
+eutrophication has also taken place in this habitat. It is pos-
+sible that reduced competition in brackish environments 
+plays a role in maintaining A. linnaei populations. 
+One hopes that the popularity of lake balls will help with 
+the conservation of this species and raise awareness of threat-
+ened freshwater algae. In addition, we would like to encourage 
+the collection and submission of specimens to accessible 
+collections, not just of A. linnaei, but also of species that are 
+less showy and that currently receive less attention. 
+Acknowledgments
+We would like to thank the curators of the herbaria that pro-
+vided information or access to their collections (S2), as well 
+as Jenny Ask, Leonid V. Averyanov, Thomas Bach, Mandy 
+Bahnwart, Roland Bengtsson (especially for providing figure 
+1b), Lena Bergström, Hubert Blatterer, Peter Bolbrinker, 
+Ad Bouman, Juliet Brodie, Dwight de Vries, Stefano G. A. 
+Draisma, Árni Einarsson, Tim Entwisle, Peter Feuerpfeil, 
+Olga Gerasymova, Lutz Höhne, Timm Kabus, Maria Kahl-
+ert, Kristo K. Kulju, Frederik Leliaert, Inge Lennmark, 
+Eli-Anne Lindstrøm, Liu Guoxiang, Jürgen Mathes, Dieter 
+Mollenhauer, Riggert Munsterhjelm, Alan Pentecost, Bruno 
+Polli, Willem Prud’homme van Reine, Niels Raes, Robert 
+Riegman, Jan Rueness, Clare Scanlan, Volker Schmidt, 
+Hendrik Schreiber, Stephen Skinner, Boris Sviridenko, Maria 
+Thannhauser, Fedor P. Tkachenko, Anna Tolstoy, Bertie J. van 
+Heuven, Kirsten Vendrig, Maria Vorontsova, Isamu Wakana, 
+and Brian A. Whitton. This study was supported in part 
+with funds to CB from the European Union SYNTHESYS 
+program and the Schuure-Beijerinck-Popping Fonds.
+References cited
+Acton E. 1916. On the structure and origin of “Cladophora balls.” New 
+Phytologist 15: 1–10.
+Arts GHP. 2002. Deterioration of Atlantic soft water macrophyte communi-
+ties by acidification, eutrophication and alkalinisation. Aquatic Botany 
+73: 373–393.
+Barker T, Hatton K, O’Connor M, Connor L, Moss B. 2008. Effects of ni-
+trate load on submerged plant biomass and species richness: Results of 
+a mesocosm experiment. Fundamental and Applied Limnology/Archiv 
+für Hydrobiologie 173: 89–100.
+Bayly IAE, Williams WD. 1973. Inland Waters and Their Ecology. Long-
+man.
+Bergström L, Bergström U. 1999. Species diversity and distribution of 
+aquatic macrophytes in the Northern Quark, Baltic Sea. Nordic Journal 
+of Botany 19: 375–383.
+Blindow I. 1992. Decline of charophytes during eutrophication: Compari-
+son with angiosperms. Freshwater Biology 28: 9–14.
+Boedeker C, Immers I. 2009. No more lake balls (Aegagropila linnaei  Kütz-
+ing, Cladophorophyceae, Chlorophyta) in the Netherlands? Aquatic 
+Ecology 43: doi:10.1007/s10452-009-9231-1
+Brand F. 1902. Die Cladophora–Aegagropilen des Süsswassers. Hedwigia 
+41: 34–71. 
+Brodie J, John DM, Tittley I, Holmes MJ, Whitton DB. 2008. Important 
+plant areas for algae. (7 January 2010; www.plantlife.org.uk/uk/plantlife-
+saving-species-publications.html)
+Brouwer E, Bobbink R, Roelofs JGM. 2002. Restoration of aquatic macro-
+phyte vegetation in acidified and eutrophied softwater lakes: An over-
+view. Aquatic Botany 73: 405–431.
+Coesel PFM, Kwakkestein R, Verschoor A. 1978. Oligotrophication and 
+eutrophication tendencies in some Dutch moorland pools, as reflected 
+in their desmid flora. Hydrobiologia 61: 21–31.
+Cohen J, Mirotchnick N, Leung B. 2007. Thousands introduced annually: 
+The aquarium pathway for non-indigenous plants to the St. Lawrence 
+Seaway. Frontiers in Ecology and the Environment 5: 528–532
+Curtis CJ, et al. 2005. Acidification in European mountain lake districts: 
+A regional assessment of critical load exceedance. Aquatic Sciences 67: 
+237–251.
+de Bernardo R, Giussani G. 1995. Guidelines of Lake Management, vol. 
+7: Biomanipulation. Kusatsu-shi. International Lake Environment 
+Committee.
+Einarsson Á, Stefánsdóttir G, Jóhannesson H, Ólafsson JS, Gíslason GM, 
+Wakana I, Gudbergsson G, Gardarsson A. 2004. The ecology of Lake 
+Mývatn and the River Laxá: Variation in space and time. Aquatic Ecology 
+38: 317–348.
+Duarte CM. 1995. Submerged aquatic vegetation in relation to different 
+nutrient regimes. Ophelia 41: 87–112. 
+Entwisle TJ. 1997. Algae. Pages 34–48 in Scott GAM, Entwisle TJ, May TW, 
+Stevens GN, eds. A Conservation Overview of Australian Non-marine 
+Lichens, Bryophytes, Algae and Fungi. Environment Australia.
+[EAJ] Environment Agency of Japan. 2000. Threatened Wildlife of Japan: 
+Red Data Book, vol. 9: Bryophytes, Algae, Lichens, Fungi. (7 January 
+2010; www.biodic.go.jp/english/rdb/rdb_e.html) 
+Forsberg C. 1965. Nutritional studies of Chara in axenic cultures. Physiolo-
+gia Plantarum 18: 275–290.
+Gardavský A. 1986. Cladophora moravica (Dvořák) comb. nova and C. ba-
+siramosa Schmidle, two interesting riverine species of the green filamen-
+tous algae from Czechoslovakia. Archiv für Hydrobiologie Supplemente 
+73: 49–77.
+Gärdenfors U. 2005. The 2005 Red List of Swedish Species. Artdatabanken.
+Geissler U. 1988. Some changes in the flora and vegetation of algae in fresh-
+water environments. Helgoländer Meeresuntersuchungen 42: 637–643.
+Getzen MV. 1967. De Cladophora globosa in lacubus regionis transpolaris. 
+Novitates Systematicae Plantarum Non Vascularium 1: 86–91.
+Gíslason GM. 1992. Information Sheet on Ramsar Wetlands. Ramsar Bureau. 
+(11 February 2010; www.wetlands.org/reports/ris/3IS001en_part1.pdf )
+Green AJ, Figuerola J, Sánchez MI. 2002. Implications of waterbird ecology 
+for the dispersal of aquatic organisms. Acta Oecologica 23: 177–189.
+Henriksen A, Lien L, Traaen TS, Sevaldrud IS, Brakke DF. 1988. Lake acidi-
+fication in Norway: Present and predicted chemical status. Ambio 17: 
+259–266.
+Holmes NTH, Whitton BA. 1975. Macrophytes of the River Tweed. Transac-
+tions of the Botanical Society of Edinburgh 42: 369–381.
+———. 1977. Macrophytic vegetation of the River Swale, Yorkshire. Fresh-
+water Biology 7: 545–558.
+———. 1981. Phytobenthos of the River Tees and its tributaries. Freshwater 
+Biology 11: 139–168.
+Jeppesen E, Jensen JP, Søndergaard M, Lauridsen T. 1999. Trophic dynam-
+ics in turbid and clearwater lakes with special emphasis on the role of 
+zooplankton for water clarity. Hydrobiologia 408/409: 217–231.
+This content downloaded from 195.34.79.174 on Sat, 21 Jun 2014 10:14:46 AM
+All use subject to JSTOR Terms and Conditions
+
+Articles
+198   BioScience  •  March 2010 / Vol. 60 No. 3	
+www.biosciencemag.org
+Pankow H, Bolbrinker B. 1984. Über die Verbreitung und Soziologie von 
+Cladophora aegagropila (L.) Rbh [= Aegagropila sauteri (Nees ex Kütz.) 
+Kütz.] in den Nordbezirken der DDR. Gleditschia 12: 279–283.
+Phillips GL, Eminson D, Moss B. 1978. A mechanism to account for mac-
+rophyte decline in progressively eutrophicated freshwaters. Aquatic 
+Botany 4: 103–126.
+Revenga C, Campbell I, Abell R, de Villiers P, Bryer M. 2005. Prospects for 
+monitoring freshwater ecosystems toward the 2010 targets. Philosophi-
+cal Transactions of the Royal Society B 360: 397–413.
+Schlichting HE. 1960. The role of waterfowl in the dispersal of algae. Trans-
+actions of the American Microscopical Society 79: 160–166.
+Smith VH, Tilman GD, Nekola JC. 1999. Eutrophication: Impacts of excess 
+nutrient inputs on freshwater, marine, and terrestrial ecosystems. Envi-
+ronmental Pollution 100: 179–196.
+Soejima A, Yamazaki N, Nishino T, Wakana I. 2008. Genetic variation and 
+structure of the endangered freshwater benthic alga Marimo, Aegaropila 
+linnaei (Ulvophyceae) in Japanese lakes. Aquatic Ecology 43: 359–370.
+Taranu ZE, Gregory-Eaves I. 2008. Quantifying relationships among phos-
+phorus, agriculture, and lake depth at an inter-regional scale. Ecosys-
+tems 11: 715–725.
+ten Winkel EH, Meulemans JT. 1984. Effects of fish upon submerged vegeta-
+tion. Hydrobiological Bulletin 18: 157–158.
+[TMLA] The Marimo of Lake Akan. 2009. Marimo are returned to Lake 
+Akan! (7 January 2010; www.marimo-web.org/en/c-history/c2-marimo_
+return.html)
+van den Hoek C. 1963. Revision of the European Species of Cladophora. 
+E. J. Brill.
+van Liere L, Gulati RD. 1992. Restoration and Recovery of Shallow Eutro-
+phic Lake Ecosystems in the Netherlands. Kluwer Academic Publishers.
+Waern M. 1952. Rocky-shore algae in the Öregrund Archipelago. Acta phy-
+togeographica Suecica 30: 1–298.
+Wakana I, Arai S, Sano O, Honoko H. 2001. Current situation and living en-
+vironment of freshwater alga “Tateyama-marimo” (Aegagropila sp. nov.) 
+in the Saryfutsu-Hamatonbetsu lake group, Hokkaido, Japan. Journal of 
+Plant Research 114 (suppl.): 59.
+Wakana I, Kawachi M, Hamada N, Taoda H. 2005. Current situation and 
+living environment of an endangered algal species marimo (Aegagropila 
+linnaei) in Takkobu marsh, Kushiro-Shitsugen wetland. Journal of Plant 
+Research 118 (suppl.): 64.
+Wakana I, Satoh H Suzuki Y. 2006. The past and the present of vegeta-
+tion and environment in a disappeared habitat of the freshwater alga 
+marimo (Aegagropila linnaei) in Lake Akan, Japan. Journal of Plant 
+Research 114 (suppl.): 63.
+Wesenberg-Lund C. 1903. Sur les Aegagropila sauteri du Lac de Sorö. 
+Académie Royale des Sciences et des Lettres de Danemark 2: 167–203. 
+Whitton BA, Boulton PNG, Clegg EM, Gemmell JJ, Graham GG, Gustar 
+R, Moorhouse TP. 1998. Long-term changes in macrophytes of Brit-
+ish rivers, 1: River wear. Science of the Total Environment 210/211: 
+411–426.
+Christian Boedeker (boedeker@nhn.leidenuniv.nl), Anne Immers, and Erik 
+Smets are with the National Herbarium of The Netherlands, Leiden University 
+Branch, in Leiden, The Netherlands. Anja Eggert works in Physical Oceanog-
+raphy and Instrumentation, at the Leibniz Institute for Baltic Sea Research 
+Warnemünde, in Rostock, Germany.
+John DM. 2002. Order Cladophorales (Siphonocladales). Pages 468–470 
+in John DM, Whitton BA, Brook AJ, eds. The Freshwater Algal Flora of 
+the British Isles. An Identification Guide to Freshwater and Terrestrial 
+Algae. Cambridge University Press.
+Jónnson GS. 1992. Photosynthesis and production of epilithic algal com-
+munities in Thingvallavatn. Oikos 64: 222–240. 
+Jørgensen SE. 1997. Acidification of the Scandinavian lakes. Pages 23–38 in 
+Jørgensen SE, Matsui S, eds. Guidelines of Lake Management, vol. 8: The 
+World’s Lakes in Crisis. International Lake Environment Committee.
+Kann E, Sauer F. 1982. Die “Rotbunte Tiefenbiocönose” Neue Beobachtun-
+gen in österreichischen Seen und eine zusammenfassende Darstellung. 
+Archiv für Hydrobiologie 95: 181–195.
+Kindle EM. 1915. Limestone solution on the bottom of Lake Ontario. 
+American Journal of Science 4: 651–656.
+———. 1934. Concerning “lake balls,” “Cladophora balls” and “coal balls.” 
+American Midland Naturalist 15: 752–760.
+Kurogi ME. 1980. Lake ball “marimo” in Lake Akan. Japanese Journal of 
+Phycology 28: 168–169. 
+Leliaert F, Boedeker C. 2007. Cladophorales. Pages 131–183 in Brodie J, 
+Maggs CA, John DM, eds. Green Seaweeds of Britain and Ireland. Brit-
+ish Phycological Society.
+Lilleleht V. 1998. Red Data Book of Estonia. Threatened Fungi, Plants and 
+Animals. (7 January 2010; www.zbi.ee/punane/english/index.html) 
+Ludwig G, Schnittler M. 1996. Rote Liste gefährdeter Pflanzen Deutschlands. 
+Bundesamt für Naturschutz.
+Luther H. 1951. Verbreitung und Ökologie der höheren Wasserpflanzen im 
+Brackwasser der Ekenäs-Gegend in Südfinnland. II. Spezielller Teil. Acta 
+Botanica Fennica 50: 1–370. 
+[MEA] Millenium Ecosystem Assessment. 2005. Ecosystems and Human 
+Well-being: Synthesis. Island Press.
+[MINPRIRODA] Ministry of Natural Resources and Environmental Pro-
+tection of the Republic of Belarus. 2006. (7 January 2010; www.redbook.
+minpriroda.by) 
+Mollenhauer D. 1998. Gefährdungsursachen für Algen und höhere Was-
+serpflanzen sowie Möglichkeiten, diese Pflanzen zu erhalten. Schriften-
+Reihe für Vegetationskunde 29: 205–217.
+Mollenhauer D, Bengtsson R, Lindstrøm E-A. 1999. Macroscopic cyanobac-
+teria of the genus Nostoc: A neglected and endangered constituent of 
+European inland aquatic biodiversity. European Journal of Phycology 
+34: 349–360.
+Moriwake N. 2005. Information Sheet on Ramsar Wetlands. Ramsar Bureau. 
+(12 January 2010; www.wetlands.org/reports/ris/2JP014_RISen05.pdf)
+Nagasaka M, Yoshizawa K, Ariizumi K, Hirabayashi K. 2002. Temporal 
+changes and vertical distribution of macrophytes in Lake Kawaguchi. 
+Limnology 3: 107–114.
+Nakazawa S. 1974. The time and the cause of extermination of lake balls from 
+Lake Zeller. Bulletin of the Japanese Society of Phycology 12: 101–103.
+Noskov GA. 2000. Red Data Book of Nature of the Leningrad Region, vol. 
+2. St. Petersburg.
+Palik P. 1963. Studien über Aegagropila sauteri (Neetz) Kützing. Annales 
+Universitatis Scientiarum Budapestinensis Sectio Biologica 5: 179–192. 
+Pankow H. 1965. Aegagropila sauteri in Mecklenburg (Norddeutschland). 
+Nova Hedwigia 9: 177–184. 
+———.  1985. Verschollene, gefährdete und interessante Großalgen im 
+nördlichen Gebiet der DDR. Botanische Rundbriefe des Bezirks Neu-
+brandenburg 16: 65–72. 
+This content downloaded from 195.34.79.174 on Sat, 21 Jun 2014 10:14:46 AM
+All use subject to JSTOR Terms and Conditions

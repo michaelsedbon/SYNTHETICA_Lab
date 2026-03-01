@@ -1,0 +1,402 @@
+Current Biology
+Magazine
+Current Biology 28, R847–R870, August 20, 2018 © 2018 The Authors. Published by Elsevier Ltd. R869
+This is an open access article under the CC BY license (http://creativecommons.org/licenses/by/4.0/).
+Photosynthesis and 
+circadian rhythms 
+regulate the 
+buoyancy of marimo 
+lake balls
+Dora L. Cano-Ramirez, 
+Tara Saskia de Fraine, 
+Olivia G. Grifﬁ ths, and Antony N. Dodd1,*
+Marimo are unusual, attractive and 
+endangered spherical aggregations 
+of the ﬁ lamentous green macroalga 
+Aegagropila linnaei (Figure 1A–E) [1]. 
+Globally rare, marimo populations 
+persist in cold freshwater lakes in 
+Japan, Iceland and Ukraine. Marimo 
+occupy both the lake bed and rise to 
+the lake surface [2,3]. Here, we show 
+that marimo buoyancy is conferred by 
+bubbles arising from photosynthesis. 
+We ﬁ nd that light-induced acquisition 
+of buoyancy by marimo is circadian-
+regulated. We identify that there are 
+circadian rhythms of photosynthesis 
+in marimo, which might explain the 
+circadian rhythm of buoyancy in 
+response to light. This identiﬁ es a 
+circadian-regulated buoyancy response 
+in an intriguing and little-studied plant. 
+Marimo balls occupy the lake bed 
+and also rise to the surface [2,3]. These 
+movements occur under laboratory 
+conditions, with marimo rising rapidly 
+after acquiring buoyancy (Figure 1A,B). 
+Bubbles form on the surface of buoyant 
+marimo (Figure 1C) [2]. We reasoned 
+that the bubbles might be products of 
+photosynthesis and confer buoyancy, 
+because marimo sink in darkness 
+(Figure 1B) [2]. 3-(3,4-dichlorophenyl)-
+1,1-dimethylurea (DCMU), which inhibits 
+photosynthetic electron transport from 
+photosystem II (PSII) to plastoquinone, 
+prevented surface bubble formation 
+and marimo buoyancy (Figure 1C–E). 
+DCMU-incubated marimo did not ﬂ oat 
+during 48 h of continuous illumination 
+(Figure 1F). Therefore, the dynamic 
+day–night buoyancy of marimo is due to 
+photosynthesis.
+Given that photosynthesis in 
+plants and algae is controlled by the 
+circadian clock [4], we asked whether 
+light-induced acquisition of buoyancy 
+Correspondence
+A
+B
+C
+E
+D
+F
+G
+H
+I
+J
+K
+L
+10 mm
+Control
+DCMU
+10 mm
+DCMU
+Control
+10 mm
+1 min 2 min 3 min 4 min 1 min 2 min 3 min 4 min
+200
+150
+100
+50
+0
+Time until buoyant (min)
+Time until buoyant (min)
+Control
+DCMU
+NOT BUOYANT
+400
+300
+200
+100
+0
+25 31 49 55
+Time of light pulse
+onset (ZT, h)
+Constant
+light
+Y(II)
+0.25
+0.20
+0.15
+0.10
+0.05
+0
+0
+200
+400
+Light/dark cycles
+10
+8
+6
+4
+2
+0
+ETR
+0
+200
+400
+PAR (µmol m-2 s-1)
+Surface ZT3
+Mid-point ZT3
+Interior ZT3
+Surface ZT15
+Mid-point ZT15
+Interior ZT15
+Normalized Y (II)
+1.00
+0.98
+0.96
+0.94
+0.92
+0.90
+24
+36
+48
+60
+72
+84
+Time in continuous light (h)
+T = 20.3 ± 1.1 h
+RAE = 0.63
+Surface
+Normalized NPQ
+1.00
+0.96
+0.90
+0.88
+0.84
+24
+36
+48
+60
+72
+84
+Time in continuous light (h)
+T = 20.7 ± 0.5 h
+RAE = 0.65
+Surface
+Normalized delayed
+fluorescence
+Normalized delayed
+fluorescence
+1.05
+1.02
+0.99
+0.96
+24
+36
+48
+60
+72
+84
+96
+Time in continuous light (h)
+24
+36
+48
+60
+72
+84
+96
+Time in continuous light (h)
+T = 26.0 ± 0.8 h
+T = 23.9 ± 1.2 h
+RAE = 0.34
+RAE = 0.42
+Surface
+1.16
+1.12
+1.08
+1.04
+Interior
+Figure 1. Photosynthesis, circadian rhythms and marimo buoyancy.
+(A,B) Marimo position within a water column changes rapidly and is bimodal, with balls (A) buoy-
+ant in light and (B) sunken in physiological darkness (time in minutes). (C–E) 20 µM DCMU pre-
+vents buoyancy and surface bubble formation. (F) DCMU-treated marimo do not rise within the 
+water column (n=3). (G) Circadian regulation of the acquisition of buoyancy in response to illumi-
+nation (n=4). (H) Quantum yield of PSII (Y(II)) and electron transport rate (ETR) within rapid light 
+curves (RLCs) from three positions within the marimo ball at ZT3 (daytime) and ZT15 (night), under 
+12 h light/12 h dark cycles (n=10). The marimo exterior during the day differs signiﬁ cantly from 
+the other measures. (I,J) Circadian oscillations in two photosynthetic parameters on the marimo 
+surface. Data are from a timecourse of RLCs, with traces shown for the signal under 33 µmol m–2 
+s–1 (n=5). (K,L) Circadian rhythms of delayed chlorophyll ﬂ uorescence at the marimo surface and 
+interior (n=3). (I–L) Red circles represent data and blue lines represent FFT-NLLS waveform ﬁ t to 
+data, and grey boxes on x-axes indicate subjective dark period. Asterisks indicate statistically 
+signiﬁ cant differences (p<0.05) using (G) Student’s t-test and (H) one-way ANOVA with Student-
+Newman-Keuls post-hoc analysis. Data are mean±s.e.m.
+
+Current Biology
+Magazine
+R870 Current Biology 28, R847–R870, August 20, 2018
+in marimo is also under circadian 
+control. We tested whether the light-
+induced acquisition of buoyancy by 
+marimo (Figure 1A,B) is circadian 
+regulated. Marimo were entrained to 
+12 h light/12 h dark cycles and then 
+transferred to continuous dim red 
+light to maintain circadian rhythmicity. 
+When these marimo were exposed 
+to buoyancy-inducing light intensities 
+(20 µmol m–2 s–1 photon ﬂ ux density) 
+the marimo became buoyant more 
+rapidly at the start of the subjective day 
+than halfway through the subjective 
+day, during both the second and third 
+days of constant dim light (Figure 1G). 
+This indicates that there is circadian 
+regulation of light-induced buoyancy 
+in marimo. Under light/dark cycles, 
+marimo position within the water 
+column oscillated (Figure S1F in 
+Supplemental Information, published 
+with this article online) whereas marimo 
+remained buoyant under constant light 
+conditions (Figure S1G). Persistent 
+marimo buoyancy under constant light 
+is expected because photosynthesis 
+always occurs under constant light, 
+even when circadian oscillations are 
+present [4].
+We identiﬁ ed day–night ﬂ uctuations 
+in photosynthetic rates at the marimo 
+surface. Under light/dark cycles, 
+we measured photosynthesis at the 
+marimo surface and interior using a 
+chlorophyll ﬂ uorescence instrument 
+with a narrow ﬁ bre optic probe. The 
+quantum yield of photosystem II (Y(II)) 
+and electron transport rate (ETR) was 
+signiﬁ cantly greater at the marimo 
+surface during the light period than 
+dark period, under light-limited and 
+light-saturated conditions (Figure 1H). 
+This day–night ﬂ uctuation was absent 
+from the marimo interior (Figure 1H). 
+Interior day-time and night-time Y(II) 
+and ETR was comparable to the marimo 
+exterior during the dark period (Figure 
+1H). Therefore, there are anatomically 
+dependent day–night ﬂ uctuations in the 
+photosynthetic rate of marimo.
+Next, we identiﬁ ed low amplitude 
+circadian rhythms of photosynthesis 
+in marimo. Marimo were entrained 
+to 12 h light/12 h dark cycles, and 
+intact marimo and dissected marimo 
+interiors then transferred to constant 
+light conditions. Under constant light, 
+rapid photosynthetic light response 
+curves (RLCs) were obtained every 2 h 
+using chlorophyll ﬂ uorescence imaging 
+(Figure S1H). To our knowledge, this 
+is the ﬁ rst time the RLCs have been 
+used to study circadian rhythms in 
+plants. Circadian oscillations in Y(II) 
+(essentially the proportion of light 
+entering photochemistry) and non-
+photochemical quenching (NPQ, thermal 
+dissipation of energy) occurred within a 
+subset of areas of interest analyzed, at 
+many light intensities within the RLCs 
+(Table S1A; Figure 1I,J). More areas of 
+interest were rhythmic at the marimo 
+surface under lower light intensities, 
+whereas this trend was absent from 
+the marimo interior (Table S1). For 
+example, under 33 µmol m–2 s–1 light the 
+marimo surface was clearly rhythmic 
+whereas the interior was arrhythmic 
+(Figures 1I,J and S1I,J). Circadian period 
+estimates obtained using fast Fourier 
+transform-non linear least squares 
+method (FFT-NLLS) ranged from 
+20–28 h, depending on light intensity 
+and marimo anatomy (Figures 1I,J and 
+S1I,J). The relative amplitude error (RAE) 
+quantiﬁ es the rhythmic robustness of 
+the oscillation, with low RAE indicating 
+a better FFT-NLLS ﬁ t to data. Across 
+the light intensities within the RLC 
+timecourses, RAE was in the range 
+of 0.6–0.97 for marimo exterior and 
+0.45–0.98 for marimo interior (Table S1). 
+This exceeds the RAE of timecourses 
+of promoter–luciferase reporters and 
+chlorophyll ﬂ uorescence analysis of 
+Arabidopsis (RAE=0.3–0.35 [5]), and 
+is somewhat greater than RAE from 
+chlorophyll ﬂ uorescence analysis of 
+barley (RAE=0.2–0.6; some barley 
+varieties 0.4–0.9 [6]). The RAE from 
+marimo might indicate lower amplitude 
+circadian oscillations, and potentially 
+explains the variable phase estimates 
+(Table S1). The mathematically distinct 
+maximum entropy spectral analysis 
+(MESA) also identiﬁ ed circadian rhythms 
+in these photosynthetic parameters 
+(Table S1). The slope of the straight-
+line portion of the RLC did not oscillate 
+signiﬁ cantly under constant light (Figure 
+S1K). Circadian rhythms were also 
+detected using the delayed chlorophyll 
+ﬂ uorescence (DF) method [7] (Figure 
+1K,L). DF oscillations likely derive from 
+rhythms of charge recombination during 
+photosynthetic electron transport [7]. 
+Together, this identiﬁ es low amplitude 
+circadian rhythms of PSII activity in 
+marimo.
+Marimo buoyancy might maximise 
+photosynthetic light capture because 
+light penetration decreases with 
+depth. Buoyancy alterations might 
+also rearrange balls within marimo 
+accumulations and underlie seasonal 
+changes in marimo position [3]. 
+There are daily changes in the water 
+column position of jellyﬁ sh harbouring 
+endosymbiotic algae [8], and daily 
+valve opening by giant clams exposes 
+endosymbiotic algae to sunlight 
+[9]. Similarly, higher plant organs 
+undergo diel and circadian changes 
+in position [10]. Therefore, circadian 
+and diel movements might optimize 
+photosynthesis in several kingdoms of 
+aquatic and terrestrial organisms.
+SUPPLEMENTAL INFORMATION
+Supplemental Information contains one ﬁ gure, 
+one table, and experimental procedures, and 
+can be found with this article online at https://
+doi.org/10.1016/j.cub.2018.07.027.
+REFERENCES
+ 1. Boedeker, C., Eggert, A., Immers, A., and 
+Smets, E. (2010). Global decline of and threats 
+to Aegagropila linnaei, with special reference to 
+the lake ball habit. BioScience 60, 187–198.
+ 2. Togashi, T., Sasaki, H., and Yoshimura, J. 
+(2014). A geometrical approach explains Lake 
+Ball (Marimo) formations in the green alga, 
+Aegagropila linnaei. Sci. Rep. 4, 3761.
+ 3. Acton, E. (1916). On the structure and origin of 
+“Cladophora balls”. New Phytol. 15, 1–10.
+ 4. Dodd, A.N., Salathia, N., Hall, A., Kévei, E., 
+Tóth, R., Nagy, F., Hibberd, J.M., Millar, A.J., 
+and Webb, A.A.R. (2005). Plant circadian clocks 
+increase photosynthesis, growth, survival, and 
+competitive advantage. Science 309, 630.
+ 5. Litthauer, S., Battle Martin, W., Lawson, T., 
+and Jones Matthew, A. (2015). Phototropins 
+maintain robust circadian oscillation of PSII 
+operating efﬁ ciency under blue light. Plant J. 
+83, 1034–1045.
+ 6. Dakhiya, Y., Hussien, D., Fridman, E., 
+Kiﬂ awi, M., and Green, R. (2017). Correlations 
+between circadian rhythms and growth in 
+challenging environments. Plant Physiol. 173, 
+1724.
+ 7. Gould, P.D., Diaz, P., Hogben, C., Kusakina, J., 
+Salem, R., Hartwell, J., and Hall, A. (2009). 
+Delayed ﬂ uorescence as a universal tool for the 
+measurement of circadian rhythms in higher 
+plants. Plant J. 58, 893–901.
+ 8. Hamner, W.M. (1997). Sensory ecology of 
+scyphmedusae. In Zooplankton: Sensory 
+Ecology and Physiology, P.H. Lenz, D.K. 
+Hartline, J.E. Purcell and D.L. Macmillan, eds. 
+(Gordon and Breach).
+ 9. Morton, B. (2009). The diurnal rhythm and the 
+processes of  feeding and digestion in Tridacna 
+crocea (BivaMa: Tridacnidae). J. Zool. 185, 
+371–387.
+ 10. Darwin, C.R. (1880). The Power of Movement in 
+Plants (John Murray).
+School of Biological Science s, Life Sciences 
+Building, University of Bristol, Bristol 
+BS8 1TQ, UK. 
+1Lead contact. 
+*E-mail: antony.dodd@bristol.ac.uk

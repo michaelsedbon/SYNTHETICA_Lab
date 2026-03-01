@@ -14,5 +14,6 @@ Quick links to all the external platforms used in this lab.
 ## 🛠 Lab Assistant Command Summary
 - `python3 scripts/sync_experiments.py` — Sync Notion experiments.
 - `python3 scripts/sync_bibliography.py` — Sync Notion bibliography.
+- `python3 scripts/push_experiment_to_notion.py EXP_XXX` — Push experiment docs to Notion.
 - `python3 scripts/fetch_airtable.py --test` — Test Airtable connection.
 - `python3 scripts/read_index.py "Title"` — Read a paper summary aloud.

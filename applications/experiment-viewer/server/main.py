@@ -8,6 +8,7 @@ Settings are persisted in settings.json alongside this file.
 import json
 import os
 import re
+import time
 from pathlib import Path
 from typing import Optional
 
@@ -93,9 +94,10 @@ SOURCE_MAP = {label: path for label, path in SOURCES}
 
 def _reload_sources() -> None:
     """Reload SOURCES and SOURCE_MAP from settings file."""
-    global SOURCES, SOURCE_MAP
+    global SOURCES, SOURCE_MAP, _tree_cache
     SOURCES = _sources_from_settings()
     SOURCE_MAP = {label: path for label, path in SOURCES}
+    _tree_cache = None  # invalidate cache
 
 
 # ── App ─────────────────────────────────────────────────────────────
@@ -127,13 +129,28 @@ def _title_from_md(path: Path) -> str:
 SKIP_DIRS = {".venv", "venv", "node_modules", "__pycache__", ".git", ".next", "data"}
 
 
+# ── Tree cache ──────────────────────────────────────────────────────
+
+_tree_cache: list[dict] | None = None
+_tree_cache_time: float = 0.0
+_TREE_CACHE_TTL = 30  # seconds
+
+
 def _build_tree() -> list[dict]:
     """Walk all experiment sources and return a grouped list.
 
     Each group (EXP_xxx folder) has:
       - summary: the summary.md file entry (or None)
       - files:   all other .md files in the folder
+
+    Results are cached for _TREE_CACHE_TTL seconds.
     """
+    global _tree_cache, _tree_cache_time
+
+    now = time.time()
+    if _tree_cache is not None and (now - _tree_cache_time) < _TREE_CACHE_TTL:
+        return _tree_cache
+
     all_groups: list[dict] = []
 
     for source_label, experiments_dir in SOURCES:
@@ -196,6 +213,8 @@ def _build_tree() -> list[dict]:
 
         all_groups.extend(source_groups)
 
+    _tree_cache = all_groups
+    _tree_cache_time = now
     return all_groups
 
 
@@ -395,6 +414,49 @@ def open_in_editor(
             continue
 
     raise HTTPException(status_code=500, detail="No editor found")
+
+
+# ── Preview API (arbitrary .md files) ───────────────────────────────
+
+
+@app.get("/api/preview")
+def preview_file(
+    path: str = Query(..., description="Absolute path to a markdown file"),
+):
+    """Return the content of any .md file for preview rendering.
+
+    Used by the upload/preview feature and by external skills that want
+    to open a file directly in the experiment viewer.
+    """
+    file_path = Path(path).resolve()
+    if not file_path.is_file():
+        raise HTTPException(status_code=404, detail="File not found")
+    if file_path.suffix.lower() not in {".md", ".markdown", ".txt"}:
+        raise HTTPException(status_code=400, detail="Only .md / .markdown / .txt files are supported")
+    try:
+        content = file_path.read_text(encoding="utf-8")
+    except UnicodeDecodeError:
+        raise HTTPException(status_code=400, detail="Cannot read file as text")
+    return {
+        "content": content,
+        "path": str(file_path),
+        "filename": file_path.name,
+        "dir": str(file_path.parent),
+    }
+
+
+@app.get("/api/preview-media")
+def preview_media(
+    dir: str = Query(..., description="Absolute path to the directory containing the .md file"),
+    path: str = Query(..., description="Relative path to media from the .md file"),
+):
+    """Serve images/media referenced from a previewed markdown file."""
+    base = Path(dir).resolve()
+    resolved = (base / path).resolve()
+    # Basic path-traversal protection: resolved path must be under base or its parents
+    if not resolved.is_file():
+        raise HTTPException(status_code=404, detail="File not found")
+    return FileResponse(resolved)
 
 
 # ── Settings API ────────────────────────────────────────────────────

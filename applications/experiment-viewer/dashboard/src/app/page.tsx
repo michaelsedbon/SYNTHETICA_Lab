@@ -1,11 +1,14 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef, useMemo } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, useCallback, useRef, useMemo, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
 import rehypeRaw from "rehype-raw";
 import rehypeHighlight from "rehype-highlight";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
 import mermaid from "mermaid";
 import hljs from "highlight.js";
 
@@ -555,17 +558,73 @@ async function fetchCodeFile(
 
 // ── Component ──────────────────────────────────────────────────────
 
-export default function ExperimentViewer() {
+function ExperimentViewer() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [groups, setGroups] = useState<ExperimentGroup[]>([]);
   const [activePath, setActivePath] = useState<string | null>(null);
   const [activeSource, setActiveSource] = useState<string>("Lab");
   const [content, setContent] = useState<string>("");
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const [expandedFiles, setExpandedFiles] = useState<Record<string, boolean>>({});
   const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  // ── Preview mode (uploaded or externally-opened .md files) ──
+  const [previewMode, setPreviewMode] = useState(false);
+  const [previewFilename, setPreviewFilename] = useState<string>("");
+  const [previewDir, setPreviewDir] = useState<string>("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Handle file upload
+  const handleFileUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      setPreviewMode(true);
+      setPreviewFilename(file.name);
+      setPreviewDir("");
+      setActivePath(null);
+      setContent(reader.result as string);
+    };
+    reader.readAsText(file);
+    // Reset input so re-uploading the same file triggers onChange
+    e.target.value = "";
+  }, []);
+
+  // Exit preview mode
+  const exitPreview = useCallback(() => {
+    setPreviewMode(false);
+    setPreviewFilename("");
+    setPreviewDir("");
+  }, []);
+
+  // Check for ?preview= query param on mount
+  useEffect(() => {
+    const previewPath = searchParams.get("preview");
+    if (!previewPath) return;
+    setLoading(true);
+    setPreviewMode(true);
+    fetch(`${apiBase()}/api/preview?path=${encodeURIComponent(previewPath)}`)
+      .then((res) => {
+        if (!res.ok) throw new Error(`Failed: ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        setContent(data.content);
+        setPreviewFilename(data.filename);
+        setPreviewDir(data.dir);
+        setActivePath(null);
+      })
+      .catch(() => {
+        setContent("# Error\n\nCould not load the preview file.");
+        setPreviewFilename(previewPath.split("/").pop() || "file.md");
+      })
+      .finally(() => setLoading(false));
+  }, [searchParams]);
 
   // Map source labels to their absolute directory paths (for resolving relative code links)
   const [sourceMap, setSourceMap] = useState<Record<string, string>>({});
@@ -689,22 +748,30 @@ export default function ExperimentViewer() {
 
   // Load experiment tree + source paths
   useEffect(() => {
-    fetchExperiments().then((data) => {
-      setGroups(data);
-      // Auto-select first file
-      if (data.length > 0 && data[0].files.length > 0) {
-        handleSelect(data[0].files[0].path, data[0].source);
-      }
-    });
-    fetchSources().then((sources) => {
+    Promise.all([
+      fetchExperiments(),
+      fetchSources(),
+    ]).then(([expData, sourcesData]) => {
+      setGroups(expData);
       const map: Record<string, string> = {};
-      for (const s of sources) map[s.label] = s.path;
+      for (const s of sourcesData) map[s.label] = s.path;
       setSourceMap(map);
+      // Auto-select first file
+      if (expData.length > 0 && expData[0].files.length > 0) {
+        handleSelect(expData[0].files[0].path, expData[0].source);
+      }
+      setInitialLoading(false);
+    }).catch(() => {
+      setInitialLoading(false);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSelect = useCallback(async (path: string, source: string) => {
+    // Exit preview mode when selecting a file from the sidebar
+    setPreviewMode(false);
+    setPreviewFilename("");
+    setPreviewDir("");
     setActivePath(path);
     setActiveSource(source);
     setLoading(true);
@@ -767,7 +834,12 @@ export default function ExperimentViewer() {
 
   // Resolve relative URLs in markdown to point to the API
   const resolveMediaUrl = (src: string, filePath: string | null): string => {
-    if (!filePath || src.startsWith("http") || src.startsWith("mailto:") || src.startsWith("#")) return src;
+    if (src.startsWith("http") || src.startsWith("mailto:") || src.startsWith("#")) return src;
+    // Preview mode: resolve relative to the previewed file's directory
+    if (previewMode && previewDir) {
+      return `${apiBase()}/api/preview-media?dir=${encodeURIComponent(previewDir)}&path=${encodeURIComponent(src)}`;
+    }
+    if (!filePath) return src;
     const dir = filePath.split("/").slice(0, -1).join("/");
     const resolved = dir ? `${dir}/${src}` : src;
     return `${apiBase()}/api/media?path=${encodeURIComponent(resolved)}&source=${encodeURIComponent(activeSource)}`;
@@ -775,6 +847,42 @@ export default function ExperimentViewer() {
 
   // Keep backward-compat alias
   const resolveImageSrc = resolveMediaUrl;
+
+  // ── Full-screen loading skeleton ──
+  if (initialLoading) {
+    return (
+      <div className="flex h-screen overflow-hidden bg-background">
+        {/* Skeleton sidebar */}
+        <aside className="flex flex-col border-r border-border bg-sidebar w-72 min-w-[280px]">
+          <div className="flex items-center gap-2 px-4 py-4 border-b border-border">
+            <span className="text-xl">📓</span>
+            <h1 className="text-sm font-semibold tracking-tight text-foreground">Experiment Notebooks</h1>
+          </div>
+          <div className="px-3 py-3">
+            <div className="w-full h-8 rounded-md bg-muted/40 animate-pulse" />
+          </div>
+          <div className="flex-1 px-4 py-2 space-y-4">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="space-y-2">
+                <div className="h-4 rounded bg-muted/30 animate-pulse" style={{ width: `${60 + (i * 7) % 30}%`, animationDelay: `${i * 0.1}s` }} />
+                <div className="ml-3 space-y-1.5">
+                  <div className="h-3 rounded bg-muted/20 animate-pulse" style={{ width: `${70 + (i * 11) % 25}%`, animationDelay: `${i * 0.1 + 0.05}s` }} />
+                  <div className="h-3 rounded bg-muted/20 animate-pulse" style={{ width: `${50 + (i * 13) % 35}%`, animationDelay: `${i * 0.1 + 0.1}s` }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </aside>
+        {/* Skeleton main content */}
+        <main className="flex-1 flex flex-col items-center justify-center min-w-0">
+          <div className="flex flex-col items-center gap-4">
+            <div className="h-8 w-8 border-2 border-muted-foreground/30 border-t-muted-foreground rounded-full animate-spin" />
+            <p className="text-sm text-muted-foreground animate-pulse">Loading experiments…</p>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">
@@ -1044,7 +1152,20 @@ export default function ExperimentViewer() {
             </svg>
           </button>
 
-          {activePath && (
+          {previewMode ? (
+            <div className="flex items-center gap-2 text-sm">
+              <span className="px-1.5 py-0.5 bg-blue-500/20 text-blue-400 rounded text-xs font-medium">
+                Preview
+              </span>
+              <span className="text-foreground font-medium">{previewFilename}</span>
+              <button
+                onClick={exitPreview}
+                className="ml-1 px-2 py-0.5 text-xs rounded-md bg-muted/60 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              >
+                ✕ Close
+              </button>
+            </div>
+          ) : activePath ? (
             <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
               <span className="px-1.5 py-0.5 bg-muted/50 rounded text-xs font-medium">
                 {activeSource}
@@ -1064,7 +1185,32 @@ export default function ExperimentViewer() {
                 </span>
               ))}
             </div>
-          )}
+          ) : null}
+
+          {/* Spacer */}
+          <div className="flex-1" />
+
+          {/* Upload .md button */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".md,.markdown,.txt"
+            className="hidden"
+            onChange={handleFileUpload}
+          />
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded-md
+                       bg-muted/50 text-muted-foreground hover:text-foreground
+                       hover:bg-muted/80 border border-border/50
+                       transition-colors"
+            title="Upload a .md file to preview"
+          >
+            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+            </svg>
+            Preview .md
+          </button>
         </header>
 
         {/* Content */}
@@ -1076,11 +1222,11 @@ export default function ExperimentViewer() {
                 <span className="text-sm">Loading…</span>
               </div>
             </div>
-          ) : activePath ? (
-            <article className="max-w-4xl mx-auto px-8 py-8 markdown-body">
+          ) : (activePath || previewMode) ? (
+            <article className="max-w-4xl mx-auto px-8 py-8 markdown-body" key={previewMode ? `preview-${previewFilename}` : activePath}>
               <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                rehypePlugins={[rehypeRaw, rehypeHighlight]}
+                remarkPlugins={[remarkGfm, remarkMath]}
+                rehypePlugins={[rehypeKatex, rehypeRaw, rehypeHighlight]}
                 urlTransform={(url) => {
                   // Allow file:/// URLs through (used for code file links)
                   if (url.startsWith("file:///")) return url;
@@ -1319,5 +1465,14 @@ export default function ExperimentViewer() {
         </div>
       )}
     </div>
+  );
+}
+
+// Wrap with Suspense for useSearchParams
+export default function ExperimentViewerPage() {
+  return (
+    <Suspense>
+      <ExperimentViewer />
+    </Suspense>
   );
 }

@@ -1,0 +1,757 @@
+Phillips et al. Journal of Biological Engineering           (2019) 13:72 
+https://doi.org/10.1186/s13036-019-0200-5
+RESEARCH
+Open Access
+Marimo machines: oscillators,
+biosensors and actuators
+Neil Phillips1*
+, Thomas C. Draper1, Richard Mayne2,1 and Andrew Adamatzky1
+Abstract
+Background: The green algae balls (Aegagropila linnaei), known as Marimo, are large spherical colonies of live
+photosynthetic filaments, formed by rolling water currents in freshwater lakes. Photosynthesis therein produces gas
+bubbles that can attach to the Marimo, consequently changing its buoyancy. This property allows them to float in the
+presence of light and sink in its absence.
+Results: We demonstrate that this ability can be harnessed to make actuators, biosensors and bioprocessors
+(oscillator, logic gates). Factors affecting Marimo movement have been studied to enable the design, construction
+and testing of working prototypes.
+Conclusions: A novel actuator design is reported, incorporating an enhanced bubble retention system and the
+design and optimisation of a bio-oscillator is demonstrated. A range of logic gates (OR, AND, NOR, NAND, XOR)
+implementable with Marimo have been proposed.
+Keywords: Marimo; Processor; Logic gate; Oscillator; Biosensor; Bioactuator; Biomotor; Algae; Unconventional
+Computing; Biomimicry; TRIZ
+Background
+Increasingly scientists and engineers are realising that
+nature, over many millions of years of evolution, has by
+necessity developed energy efficient systems. Combin-
+ing some of nature’s biochemical processes with human
+engineering (biomimetic) has enabled novel devices to be
+prototyped [1].
+The variability in living systems, bred from evolutionary
+pressures, can take the form of movement with minimal
+energy consumption. In plants, responses that occur in
+response to a directional stimulus are called tropisms [2].
+One of the most commonly observed tropic responses
+in plants is phototropism, in which plant stems grow
+towards light. Heliotropism is the basis for rapid and
+reversible movement in plants, which allows them to track
+the sun. Plants can also exhibit non-directional responses
+to stimuli (nastic movements), for example temperature
+and humidity. The rate or frequency of these responses
+increases as intensity of the stimulus increases [3].
+*Correspondence: neil.phillips@uwe.ac.uk
+1Unconventional Computing Laboratory, University of the West of England,
+Coldharbour Lane, Bristol, BS16 1QY UK
+Full list of author information is available at the end of the article
+Nature has adapted to harness solar energy via pho-
+tosynthesis, which provides the basic energy source for
+nearly all organisms. The maximum photosynthetic effi-
+ciency of algae is an active topic of debate [4]. The theoret-
+ical potential (approximately 36% [5]) cannot be achieved
+in practice due to limitations of the relevant bio-chemical
+processes. At low light intensity algae can convert roughly
+6% of Photosynthetically Available Radiation (PAR) into
+biomass in a best case scenario [6]. This conversion rate
+drops in full sunlight to avoid damaging the organism [7].
+This investigation focuses on harnessing adaptive
+responses of a live heliotropic, photosynthetic organism
+for use in hybrid bio-artificial systems. Aegagropila linnaei
+balls are large (exceeding tens of centimetres in diameter
+in some cases) spherical objects [8, 9] formed by the natu-
+ral rolling and self-adhesion of filamentous alga over many
+years in turbulent freshwater lake currents [10, 11]. A. lin-
+naei are known more commonly (and hereafter in this
+paper) by the Japanese monicker “Marimo”, from the ubiq-
+uity of the alga balls arising from Lake Akan, Hokkaid¯o,
+Japan [12, 13]. Photographs of both an intact Marimo and
+the cross-section of a Marimo can be seen in Fig. 1a and
+Fig. 1b, respectively. In the cross-sectional photograph, it
+can be seen that the filamentous nature of the Marimo is
+© The Author(s). 2019 Open Access This article is distributed under the terms of the Creative Commons Attribution 4.0
+International License (http://creativecommons.org/licenses/by/4.0/), which permits unrestricted use, distribution, and
+reproduction in any medium, provided you give appropriate credit to the original author(s) and the source, provide a link to the
+Creative Commons license, and indicate if changes were made. The Creative Commons Public Domain Dedication waiver
+(http://creativecommons.org/publicdomain/zero/1.0/) applies to the data made available in this article, unless otherwise stated.
+
+Phillips et al. Journal of Biological Engineering           (2019) 13:72 
+Page 2 of 10
+Fig. 1 Photographs of an (a) intact and (b) cross-sectioned Marimo. Small grains of sand are visible in both images. The diameter of the Marimo is
+62mm
+continuous throughout. Additionally the outer edge is a
+darker green than the core, which is believed to be due to
+the photosynthetic pigment concentrating in the regions
+that receives the most illumination, in agreement with
+previously published works [10].
+After considering a range of algae structures it was
+concluded that Marimo was particularly promising for
+utilisation in functional bio-artificial devices. Marimo can
+grow in three forms: (1) epilithic, usually found on the
+shaded side of rocks; (2) free-floating filaments, that can
+form a carpet on the surface of the water; and (3) densely
+packed algal filaments, that radiate from the centre form-
+ing spherical shape [14]. For our purposes, the latter has
+the advantages of being self-contained, mobile, and able
+to photosynthesise using light from any direction [15].
+Furthermore, Marimo appear to have an extraordinarily
+long lifespan, with literature citing that natural balls are
+formed over ‘many years’ [10] and commercial suppliers
+advertising prised ornamental specimens over 10 cm in
+diameter, which are reportedly grown over a period of
+15 or more years. This suggests a long lifespan of any
+proposed bio-artificial constructs.
+Other researchers [16] have studied the natural char-
+acteristics of Marimo; in particular, its ability to rise and
+sink in water, which was found to result from generation
+of oxygen via photosynthesis. Bubbles are formed on the
+surface of, and at shallow depths within, the Marimo when
+they are provided with illumination: it is assumed that
+the filamentous nature of the alga both provides numer-
+ous nucleation sites and creates a mesh through which
+it is difficult for the oxygen bubbles to dissipate. The
+observed phenomenon of a Marimo ball rising when pro-
+vided with a means to initiate photosynthesis suggests that
+the oxygen generation, and retention as bubbles adherent
+to and within the moss balls, may exceed the rate at which
+oxygen is lost through dissipation or percolation through
+its filamentous structure.
+Several research groups have reported on bioenergy,
+usually through converting biomass into electricity or
+secondary products [6]. Other groups have reported
+biomimetic microsystems with buoyancy control using
+features such as: Pt:Ag microbeads decomposing H2O2
+[17], clay-coated catalase-containing microcapsules which
+decompose H2O2 [18], or metal-organic frameworks con-
+taining catalase for the decomposition of H2O2 [19].
+However, using Marimo to directly power processors,
+bio-sensors and actuators through exploitation of its pho-
+tosynthetic ability has yet to be explored. The research
+reported here represents a step towards the long term goal
+of autonomous, light powered, biological systems which
+can operate under real world conditions. To expand on the
+benefits of using biological components for engineering
+and computing applications, many characteristics of bio-
+logical systems can be considered as desirable if exploited
+for a useful task, such as self-growth, low energy con-
+sumption, carbon capture (in photosynthetic organisms),
+organisation and variation. This ethos is predicated on
+minimising the use of conventional electronics, as bio-
+artificial hybrid devices necessarily exhibit the drawbacks
+of both types of material. Therefore, biological devices are
+not considered as direct replacements for their artificial
+counterparts (e.g. as ‘biological time’ is slower than elec-
+trical communications, biological solutions are typically
+not suited to time-critical applications), but as comple-
+mentary systems.
+Rather than using the biomass formed from the photo-
+synthesis, we took the unconventional approach of util-
+ising the gas generated during the photosynthetic pro-
+cess instead. More specifically, the low density of the gas
+(0.001g cm−3) compared to water (1.0g cm−3) means the
+
+Phillips et al. Journal of Biological Engineering           (2019) 13:72 
+Page 3 of 10
+gas rises in the form of bubbles to minimise overall Poten-
+tial Energy (PE). The movement of the bubbles towards
+the surface of the water can be harnessed to enable a
+variety of systems.
+We demonstrate that a variety of actuating and, poten-
+tially, computing devices can be implemented by using
+Marimo with a controlled patterns of illumination. We
+propose experimental designs of Marimo motor and oscil-
+lator and speculate about potential implementation of
+Marimo logic gates.
+Methods and materials
+Marimo culture
+Artificially-rolled Marimo were sourced from Amazon
+UK and were kept in large, lidded aquariums in tap water
+containing 0.1mL L−1 of commercially-available fertiliser
+containing a source of phosphates and nitrates (TNC
+Complete, The Nutrient Company). When not in use in
+experiments, the organisms were exposed to a day/night
+cycle but were kept out of direct sunlight. Aquarium water
+and fertiliser was refreshed every 3 weeks. All Marimo
+culture and consequent experimentation was conducted
+at room temperature (18◦C to 22◦C). For a detailed
+measurement of illumination level, a Photosynthetically
+Active Radiation (PAR) sensor was used (see Additional
+file 1 for bubble, light and calibration data).
+Bubble retention
+Cohorts of Marimo (60 mm diameter) were monitored
+under the same conditions (light and nutrients). All were
+observed to produce bubbles, but only some gained suffi-
+cient buoyancy to raise off the floor of the aquarium and
+float. The proportion of bubbles which stay attached to
+algal filaments is noted to affect overall buoyancy. In other
+words, bubble generation and retention is required to
+achieve flotation. The distribution of bubbles on the sur-
+face (of undisturbed) water above Marimo was monitored.
+The density of bubbles towards the periphery doesn’t
+increase in proportion to Marimo surface area which sug-
+gests it is easier for the bubbles to escape from the algal
+filaments when their lift (due to buoyancy) is upwardly
+aligned with the filaments.
+Buoyancy increase from bubbles
+The positive buoyancy provided by bubbles was measured
+by carefully adding weights to floating Marimo until they
+sunk. To minimise unwanted rotation and associated loss
+of bubbles the weights were formed from rings of cop-
+per wire with a diameter smaller than the diameter of the
+Marimo. Thetypical lift provided by bubbles on Marimo of
+approximately 60 mm diameter is 1.5 g. The surface area
+of a 60 mm diameter Marimo is 110 cm2. However, only
+part of the bottom hemisphere usually holds larger bub-
+bles, so the effective lift area is 50 cm2. Therefore, usable
+lift is approximately 0.03g cm−2. To investigate the influ-
+ence of illumination on bubble generation Marimo were
+located under (water filled) glass funnels with attached
+syringes, such that any released bubbles would rise inside
+the funnel and be captured. The change in volume of air
+inside the syringes (50 mL) was recorded while maintain-
+ing the same water level inside the funnel. One beaker
+was intentionally left empty and acted as ‘control’ (no gas
+was collected). Five funnel rigs were left running (simulta-
+neously) for two weeks. To ascertain the influence of the
+concentration of dissolved carbon dioxide on photosyn-
+thesis, a Marimo was continuously illuminated (Martin
+Rush Light Source, see Additional file 1) for a prolonged
+period (10 days) in still water until bubble formation (pho-
+tosynthesis) was observed to stop. Once ceased, frozen
+carbon dioxide (dry ice, 8 g) was added to elevate the
+concentration of carbon dioxide in the water.
+Marimo motor
+Ten Marimo (approximately 60 mm diameter) were
+located inside transparent chambers (70 mm diameter,
+85 mm length, with screw cap lids) equally spaced around
+the periphery of two transparent, acrylic discs (340
+mm diameter), see Fig. 2c. The discs were mounted on
+bespoke ‘friction-free’ magnetic bearings (see Additional
+file 1). The rotor assembly was dynamically balanced (see
+Additional file 1) to within 50 g mm by adding correcting
+weight to both discs as required. Alternatively, an auto-
+matic balancing set-up could be exploited [20]. The per-
+formance of the motor was separately investigated with
+sunlight and illumination solely from an LED growth light
+(120 W input) on the side of the aquarium, see Fig. 2a. The
+aquarium water re-circulation pump was left switched off
+to prevent recirculating water affecting measurements. A
+camera (Nikon P900) was programmed to take a photo
+every four minutes, in order to determine the speed and
+direction of rotation. Testing revealed the location and
+size of the bubble release slots has a significant impact on
+speed and smoothness of rotation. Slots 6mm wide and
+40mm in length were used, through trial and error, see
+Fig. 2b and Fig. 2d.
+Marimo oscillator
+Two Marimo (approximately 60 mm diameter) were place
+in transparent columns of water (110×110×300mm, see
+Fig. 3), free to move up and down when illuminated.
+The ‘right hand’ Marimo (nearest the lamp) blocks light
+reaching the ‘left hand’ Marimo. The illumination (from
+Martin Rush LED lamp, set to 18% red, 18% blue and 0%
+green, see Additional file 1) was made more parallel by
+passing through tube (80 mm diameter and 200 mm
+length) with matt black surface. After a period of illumi-
+nation the ‘right hand’ Marimo floats and light illuminates
+the ‘left hand’ Marimo, which then floats. The light beam
+
+Phillips et al. Journal of Biological Engineering           (2019) 13:72 
+Page 4 of 10
+Fig. 2 Marimo motor. a Motor in aquarium and LED lamp. b Side view of Marimo in plastic pots. c Plan view of rotor assembly. d Bubble escape slot.
+A video of the Marimo motor rotating can be seen in the Additional file 3
+is then reflected by a pair of mirrors onto the floating
+‘left hand’ Marimo. The ‘right hand’ Marimo then sinks,
+blocking the light to the ‘left hand’ Marimo. This then
+causes the ‘left hand’ Marimo to sink. This oscillating
+cycle repeats continuously. In order to restrict Marimo
+movement to the vertical axis, spikes were added to the
+bottom of the water columns. The acrylic bases of the
+spikes were coated in silicon to reduce nucleation sites for
+bubble formation. The centre of mass of the Marimo was
+lowered as discussed in the “Results” section. Addition-
+ally, the level of the water in the columns was set such
+that, whilst floating, illumination to bottom half of the
+Fig. 3 Experimental rig of Marimo oscillator. (1) parallel light beam via matt black tube from LED lamp, (2, 3) mirrors, (4, 5) spikes and (6, 7) Marimo
+with floats and weights
+
+Phillips et al. Journal of Biological Engineering           (2019) 13:72 
+Page 5 of 10
+Marimo was most prominent. The experimental set up
+and diagram of the oscillations can be seen in Fig. 3. A
+bespoke parallel (4◦) light beam (660 nm) was developed
+to enhance performance (see Additional file 1).
+Results
+Buoyancy & movement enhancement
+It was observed the typical rate of bubble generation (for
+approximately 60 mm diameter Marimo) in moderate sun-
+light is 1 mL d−1 to 3 mL d−1. The rate can increase to
+6 mL d−1 in strong sunlight. After a prolonged period
+of illumination, the bubble production of the Marimo
+was observed to decrease. After addition of dry ice, no
+additional generation of bubble formation was observed,
+suggesting that the carbon dioxide concentration is not
+responsible for the decrease in photosynthesis.
+The variations in movements of similar Marimo (n =
+20) were recorded (via video time lapse) under different
+conditions. Analysis of recorded images revealed irregular
+shaped Marimo floated more often than spherical shaped.
+It was hypothesised that their asymmetry reduces rotation
+allowing them to retain more bubbles. Through experi-
+mentation this characteristic was deliberately enhanced
+by adding positive buoyancy above the Marimo and neg-
+ative buoyancy below the Marimo, to lower the centre of
+mass which in turn reduces rotation off the vertical axis.
+For best performance, the combined change in buoyancy
+of positive buoyancy (float), negative buoyancy (weight)
+and connection (link) needs to be slightly positive. The
+float and weight need to be free of nucleation sites to
+prevent additional bubble formation (which can posi-
+tively bias buoyancy). This can be achieved by selecting
+objects with smooth surfaces, such as plastics. A Marimo
+modified in such a way can be seen in Fig. 4.
+To measure water absorption (and quantify loss of buoy-
+ancy over time) a cohort of spheres made of different
+types of plastics with and without holes were weighed
+before and after submersion under water (see Additional
+file 1 for details). Testing confirmed polypropylene offers
+greater lift per volume than HDPE (consistency of den-
+sity and water absorption were both similar). Some other
+types of plastics (such as polymethylpentene (TPX™) with
+density of 0.82 g cm−3) provide greater lift per volume,
+but are not readily available as spheres of desired size.
+The float or weight can be coloured or marked to pro-
+vide visual differentiation for experimentation. As the
+float and weight are solid (rather than hollow) they can
+be drilled to provided an anchor point (2 mm diame-
+ter). To secure the float and weight, whilst ensuring the
+Marimo is still able to float freely, a narrow (1.5 mm
+diameter) skewer is inserted directly from the top to
+bottom to ensure the float and weight are aligned with
+Marimo centre of mass. The available reduction in density
+(compared to water) of solid plastic (e.g. 0.9 g cm−3 for
+Fig. 4 Marimo with artificially generated lower centre of mass, in
+order to prevent rotation. The top sphere is polypropylene, the
+bottom sphere is polyoxymethylene, and they are interconnected
+through the Marimo with a nichrome wire
+polypropylene (PP)) is less than the available increase
+in density (e.g. 2.2 g cm−3 for polytetrafluoroethylene
+(PTFE)) so the float requires a larger volume than the
+weight to provide an equivalent change in buoyancy.
+Example dimensions and material properties are shown in
+Table 1, however, alternative equivalent combinations are
+possible. An additional consideration is water absorption
+of the float over prolonged periods of immersion, this can
+be minimised through material selection (e.g. plastic made
+from non-polar organic species).
+Marimo motor
+When illuminated by daylight, speed of rotation is propor-
+tional to intensity. For example, approximately 0.2 rev h−1
+at 1 kW h m−2 and approximately 0.5 rev h−1 at
+2.7 kW h m−2. Dailyillumination levels were obtained from
+a publicly available dataset on the photovoltaic power gen-
+eration at the nearby Hamilton House, Bristol, UK. The
+energy of a single Marimo completing a single revolution
+is 0.9 mJ rev−1 per Marimo, when rotating at 0.2 rev h−1.
+This energy will increase linearly as the speed of rotation
+increases. The calculation can be seen in the Additional
+file 1.
+Illumination level needed to be within a suitable range:
+too low and the rate of photosynthesis is too slow to gen-
+erate the necessary oxygen to raise the Marimo, whereas
+too high level of illumination caused damage to the
+Marimo (as evidenced by their taking on a discoloured
+
+Phillips et al. Journal of Biological Engineering           (2019) 13:72 
+Page 6 of 10
+Table 1 The density and related buoyancy of various materials and Marimo
+Part
+Material
+Density
+Diameter (Length)∗
+Weight
+Buoyancy
+g cm−3
+mm
+mN
+mN
+Float (sphere)
+Polypropylene (PP)
+~0.9
+25.4
+71
+7.8
+Marimo (sphere)
+Filamentous algae
+~1.0
+50 – 60
+520†
+-4.9
+Bubbles
+Gas (O2, CO2 & N2 mix)
+0.001
+0 – 5
+0
+0 – 20
+Weight (sphere)
+Polyoxymethylene (Delrin®)
+1.42
+11
+9.0
+-2.6
+Link∗
+Nichrome wire
+8.4
+(75)
+1.5
+-1.3
+Combined Overall
+−1 to + 19
+∗Dimensions are given as diameters for spheres and as length for the ‘link’. † The Marimo ball has a weight of 88mN once desiccated
+appearance). A PAR light sensor (SQ-120, Campbell Sci-
+entific Ltd) was located on top of the motor’s bearing
+support arm. The sensor’s output voltage was measured
+with a Fluke 8846A. For example, when illuminated by
+Laputa ‘60LEDS grow light’ (set to 40% of full power)
+the PAR sensor output was 22 mV, which corresponds
+to 110 μmol m−2 s−1 (approximately 1240 lumens), which
+rotated the Marimo motor with an average speed of
+0.25 rev h−1.
+Marimo oscillator
+The Marimo balls in the experimental oscillator setup
+executed phases movement (Fig. 5a) detected via video
+recording and measurement of light passing through the
+water columns (Fig. 5b). Data recorded (using protocol:
+both Marimo low = 0 0, left low, right high = 0 1, both
+Marimo high = 1 1, left high, right low = 1 0) and a video of
+the oscillation sequence is available in the Additional files
+2 and 5. Probabilities, derived from experimental record-
+ing, of transitions between states of the two-ball oscillator
+are given in Fig. 6a. The oscillation can be seen as a prob-
+abilistic automaton with four states (00), (01), (10), (11),
+corresponding to the situation of ‘left’ and ‘right’ balls
+being down (0) or up (1). The probabilistic state transition
+diagram of the automaton is shown in Fig. 6b. If only state
+transitions with a maximum likelihood are allowed to take
+place then the two-ball Marimo machine runs in the cycle
+shown in Fig. 6c, thus illustrating the ideal oscillator.
+Discussion
+A wide range of logic gates (including: AND, NOR, OR,
+NAND, XOR) have been envisaged using Marimo with light
+as ‘input signal’, ‘output signal’ and ‘actuation power’. In
+other words, depending on the desired functionality, light
+is interchangeable between all three functions [input sig-
+nal (data), output signal (data), actuation power (energy)].
+This provides potentially zero electric grid consumption
+when operating on sunlight. Further, processing based on
+variable density units can be both modular and scalable.
+A key benefit to the devices presented is, therefore, the
+efficiency inherent in utilising photosynthetic (i.e. carbon-
+capturing), self-growing, solar-powered devices whose
+running costs are essentially null, regardless of whether
+their application lies in creating unconventional comput-
+ing devices (logic gates, oscillators) or engineering (motor,
+e.g. applied to electricity generation).
+In order to extend the systems’ capabilities into logic
+gates, a refined set up has been designed. The layouts for
+these gates can be seen in Fig. 7. The main alteration is that
+the float has transparent and opaque sections, as required.
+Inputs are represented by the presence or absence of
+a light beam entering the system, and outputs by a
+light beam exiting the system. Such a system could also
+be implemented using other vertically-controlled units
+[17–19].
+During the development of the Marimo logic gates it
+was observed that Marimo can hold a stable position
+between the ‘top’ and ‘bottom’ of the containment vessel
+for prolonged periods (upwards of 30 min, video available
+in the Additional file 4), with a suitable lighting configura-
+tion. This enables the potential advancement of logic gates
+to include multi-state operations. Further, by graduating
+the light level, an analogue system can be conceived.
+It was observed that Marimo often take a period (sev-
+eral hours) before forming bubbles and movement in a
+new/refreshed environment. This induction period may
+be a combination of several factors including: rising con-
+centration of dissolved gases in local water before bubble
+formation, re-acclimatisation of the organisms to the rapid
+change in environment, and the state of the Marimos’
+photosynthetic systems prior to beginning the experiment
+[21].
+The 1D rotational movement (of Marimo motor) can
+be extended to 2D movement. One can envisage such a
+system whereby multiple Marimo are located inside indi-
+vidual transparent chambers (spheres), which are them-
+selves located near the inside surface of a larger partly
+transparent sphere. Marimo exposed to illumination will
+generate gas (via photosynthesis) creating positive buoy-
+ancy. The net change in buoyancy will rotate the larger
+sphere (rover) away from the light source. Each of the
+smaller spheres would contain a gas vent (located at the
+
+Phillips et al. Journal of Biological Engineering           (2019) 13:72 
+Page 7 of 10
+a
+PPFD, µmol m-2 s-1
+0
+5
+10
+15
+Time, min
+0
+500
+1000
+1500
+b
+Fig. 5 Dynamics of the Marimo oscillator. a Scheme of a typcial sequence of actions. b Level of illumination against time is shown by black circles
+(the connecting black line between the circles is to guide eyes). ‘Up’ and ‘bottom’ position of left (red triangle) and right (green rectangle) balls are
+superimposed on the plot
+a
+b
+c
+Fig. 6 Probabilities of state transitions of a two-ball Marimo oscillator. (a) Experimental transition probabilities going from one state at time ‘t’ to
+another state at time t+1. (b) Probabilistic State Transition diagram, populated with values from (a). (c) Probabilistic State Transition diagram for an
+ideal oscillator
+
+Phillips et al. Journal of Biological Engineering           (2019) 13:72 
+Page 8 of 10
+Fig. 7 Logic gates based on Marimo: (a) NOR (b) AND (c) OR (d) NAND (e) XOR. The Marimo are represented with green balls. The floats are
+represented by orange and/or black circles. The black section of a float is opaque, while the orange section is transparent. The input signals are
+shown as A, B, C, or D. The output signal is observed by sensor F1 or F2. An ‘always-on’ light sources is portrayed by a black box
+largest distance from centre of larger sphere) such that
+the gas can escape when the smaller sphere moves to the
+‘top’ of the larger sphere. It is worth noting that because
+the surface area of a sphere increases to the square of
+its radius, the potential power of a Marimo rover would
+increase quadratically with its size. Potentially, such a
+light-powered Marimo rover could autonomously travel
+on land or in water (if outer sphere is suitably configured),
+and navigate topology. The topology of the land could be
+inferred by remotely tracking the movement of the rover
+(e.g. add RF reflector and track via satellite). A prototype
+rover is under construction and will be reported on in the
+future.
+Potential applications of actuators and individual logical
+gates based on Marimo can be found in situations where
+speed of operation is not essential, but device longevity
+is. For example, a logical device such as the one pre-
+sented here could be used as a light-sensitive controller
+for a microbial fuel cell system, such as the one pre-
+sented in Ref. [22]. The rationale behind this approach
+is that such a controller — which could be effective for
+the decades-long lifespan of the Marimo used and would
+
+Phillips et al. Journal of Biological Engineering           (2019) 13:72 
+Page 9 of 10
+not require an electrical power source — would switch
+between power usage or storage based on the user’s diur-
+nal energy demands. Furthermore, any low speed of oper-
+ation could be mitigated in the various applications of
+Marimo motors, such as the aforementioned electricity
+generation. If, for example, Marimo motors were used to
+generate electricity via induction from only sunlight input,
+device efficiency could be improved through scaling and
+design optimisation. Whilst electricity generation could
+not be expected to be enormous through these means,
+we consider the concept worthy of further investigation
+as a current opinion on alternative fuel sources is that a
+variety of ‘green’ methods should be utilised in combina-
+tion to achieve better climate outcomes. As such, certain
+perceived ‘failings’ of Marimo-based devices may be mit-
+igated by factors such as their ability to capture carbon
+and not requiring heavily-refined or enriched materials in
+their production, as is the case for solar panels.
+The potential speed of operation is an important con-
+sideration in biomimetic designs, as it is comparable to
+data processing and actuation time. While most plants
+move relatively slowly (compared to animals), some have
+evolved fast responses. For example, the Venus flytrap
+(Dionaea muscipula) can capture a fly by closing its trap
+(a modified leaf) in less than one tenth of a second when
+triggered (physical contact with plant’s hairs) [23]. There-
+fore, the speed of operation cannot be considered to be
+limited solely due to its biological nature. Whilst the cur-
+rent investigation did not examine variation in Marimo
+diameter, this would be an important aspect to focus on in
+future studies as there could be a relationship between the
+size of a Marimo and its movement.
+Although the applications outlined above are proposed
+specifically in applications where slow speed of operation
+is not an impediment, the principles of operation out-
+lined in this paper can be applied to a smaller scale which
+could be used, in turn, to enhance the operation speed.
+As photosynthesis is a characteristic of multiple species
+of plants, algae, bacteria and protozoa, the limitation on
+the size of a living oxygen-generating buoyancy system is
+therefore bounded by the physical dimensions of a sin-
+gle photosynthetic cell plus a surrounding medium for
+capturing any oxygen generated, although smaller systems
+may be considered as viable through the use of decellu-
+larised chloroplasts. We propose that, if immobilised in
+a suitable porous, water-stable, light-permeable substance
+such as sodium alginate, small colonies of microalgae (e.g.
+Micromonas pusilla, approximately 3 μm in length [24])
+or cyanobacteria (approximately 1 μm in length) could
+be utilised in much the same manner as the previously
+described Marimo devices. The use of microfluidic tech-
+nology has been demonstrated as a reliable method for
+generating alginate beads with embedded substances in
+the range of 10 μm [25], hence we propose this to be a
+realistic estimate of the size of a single photosynthetic,
+variable-density buoyancy system, for use in miniaturised
+versions of the Marimo devices previously described,
+which could be engineered to have much faster oper-
+ation times through exploiting lower-mass components
+and shorter travelling distances for the photosynthetic
+elements.
+Conclusion
+We have demonstrated that a diverse range of devices can
+be built using Marimo. Our systems act as (1) biosen-
+sors, in that their output varies with external environ-
+mental conditions; (2) actuators, in that we have con-
+structed a Marimo-powered rotational motor; (3) and
+logic gates, using the natural vertical motions of Marimo
+we have established the first Marimo oscillator and pro-
+posed schematics for a wide range of logic gates based on
+the time-varied density of Marimo. The performance of
+these example systems has been enhanced by optimisation
+of the centre of mass and overall buoyancy of individ-
+ual Marimo. The principle of using photosynthesis to
+control operations has been demonstrated. The potential
+to extend functionality to a autonomous, light-powered
+rover has been proposed. Transferring the principles of
+operation to the cellular scale would enable greater pro-
+cessing density. Opportunities for further enhancements
+to functionality have been identified and are under devel-
+opment.
+Additional files
+Additional file 1: Additional supplementary information is available in an
+online file. This includes construction information on the motor and
+balancing rigs, details on the floats used, and details on the light sources.
+(PDF 1806 kb)
+Additional file 2: Video of the Marimo Oscillator in action. (MP4 13,077 kb)
+Additional file 3: Video of the Marimo Motor in action. (MP4 12,292 kb)
+Additional file 4: Video of the Marimo whilst vertically stable. (MP4 12,592
+kb)
+Additional file 5: Processed data of the Marimo oscillator video. (XLSX 12
+kb)
+Acknowledgements
+This research was supported by the University of the West of England, Bristol,
+UK.
+Authors’ contributions
+NP conceived and conducted the experiments. All authors discussed and
+analysed the results. NP and TCD took the photographs and videos. All authors
+drafted, reviewed, and approved the manuscript.
+Availability of data and materials
+The datasets made and analysed during the current study are available from
+the corresponding author on reasonable request.
+Ethics approval and consent to participate
+Not applicable.
+
+Phillips et al. Journal of Biological Engineering           (2019) 13:72 
+Page 10 of 10
+Consent for publication
+Not applicable.
+Competing interests
+The authors declare that they have no competing interests.
+Author details
+1Unconventional Computing Laboratory, University of the West of England,
+Coldharbour Lane, Bristol, BS16 1QY UK. 2Department of Applied Sciences,
+University of the West of England, BS16 1QY Bristol, UK.
+Received: 3 June 2019 Accepted: 8 August 2019
+References
+1.
+Vincent JFV. Biomimetics — a review. Proc IMechE Part H J Eng Med.
+2009;223(8):. 919–939. Available from: http://journals.sagepub.com/doi/
+10.1243/09544119JEIM561.
+2.
+Gilroy S. Plant tropisms. Curr Biol. 2008;18(7):R275–R277. Available from:
+https://linkinghub.elsevier.com/retrieve/pii/S0960982208001796.
+3.
+Scorza LCT, Dornelas MC. Plants on the move: Towards common
+mechanisms governing mechanically-induced plant movements. Plant
+Signal Behav. 2011;6(12):1979–1986. Available from: http://www.
+tandfonline.com/doi/abs/10.4161/psb.6.12.18192.
+4.
+Zijffers JWF, Schippers KJ, Zheng K, Janssen M, Tramper J, Wijffels RH.
+Maximum Photosynthetic Yield of Green Microalgae in Photobioreactors.
+Mar Biotechnol. 2010;12(6):708–718. Available from: http://link.springer.
+com/10.1007/s10126-010-9258-2.
+5.
+Oncel SS. Biohydrogen from Microalgae, Uniting Energy, Life, and Green
+Future Handb. Mar. Microalgae. Elsevier; 2015. p. 159–196. Available from:
+https://linkinghub.elsevier.com/retrieve/pii/B978012800776100011X.
+6.
+Weyer KM, Bush DR, Darzins A, Willson BD. Theoretical Maximum Algal
+Oil Production. BioEnergy Res. 2010;3(Available from: http://link.springer.
+com/10.1007/s12155-009-9046-x):204–213.
+7.
+Parlevliet D, Moheimani N. Efficient conversion of solar energy to
+biomass and electricity. Aquat Biosyst. 2014;10(1):4. Available from: http://
+aquaticbiosystems.biomedcentral.com/articles/10.1186/2046-9063-10-4.
+8.
+Cooper M. The Lake Akan Area: A Future Geopark?. In: Natural Heritage of
+Japan. Springer; 2018. p. 153–159. Available from: http://link.springer.
+com/10.1007/978-3-319-61896-8_14.
+9.
+Bryant J, Irvine L. Marimo, Cladophora, Posidonia and other plant balls.
+Linn. 2016;32(2):11–14.
+10. Togashi T, Sasaki H, Yoshimura J. A geometrical approach explains Lake
+Ball (Marimo) formations in the green alga, Aegagropila linnaei. Sci Rep.
+2015;4(1):3761. Available from: http://www.nature.com/articles/
+srep03761.
+11. Boedeker C. The attached form of the endangered freshwater alga
+Aegagropila linnaei Kützing (Chlorophyta) is found in the
+Zuideindigerwiede, The Netherlands. Aquat Bot. 2010;92(1):75–77.
+Available from: https://linkinghub.elsevier.com/retrieve/pii/
+S0304377009001247.
+12. Yoshii Y, Hanyuda T, Wakana I, Miyaji K, Arai S, Ueda K, et al. Carotenoid
+Compositions of Cladophora Balls (Aegagropila Linnaei) and Some
+Members of the Cladophorales (Ulvophyceae, Chlorophyta): Their
+Taxonomic and Evolutionary Implication. J Phycol. 2004;40(6):1170–1177.
+Available from: http://doi.wiley.com/10.1111/j.1529-8817.2004.03210.x.
+13. Kurogi M. Lake Ball ‘Marimo’ in Lake Akan. Jpn J Phycol. 1980;28:168–170.
+14. Soejima A, Yamazaki N, Nishino T, Wakana I. Genetic variation and
+structure of the endangered freshwater benthic alga Marimo, Aegagropila
+linnaei (Ulvophyceae) in Japanese lakes. Aquat Ecol. 2009;43(2):359–370.
+Available from: http://link.springer.com/10.1007/s10452-008-9204-9.
+15. Tsutsui I, Miyoshi T, Sukchai H, Pinphoo P, Aue-umneoy D, Meeanan C,
+et al. Ecological and Morphological Profile of Floating Spherical
+Cladophora socialis Aggregations in Central Thailand. PLOS ONE.
+2015;10(4):e0124997. Available from: https://dx.plos.org/10.1371/journal.
+pone.0124997.
+16. Cano-Ramirez DL, Saskia de Fraine T, Griffiths OG, Dodd AN.
+Photosynthesis and circadian rhythms regulate the buoyancy of marimo
+lake balls. Curr Biol. 2018;28(16):R869–R870. Available from: https://
+linkinghub.elsevier.com/retrieve/pii/S0960982218309266.
+17. Wu M, Koizumi Y, Nishiyama H, Tomita I, Inagi S. Buoyant force-induced
+continuous floating and sinking of Janus micromotors. RSC Adv.
+2018;8(58):33331–33337. Available from: http://xlink.rsc.org/?doi=
+C8RA05844J.
+18. Kumar BVVSP, Patil AJ, Mann S. Enzyme-powered motility in buoyant
+organoclay/DNA protocells. Nat Chem. 2018;10(11):1154–1163. Available
+from: http://www.nature.com/articles/s41557-018-0119-3.
+19. Guo Z, Wang T, Rawal A, Hou J, Cao Z, Zhang H, et al. Biocatalytic
+self-propelled submarine-like metal-organic framework microparticles
+with pH-triggered buoyancy control for directional vertical motion. Mater
+Today. 2019. Available from: https://linkinghub.elsevier.com/retrieve/pii/
+S1369702118312987.
+20. Phillips NW. WO Patent. 2005. https://doi.org10.5281/zenodo.1479329
+(2005/075726/A1).
+21. Bosak T, Bush JWM, Flynn MR, Liang B, Ono S, Petroff AP, et al.
+Formation and stability of oxygen-rich bubbles that shape
+photosynthetic mats. Geobiology. 2010;8(1):45–55. Available from: http://
+doi.wiley.com/10.1111/j.1472-4669.2009.00227.x.
+22. Phillips N, Adamatzky A, Mayne R. What if houses were powered by
+milk?. Biosystems. 2017;153-154:1–5. Available from: http://linkinghub.
+elsevier.com/retrieve/pii/S0303264717300151.
+23. Böhm J, Scherzer S, Krol E, Kreuzer I, von Meyer K, Lorey C, et al. The
+Venus Flytrap Dionaea muscipula Counts Prey-Induced Action Potentials
+to Induce Sodium Uptake. Curr Biol. 2016;26(3):286–295. Available from:
+https://linkinghub.elsevier.com/retrieve/pii/S0960982215015018.
+24. Butcher RW. Contributions to our knowledge of the smaller marine algae.
+J Mar Biol Assoc United Kingdom. 1952;31(01):175. Available from: http://
+www.journals.cambridge.org/abstract_S0025315400003751.
+25. Mazutis L, Vasiliauskas R, Weitz D. Microfluidic Production of Alginate
+Hydrogel Particles for Antibody Encapsulation and Release. Macromol
+Biosci. 2015;15(12):1641–1646.
+Publisher’s Note
+Springer Nature remains neutral with regard to jurisdictional claims in
+published maps and institutional affiliations.

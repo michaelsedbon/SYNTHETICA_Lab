@@ -1,0 +1,10 @@
+{
+    "autodeskProduct": "Fusion",
+    "type": "script",
+    "author": "Michael Sedbon",
+    "description": {
+        "": "Exports STL, STEP, F3D, and flat pattern DXF for a selected component."
+    },
+    "supportedOS": "windows|mac",
+    "editEnabled": true
+}

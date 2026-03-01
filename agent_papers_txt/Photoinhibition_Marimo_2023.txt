@@ -1,0 +1,802 @@
+Citation: Obara, A.; Ogawa, M.;
+Oyama, Y.; Suzuki, Y.; Kono, M.
+Effects of High Irradiance and Low
+Water Temperature on
+Photoinhibition and Repair of
+Photosystems in Marimo (Aegagropila
+linnaei) in Lake Akan, Japan. Int. J.
+Mol. Sci. 2023, 24, 60. https://
+doi.org/10.3390/ijms24010060
+Academic Editor: Youn-Il Park
+Received: 21 October 2022
+Revised: 14 December 2022
+Accepted: 15 December 2022
+Published: 21 December 2022
+Copyright:
+© 2022 by the authors.
+Licensee MDPI, Basel, Switzerland.
+This article is an open access article
+distributed
+under
+the
+terms
+and
+conditions of the Creative Commons
+Attribution (CC BY) license (https://
+creativecommons.org/licenses/by/
+4.0/).
+ 
+International Journal of 
+Molecular Sciences
+Article
+Effects of High Irradiance and Low Water Temperature on
+Photoinhibition and Repair of Photosystems in Marimo
+(Aegagropila linnaei) in Lake Akan, Japan
+Akina Obara 1, Mari Ogawa 2, Yoichi Oyama 3, Yoshihiro Suzuki 1 and Masaru Kono 4,*
+1
+Department of Biological Sciences, Faculty of Science, Kanagawa University, 2946 Tsuchiya, Kanagawa,
+Hiratsuka 259-1293, Japan
+2
+Department of Primary Education, Faculty of Education, Yasuda Women’s University, 6-13-1 Yasuhigashi,
+Asaminami-ku, Hiroshima 731-0153, Japan
+3
+Marimo Research Center, Kushiro Board of Education, Hokkaido, Kushiro 085-0467, Japan
+4
+Department of Biological Sciences, Graduate School of Science, The University of Tokyo, 7-3-1 Hongo,
+Bunkyo-Ku, Tokyo 113-0033, Japan
+*
+Correspondence: konom07@bs.s.u-tokyo.ac.jp; Tel.: +81-3-5841-4467; Fax: +81-3-5841-4465
+Abstract: The green alga Aegagropila linnaei often forms spherical aggregates called “marimo” in
+Lake Akan in Japan. In winter, marimo are exposed to low water temperatures at 1–4 ◦C but
+protected from strong sunlight by ice coverage, which may disappear due to global warming. In this
+study, photoinhibition in marimo was examined at 2 ◦C using chlorophyll ﬂuorescence and 830 nm
+absorption. Filamentous cells of A. linnaei dissected from marimo were exposed to strong light at
+2 ◦C. Photosystem II (PSII) was markedly photoinhibited, while photosystem I was unaffected. When
+the cells with PSII damaged by the 4 h treatment were subsequently illuminated with moderate
+repair light at 2 ◦C, the maximal efﬁciency of PSII was recovered to the level before photoinhibition.
+However, after the longer photoinhibitory treatments, PSII efﬁciency did not recover by the repair
+light. When the cells were exposed to simulated diurnal light for 12 h per day, which was more
+ecological, the cells died within a few days. Our results showed new ﬁndings of the PSII repair at
+2 ◦C and serious damage at the cellular level from prolonged high-light treatments. Further, we
+provided a clue to what may happen to marimo in Lake Akan in the near future.
+Keywords: cell death; chlorophyll ﬂuorescence; Fv/Fm; Lake Akan; low temperature; marimo; PAM;
+photoinhibition; repair
+1. Introduction
+Aegagropila linnaei, a unique freshwater green alga of the order Cladophorales, consists
+of 1–4 cm long ﬁlamentous cells and is distributed not only in several lakes in Japan but also
+in many lakes of some regions in Europe, East Asia, and North America [1,2]. This species
+grows as attached, ﬂoating, and unattached forms. Interestingly, A. linnaei also forms
+spherical aggregates known as “lake balls” [1], “Cladophora balls” [3], or “marimo”, in
+which “mari” means “ball” and “mo” means “alga” in Japanese [2]. Lake Akan in Hokkaido,
+Japan (Figure 1a), is the only lake in which spherical marimo is found in Japan. Marimo
+grown in Lake Akan could become as big as 30 cm in diameter, and such large marimo have
+not been reported from anywhere in the world. Unfortunately, the abundance of marimo
+is decreasing at the world scale due to global anthropogenic changes, and as a result, the
+large colonies are observed only in this lake now (Figure 1b). With an aim of conservation,
+marimo in Lake Akan was designated as a Natural Monument of Japan in 1921 and a Special
+Natural Monument in 1952. Marimo in Lake Akan have experienced dynamic changes
+in water temperatures throughout the year. In summer, water temperatures are 20–27 ◦C
+(data not shown). In winter, water temperatures lower to 1–4 ◦C (Figure 1e), and the lake
+Int. J. Mol. Sci. 2023, 24, 60. https://doi.org/10.3390/ijms24010060
+https://www.mdpi.com/journal/ijms
+
+Int. J. Mol. Sci. 2023, 24, 60
+2 of 17
+surface is covered with about 50 cm thick ice with accumulated snow in winter (Japan
+Meteorological Agency; https://www.jma.go.jp/jma/indexe.html (1 November 2022)).
+The ice and snow coverage on the lake decrease irradiance reaching to the bottom of the
+lake and protect marimo against strong sunlight. However, the ice and snow coverage may
+disappear due to global warming in the near future, and then marimo could be exposed to
+strong irradiance at low temperatures.
+Figure 1. (a) Sampling location in Lake Akan, Hokkaido, Japan. (b) Marimo in Lake Akan. (c) Ice on
+the surface of Lake Akan in the winter. (d) Cutting out a part of the ice of the lake. (e) Vertical proﬁle
+of the water temperature just after the ice-off (black) and two days after the ice-off (red). (f) Vertical
+proﬁle of PPFD under the lake without the ice on cloudy (black) and sunny days (red). Measurements
+were conducted on a clear day in March. Ice thickness was about 50 cm.
+
+Int. J. Mol. Sci. 2023, 24, 60
+3 of 17
+The photosynthetic electron transport is driven by photochemical reactions of two
+photosystems, PSII and PSI, in the thylakoid membrane, and the electrons ﬁnally reduce
+NADP+ to NADPH. The electron ﬂow also generates the transmembrane electrochemical
+potential difference of H+ to drive the H+-ATP synthase to produce ATP. While light
+drives photosynthesis, it also damages the photosynthetic apparatus. Light in excess of
+the photosynthetic capacity, namely, light energy that is not used in photochemistry or
+dissipated safely as heat, would lead to the formation of reactive oxygen species (ROS),
+which attack the two photosystems, PSII and PSI [4]. Such damage could lead to the
+loss of photosynthetic activity, so-called photoinhibition. PSII is sensitive to a variety
+of environmental factors such as high light and low temperatures [5–8]. While PSII is
+vulnerable to photodamage, the damaged PSII needs to be rapidly repaired: the damaged
+PSII reaction center protein is degraded [9,10], the new one is synthesized, and PSII is
+subsequently re-activated [11,12]. The repair process needs light and proceeds on the
+order of minutes under non-stress conditions [13]. In moderate light, the PSII damage and
+repair are balanced. When the rate of the damaging is greater than that of the repair, the
+loss of photosynthetic activity, or photoinhibition, becomes apparent. Thus, the extent of
+photoinhibition in vivo depends on a balance between the photodamage and the recovery
+from the photoinhibited state. High-light sensitivity of PSII is considerably enhanced when
+plants and algae are exposed to low temperatures because chilling-light exposure could
+accelerate the photodamage to PSII [14,15] and/or reduce the rate of PSII repair [16–18]. In
+contrast to PSII, which is highly susceptible to photodamage, PSI is quite resistant to stress
+from stable strong light. Photoinhibition of PSI occurs under characteristic conditions such
+as moderate light at chilling temperatures [19,20] and ﬂuctuating light [21,22]. Once PSI
+inhibition occurs, it strongly suppresses photosynthesis [23] as its repair and/or de novo
+synthesis are very slow [24].
+Algae and plants have evolved some photoprotective mechanisms to avoid these
+photoinhibitions. Excess absorbed light energy is dissipated in the PSII antenna complex as
+heat, which can be measured ﬂuorometrically as the non-photochemical quenching (NPQ).
+NPQ is an efﬁcient process that protects PSII reaction centers from photoinhibition, and
+the light-induced NPQ is mainly regulated by the proton gradient across the thylakoid
+membrane [25,26]. For PSI, keeping the fraction of oxidized PSI reaction center P700, P700+,
+is essential to protect PSI from photoinhibition [27,28]. Cyclic electron transport around
+PSI [22,29,30], photosynthetic control at the cytochrome b6/f complex [31–33], and PSII
+photoinhibition [34] contribute to PSI protection.
+For the conservation of marimo, it is necessary to understand photoinhibition in
+marimo at low temperatures and whether the repair of the damaged PSII occurs even at
+low temperatures. However, photosynthetic properties in marimo have not been studied
+intensively [35,36], especially at low temperatures in winter. In this study, we examined
+photoinhibition of PSII and PSI in marimo against exposure to high light at 2 ◦C, and
+recovery at 2 ◦C from the photoinhibited state, in marimo grown in Lake Akan in winter.
+2. Results
+2.1. Environmental Conditions at the Sampling Site of Churui Bay in Lake Akan
+During the winter in 2021 and 2022, the water surface at the sampling site of Churui
+Bay in Lake Akan (Figure 1a) was covered with ice about 50 cm thick (Figure 1c). Water
+temperatures just beneath the ice were 0–1 ◦C and gradually increased to ca. 2.0 ◦C toward
+the bottom at 1.5 m in depth (red line in Figure 1e). Photosynthetic photon ﬂux density
+(PPFD) on the ice was high at 1500–2000 µmol m−2 s−1 at around noon on sunny days.
+PPFD on the bottom of the lake inhabited by marimo was less than 10 µmol m−2 s−1.
+In the light spectrum measured at the bottom, a green waveband of 500–600 nm was
+more abundant than the red and blue bands of 400–500 and 600–700 nm (Supplementary
+Figure S1a). To estimate the environmental conditions without ice coverage in the future,
+we cut the ice at a size of 2.5 × 2.5 m (Figure 1d). Soon after the ice removal, the vertical
+proﬁle of temperatures was similar to that with the ice (black line in Figure 1e). The
+
+Int. J. Mol. Sci. 2023, 24, 60
+4 of 17
+water surface was frozen within a day, the ice thickness increased for a few days, and
+the water temperature at the bottom was maintained at ca. 2.0 ◦C. Through the ice hole,
+strong sunlight at relatively high PPFDs of 500–800 µmol m−2 s−1 reached the bottom of
+the lake (Figure 1f). Absorption of lake water was not strong. The light spectrum just
+under the water without the ice was similar to that of sunlight on the lake (Supplementary
+Figure S1a).
+2.2. Measurements of Fv/Fm and Pm against the Exposure to Light-Chilling Treatments
+We examined the photoinhibition against strong light at 2 ◦C in marimo. Marimo
+samples were collected at Lake Akan and stored at 2 ◦C in the dark. Filamentous cells of A.
+linnaei were dissected from the surface of the marimo and were used for measurements.
+Experiments were carried out at 2–4 ◦C in a cold room. The A. linnaei ﬁlamentous cells were
+illuminated by continuous high light from white LEDs at a PPFD of 800 µmol m−2 s−1 for
+up to 180 min (Figure 2). The maximum quantum yield of PSII photochemistry, Fv/Fm,
+before the high-light treatment was ca. 0.45. This value was lower compared with those
+in land plants (ca. 0.78–0.84) and in algae (ca. 0.5–0.6). One of the potential reasons for
+low Fv/Fm was that the pool of plastoquinone (PQ), a mobile electron carrier, between
+the PSII and cytochrome b6/f complex in the thylakoid membrane, might be somewhat
+reduced in the dark. To examine the effect of the reduced PQ pools on the minimum level
+of Chl ﬂuorescence in the dark, Fo, we applied the far-red light in the dark to oxidize the
+PQ pool by preferentially exciting the PSI reaction center, P700 (Supplementary Figure S2).
+While P700+ was increased either by the far-red pulse or continuous illumination of far-red
+light, Chl ﬂuorescence never responded. This indicated that the Fo level was correctly
+measured. In another conﬁrmatory experiment, we found that P700 signal in the dark
+before the SP was slightly oxidized, indicating that the PQ pool would be also oxidized in
+the dark (Supplementary Figure S3).
+The A. linnaei ﬁlamentous cells were illuminated to continuous high light with the
+white LEDs at a PPFD of 800 µmol m−2 s−1 for up to 180 min (Figure 2). Fv/Fm of ca. 0.45
+before the high light slightly decreased by 15 min and markedly decreased to ca. 0.2 after
+exposure for 30 min. The Fv/Fm levels showed similar values for up to 180 min (black
+bar in Figure 2a). In contrast, the maximum oxidizable P700 contents, Pm, did not change
+from the exposure to high light, indicating that no PSI was photoinhibited (Figure 2b).
+Next, to examine the repair activity from the photoinhibited state, we illuminated the
+PSII-photoinhibited ﬁlamentous cells with a moderate light of 250 µmol m−2 s−1, “repair
+light,” for 30 min at 2 ◦C. Fv/Fm levels in all the PSII-photoinhibited ﬁlamentous cells were
+remarkably recovered to the level before the damage even when the repair treatment was
+conducted at 2 ◦C (orange bar in Figure 2a).
+2.3. Quantum Yields of PSII and PSI of the PSII in the Photoinhibited Cells
+The repairing process of photoinhibited PSII was analyzed with the three states of cells:
+the intact cells, the cells photoinhibited by strong illumination for 60 min (the inhibited
+cells), and the cells repaired by illuminating the inhibited cells with the repair light at
+250 µmol m−2 s−1 for 30 min (the repaired cells). The quantum yields of the PSII photo-
+chemistry, Y(II), and light-induced excess-energy dissipation, Y(NPQ), and the fraction of
+open PSII centers, qL, were estimated with the chlorophyll ﬂuorescence. In addition to
+the ﬂuorescence, the 830 nm absorption was also simultaneously measured. For indices of
+PSI, the quantum yields of the PSI photochemistry (Y(I)), the donor-side limitation of PSI
+(Y(ND)), and the acceptor-side limitation of PSI (Y(NA)) were determined. We can estimate
+the process of inhibition from the differences in the light response of these parameters
+among the cells.
+
+Int. J. Mol. Sci. 2023, 24, 60
+5 of 17
+Figure 2. Fv/Fm (a) and Pm (b) after the exposure to strong light and the subsequent moderate
+light at low temperatures in the ﬁlamentous cells dissected from the spherical marimo. Dark-treated
+ﬁlamentous cells were exposed to the white light at 800 µmol m−2 s−1 for up to 180 min at 2 ◦C
+on ice. After the high light for each given time, the ﬁlamentous cells were dark-treated for 30 min,
+and Fv/Fm and Pm were measured at 4 ◦C (black bar). The photoinhibited ﬁlamentous cells at each
+illuminating time were irradiated by the white light at 250 µmol m−2 s−1 used as the repair light for
+30 min at 2 ◦C on ice, and then Fv/Fm and Pm were measured at 4 ◦C after the dark treatment for
+30 min (orange bar). Measurements were taken in the cold room (40 Pa CO2, 21 kPa O2, at 4 ◦C). The
+values represent the means ± SD (n = 1–5).
+The redox states of PSI showed no signiﬁcant differences by PSII photoinhibition: Y(I)
+was decreased with the PPFD levels, Y(ND) was increased with the PPFD levels, and Y(NA)
+reached the maximum at a moderate PPFD of 250 µmol m−2 s−1 (Figure 3a,c,e). Y(II) in the
+inhibited cells was markedly reduced at low to moderate PPFDs up to 250 µmol m−2 s−1.
+Y(II) in the repaired cells was similar to that in the intact cells (Figure 3b). The inhibited
+cells showed the largely depressed Y(NPQ) (Figure 3d) and slightly higher qL than the
+intact and repaired cells at PPFDs above 250 µmol m−2 s−1 (Figure 3f).
+
+Int. J. Mol. Sci. 2023, 24, 60
+6 of 17
+Figure 3. Responses of PSI (a,c,e) and PSII (b,d,f) parameters in the marimo ﬁlamentous cells to
+continuous light at various irradiances of actinic light in the different states of PSII: the intact cell
+(black line), the inhibited cell (photoinhibitory treatment for 60 min; red line), and the repaired cell
+(blue line). For the PSI parameter, Y(I) (a), Y(ND) (c), and Y(NA) (e) are shown. For the ﬂuorescence
+parameters, Y(II) (b), Y(NPQ) (d), and qL (f) are shown. These parameters were obtained in the
+steady state attained at 5–10 min after the changes in the irradiance. Measurements were conducted
+in different ﬁlamentous cells from those used in in Figure 2. Measurements were conducted in the
+cold room (40 Pa CO2, 21 kPa O2, at 4 ◦C). The values represent the means ± SD (n = 4).
+2.4. Photoinhibition under the Expected Natural Environment without the Ice in Winter
+We assumed that the water temperature would become low even without the ice on
+the lake. To examine the photosynthetic responses under more ecological conditions, we
+adopted the diurnally changing illumination. For the control, we also used continuous
+illumination for 12 h. First, Fv/Fm in the ﬁlamentous cells of A. linnaei was analyzed with
+the exposure to continuous photoinhibitory light at 500 µmol m−2 s−1 for 12 h (Figure 4a).
+The Fv/Fm of ca. 0.45 before the treatment was decreased to 0.25 after the photoinhibitory
+light for 2 h, and the same level was kept until the end of the experiment (Figure 4b). The
+illuminated cells were treated in the dark for 12 h (black bars in Figure 4c), followed by the
+repair light treatment at 250 µmol m−2 s−1 for 30 min. Fv/Fm in the photoinhibited cells for
+2 h and 4 h recovered to levels similar to those of the non-damaged cells, but Fv/Fm in the
+cells photoinhibited for more than 6 h showed no recovery at all (orange bar in Figure 4c).
+
+Int. J. Mol. Sci. 2023, 24, 60
+7 of 17
+Figure 4. Fv/Fm after the exposure to continuous high light at 500 µmol m−2 s−1 for 12 h and the
+subsequent moderate light at 250 µmol m−2 s−1 for 30 min at 2 ◦C in the marimo ﬁlamentous cells.
+Dark-treated ﬁlamentous cells were exposed to white light at 500 µmol m−2 s−1 for up to 12 h at 2 ◦C
+on ice (a). After the high light for each given time, Fv/Fm in each cell was measured at 4 ◦C after the
+dark treatment for 30 min (b) and 12 h (black bar in c). The cells after the 12 h dark treatment were
+irradiated by the white light at 250 µmol m−2 s−1 used as the repair light for 30 min at 2 ◦C on ice, and
+then Fv/Fm was measured after the dark treatment for 30 min (c) (orange bar in c). Measurements
+were taken in the cold room (40 Pa CO2, 21 kPa O2, at 4 ◦C). The values represent the means ± SD
+(n = 6–8).
+Next, we used a diurnal condition as the more realistic pattern. The ﬁlamentous
+cells were exposed to the simulated natural illumination for a 12 h light period in a day:
+The PPFD level increased gradually from 0 µmol m−2 s−1 to 500 µmol m−2 s−1 at 6 h
+and decreased gradually to 0 µmol m−2 s−1 at 12 h (Figure 5a). When the PPFD reached
+250 µmol m−2 s−1 after 3 h from the onset, Fv/Fm was not decreased. At 6 h from the
+onset of the illumination, Fv/Fm markedly decreased to ca. 0.2 (Figure 5b). After 6 h
+from the onset of the illumination, the cells were exposed to the illumination at less than
+500 µmol m−2 s−1 again. However, Fv/Fm remained consistently low until the end of
+the illumination. Even when treated with the repair light for 30 min, Fv/Fm in these
+photoinhibited cells did not recover (Figure 5c).
+
+Int. J. Mol. Sci. 2023, 24, 60
+8 of 17
+Figure 5. Fv/Fm in the ﬁlamentous cells of marimo after the exposure to the simulated diurnal light
+and the subsequent moderate light at 250 µmol m−2 s−1 for 30 min at 2 ◦C. Dark-treated cells were
+exposed to the diurnal light for 12 h, which was a maximum of 500 µmol m−2 s−1 at 6 h from the
+onset, through the white LEDs at 2 ◦C on ice (a). After the light treatment for each given time (3, 6,
+and 9 h), Fv/Fm was measured at 4 ◦C after the dark treatment for 30 min (b) and 12 h (black bar in c).
+The cells treated with the 12 h dark treatment were irradiated by the white light at 250 µmol m−2 s−1
+used as the repair light for 30 min at 2 ◦C on ice, and then Fv/Fm was measured after the dark
+treatment for 30 min (c) (orange bar in c). Measurements were taken in the cold room (40 Pa CO2,
+21 kPa O2, at 4 ◦C). The values represent the means ± SD (n = 6–8).
+After 2 days of the simulated natural illumination, Fv/Fm showed a lower value of ca.
+0.1, and it did not change until 5 days (Figure 6). We examined whether the photoinhibited
+cells after 5 days of illumination recovered with a modulated repair light for 12 h in a
+day, in which PPFD changed with half the intensity of the simulated natural illumination.
+Even when repair light/dark cycles were repeated for 14 days, no recovery of Fv/Fm was
+observed, and Fv/Fm was further decreased during this period (Figure 6). The death of
+the cells was conﬁrmed by the neutral red stain, although the cells kept their green colors
+even after 15 days at the low temperature (Figure 7b–d, and also refer to Supplementary
+Figure S4).
+
+Int. J. Mol. Sci. 2023, 24, 60
+9 of 17
+Figure 6. Effect of cumulative diurnal light–dark cycles on Fv/Fm at 2 ◦C. The exposure of the
+ﬁlamentous cells to sine-like modulated light (maximal PPFD of 500 µmol m−2 s−1 at 6 h from the
+onset of the illumination) for 12 h with the dark for 12 h was repeated for the ﬁrst 5 days (yellow bar).
+After then, the mild modulated light (maximal PPFD of at 250 µmol m−2 s−1 at 6 h from the onset of
+the illumination) for 12 h with the dark for 12 h was repeated for 14 days (gray bar). Measurements
+were taken in the cold room (40 Pa CO2, 21 kPa O2, at 4 ◦C). The values represent the means ± SD
+(n = 3–6).
+Figure 7. Filamentous cells of marimo used in Figure 6 with neutral red uptake assay. (a) Non-
+damaged cells incubated in the dark as a control. (b) Photoinhibited cells after ﬁve days of the high
+modulated light. (c) Cells treated with the repair light for 7 days after the high light for 5 days and
+(d) 14 days.
+3. Discussion
+Churui Bay in Lake Akan, the habitat of the special natural treasure of marimo, is cov-
+ered with ice reaching 50 cm thickness in winter. There is also much snow on top of the ice
+coverage, and thus, light intensity is extremely low at about 10–40 µmol m−2 s−1 in the ma-
+rimo habitat (Figure 1 and Supplementary Figure S1). However, the ice thickness has been
+progressively thinner in recent years due to global warming. When the ice coverage was
+removed, the light intensity reaching the lake bottom increased to 500–800 µmol m−2 s−1
+(Figure 1f). These areas of open water were covered by ice more than 10 cm thick within a
+
+Int. J. Mol. Sci. 2023, 24, 60
+10 of 17
+few days. Since the ice acted as a heat shield, water temperatures could maintain 0–4 ◦C
+even though ice thickness became thinner or partly collapsed. Under these conditions
+without ice coverage, marimo could be exposed to strong light at low temperatures during
+the winter for a few months. This is thought to be dangerous for photosynthesis and the
+survival of marimo, while in warm water, such as in summer, both photoinhibition and
+cell death could be avoided (Supplementary Figure S4). In this study, we examined the
+response of the green alga A. linnaei, which forms the marimo lake balls, to the anticipated
+low temperatures and high light intensity in the future.
+For land plants, PSI is reported to be sensitive against the chilling-light exposure in
+chilling-sensitive plants such as cucumber [19,37], coffee [38], cotton [14], and common
+bean (Phaseolus vulgaris L.) [39] and even in chilling-tolerant plants such as Arabidopsis
+thaliana [40]. Fluctuating light is also a potent stress factor for PSI. PSI photoinhibition
+by the ﬂuctuating light has been reported in many species including A. thaliana [21,22,41],
+rice [42], sunﬂower [43], and ﬁeld-grown plants [27]. On the other hand, although pho-
+toinhibition of PSI by ﬂuctuating light was reported in cyanobacteria [44,45] and the green
+alga Chlamydomonas reinhardtii [46,47], there is little information about PSI sensitivity to
+low temperatures in algae [7,17,48]. In the present study, PSI in marimo acclimated to
+low temperatures was not affected by the strong light (Figures 2 and 3), although PSI
+photoinhibition by ﬂuctuating light was not examined.
+In contrast to PSI, PSII was markedly photoinhibited in the high light even for 30 min at
+2 ◦C (Figure 2), while no PSII photoinhibition occurred at 20 ◦C (Supplementary Figure S5).
+Fv/Fm in the dark-adapted cells was lower than those reported for other algae. Although
+the reduced PQ pools were unlikely to affect the Fo and Fm in the dark (Supplementary
+Figures S2 and S3), sustained thermal dissipation might have been induced in marimo
+grown in the low temperatures in Lake Akan.
+In response to the actinic light, qL was higher and Y(II) was lower in the inhibited
+cells compared with the control (Figure 3). These results indicated that the electron ﬂow
+heading to PSI was suppressed due to PSII damage and the PQ pool was more oxidized in
+the inhibited cells than the other cells. The proton gradient across the thylakoid membrane
+could have been small in the inhibited cells, resulting in the higher qL. The lower efﬁciency
+of PSII could have avoided the damage to PSI induced by the stress [20,25]. Further,
+inhibited marimo showed low Y(NPQ) (Figure 3). This parameter reﬂects light-induced
+NPQ, namely, pH-dependent energy quenching [49,50]. Cyclic electron transport around
+PSI also contributes to the formation of the proton gradient across the thylakoid membrane.
+Low Y(NPQ) might mean that the cyclic pathway contributed less to the PSI protection.
+From these results, we concluded that PSII photoinhibition mainly protected PSI.
+The repair process of PSII has been proposed to follow the degradation of the damaged
+PSII reaction center protein and subsequent de novo synthesis [9–12]. The repair of dam-
+aged PSII is believed to only occur at fairly slow rates at low temperatures in photosynthetic
+organisms living at room temperatures [17]. We have demonstrated that damaged PSII in
+ﬁlamentous cells is repaired under moderate light at low temperatures of 2 ◦C but not in the
+dark. These results suggest that the ﬁlamentous cells have a PSII photo-repair system that
+maintains activity at low temperatures [51–53]. In the present study, we could not conduct
+detailed experiments such as light-/time-dependent properties of the PSII repair and the
+repair activity at room temperatures, because the sample size was limited because marimo
+are a Special Natural Monument. These are important issues to consider in future work.
+We further showed that PSII in marimo cells showed irreparable photoinhibition
+after 6 h of the simulated illumination ranging from 250 to 500 µmol m−2 s−1, while PSII
+photoinhibition occurring for 4 h of the light treatment was repairable (Figures 4–6). These
+results suggested that relatively long exposure of the cells to strong light might have
+exceeded a certain threshold level of a balance between the damage and repair of PSII by
+suppressing the repair activity or accelerating the damage to PSII, causing severe damages,
+which subsequently led to cell death (Figure 7). The thermal energy dissipation of absorbed
+light energy is thought to act to avoid ROS-mediated inhibition of the de novo synthesis
+
+Int. J. Mol. Sci. 2023, 24, 60
+11 of 17
+of the PSII reaction center protein [54]. Y(NPQ) in the damaged ﬁlamentous cells in this
+study was drastically low in whole range of the PPFD levels (Figure 3). Low capacity of
+NPQ under the photoinhibitory condition might cause the suppression of the PSII repair
+by allowing ROS to accumulate within the chloroplast [4].
+In the present study, as we used the dissected ﬁlamentous cells, the results might be
+only valid at the cellular level. In fact, we did not consider the effects of the morphological
+structure of the spherical marimo on the protection of PSII against the exposure to high
+illumination. Nonetheless, our results provide an indicator or clue to what may happen to
+the spherical marimo in Lake Akan. The fact of the cell death caused by the photoinhibitory
+treatment for only 6 h at 2 ◦C suggests that photoinhibition would be a serious threat to the
+surface part of marimo in the lake when global warming proceeds. The natural habitat of
+marimo receives more than 10 h of sunlight, even in winter. If the damage of the surface
+cells increases under the longer exposure to direct sunlight per day due to the thinning of
+ice or ice collapse, in an extreme case, this may affect maintenance of their round bodies
+and lead to the disappearance of giant marimo. There is another possibility. It is known
+that phytoplankton in lake water increases when the lake surface is unfrozen. This suggests
+a greater absorption of sunlight by the lake water, and it might alleviate photoinhibition in
+marimo at low temperatures. Nonetheless, the irreversible photoinhibition of PSII in the
+ﬁlamentous cells indicated by this study suggests that this may cause survival of marimo
+to be more difﬁcult in the near future. If global warming proceeds, there must be a stage
+where ice will melt away to allow high light penetration to the lake bottom while the
+water temperature is still low. We need to monitor the environmental conditions in Lake
+Akan continuously and to examine characteristics of the photoinhibition and repair at low
+temperatures in the spherical marimo themselves. Furthermore, we must urgently deal
+with protecting the marimo habitat.
+4. Materials and Methods
+4.1. Sites and Sample Collection
+Spherical marimo samples of A. linnaei were collected at Churui Bay in Lake Akan
+(center: 43◦27′ N, 144◦06′ E, boundary length: 30.3 km, surface area: 13.3 km2, and mean
+depth: 17.8 m), Hokkaido, Japan, on 9 March 2022 (Figure 1a). Natural marimo samples,
+the size of which was about 10–15 cm in diameter (n = 3), were collected by hand. They
+were immediately transferred to a water bath ﬁlled with lake water at 0–2 ◦C and stored in
+the dark until measurements were taken. When taking the measurements, we dissected the
+ﬁlamentous cells from the surface part of the spherical marimo with tweezers.
+4.2. Vertical Proﬁle of Water Temperature and Light Intensity under Ice and After Ice-off in
+the Lake
+For the environmental measurements, we chose a site in the area of Lake Akan located
+80 m away from the shore in Churui Bay (about 1.5 m depth; Figure 1a). For protective
+reason, these were carried out near the habitat of marimo. We measured the vertical proﬁle
+of environmental factors under the water. We bored a small hole in the ice with a drill and
+settled a CTD probe (RINKO-Proﬁler, JFE Advantech Co., Ltd., Nishinomiya, Japan) or
+a PPFD sensor (DEFI2-L, JFE advantech Co., Ltd., Nishinomiya, Japan) through the hole.
+These were referred to as “data under the water with ice.” When data under the water
+after ice-off were measured, we cut out the ice at a size of about 2.5 × 2.5 m, and the same
+measurements were carried out as above.
+The spectra of the sunlight under the water were also measured with a handheld
+portable Light Analyzer LA-105 (Nippon Medical & Chemical Instruments Co., Ltd.,
+Osaka, Japan).
+4.3. Photoinhibitory and Repair Treatments
+All handling and treatments were carried out in a cold room at 4 ◦C. A square array
+of 36 white LEDs peaked at 591 nm and 449 nm covered with a transparent plastic plate
+
+Int. J. Mol. Sci. 2023, 24, 60
+12 of 17
+(15 cm × 15 cm, laboratory handmade, for the spectra; see Supplementary Figure S1c)
+was used. The ﬁlamentous cells of A. linnaei were carefully picked up from the surface
+part of the spherical marimo with tweezers (Supplementary Figure S6a) and placed on a
+24-well plate, ﬁlled in lake water, on the ice in the dark for at least 30 min. Photoinhibitory
+light was provided to the ﬁlamentous cells from straight above at PPFD levels of 800 or
+500 µmol m−2 s−1 at the sample surface, for different periods (Supplementary Figure S6b).
+At the given time, several ﬁlamentous cells were picked up from the well and used to
+measure the chlorophyll ﬂuorescence and/or 830 nm absorbance. The remaining samples in
+the well continued to be illuminated for the next measurements. After the photoinhibitory
+treatments, the samples were dark-treated overnight at the low temperature. The next day,
+the white light used as the repair light at 250 µmol m−2 s−1 irradiated these photoinhibited
+samples for 30 min. Each data point was independently measured with different samples.
+4.4. Chlorophyll Fluorescence and 830 nm Absorbance Change Measurements
+For measurements with suspensions using a cuvette, chlorophyll ﬂuorescence and
+absorption changes at 830 nm were measured simultaneously using a DUAL-PAM-100
+(equipped with a ﬂuorometer for chlorophyll ﬂuorescence and a near-infrared detector
+for P700 absorption analysis with emitters at 830 and 875 nm, which were mounted on an
+optical unit ED-101US/MD; Walz, Effeltrich, Germany) in the cold room at 4 ◦C. According
+to [55–58], we determined the optimal settings for each parameter, such as intensities and
+widths of the measuring light and saturating light. Saturating pulses (SPs) from red LEDs
+(6000 µmol m−2 s−1, 500 ms duration) were applied to determine the maximum chlorophyll
+ﬂuorescence with closed PSII centers after dark treatment for at least 30 min (Fm) and during
+illumination (Fm′). The maximum photochemical quantum yield of PSII (Fv/Fm, [59]) and
+the effective quantum yield of PSII (Y(II)) in the actinic light were calculated as (Fm −
+Fo)/Fm and (Fm′ −Fs′)/Fm′ [60], respectively, where Fs’ is the steady-state chlorophyll
+ﬂuorescence level in the actinic light from red LEDs. Other PSII quantum yields, Y(NPQ)
+and Y(NO), which represent the regulated and non-regulated energy dissipation in PSII,
+respectively, were calculated as Fs′/Fm′—Fs′/Fm and Fs′/Fm, respectively [61–63]. These
+add up to unity with the photochemical quantum yield (i.e., Y(II) + Y(NPQ) + Y(NO) = 1).
+The coefﬁcient of photochemical quenching, qL, a measure of the fraction of open PSII
+reaction centers, based on the lake model of PSII antenna pigment organization, was
+calculated as (Fm′ −Fs′)/(Fm′ −Fo′) × Fo′/Fs′ [62]. Fo′ is the minimal ﬂuorescence yield
+in the actinic light and was estimated using the equation of [64], Fo/(Fv/Fm + Fo/Fm′).
+With the Dual-PAM-100, P700+ was monitored as the absorption difference between
+830 and 875 nm in a transmission mode. In analogy to the quantum yields of PSII, the quan-
+tum yields of PSI were determined using the saturation pulse method [65]. The maximum
+oxidizable P700, Pm, was determined by application of the SP in the presence of far-red
+light at 720 nm. The decrease in Pm is an indicator of PSI photoinhibition. The zero P700
+signal, Po, was determined when complete reduction of P700 was induced after the SP in
+the absence of far-red light. Pm’ is the maximal P700 signal in the presence of actinic light
+induced by the SP. P is the oxidizable P700 signal in the presence of actinic light. The pho-
+tochemical quantum yield of PSI, Y(I), was calculated as Pm′–P. Non-photochemical energy
+dissipation due to the donor-side limitation, Y(ND), and due to the acceptor-side limitation,
+Y(NA), of PSI electron ﬂow were determined as P–Po and Pm–P, respectively. These add up
+to unity with the photochemical quantum yield (i.e., Y(I) + Y(ND) + Y(NA) = 1).
+For the measurements of Figures 4–6, chlorophyll ﬂuorescence was measured using a
+WATER-PAM (Walz, Effeltrich, Germany).
+4.5. Neutral Red Uptake Assay
+The neutral red uptake assay provides an estimation of viable cells in a solution and
+was carried out according to [66,67] with modiﬁcations. Brieﬂy, marimo ﬁlamentous cells
+were added to each well of a 24-well plate. Four samples were prepared at 2 ◦C: non-
+damaged cells incubated in the dark as a control, photoinhibited cells after ﬁve cycles of
+
+Int. J. Mol. Sci. 2023, 24, 60
+13 of 17
+modulated light (maximum at 500 µmol m−2 s−1 at 6 h in the light, light/dark = 12 h/12 h;
+see Figure 5a), and repair light-treated cells after seven and fourteen cycles of the modulated
+light (maximum at 250 µmol m−2 s−1 at 6 h in the light, light/dark = 12 h/12 h). These
+samples were incubated in a medium solution including 0.01% neutral red (3-amino-7-
+dimethylamino-2-methyl-phenazine hydrochloride; Sigma, cat. no. N4638) (pH 7.5), at
+20 ◦C in the low light of 50 µmol m−2 s−1 for 48 h. Then, the cells were washed and observed
+with a microscope (BX53; Olympus, Tokyo, Japan). When the cell died, the dye could not
+be taken up; as a result, dead cells remained unstained. To conﬁrm this, we examined
+the assay by exposing the ﬁlamentous cells to the incubation at 40 ◦C (Supplementary
+Figure S7).
+5. Conclusions and Future Remarks
+Lake Akan in Hokkaido, Japan, constitutes an amazing natural landscape and valuable
+biological resources, and the spherical marimo of A. linnaei grown under the lake is one of
+the species to be preserved. However, global environmental changes could cause the ice
+on the lake to be more fragile in the future, indicating that marimo face a risk of exposure
+to strong sunlight without a thick ice layer at low temperatures, where photosynthesis
+is markedly suppressed. In this study, we examined the effects of the chilling and high-
+light stress on photoinhibition of PSII and PSI in the dissected ﬁlamentous cells from
+marimo. PSII was easily photoinhibited, while PSI might have been protected due to the
+PSII photoinhibition. We demonstrated that damaged PSII was rapidly repaired by the
+moderate light for 30 min at 2 ◦C. Further, we indicated that prolonged high illumination
+caused cell death of marimo. These results indicated that there was a threshold between
+activation and suppression of the PSII repair. The mechanism for cold adaptation of the
+PSII repair was further investigated. Our results in this study also hold a warning for the
+conservation of marimo.
+Supplementary Materials: The following supporting information can be downloaded at: https:
+//www.mdpi.com/article/10.3390/ijms24010060/s1.
+Author Contributions: A.O. cultured marimo; took the ﬂuorescence measurement, neutral red assay,
+and spectral measurement; and prepared the ﬁgures. M.O. reviewed and edited the manuscript and
+ﬁgures. Y.O. applied to the Environment Agency and the Ministry of Education for permission to
+conduct experiments at Lake Akan and for permission to collect marimo and reviewed the manuscript.
+Y.S. conceived the studies and reviewed and edited the manuscript and ﬁgures. M.K. conceived the
+studies, experimental design, and article vision; wrote the manuscript; and participated in funding
+acquisition. All authors have read and agreed to the published version of the manuscript.
+Funding: This work was supported by JSPS KAKENHI (21K15118).
+Institutional Review Board Statement: Not applicable.
+Informed Consent Statement: Not applicable.
+Acknowledgments: We would like to thank Ichiro Terashima (Department of Biological Sciences,
+Graduate School of Science, The University of Tokyo) for valuable discussion. We are also grateful to
+Associate Bunkei Matsushita (Faculty of Life and Environmental Sciences, University of Tsukuba) for
+providing us a CTD probe.
+Conﬂicts of Interest: The authors have no conﬂicts of interest to declare.
+
+Int. J. Mol. Sci. 2023, 24, 60
+14 of 17
+Abbreviations
+FR
+far-red
+Fm
+maximum ﬂuorescence in the dark
+Fm′
+maximum ﬂuorescence in actinic light
+Fo
+minimum ﬂuorescence in the dark
+Fo′
+minimal ﬂuorescence yield in actinic light
+Fs′
+steady-state chlorophyll ﬂuorescence level in actinic light
+Fv
+variable ﬂuorescence (Fm–Fo)
+ML
+measuring light
+NPQ
+non-photochemical quenching of chlorophyll
+PAM
+pulse-amplitude modulation
+P700
+PSI reaction center
+PPFD
+photosynthetic photon ﬂux density
+PSI
+photosystem I
+PSII
+photosystem II
+Pm
+maximal P700 signal upon full oxidation
+Pm′
+maximal P700 signal in the presence of actinic light
+Po
+complete reduction level of P700 signal
+P
+oxidized state P700 signal in the presence of actinic light
+qL
+fraction of open PSII centers
+PQ
+plastoquinone
+SP
+saturation pulse
+Y(II)
+quantum yield of the PSII photochemistry
+Y(NPQ)
+quantum yield of the light-induced non-photochemical energy quenching in
+the PSII antenna
+Y(I)
+quantum yield of the PSI photochemistry
+Y(ND)
+quantum yield of non-photochemical energy dissipation due to the donor-side
+limitation on PSI electron ﬂow
+Y(NA)
+quantum yield of non-photochemical energy dissipation due to the acceptor-side
+limitation on PSI electron ﬂow
+References
+1.
+Van den Hoek, C. Revision of the European Species of Cladophora; Brill Archive: Leiden, The Netherlands, 1963.
+2.
+John, D.M.; Whitton, B.A.; Brook, A.J.; York, P.V.; Johnson, L.R. The Freshwater Algal Flora of the British Isles: An Identiﬁcation Guide
+to Freshwater and Terrestrial Algae; Cambridge University Press: Cambridge, UK, 2002.
+3.
+Kurogi, M. Lake ball “marimo” in Lake Akan. Phycology 1980, 28, 168–169.
+4.
+Du, Z.-Y.; Lucker, B.F.; Zienkiewicz, K.; Miller, T.E.; Zienkiewicz, A.; Sears, B.B.; Kramer, D.M.; Benning, C. Galactoglyc-
+erolipid Lipase PGD1 Is Involved in Thylakoid Membrane Remodeling in Response to Adverse Environmental Conditions in
+Chlamydomonas. Plant Cell 2018, 30, 447–465. [CrossRef] [PubMed]
+5.
+Ruelland, E.; Vaultier, M.-N.; Zachowski, A.; Hurry, V. Chapter 2 Cold Signalling and Cold Acclimation in Plants. In Advances in
+Botanical Research; Elsevier: Amsterdam, The Netherlands, 2009; pp. 35–150.
+6.
+Mattila, H.; Mishra, K.B.; Kuusisto, I.; Mishra, A.; Novotná, K.; Šebela, D.; Tyystjärvi, E. Effects of low temperature on
+photoinhibition and singlet oxygen production in four natural accessions of Arabidopsis. Planta 2020, 252, 19. [CrossRef]
+[PubMed]
+7.
+Ermilova, E. Cold Stress Response: An Overview in Chlamydomonas. Front. Plant Sci. 2020, 11, 569437. [CrossRef]
+8.
+Kaur, M.; Saini, K.C.; Ojah, H.; Sahoo, R.; Gupta, K.; Kumar, A.; Bast, F. Abiotic stress in algae: Response, signaling and transgenic
+approaches. J. Appl. Phycol. 2022, 34, 1843–1869. [CrossRef]
+9.
+Bailey, S.; Thompson, E.; Nixon, P.J.; Horton, P.; Mullineaux, C.W.; Robinson, C.; Mann, N.H. A Critical Role for the Var2 FtsH
+Homologue of Arabidopsis thaliana in the Photosystem II Repair Cycle in vivo. J. Biol. Chem. 2002, 277, 2006–2011. [CrossRef]
+10.
+Kato, Y.; Sun, X.; Zhang, L.; Sakamoto, W. Cooperative D1 Degradation in the Photosystem II Repair Mediated by Chloroplastic
+Proteases in Arabidopsis. Plant Physiol. 2012, 159, 1428–1439. [CrossRef]
+11.
+Zhang, L.; Paakkarinen, V.; van Wijk, K.J.; Aro, E.-M. Co-translational Assembly of the D1 Protein into Photosystem II. J. Biol.
+Chem. 1999, 274, 16062–16067. [CrossRef]
+12.
+Kato, Y.; Sakamoto, W. Protein Quality Control in Chloroplasts: A Current Model of D1 Protein Degradation in the Photosystem
+II Repair Cycle. J. Biochem. 2009, 146, 463–469. [CrossRef]
+13.
+Aro, E.-M.; Virgin, I.; Andersson, B. Photoinhibition of Photosystem II. Inactivation, protein damage and turnover. Biochim. Et
+Biophys. Acta (BBA)-Bioenerg. 1993, 1143, 113–134. [CrossRef]
+
+Int. J. Mol. Sci. 2023, 24, 60
+15 of 17
+14.
+Kornyeyev, D.; Holaday, S.; Logan, B. Predicting the Extent of Photosystem II Photoinactivation Using Chlorophyll a Fluorescence
+Parameters Measured during Illumination. Plant Cell Physiol. 2003, 44, 1064–1070. [CrossRef] [PubMed]
+15.
+Tsonev, T.D.; Hikosaka, K. Contribution of Photosynthetic Electron Transport, Heat Dissipation, and Recovery of Photoinactivated
+Photosystem II to Photoprotection at Different Temperatures in Chenopodium album Leaves. Plant Cell Physiol. 2003, 44, 828–835.
+[CrossRef] [PubMed]
+16.
+Greer, D.; Berry, J.; Björkman, O. Photoinhibition of photosynthesis in intact bean leaves: Role of light and temperature, and
+requirement for chloroplast-protein synthesis during recovery. Planta 1986, 168, 253–260. [CrossRef] [PubMed]
+17.
+Gombos, Z.; Wada, H.; Murata, N. The recovery of photosynthesis from low-temperature photoinhibition is accelerated by the
+unsaturation of membrane lipids: A mechanism of chilling tolerance. Proc. Natl. Acad. Sci. USA 1994, 91, 8787–8791. [CrossRef]
+[PubMed]
+18.
+Grennan, A.K.; Ort, D.R. Cool temperatures interfere with D1 synthesis in tomato by causing ribosomal pausing. Photosynth. Res.
+2007, 94, 375–385. [CrossRef] [PubMed]
+19.
+Terashima, I.; Funayama, S.; Sonoike, K. The site of photoinhibition in leaves of Cucumis sativus L. at low temperatures is
+photosystem I, not photosystem II. Planta 1994, 193, 300–306. [CrossRef]
+20.
+Sonoike, K. Photoinhibition of photosystem I. Physiol. Plant. 2011, 142, 56–64. [CrossRef]
+21.
+Suorsa, M.; Järvi, S.; Grieco, M.; Nurmi, M.; Pietrzykowska, M.; Rantala, M.; Kangasjärvi, S.; Paakkarinen, V.; Tikkanen, M.;
+Jansson, S.; et al. PROTON GRADIENT REGULATION5 Is Essential for Proper Acclimation of Arabidopsis Photosystem I to
+Naturally and Artiﬁcially Fluctuating Light Conditions. Plant Cell 2012, 24, 2934–2948. [CrossRef]
+22.
+Kono, M.; Noguchi, K.; Terashima, I. Roles of the Cyclic Electron Flow Around PSI (CEF-PSI) and O2-Dependent Alternative
+Pathways in Regulation of the Photosynthetic Electron Flow in Short-Term Fluctuating Light in Arabidopsis thaliana. Plant Cell
+Physiol. 2014, 55, 990–1004. [CrossRef]
+23.
+Zivcak, M.; Brestic, M.; Kunderlikova, K.; Sytar, O.; Allakhverdiev, S.I. Repetitive light pulse-induced photoinhibition of
+photosystem I severely affects CO2 assimilation and photoprotection in wheat leaves. Photosynth. Res. 2015, 126, 449–463.
+[CrossRef]
+24.
+Kudoh, H.; Sonoike, K. Irreversible damage to photosystem I by chilling in the light: Cause of the degradation of chlorophyll
+after returning to normal growth temperature. Planta 2002, 215, 541–548. [CrossRef] [PubMed]
+25.
+Tikhonov, A.N. pH-Dependent regulation of electron transport and ATP synthesis in chloroplasts. Photosynth. Res. 2013, 116,
+511–534. [CrossRef] [PubMed]
+26.
+Ruban, A.V. Nonphotochemical Chlorophyll Fluorescence Quenching: Mechanism and Effectiveness in Protecting Plants from
+Photodamage. Plant Physiol. 2016, 170, 1903–1916. [CrossRef] [PubMed]
+27.
+Kono, M.; Yamori, W.; Suzuki, Y.; Terashima, I. Photoprotection of PSI by Far-Red Light Against the Fluctuating Light-Induced
+Photoinhibition in Arabidopsis thaliana and Field-Grown Plants. Plant Cell Physiol. 2017, 58, 35–45. [CrossRef] [PubMed]
+28.
+Miyake, C. Molecular Mechanism of Oxidation of P700 and Suppression of ROS Production in Photosystem I in Response to
+Electron-Sink Limitations in C3 Plants. Antioxidants 2020, 9, 230. [CrossRef]
+29.
+Yamori, W.; Shikanai, T. Physiological Functions of Cyclic Electron Transport Around Photosystem I in Sustaining Photosynthesis
+and Plant Growth. Annu. Rev. Plant Biol. 2016, 67, 81–106. [CrossRef]
+30.
+Burlacot, A.; Dao, O.; Auroy, P.; Cuiné, S.; Li-Beisson, Y.; Peltier, G. Alternative photosynthesis pathways drive the algal
+CO2-concentrating mechanism. Nature 2022, 605, 366–371. [CrossRef]
+31.
+Takizawa, K.; Cruz, J.A.; Kanazawa, A.; Kramer, D.M. The thylakoid proton motive force in vivo. Quantitative, non-invasive
+probes, energetics, and regulatory consequences of light-induced pmf. Biochim. Et Biophys. Acta (BBA)-Bioenerg. 2007, 1767,
+1233–1244. [CrossRef]
+32.
+Tikhonov, A.N. The cytochrome b6f complex at the crossroad of photosynthetic electron transport pathways. Plant Physiol.
+Biochem. 2014, 81, 163–183. [CrossRef]
+33.
+Kono, M.; Terashima, I. Elucidation of Photoprotective Mechanisms of PSI Against Fluctuating Light photoinhibition. Plant Cell
+Physiol. 2016, 57, 1405–1414. [CrossRef]
+34.
+Tikkanen, M.; Mekala, N.R.; Aro, E.-M. Photosystem II photoinhibition-repair cycle protects Photosystem I from irreversible
+damage. Biochim. Et Biophys. Acta (BBA)-Bioenerg. 2014, 1837, 210–215. [CrossRef]
+35.
+Cano-Ramirez, D.L.; Saskia de Fraine, T.; Grifﬁths, O.G.; Dodd, A.N. Photosynthesis and circadian rhythms regulate the buoyancy
+of marimo lake balls. Curr. Biol. 2018, 28, R869–R870. [CrossRef]
+36.
+Yoshida, T. Marimo Research. Kushiro Board Educ. 1994, 3, 1–58.
+37.
+Sonoike, K.; Terashima, I. Mechanism of photosystem-I photoinhibition in leaves of Cucumis sativus L. Planta 1994, 194, 287–293.
+[CrossRef]
+38.
+Ramalho, J.C.; Campos, P.S.; Quartin, V.L.; Silva, M.J.; Nunes, M.A. High Irradiance Impairments on Photosynthetic Electron
+Transport, Ribulose-1,5-bisphosphate Carboxylase/oxygenase and N Assimilation as a Function of N Availability in Coffea arabica
+L. Plants. J. Plant Physiol. 1999, 154, 319–326. [CrossRef]
+39.
+Nakano, R.; Ishida, H.; Kobayashi, M.; Makino, A.; Mae, T. Biochemical changes associated with in vivo RbcL fragmentation by
+reactive oxygen species under chilling-light conditions. Plant Biol. 2010, 12, 35–45. [CrossRef]
+40.
+Zhang, S.; Scheller, H.V. Photoinhibition of Photosystem I at Chilling Temperature and Subsequent Recovery in Arabidopsis
+thaliana. Plant Cell Physiol. 2004, 45, 1595–1602. [CrossRef]
+
+Int. J. Mol. Sci. 2023, 24, 60
+16 of 17
+41.
+Tsuyama, M.; Kobayashi, Y. Reduction of the primary donor P700 of photosystem I during steady-state photosynthesis under low
+light in Arabidopsis. Photosynth. Res. 2009, 99, 37–47. [CrossRef]
+42.
+Yamori, W.; Makino, A.; Shikanai, T. A physiological role of cyclic electron transport around photosystem I in sustaining
+photosynthesis under ﬂuctuating light in rice. Sci. Rep. 2016, 6, 20147. [CrossRef]
+43.
+Sejima, T.; Takagi, D.; Fukayama, H.; Makino, A.; Miyake, C. Repetitive Short-Pulse Light Mainly Inactivates Photosystem I in
+Sunﬂower Leaves. Plant Cell Physiol. 2014, 55, 1184–1193. [CrossRef]
+44.
+Allahverdiyeva, Y.; Mustila, H.; Ermakova, M.; Bersanini, L.; Richaud, P.; Ajlani, G.; Battchikova, N.; Cournac, L.; Aro, E.-M.
+Flavodiiron proteins Flv1 and Flv3 enable cyanobacterial growth and photosynthesis under ﬂuctuating light. Proc. Natl. Acad.
+Sci.USA 2013, 110, 4111–4116. [CrossRef]
+45.
+Bulychev, A.A.; Cherkashin, A.A.; Muronets, E.M.; Elanskaya, I.V. Photoinduction of electron transport on the acceptor side of
+PSI in Synechocystis PCC 6803 mutant deﬁcient in ﬂavodiiron proteins Flv1 and Flv3. Biochim. Et Biophys. Acta (BBA)-Bioenerg.
+2018, 1859, 1086–1095. [CrossRef]
+46.
+Chaux, F.; Johnson, X.; Auroy, P.; Beyly-Adriano, A.; Te, I.; Cuiné, S.; Peltier, G. PGRL1 and LHCSR3 Compensate for Each Other
+in Controlling Photosynthesis and Avoiding Photosystem I Photoinhibition during High Light Acclimation of Chlamydomonas
+Cells. Mol. Plant 2017, 10, 216–218. [CrossRef]
+47.
+Chaux, F.; Burlacot, A.; Mekhalﬁ, M.; Auroy, P.; Blangy, S.; Richaud, P.; Peltier, G. Flavodiiron Proteins Promote Fast and Transient
+O2 Photoreduction in Chlamydomonas. Plant Physiol. 2017, 174, 1825–1836. [CrossRef]
+48.
+Valledor, L.; Furuhashi, T.; Hanak, A.-M.; Weckwerth, W. Systemic Cold Stress Adaptation of Chlamydomonas reinhardtii. Mol.
+Cell. Proteom. 2013, 12, 2032–2047. [CrossRef]
+49.
+Ishida, S.; Morita, K.; Kishine, M.; Takabayashi, A.; Murakami, R.; Takeda, S.; Shimamoto, K.; Sato, F.; Endo, T. Allocation of
+Absorbed Light Energy in PSII to Thermal Dissipations in the Presence or Absence of PsbS Subunits of Rice. Plant Cell Physiol.
+2011, 52, 1822–1831. [CrossRef]
+50.
+Ishida, S.; Uebayashi, N.; Tazoe, Y.; Ikeuchi, M.; Homma, K.; Sato, F.; Endo, T. Diurnal and Developmental Changes in Energy
+Allocation of Absorbed Light at PSII in Field-Grown Rice. Plant Cell Physiol. 2014, 55, 171–182. [CrossRef]
+51.
+Ono, T.-A.; Inoue, Y. Photoactivation of the Water-Oxidation System in Isolated Intact Chloroplasts Prepared from Wheat Leaves
+Grown under Intermittent Flash Illumination. Plant Physiol. 1982, 69, 1418–1422. [CrossRef]
+52.
+He, J.; Chow, W.S. The rate coefﬁcient of repair of photosystem II after photoinactivation. Physiol. Plant. 2003, 118, 297–304.
+[CrossRef]
+53.
+Tóth, S.Z.; Schansker, G.; Kissimon, J.; Kovács, L.; Garab, G.; Strasser, R. Biophysical studies of photosystem II-related recovery
+processes after a heat pulse in barley seedlings (Hordeum vulgare L.). J. Plant Physiol. 2005, 162, 181–194. [CrossRef]
+54.
+Takahashi, S.; Badger, M.R. Photoprotection in plants: A new light on photosystem II damage. Trends Plant Sci. 2011, 16, 53–60.
+[CrossRef]
+55.
+DeEll, J.R.; Toivonen, P.M. Practical Applications of Chlorophyll Fluorescence in Plant Biology; Springer Science & Business Media:
+Berlin, Germany, 2003.
+56.
+Falkowski, P.G.; Koblfzek, M.; Gorbunov, M.; Kolber, Z. Development and application of variable chlorophyll ﬂuorescence
+techniques in marine ecosystems. In Chlorophyll a Fluorescence; Springer: Berlin/Heidelberg, Germany, 2004; pp. 757–778.
+57.
+Raven, J.A.; Maberly, S.C. Plant productivity of inland waters. In Chlorophyll a Fluorescence; Springer: Berlin/Heidelberg, Germany,
+2004; pp. 779–793.
+58.
+Papageorgiou, G.C.; Tsimilli-Michael, M.; Stamatakis, K. The fast and slow kinetics of chlorophyll a ﬂuorescence induction in
+plants, algae and cyanobacteria: A viewpoint. Photosynth. Res. 2007, 94, 275–290. [CrossRef]
+59.
+Butler, W.L. Energy Distribution in the Photochemical Apparatus of Photosynthesis. Annu. Rev. Plant Physiol. 1978, 29, 345–378.
+[CrossRef]
+60.
+Genty, B.; Briantais, J.-M.; Baker, N.R. The relationship between the quantum yield of photosynthetic electron transport and
+quenching of chlorophyll ﬂuorescence. Biochim. Biophys. Acta (BBA)-Gen. Subj. 1989, 990, 87–92. [CrossRef]
+61.
+Hendrickson, L.; Furbank, R.T.; Chow, W.S. A Simple Alternative Approach to Assessing the Fate of Absorbed Light Energy
+Using Chlorophyll Fluorescence. Photosynth. Res. 2004, 82, 73–81. [CrossRef]
+62.
+Kramer, D.M.; Johnson, G.; Kiirats, O.; Edwards, G.E. New ﬂuorescence parameters for the determination of QA redox state and
+excitation energy ﬂuxes. Photosynth. Res. 2004, 79, 209–218. [CrossRef]
+63.
+Klughammer, C.; Schreiber, U. Complementary PS II quantum yields calculated from simple ﬂuorescence parameters measured
+by PAM ﬂuorometry and the Saturation Pulse method. PAM Appl. Notes 2008, 1, 201–247.
+64.
+Oxborough, K.; Baker, N.R.B. Resolving chlorophyll a ﬂuorescence images of photosynthetic efﬁciency into photochemical and
+non-photochemical components—Calculation of qP and Fv-/Fm-; without measuring Fo. Photosynth. Res. 1997, 54, 135–142.
+[CrossRef]
+65.
+Klughammer, C.; Schreiber, U. An improved method, using saturating light pulses, for the determination of photosystem I
+quantum yield via P700+-absorbance changes at 830 nm. Planta 1994, 192, 261–268. [CrossRef]
+
+Int. J. Mol. Sci. 2023, 24, 60
+17 of 17
+66.
+Repetto, G.; del Peso, A.; Zurita, J.L. Neutral red uptake assay for the estimation of cell viability/cytotoxicity. Nat. Protoc. 2008, 3,
+1125–1131. [CrossRef]
+67.
+Harden, E.A.; Falshaw, R.; Carnachan, S.M.; Kern, E.R.; Prichard, M.N. Virucidal activity of polysaccharide extracts from four
+algal species against herpes simplex virus. Antivir. Res. 2009, 83, 282–289. [CrossRef] [PubMed]
+Disclaimer/Publisher’s Note: The statements, opinions and data contained in all publications are solely those of the individual
+author(s) and contributor(s) and not of MDPI and/or the editor(s). MDPI and/or the editor(s) disclaim responsibility for any injury to
+people or property resulting from any ideas, methods, instructions or products referred to in the content.

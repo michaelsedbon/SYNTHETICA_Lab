@@ -1,0 +1,547 @@
+--- Page 1 ---
+Adamatzky et al. Fungal Biol Biotechnol             (2021) 8:3  
+https://doi.org/10.1186/s40694-021-00110-x
+RESEARCH
+Fungal sensing skin
+Andrew Adamatzky1*, Antoni Gandia2 and Alessandro Chiolerio1,3 
+Abstract 
+Background:  A fungal skin is a thin flexible sheet of a living homogeneous mycelium made by a filamentous fungus. 
+The skin could be used in future living architectures of adaptive buildings and as a sensing living skin for soft self-
+growing/adaptive robots.
+Results:  In experimental laboratory studies we demonstrate that the fungal skin is capable for recognising mechani-
+cal and optical stimulation. The skin reacts differently to loading of a weight, removal of the weight, and switching 
+illumination on and off.
+Conclusion:  These are the first experimental evidences that fungal materials can be used not only as mechanical 
+‘skeletons’ in architecture and robotics but also as intelligent skins capable for recognition of external stimuli and 
+sensorial fusion.
+Keywords:  Fungi, Biomaterials, Sensing, Sensorial fusion, Soft robotics
+© The Author(s) 2021. This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, 
+adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and 
+the source, provide a link to the Creative Commons licence, and indicate if changes were made. The images or other third party material 
+in this article are included in the article’s Creative Commons licence, unless indicated otherwise in a credit line to the material. If material 
+is not included in the article’s Creative Commons licence and your intended use is not permitted by statutory regulation or exceeds 
+the permitted use, you will need to obtain permission directly from the copyright holder. To view a copy of this licence, visit http://crea-
+tivecommons.org/licenses/by/4.0/. The Creative Commons Public Domain Dedication waiver (http://creativecommons.org/publicdo-
+main/zero/1.0/) applies to the data made available in this article, unless otherwise stated in a credit line to the data.
+Introduction
+Flexible electronics, especially electronic skins [1–3] is 
+amongst the most rapidly growing and promising fields 
+of novel and emergent hardware. The electronic skins are 
+made of flexible materials where electronics capable of 
+tactile sensing [4–7] are embedded. The electronic skins 
+are capable of low level perception [8, 9] and could be 
+developed as autonomous adaptive devices [10]. Typi-
+cal designs of electronic skins include thin-film transis-
+tor and pressure sensors integrated in a plastic substrate 
+[11], micro-patterned polydimethylsiloxane with carbon 
+nanotube ultra-thin films [12, 13], a large-area film syn-
+thesised by sulfurisation of a tungsten film [14], multilay-
+ered graphene [15], platinum ribbons [3], Polyethylene 
+terephthalate (PET) based silver electrodes [16], digitally 
+printed hybrid electrodes for electromyographic record-
+ing [17] or for piezoresistive pressure sensing [18], or 
+channels filled with conductive polymer [19].
+Whilst the existing designs and implementations are 
+highly impactful, the prototypes of electronic skins lack 
+a capacity to self-repair and grow. Such properties are 
+useful, and could be necessary, when an electronic skin 
+is used in e.g. unconventional living architecture [20], 
+soft and self-growing robots [21–24] and development 
+of intelligent materials from fungi [25–28]. Based on our 
+previous experience with designing tactile, colour sensors 
+from slime mould Physarum polycephalum [29–31] and 
+our recent results on fungal electrical activity [32–34] we 
+decided to propose a thin layer of homogeneous myce-
+lium of the trimitic polypore species Ganoderma res-
+inaceum as a live electronic skin and thus investigate its 
+potential to sense and respond to tactile and optical stim-
+uli. We call the fungal substrate, used in present paper, 
+‘fungal skin’ due to its overall appearance and physical 
+feeling. In fact, several species of fungi have been pro-
+posed as literal skin substitutes and tested in wound heal-
+ing [35–40].
+The paper is structured as follows. We introduce the 
+protocol for growing the fungal skin and the methods of 
+electrical activity recording in "Methods" section. Pat-
+terns of electrical activity of the fungal skin are analysed 
+in "Results" section. Results are considered in a wider 
+context and directions of future studies are outlined in 
+"Conclusion" section.
+Open Access
+Fungal Biology and
+Biotechnology
+*Correspondence:  andrew.adamatzky@uwe.ac.uk
+1 Unconventional Computing Laboratory, UWE, Bristol, UK
+Full list of author information is available at the end of the article
+RETRACTED ARTICLE
+
+
+--- Page 2 ---
+Page 2 of 6
+Adamatzky et al. Fungal Biol Biotechnol             (2021) 8:3 
+Methods
+Potato dextrose agar (PDA), malt extract agar (MEA) 
+and malt extract (ME) were purchased from Sigma-
+Aldrich (USA). The Ganoderma resinaceum culture 
+used in this experiment was obtained from a wild 
+basidiocarp found at the shores of Lago di Varese, Lom-
+bardy (Italy) in 2018 and maintained in alternate PDA 
+and MEA slants at MOGU S.r.l. for the last 3 years at 4 
+◦ C under the collection code 019-18.
+The fungal skin was prepared as follows. G. resina-
+ceum was grown on MEA plates and a healthy mycelium 
+plug was inoculated into an Erlenmeyer flask contain-
+ing 200 ml of 2% ME broth (MEB). The liquid culture 
+flask was then incubated in a rotary shaker at 200 rpm 
+and 28  oC for 5 days. Subsequently, this liquid culture 
+was homogenised for 1 min at max. speed in a sterile 1L 
+Waring laboratory blender (USA) containing 400 mL of 
+fresh MEB, the resulting 600 mL of living slurry were 
+then poured into a 35 by 35 cm static fermentation tray. 
+The slurry was let to incubate undisturbed for 15 days 
+to allow the fungal hyphae to inter-mesh and form a 
+floating mat or skin of fungal mycelium. Finally, a living 
+fungal skin c. 1.5 mm thick was harvested (see texture 
+of the skin in Fig. 1a), washed in sterile demineralised 
+water, cut to the size 23 cm by 11 cm and placed onto a 
+polyurethane base to keep electrodes stable during the 
+electrical characterisation steps (Fig. 1b).
+The electrical activity of the skin was measured as fol-
+lows. We used iridium-coated stainless steel sub-der-
+mal needle electrodes (Spes Medica S.r.l., Italy), with 
+twisted cables. The pairs of electrode were inserted in 
+fungal skin (Fig. 1b). In each pair we recorded a differ-
+ence in electrical potential between the electrodes. We 
+used ADC-24 (Pico Technology, UK) high-resolution 
+data logger with a 24-bit Analog to Digital converter, 
+galvanic isolation and software-selectable sample rates. 
+We recorded electrical activity with a frequency of one 
+sample per second. We set the acquisition voltage range 
+to 156 mV with an offset accuracy of 9 µ V to maintain 
+a gain error of 0.1%. For mechanical stimulation with 
+30  g nylon cylinder, contact area with the fungal skin 
+was c. 35 mm disc. For optical stimulation we used an 
+aquarium light, array of LEDs, 36 white LEDs and 12 
+blue LEDs, 18 W, illumination on the fungal skin was 
+0.3 LUX.
+Results
+Endogenous electrical activity of the fungal material is 
+polymorphic. Low and high frequency oscillations pat-
+terns can emerge intermittently. A train of four spikes in 
+Fig. 1c is an example of low frequency oscillations. Trains 
+of high-frequency spikes are exemplified in Fig. 1d.
+Electrical responses to tactile loading and illumina-
+tion are distinctive. An example of several rounds of 
+stimulation is shown in Fig. 2a. The fungal skin responds 
+to loading of a weight with a high-amplitude wide spike 
+of electrical potential sometimes followed by a train of 
+high-frequency spikes. The skin also responds to removal 
+of the weight by a high-amplitude spike of electrical 
+potential.
+An exemplar response to loading and removal of 
+weight is shown in Fig. 2b. The parameters of the fungal 
+skin responses to the weight being placed on the skin are 
+the following. An average delay of the response (the time 
+from weight application to a peak of the high-amplitude 
+spike) is 911.4 s ( σ = 1280.1, minimum 25 s and maxi-
+mum 3200  s). An average amplitude of the response 
+a
+b
+Potential, mV
+0.3
+0.4
+0.5
+0.6
+0.7
+0.8
+0.9
+Time, sec
+35,000
+40,000
+45,000
+50,000
+55,000
+60,000
+c
+c
+a
+b
+d e
+f g
+h
+i
+j
+k
+l
+12
+10
+8
+6
+4
+2
+0
+Time, sec
+1.2 105
+1.4 105
+1.6 105
+d
+Potential, mV
+Fig. 1  Recording of electrical activity of fungal skin. a Close-up 
+texture detail of a fungal skin. b A photograph of electrodes inserted 
+into the fungal skin. c Train of three low-frequency spikes, average 
+spike’s width there is 1500 s, a distance between spike peaks is 
+3000 s and average amplitude is 0.2 mV. d Example of several train of 
+high-frequency spikes. Each train Txy = (Axy, Wxy, Pxy) is characterised 
+by average amplitude of spikes Axy mV, width of spikes Wxy sec 
+and average distance between neighbouring spikes’ peaks Pxy sec: 
+Tab = (2.6, 245, 300) , Tcd = (1.7, 160, 220) , Tef = (1.6, 340, 340) , 
+Tgh = (2.5, 240, 350) , Tij = (2.5, 220, 590) , Tkl = (2.6, 290, 440)
+RETRACTED ARTICLE
+
+
+--- Page 3 ---
+Page 3 of 6
+Adamatzky et al. Fungal Biol Biotechnol             (2021) 8:3 
+	
+spike (marked ‘s’ in the example Fig. 2b) is 0.4 mV ( σ  = 
+0.2, minimum 0.1 mV and maximum 0.8 mV). An aver-
+age width of the response spike is 1261.8 s ( σ = 1420.3, 
+minimum 199 s and maximum 4080 s), meaning that the 
+average energy consumed per current unit, associated to 
+the response, is approximately 0.5 J/A. A train of spikes 
+(marked ‘r’ in the example Fig.  2b), if any, following 
+the response spike usually has 4 or 5 spikes. The fungal 
+a
+W*
+Wo
+s
+r
+p
+Potential, mV
+0.6
+0.8
+1.0
+1.2
+1.4
+1.6
+Time, sec
+1.2 105
+1.3 105
+1.4 105
+b
+L*
+Lo
+Potential, mV
+1
+0
+1
+2
+Time, sec
+20,000
+25,000
+30,000
+c
+L*
+Lo
+Potential, mV
+1.2
+1.4
+1.6
+1.8
+2.0
+2.2
+Time, sec
+35,000
+40,000
+d
+Fig. 2  Fungal skin response to mechanical and optical stimulation. a Exemplar recording of fungal skin electrical activity under tactile and optical 
+stimulation. Moments of applying and removing a weight are shown as ‘W*’ and ‘Wo’ and switching light ON and OFF as ‘L*’ and ‘Lo’. b Exemplar 
+response to mechanical stimulation. Moments of applying and removing a weight are shown as ‘W*’ and ‘Wo’. High-amplitude response is labelled 
+‘s’. This response is following by a train of spikes ‘r’. A response to the removal of the weight is labelled ‘p’. c Exemplar response of fungal skin to 
+illumination, recorded on three pairs of differential electrodes. ‘L*’ indicates illumination is applied, ‘Lo’ illumination is switched off. d A train of spikes 
+on the raised potential as a response to illumination
+RETRACTED ARTICLE
+
+
+--- Page 4 ---
+Page 4 of 6
+Adamatzky et al. Fungal Biol Biotechnol             (2021) 8:3 
+skin responds to removal of the weight (the response is 
+marked ‘p’ in the example Fig.  2b) with a spike which 
+average amplitude is 0.4 mV ( σ = 0.2, minimum 0.2 mV 
+and maximum 0.85  mV). Amplitudes are less indica-
+tive than frequencies because an amplitude depends on 
+the position of electrodes with regards to propagating 
+wave of excitation. An average width of the spike is 774 s 
+( σ = 733.1, minimum 100  s and maximum 2000  s. A 
+response of the fungal skin to removal of the weight was 
+not observed in c. 20% of differential electrode pairs. The 
+average response time is 385.5 s ( σ = 693.3 s, minimum 
+77 s and maximum 1800 s).
+Fungal skin’s response to illumination is manifested in 
+the raising of the baseline potential, as illustrated in the 
+exemplar recordings in Fig. 2c. In contrast to mechanical 
+stimulation response the response-to-illumination spike 
+does not subside but the electrical potential stays raised 
+till illumination is switched off. An average amplitude of 
+the response is 0.61 mV ( σ = 0.27, minimum 0.2 mV and 
+maximum 1 mV). The raise of the potential starts imme-
+diately after the illumination is switched on. The poten-
+tial reaches its maximum and goes onto plateau in 2960 s 
+in average ( σ = 2201, minimum 879  s and maximum 
+9530  s). Typically, we did not observe any spike trains 
+after the illumination switched off however in a couple 
+of trials we witnessed spike trains on top of the raised 
+potential, as shown in Fig. 2d.
+Conclusion
+We demonstrated that a thin sheet of homogeneous 
+living mycelium of Ganoderma resinaceum, which 
+we named ‘fungal skin’, shows pronounced electrical 
+responses to mechanical and optical stimulation. Can 
+we differentiate between the fungal skin’s response to 
+mechanical and optical stimulation? Definitely, see 
+Fig. 3a. The fungal skin responds to mechanical stimu-
+lation with a 15 min spike of electrical potential, which 
+diminishes even if the applied pressure on the skin 
+remains. The skin responds to optical stimulation by 
+raising its electrical potential and keeping it raised till 
+the light is switched off.
+Can we differentiate the responses to loading and 
+removal of the weight? Yes. Whilst amplitudes of ‘load-
+ing’ and ‘removal’ spikes are the same (0.4 mV in average) 
+the fungal skin average reaction time to removal of the 
+weight is 2.4 times shorter than the reaction to loading 
+of the weight (385 s versus 911 s). Also ‘loading’ spikes 
+are 1.6 times wider than ‘removal’ spikes (1261 s versus 
+774 s).
+Fungal skin response to weight application is, in some 
+cases, esp. Fig. 2y, similar to response of slime mould to 
+application of the light weight [30]. The following events 
+are observed (Fig. 3)b: oscillatory activity before stimu-
+lation, immediate response to stimulation, prolonged 
+response to stimulation as a train of high-amplitude 
+spikes, return to normal oscillatory activity. This might 
+indicate some universal principles of sensing and infor-
+mation processing in fungi and slime moulds.
+The sensing fungal skin proposed has a range of advan-
+tages comparing to other living sensing materials, e.g. 
+slime mould sensors [29–31] electronic sensors with 
+living cell components [41], chemical sensors using liv-
+ing taste, olfactory, and neural cells and tissues [42] and 
+tactile sensor from living cell culture [43]. The advantages 
+are low production costs, simple maintenance, durabil-
+ity. The last but not least advantage is scalability: a fun-
+gal skin patch can be few microns and it can be grown to 
+several metres in size.
+Fig. 3  a A scheme of the fungal skin responses to mechanical load and optical stimulations. b Slime mould P. polycephalum response to application 
+of 0.01 g glass capillary tube. Redrawn from [30]
+RETRACTED ARTICLE
+
+
+--- Page 5 ---
+Page 5 of 6
+Adamatzky et al. Fungal Biol Biotechnol             (2021) 8:3 
+	
+In future studies we will aim to answer the following 
+questions. Would it be possible to infer a weight of the 
+load applied to the fungal skin from patterns of its elec-
+trical activity? Would the fungal skin indicate directional-
+ity of the load movement by its spiking activity? Would it 
+be possible to locate the position of the weight within the 
+fungal network? Would it be possible to map a spectrum 
+of the light applied to the skin onto patterns of the skin’s 
+electrical activity?
+Acknowledgements
+The authors have nothing else to acknowledge.
+Authors’ contributions
+AA, AG, AC designed the experiments, analysed results and wrote the paper.
+Funding
+This project has received funding from the European Union’s Horizon 2020 
+research and innovation programme FET OPEN “Challenging current thinking” 
+under grant agreement No 858132.
+Availability of data and materials
+The data and materials are available on request.
+Declarations
+ Ethics approval and consent to participate
+Not applicable. 
+Consent for publication
+All authors give their consent for publication.
+Competing interests
+Authors declare no competing interests.
+Author details
+1 Unconventional Computing Laboratory, UWE, Bristol, UK. 2 Mogu S.r.l., Inarzo, 
+Italy. 3 Center for Sustainable Future Technologies, Istituto Italiano di Tecnolo-
+gia, Torino, Italy. 
+Received: 25 November 2020   Accepted: 10 March 2021
+References
+	1.	
+Soni M, Dahiya R. Soft eskin: distributed touch sensing with harmonized 
+energy and computing. Philos Trans R Soc A. 2020;378(2164):20190156.
+	2.	
+Ma M, Zhang Z, Liao Q, Yi F, Han L, Zhang G, Liu S, Liao X, Zhang Y. Self-
+powered artificial electronic skin for high-resolution pressure sensing. 
+Nano Energy. 2017;32:389–96.
+	3.	
+Zhao S, Zhu R. Electronic skin with multifunction sensors based on ther-
+mosensation. Adv Mater. 2017;29(15):1606151.
+	4.	
+Chou H-H, Nguyen A, Chortos A, To JW, Lu C, Mei J, Kurosawa T, Bae W-G, 
+Tok JB-H, Bao Z. A chameleon-inspired stretchable electronic skin with 
+interactive colour changing controlled by tactile sensing. Nat Commun. 
+2015;6(1):1–10.
+	5.	
+Yang T, Wang W, Zhang H, Li X, Shi J, He Y, Zheng Q-S, Li Z, Zhu H. Tactile 
+sensing system based on arrays of graphene woven microfabrics: 
+electromechanical behavior and electronic skin application. ACS Nano. 
+2015;9(11):10867–75.
+	6.	
+Wang X, Dong L, Zhang H, Yu R, Pan C, Wang ZL. Recent progress in 
+electronic skin. Adv Sci. 2015;2(10):1500169.
+	7.	
+Pu X, Liu M, Chen X, Sun J, Du C, Zhang Y, Zhai J, Hu W, Wang ZL. 
+Ultrastretchable, transparent triboelectric nanogenerator as electronic 
+skin for biomechanical energy harvesting and tactile sensing. Sci Adv. 
+2017;3(5):e1700015.
+	8.	
+Chortos A, Liu J, Bao Z. Pursuing prosthetic electronic skin. Nat Mater. 
+2016;15(9):937–50.
+	9.	
+Park S, Kim H, Vosgueritchian M, Cheon S, Kim H, Koo JH, Kim TR, Lee S, 
+Schwartz G, Chang H, et al. Stretchable energy-harvesting tactile elec-
+tronic skin capable of differentiating multiple mechanical stimuli modes. 
+Adv Mater. 2014;26(43):7324–32.
+	10.	 Núñez C G, Manjakkal L, Dahiya R. Energy autonomous electronic skin. 
+NPJ Flexible Electron. 2019;3(1):1–24.
+	11.	 Wang C, Hwang D, Yu Z, Takei K, Park J, Chen T, Ma B, Javey A. User-inter-
+active electronic skin for instantaneous pressure visualization. Nat Mater. 
+2013;12(10):899–904.
+	12.	 Wang X, Gu Y, Xiong Z, Cui Z, Zhang T. Silk-molded flexible, ultrasensitive, 
+and highly stable electronic skin for monitoring human physiological 
+signals. Adv Mater. 2014;26(9):1336–42.
+	13.	 Sekitani T, Someya T. Stretchable organic integrated circuits for large-area 
+electronic skin surfaces. Mrs Bull. 2012;37(3):236–45.
+	14.	 Guo H, Lan C, Zhou Z, Sun P, Wei D, Li C. Transparent, flexible, and 
+stretchable ws 2 based humidity sensors for electronic skin. Nanoscale. 
+2017;9(19):6246–53.
+	15.	 Qiao Y, Wang Y, Tian H, Li M, Jian J, Wei Y, Tian Y, Wang D-Y, Pang Y, Geng 
+X, et al. Multilayer graphene epidermal electronic skin. ACS Nano. 
+2018;12(9):8839–46.
+	16.	 Zhao X, Hua Q, Yu R, Zhang Y, Pan C. Flexible, stretchable and wearable 
+multifunctional sensor array as artificial electronic skin for static and 
+dynamic strain mapping. Adv Electron Mater. 2015;1(7):1500142.
+	17.	 Scalisi R, Paleari M, Favetto A, Stoppa M, Ariano P, Pandolfi P, Chiolerio A. 
+Inkjet printed flexible electrodes for surface electromyography. Organ 
+Electron. 2015;18:89–94.
+	18.	 Chiolerio A, Rivolo P, Porro S, Stassi S, Ricciardi S, Mandracci P, Canavese G, 
+Bejtka K, Pirri CF. Inkjet-printed pedot: pss electrodes on plasma modified 
+pdms nanocomposites: quantifying plasma treatment hardness. RSC Adv. 
+2014;4:51477.
+	19.	 Chiolerio A, Adamatzky A. Tactile sensing and computing on a ran-
+dom network of conducting fluid channels. Flexible Print Electron. 
+2020;5:025006.
+	20.	 Adamatzky A, Ayres P, Belotti G, Wösten H. Fungal architecture position 
+paper. Int J Unconvent Comput. 2019;14:397–441.
+	21.	 El-Hussieny H, Mehmood U, Mehdi Z, Jeong S-G, Usman M, Hawkes 
+EW, Okarnura AM, Ryu J-H. Development and evaluation of an intuitive 
+flexible interface for teleoperating soft growing robots, In: 2018 IEEE/RSJ 
+International Conference on Intelligent Robots and Systems (IROS), IEEE, 
+2018;4995–5002.
+	22.	 Sadeghi A, Mondini A, Mazzolai B. Toward self-growing soft robots 
+inspired by plant roots and based on additive manufacturing technolo-
+gies. Soft Robot. 2017;4(3):211–23.
+	23.	 Rieffel J, Knox D, Smith S, Trimmer B. Growing and evolving soft robots. 
+Artif Life. 2014;20(1):143–62.
+	24.	 Greer JD, Morimoto TK, Okamura AM, Hawkes EW. A soft, steerable con-
+tinuum robot that grows via tip extension. Soft Robot. 2019;6(1):95–108.
+	25.	 Meyer V, Basenko EY, Benz JP, Braus GH, Caddick MX, Csukai M, de Vries 
+RP, Endy D, Frisvad JC, Gunde-Cimerman N, Haarmann T, Hadar Y, Hansen 
+K, Johnson RI, Keller NP, Kraševec N, Mortensen UH, Perez R, Ram AFJ, 
+Record E, Ross P, Shapaval V, Steiniger C, van den Brink H, van Munster J, 
+Yarden O, Wösten HAB. Growing a circular economy with fungal biotech-
+nology: a white paper. Fungal Biol Biotechnol. 2020;7(1):5. https://​doi.​org/​
+10.​1186/​s40694-​020-​00095-z.
+	26.	 Haneef M, Ceseracciu L, Canale C, Bayer IS, Heredia-Guerrero JA, Athanas-
+siou A. Advanced materials from fungal mycelium: fabrication and tuning 
+of physical properties. Sci Rep. 2017;7(1):1–11.
+	27.	 Jones M, Mautner A, Luenco S, Bismarck A, John S. Engineered mycelium 
+composite construction materials from fungal biorefineries: a critical 
+review. Mater Design. 2020;. https://​doi.​org/​10.​1016/j.​matdes.​2019.​
+108397.
+	28.	 Wösten HAB. Filamentous fungi for the production of enzymes, chemi-
+cals and materials. Curr Opin Biotechnol 2019;59:65–70. https://​doi.​org/​
+10.​1016/J.​COPBIO.​2019.​02.​010https://​www.​scien​cedir​ect.​com/​scien​ce/​
+artic​le/​abs/​pii/​S0958​16691​83022​83.
+	29.	 Adamatzky A. Towards slime mould colour sensor: recognition of colours 
+by physarum polycephalum. Organ Electron. 2013;14(12):3355–61.
+RETRACTED ARTICLE
+
+
+--- Page 6 ---
+Page 6 of 6
+Adamatzky et al. Fungal Biol Biotechnol             (2021) 8:3 
+•
+ 
+fast, convenient online submission
+ 
+•
+  
+thorough peer review by experienced researchers in your ﬁeld
+• 
+ 
+rapid publication on acceptance
+• 
+ 
+support for research data, including large and complex data types
+•
+  
+gold Open Access which fosters wider collaboration and increased citations 
+ 
+maximum visibility for your research: over 100M website views per year 
+•
+  
+At BMC, research is always in progress.
+Learn more biomedcentral.com/submissions
+Ready to submit your research
+Ready to submit your research ?  Choose BMC and benefit from: 
+?  Choose BMC and benefit from: 
+	30.	 Adamatzky A. Slime mould tactile sensor. Sensors Actuat B Chem. 
+2013;188:38–44.
+	31.	 Whiting J G, de Lacy Costello B P, Adamatzky A. Towards slime mould 
+chemical sensor: mapping chemical inputs onto electrical poten-
+tial dynamics of physarum polycephalum. Sensors Actuat B Chem. 
+2014;191:844–53.
+	32.	 Adamatzky A. On spiking behaviour of oyster fungi pleurotus djamor. Sci 
+Rep. 2018;8(1):1–7.
+	33.	 Beasley AE, Powell AL, Adamatzky A. Capacitive storage in mycelium 
+substrate, arXiv preprint arXiv:​2003.​07816.
+	34.	 Beasley A, Abdelouahab M-S, Lozi R, Powell A, Adamatzky A. Mem-fractive 
+properties of mushrooms, arXiv preprint arXiv:​2002.​06413​v2.
+	35.	 Hamlyn PF. Fabricating fungi. In: Glasman I, Lennox-Kerr P, editors. New 
+applications. Textile Technology International, Sterling Publications Ltd: 
+London; 1991. p. 254–7.
+	36.	 Hamlyn PF, Schmidt RJ. Potential therapeutic application of fungal fila-
+ments in wound management. Mycologist. 1994;8(4):147–52. https://​doi.​
+org/​10.​1016/​S0269-​915X(09)​80176-6.
+	37.	 Su C-H, Sun C-S, Juan S-W, Hu C-H, Ke W-T, Sheu M-T. Fungal mycelia as 
+the source of chitin and polysaccharides and their applications as skin 
+substitutes. Biomaterials. 1997;18(17):1169–74.
+	38.	 Su C-H, Sun C-S, Juan S-W, Ho H-O, Hu C-H, Sheu M-T. Development of 
+fungal mycelia as skin substitutes: effects on wound healing and fibro-
+blast. Biomaterials. 1999;20(1):61–8.
+	39.	 Xu H, Liu L, Cao C, Lu W, Zhu Z, Guo Z, Li M, Wang X, Huang D, Wang S, 
+et al. Wound healing activity of a skin substitute from residues of culinary-
+medicinal winter mushroom flammulina velutipes (agaricomycetes) 
+cultivation. Int J Med Mushrooms. 2019;21(7):683–91.
+	40.	 Narayanan KB, Zo SM, Han SS. Novel biomimetic chitin-glucan polysac-
+charide nano/microfibrous fungal-scaffolds for tissue engineering appli-
+cations. Int J Biol Macromol. 2020;149:724–31. https://​doi.​org/​10.​1016/j.​
+ijbio​mac.​2020.​01.​276.
+	41.	 Kovacs GT. Electronic sensors with living cellular components. Proc IEEE. 
+2003;91(6):915–29.
+	42.	 Wu C, Lillehoj PB, Wang P. Bioanalytical and chemical sensors using liv-
+ing taste, olfactory, and neural cells and tissues: a short review. Analyst. 
+2015;140(21):7048–61.
+	43.	 Minzan K, Shimizu M, Miyasaka K, Ogura T, Nakai J, Ohkura M, Hosoda K. 
+Toward living tactile sensors. In: Conference on biomimetic and biohy-
+brid systems, Springer, 2013, p. 409–11.
+RETRACTED ARTICLE
