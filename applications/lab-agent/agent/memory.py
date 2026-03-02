@@ -118,35 +118,29 @@ The workspace is at /opt/synthetica-lab. Key directories:
             prompt += f"## Recent Log ({active_experiment})\n\n"
             prompt += exp_log + "\n\n"
 
-    # Machine calibration data
-    import json as _json
-    cal_path = os.path.join(WORKSPACE, "experiments", "EXP_002", "calibration.json")
-    if os.path.isfile(cal_path):
-        try:
-            with open(cal_path) as f:
-                cal = _json.load(f)
-            prompt += "## Machine Calibration Data\n\n"
-            prompt += "**These are measured values — use them for motor commands:**\n\n"
-            spr = cal.get("steps_per_revolution", "unknown")
-            prompt += f"- **Steps per revolution:** {spr}\n"
-            prompt += f"- One full rotation = MOVE {spr}\n"
-            prompt += f"- Half rotation = MOVE {spr // 2 if isinstance(spr, int) else '?'}\n"
-            prompt += f"- To go to a specific angle: MOVE (angle/360 × {spr})\n"
-            prompt += f"- Calibration timestamp: {cal.get('timestamp', 'unknown')}\n\n"
-        except Exception:
-            pass
-
-    # Current state reminder
-    prompt += """## Your Current State
-
-**You ARE the Ollama LLM running on the lab server (172.16.1.80).** You are NOT a separate entity.
-You already have full access to the machine via your tools. The ESP8266 and Arduino Nano are
-deployed and working. You can send commands, run scripts, read/write files, and control the machine
-RIGHT NOW. Do not ask the user to set things up — everything is already running.
-
-When the user asks you to move the motor, HOME, or do anything with the machine — just DO IT
-by calling send_command() with the appropriate command.
-"""
+    # ── Persistent Memory (AGENT_STATE.md) ──
+    # This is the agent's brain — its self-managed lab notebook.
+    agent_state = _read_file("AGENT_STATE.md")
+    if agent_state:
+        prompt += "## Your Persistent Memory\n\n"
+        prompt += "**This is YOUR lab notebook. You wrote it. It contains everything you know.**\n"
+        prompt += "Read it carefully — it has your mission, machine knowledge, calibration data, "
+        prompt += "completed work, and next steps.\n\n"
+        prompt += agent_state + "\n\n"
+        prompt += (
+            "**CRITICAL: After completing ANY task, update AGENT_STATE.md using file_write or file_edit.**\n"
+            "- Add new findings to the appropriate section\n"
+            "- Check off completed items\n"
+            "- Add new open questions or next steps\n"
+            "- Update calibration data if you measured something new\n"
+            "This is how future-you will know what past-you did.\n\n"
+        )
+    else:
+        prompt += (
+            "## No Persistent Memory Found\n\n"
+            "You have no AGENT_STATE.md yet. After this task, create one at the workspace root "
+            "with sections: Mission, Machine Knowledge, Completed Work, Open Questions, Next Steps.\n\n"
+        )
 
     return prompt
 
