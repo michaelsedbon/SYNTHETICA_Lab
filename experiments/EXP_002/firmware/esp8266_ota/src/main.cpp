@@ -28,6 +28,9 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
+// ── Nano reset pin (ESP D5 = GPIO14 → Nano RST) ──
+#define PIN_NANO_RESET 14
+
 // ── WiFi credentials ──
 const char* ssid     = "MEDICALEX";
 const char* password = "94110Med+";
@@ -47,6 +50,10 @@ ESP8266WebServer server(80);
 
 // ── WebSocket server on port 81 (debug pipe) ──
 WebSocketsServer webSocket = WebSocketsServer(81);
+
+// ── TCP serial bridge on port 2323 (raw bytes for flashing) ──
+WiFiServer tcpBridge(2323);
+WiFiClient tcpClient;
 
 // ── Log buffer (ring buffer for web dashboard + WebSocket) ──
 #define LOG_SIZE 50
@@ -226,6 +233,17 @@ void handleLog() {
     server.send(200, "application/json", json);
 }
 
+void handleResetNano() {
+    debugLog("Resetting Nano via D5...");
+    // Pull RESET low for 100ms, then release
+    digitalWrite(PIN_NANO_RESET, LOW);
+    delay(100);
+    digitalWrite(PIN_NANO_RESET, HIGH);
+    debugLog("Nano reset complete — bootloader window open");
+    server.sendHeader("Access-Control-Allow-Origin", "*");
+    server.send(200, "application/json", "{\"ok\":true,\"msg\":\"Nano reset, bootloader active\"}");
+}
+
 // ══════════════════════════════════════════════
 // ── Setup ──
 // ══════════════════════════════════════════════
@@ -233,6 +251,10 @@ void handleLog() {
 void setup() {
     // Hardware Serial → dedicated to Nano communication
     Serial.begin(115200);
+
+    // Nano reset pin — start HIGH (not resetting)
+    pinMode(PIN_NANO_RESET, OUTPUT);
+    digitalWrite(PIN_NANO_RESET, HIGH);
 
     // ── OLED init ──
     Wire.begin();  // D1=SCL, D2=SDA (ESP8266 defaults)
@@ -324,8 +346,13 @@ void setup() {
     server.on("/send", handleSend);
     server.on("/status", handleStatus);
     server.on("/log", handleLog);
+    server.on("/reset-nano", handleResetNano);
     server.begin();
     debugLog("Web server started on port 80");
+
+    // ── TCP serial bridge (for Nano flashing) ──
+    tcpBridge.begin();
+    debugLog("TCP serial bridge on port 2323");
 
     // ── Show boot screen on OLED ──
     oledShowBoot(ip);
@@ -343,14 +370,34 @@ void loop() {
     MDNS.update();
     webSocket.loop();
 
-    // Read data from Nano (via hardware RX pin)
-    while (Serial.available()) {
-        char c = Serial.read();
-        if (c == '\n') {
-            debugLog("RX << " + nanoBuffer);
-            nanoBuffer = "";
-        } else if (c != '\r') {
-            nanoBuffer += c;
+    // ── TCP serial bridge: raw byte forwarding ──
+    if (tcpBridge.hasClient()) {
+        if (tcpClient && tcpClient.connected()) {
+            tcpClient.stop();  // Only one client at a time
+        }
+        tcpClient = tcpBridge.accept();
+        debugLog("TCP bridge client connected");
+    }
+
+    if (tcpClient && tcpClient.connected()) {
+        // TCP → Serial (raw bytes from flasher to Nano)
+        while (tcpClient.available()) {
+            Serial.write(tcpClient.read());
+        }
+        // Serial → TCP (raw bytes from Nano to flasher)
+        while (Serial.available()) {
+            tcpClient.write(Serial.read());
+        }
+    } else {
+        // Normal mode: read Nano responses line-by-line for logging
+        while (Serial.available()) {
+            char c = Serial.read();
+            if (c == '\n') {
+                debugLog("RX << " + nanoBuffer);
+                nanoBuffer = "";
+            } else if (c != '\r') {
+                nanoBuffer += c;
+            }
         }
     }
 }
