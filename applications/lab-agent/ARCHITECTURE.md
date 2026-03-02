@@ -30,6 +30,7 @@ The agent can control hardware, write code, run experiments, and flash firmware 
                     │   ┌──────┴─────────┐ │
                     │   │ Arduino Nano   │ │
                     │   │ Motor control  │ │
+                    │   │ (AccelStepper) │ │
                     │   └────────────────┘ │
                     └──────────────────────┘
 ```
@@ -38,16 +39,32 @@ The agent can control hardware, write code, run experiments, and flash firmware 
 
 - **ESP8266** (172.16.1.115): WiFi controller, OTA-capable, OLED display
   - Firmware: `experiments/EXP_002/firmware/esp8266_ota/`
-  - OTA: `pio run -e ota -t upload -d <firmware_dir>`
+  - OTA: `/home/michael/.pio-venv/bin/pio run -e ota -t upload -d <firmware_dir>`
   - Web dashboard: http://172.16.1.115/
   - Status API: http://172.16.1.115/status
   - Reset Nano: http://172.16.1.115/reset-nano
   - TCP serial bridge: port 2323 (raw bytes ↔ Nano serial)
 
-- **Arduino Nano** (ATmega328P): Motor controller via ISD04 stepper driver
+- **Arduino Nano** (ATmega328P): Motor controller using AccelStepper library
   - Firmware: `experiments/EXP_002/firmware/arduino_nano/`
-  - Commands via serial (115200 baud): MOVE <n>, HOME, STATUS, STOP, SPEED <us>, PING
+  - Library: AccelStepper (type DRIVER — step + direction)
   - Remote flash: `python3 experiments/EXP_002/firmware/flash_nano.py`
+  - Commands via serial (115200 baud):
+    - `MOVE <n>` — relative move (steps)
+    - `MOVETO <n>` — absolute move (position)
+    - `HOME` — home to hall sensor
+    - `STATUS` — position, speed, enabled, hall, moving
+    - `STOP` — emergency stop
+    - `SPEED <sps>` — set max speed (steps/sec, default 2000)
+    - `ACCEL <a>` — set acceleration (steps/sec², default 1000)
+    - `ENABLE` / `DISABLE` — motor driver enable
+    - `ZERO` — reset position counter
+    - `PING` — connectivity check → `PONG`
+
+- **ISD04** (integrated NEMA17 stepper driver)
+  - Power: 12V DC on pin 1 (V+), pin 2 (GND)
+  - Signal reference: pin 3 (VCC) ← **must connect to Nano 5V**
+  - DIP switches control microstepping: set to 1/8 or 1/16 for smoother motion
 
 ## Wiring
 
@@ -56,15 +73,15 @@ The agent can control hardware, write code, run experiments, and flash firmware 
 | TX | D0 (RX) | Serial commands |
 | GND | GND | Common ground |
 | D5 (GPIO14) | RST | Remote reset for flashing |
-| D1 | - | OLED SCL |
-| D2 | - | OLED SDA |
 
-| Nano Pin | Connection | Purpose |
+| Nano Pin | ISD04 Pin | Purpose |
 |----------|-----------|---------|
-| D4 | ISD04 PUL+ | Step pulse |
-| D5 | ISD04 DIR+ | Direction |
-| D6 | ISD04 ENA+ | Motor enable |
-| D2 | Hall sensor | Position feedback |
+| D5 | Pin 5 (STP) | Step pulse |
+| D4 | Pin 4 (DIR) | Direction |
+| D6 | Pin 6 (ENA) | Enable (active LOW) |
+| D3 | — | Hall effect sensor (interrupt) |
+| 5V | Pin 3 (VCC) | Signal reference voltage |
+| GND | Pin 2 (GND) | Shared ground |
 
 ## Agent API (port 8003)
 
@@ -86,20 +103,20 @@ the agent can follow to accomplish specific tasks.
 | Skill | What it does |
 |-------|-------------|
 | `flash_esp.md` | Update ESP firmware via OTA |
-| `flash_nano.md` | Update Nano firmware remotely |
-| `machine_control.md` | Send commands to the machine |
+| `flash_nano.md` | Update Nano firmware remotely via TCP bridge |
+| `machine_control.md` | Send commands to the machine, safety rules |
 
 ## Key Paths
 
 | Path | Content |
 |------|---------|
-| `experiments/EXP_002/firmware/` | All firmware source code |
 | `experiments/EXP_002/firmware/esp8266_ota/` | ESP8266 firmware (PlatformIO) |
-| `experiments/EXP_002/firmware/arduino_nano/` | Nano firmware (PlatformIO) |
-| `experiments/EXP_002/firmware/flash_nano.py` | Remote Nano flasher script |
+| `experiments/EXP_002/firmware/arduino_nano/` | Nano firmware with AccelStepper (PlatformIO) |
+| `experiments/EXP_002/firmware/flash_nano.py` | Remote Nano flasher (STK500v1 over TCP) |
 | `applications/lab-agent/` | Agent code (core, tools, server) |
+| `applications/lab-agent/ARCHITECTURE.md` | This file |
+| `applications/lab-agent/skills/` | Agent skill documents |
 | `papers_txt/INDEX.md` | Paper corpus index |
-| `experiments/EXP_003/summary.md` | Marimo biology knowledge |
 
 ## PlatformIO
 
