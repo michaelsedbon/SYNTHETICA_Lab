@@ -1,6 +1,7 @@
 """
 SYNTHETICA Lab Agent — FastAPI Server
 Provides REST and WebSocket APIs for the agent UI.
+Includes: Scheduler (cron tasks), Telegram bot bridge.
 Port: 8003
 """
 
@@ -20,6 +21,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from agent.core import Agent
 from agent.timeline import Timeline
+from agent.scheduler import scheduler
+from agent.telegram_bot import telegram_bot, is_configured as telegram_configured
 
 # ── Config ──
 DATA_DIR = os.environ.get(
@@ -33,16 +36,62 @@ active_agents: dict[str, Agent] = {}
 ws_clients: list[WebSocket] = []
 
 
+# ── Agent callback for scheduler + telegram ──
+async def agent_execute(message: str, context: str = None) -> str:
+    """Execute a message through the agent. Used by scheduler and Telegram."""
+    agent = get_or_create_agent(experiment="EXP_002")
+    loop = asyncio.get_event_loop()
+    events = []
+
+    def run():
+        collected = []
+        for event in agent.chat(message):
+            collected.append(event)
+            asyncio.run_coroutine_threadsafe(broadcast_event(event), loop)
+        return collected
+
+    events = await loop.run_in_executor(None, run)
+
+    # Extract the final text response
+    text_parts = []
+    for e in events:
+        if e.get("event_type") in ("reasoning", "decision") and e.get("content"):
+            text_parts.append(e["content"])
+
+    return "\n\n".join(text_parts[-3:]) if text_parts else "Task completed (no text output)."
+
+
 # ── App ──
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # Start scheduler
+    scheduler.set_agent_callback(
+        lambda msg, exp=None: agent_execute(msg, exp)
+    )
+    scheduler_task = asyncio.create_task(scheduler.run_loop())
+
+    # Start Telegram bot
+    telegram_task = None
+    if telegram_configured():
+        telegram_bot.set_agent_callback(
+            lambda msg, chat_id: agent_execute(msg, chat_id)
+        )
+        telegram_task = asyncio.create_task(telegram_bot.run_loop())
+        print("[Server] Telegram bot started.")
+
+    print(f"[Server] Scheduler started with {len(scheduler.tasks)} tasks.")
+
     yield
+
     # Cleanup
+    scheduler.stop()
+    if telegram_task:
+        telegram_bot.stop()
     active_agents.clear()
 
 app = FastAPI(
     title="SYNTHETICA Lab Agent",
-    version="0.1.0",
+    version="0.2.0",
     lifespan=lifespan,
 )
 
@@ -64,6 +113,13 @@ class ChatRequest(BaseModel):
 class ChatResponse(BaseModel):
     session_id: str
     events: list[dict]
+
+
+class ScheduleTaskRequest(BaseModel):
+    name: str
+    message: str
+    interval_seconds: int
+    experiment: Optional[str] = None
 
 
 # ── Helper ──
@@ -104,14 +160,12 @@ async def chat(req: ChatRequest):
     agent = get_or_create_agent(req.session_id, req.experiment)
 
     events = []
-    # Run agent in thread pool to avoid blocking
     loop = asyncio.get_event_loop()
 
     def run_agent():
         collected = []
         for event in agent.chat(req.message):
             collected.append(event)
-            # Schedule broadcast on the event loop
             asyncio.run_coroutine_threadsafe(broadcast_event(event), loop)
         return collected
 
@@ -126,6 +180,13 @@ async def agent_status():
     return {
         "agents": {sid: a.get_status() for sid, a in active_agents.items()},
         "total_sessions": len(active_agents),
+        "scheduler": {
+            "tasks": scheduler.list_tasks(),
+        },
+        "telegram": {
+            "enabled": telegram_configured(),
+            "chat_id": telegram_bot._authorized_chat_id,
+        },
     }
 
 
@@ -144,7 +205,6 @@ async def get_timeline(
     limit: int = 200,
 ):
     """Get timeline events for a session, with optional filters."""
-    # Check active agents first
     if session_id in active_agents:
         tl = active_agents[session_id].timeline
     else:
@@ -158,6 +218,56 @@ async def get_timeline(
     )
 
 
+# ── Scheduler endpoints ──
+
+@app.get("/api/scheduler/tasks")
+async def get_scheduled_tasks():
+    """List all scheduled tasks."""
+    return scheduler.list_tasks()
+
+
+@app.post("/api/scheduler/tasks")
+async def add_scheduled_task(req: ScheduleTaskRequest):
+    """Add a new scheduled task."""
+    task = scheduler.add_task(req.name, req.message, req.interval_seconds, req.experiment)
+    return task.to_dict()
+
+
+@app.delete("/api/scheduler/tasks/{name}")
+async def remove_scheduled_task(name: str):
+    """Remove a scheduled task."""
+    if scheduler.remove_task(name):
+        return {"ok": True, "removed": name}
+    return {"ok": False, "error": f"Task '{name}' not found"}
+
+
+@app.post("/api/scheduler/tasks/{name}/enable")
+async def enable_scheduled_task(name: str):
+    if scheduler.enable_task(name):
+        return {"ok": True, "enabled": name}
+    return {"ok": False, "error": f"Task '{name}' not found"}
+
+
+@app.post("/api/scheduler/tasks/{name}/disable")
+async def disable_scheduled_task(name: str):
+    if scheduler.disable_task(name):
+        return {"ok": True, "disabled": name}
+    return {"ok": False, "error": f"Task '{name}' not found"}
+
+
+# ── Telegram endpoints ──
+
+@app.post("/api/telegram/notify")
+async def telegram_notify(message: str):
+    """Send a notification to the registered Telegram chat."""
+    if not telegram_configured():
+        return {"ok": False, "error": "Telegram not configured"}
+    telegram_bot.notify(message)
+    return {"ok": True}
+
+
+# ── WebSocket ──
+
 @app.websocket("/ws/agent")
 async def websocket_endpoint(ws: WebSocket):
     """WebSocket for real-time timeline event streaming."""
@@ -165,9 +275,7 @@ async def websocket_endpoint(ws: WebSocket):
     ws_clients.append(ws)
     try:
         while True:
-            # Keep connection alive, handle incoming messages
             data = await ws.receive_text()
-            # Client can send chat messages via WebSocket too
             try:
                 msg = json.loads(data)
                 if msg.get("type") == "chat":
@@ -175,7 +283,6 @@ async def websocket_endpoint(ws: WebSocket):
                         msg.get("session_id"),
                         msg.get("experiment"),
                     )
-                    # Run in background
                     loop = asyncio.get_event_loop()
 
                     def run():
@@ -240,7 +347,16 @@ async def read_file(path: str):
 # ── Health check + root ──
 @app.get("/")
 async def root():
-    return {"service": "lab-agent", "version": "0.1.0", "health": "ok"}
+    return {
+        "service": "lab-agent",
+        "version": "0.2.0",
+        "health": "ok",
+        "features": {
+            "planner": True,
+            "scheduler": True,
+            "telegram": telegram_configured(),
+        },
+    }
 
 @app.get("/health")
 async def health():

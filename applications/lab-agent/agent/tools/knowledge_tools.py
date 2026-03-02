@@ -73,6 +73,65 @@ def search_experiments(query: str) -> str:
     return f"Found {len(matches)} experiment(s):\n\n" + "\n\n---\n\n".join(matches)
 
 
+def search_sessions(query: str, max_results: int = 10) -> str:
+    """Search past agent session logs for events matching a query.
+    Enables the agent to recall what it did in previous sessions."""
+    import json as _json
+
+    data_dir = os.environ.get("AGENT_DATA_DIR", os.path.join(
+        WORKSPACE, "applications", "lab-agent", "data", "sessions"))
+
+    if not os.path.isdir(data_dir):
+        return "No session data found."
+
+    query_lower = query.lower()
+    matches = []
+
+    for fname in sorted(os.listdir(data_dir), reverse=True):
+        if not fname.endswith(".jsonl"):
+            continue
+        session_id = fname.replace(".jsonl", "")
+        fpath = os.path.join(data_dir, fname)
+        try:
+            with open(fpath, "r", encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    event = _json.loads(line)
+                    searchable = " ".join([
+                        event.get("title", ""),
+                        event.get("content", ""),
+                        event.get("tool_name", ""),
+                        event.get("tool_output", ""),
+                    ]).lower()
+                    if query_lower in searchable:
+                        matches.append({
+                            "session": session_id,
+                            "time": event.get("timestamp", ""),
+                            "type": event.get("event_type", ""),
+                            "title": event.get("title", ""),
+                            "content": event.get("content", "")[:200],
+                        })
+                        if len(matches) >= max_results:
+                            break
+        except Exception:
+            continue
+        if len(matches) >= max_results:
+            break
+
+    if not matches:
+        return f"No past events matching '{query}'"
+
+    result = f"Found {len(matches)} past event(s) matching '{query}':\n\n"
+    for m in matches:
+        result += f"[{m['time']}] ({m['type']}) {m['title']}\n"
+        if m['content']:
+            result += f"  {m['content']}\n"
+        result += f"  Session: {m['session']}\n\n"
+    return result
+
+
 KNOWLEDGE_TOOLS = {
     "search_papers": {
         "function": search_papers,
@@ -107,4 +166,17 @@ KNOWLEDGE_TOOLS = {
             "required": ["query"],
         },
     },
+    "search_sessions": {
+        "function": search_sessions,
+        "description": "Search past agent session logs for events matching a query. Use this to recall what you did previously, find past results, or check if something was already attempted.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {"type": "string", "description": "Search query (tool name, topic, error message, etc.)"},
+                "max_results": {"type": "integer", "description": "Maximum results to return (default 10)"},
+            },
+            "required": ["query"],
+        },
+    },
 }
+

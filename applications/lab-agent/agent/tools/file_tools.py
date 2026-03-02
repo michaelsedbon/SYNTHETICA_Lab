@@ -69,6 +69,53 @@ def list_directory(path: str) -> str:
     return f"{resolved}/\n" + "\n".join(entries)
 
 
+def create_experiment(experiment_id: str, title: str, description: str = "") -> str:
+    """Create a new experiment folder with all required template files."""
+    from datetime import datetime
+    exp_dir = os.path.join(WORKSPACE, "experiments", experiment_id)
+    if os.path.exists(exp_dir):
+        return f"ERROR: {experiment_id} already exists at {exp_dir}"
+
+    os.makedirs(exp_dir, exist_ok=True)
+    date = datetime.now().strftime("%Y-%m-%d")
+
+    # summary.md
+    with open(os.path.join(exp_dir, "summary.md"), "w") as f:
+        f.write(f"# {title}\n\n")
+        f.write(f"**Experiment ID:** {experiment_id}\n")
+        f.write(f"**Created:** {date}\n")
+        f.write(f"**Status:** In Progress\n\n")
+        f.write(f"## Objective\n\n{description or 'TODO: describe the objective'}\n\n")
+        f.write("## Method\n\nTODO: describe the experimental method\n\n")
+        f.write("## Expected Results\n\nTODO: describe what you expect to find\n")
+
+    # LOG.md
+    with open(os.path.join(exp_dir, "LOG.md"), "w") as f:
+        f.write(f"# {experiment_id} — Experiment Log\n\n")
+        f.write(f"## {date} — Experiment created\n\n")
+        f.write(f"Created experiment: **{title}**\n\n")
+        if description:
+            f.write(f"Objective: {description}\n")
+
+    # SCRIPT_INDEX.md
+    with open(os.path.join(exp_dir, "SCRIPT_INDEX.md"), "w") as f:
+        f.write(f"# {experiment_id} — Script Index\n\n")
+        f.write("List all scripts used in this experiment.\n\n")
+        f.write("| Script | Description | Language |\n")
+        f.write("|--------|-------------|----------|\n")
+        f.write("| *(none yet)* | | |\n")
+
+    # DOC_INDEX.md
+    with open(os.path.join(exp_dir, "DOC_INDEX.md"), "w") as f:
+        f.write(f"# {experiment_id} — Document Index\n\n")
+        f.write("List all documents, datasheets, and references.\n\n")
+        f.write("| Document | Description | Type |\n")
+        f.write("|----------|-------------|------|\n")
+        f.write("| *(none yet)* | | |\n")
+
+    return f"OK: Created experiment {experiment_id} at {exp_dir} with summary.md, LOG.md, SCRIPT_INDEX.md, DOC_INDEX.md"
+
+
 FILE_TOOLS = {
     "file_read": {
         "function": file_read,
@@ -117,4 +164,18 @@ FILE_TOOLS = {
             "required": ["path"],
         },
     },
+    "create_experiment": {
+        "function": create_experiment,
+        "description": "Create a new experiment folder with all required template files (summary.md, LOG.md, SCRIPT_INDEX.md, DOC_INDEX.md). Use the next available EXP_XXX ID.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "experiment_id": {"type": "string", "description": "Experiment ID (e.g. 'EXP_004')"},
+                "title": {"type": "string", "description": "Experiment title"},
+                "description": {"type": "string", "description": "Brief description of the objective"},
+            },
+            "required": ["experiment_id", "title"],
+        },
+    },
 }
+
