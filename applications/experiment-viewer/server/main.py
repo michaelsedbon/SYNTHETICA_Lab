@@ -126,7 +126,7 @@ def _title_from_md(path: Path) -> str:
 
 
 # Directories to skip during traversal
-SKIP_DIRS = {".venv", "venv", "node_modules", "__pycache__", ".git", ".next", "data"}
+SKIP_DIRS = {".venv", "venv", "node_modules", "__pycache__", ".git", ".next", "data", "lib"}
 
 
 # ── Tree cache ──────────────────────────────────────────────────────
@@ -136,12 +136,42 @@ _tree_cache_time: float = 0.0
 _TREE_CACHE_TTL = 30  # seconds
 
 
+def _insert_into_folder(children: list[dict], rel_parts: tuple[str, ...], file_entry: dict) -> None:
+    """Insert a file entry into a nested folder structure.
+
+    rel_parts is the path segments WITHIN the experiment group (excluding the group dir itself).
+    For a file directly in the group, rel_parts is just (filename,).
+    For a file in a subfolder, rel_parts is (folder, ..., filename).
+    """
+    if len(rel_parts) == 1:
+        # File at this level
+        children.append({**file_entry, "type": "file"})
+        return
+
+    # Need to find or create the subfolder
+    folder_name = rel_parts[0]
+    folder_node = None
+    for child in children:
+        if child.get("type") == "folder" and child["name"] == folder_name:
+            folder_node = child
+            break
+
+    if folder_node is None:
+        folder_node = {"type": "folder", "name": folder_name, "children": []}
+        children.append(folder_node)
+
+    _insert_into_folder(folder_node["children"], rel_parts[1:], file_entry)
+
+
 def _build_tree() -> list[dict]:
-    """Walk all experiment sources and return a grouped list.
+    """Walk all experiment sources and return a grouped list with nested subfolders.
 
     Each group (EXP_xxx folder) has:
       - summary: the summary.md file entry (or None)
-      - files:   all other .md files in the folder
+      - children: nested list of file and folder entries
+
+    File entries: {"type": "file", "name", "path", "title", "modified", "source"}
+    Folder entries: {"type": "folder", "name", "children": [...]}
 
     Results are cached for _TREE_CACHE_TTL seconds.
     """
@@ -177,7 +207,7 @@ def _build_tree() -> list[dict]:
                     "key": group_key,
                     "label": group_label,
                     "summary": None,
-                    "files": [],
+                    "children": [],
                 }
 
             file_entry = {
@@ -188,11 +218,14 @@ def _build_tree() -> list[dict]:
                 "source": source_label,
             }
 
-            # summary.md is the primary file for the group
-            if md_path.name.lower() == "summary.md":
+            # summary.md at root level is the primary file for the group
+            if md_path.name.lower() == "summary.md" and len(parts) <= 2:
                 groups[group_key]["summary"] = file_entry
             else:
-                groups[group_key]["files"].append(file_entry)
+                # Insert into nested folder structure
+                # inner_parts = path segments within the group dir (excluding group dir name)
+                inner_parts = parts[1:] if len(parts) > 1 else parts
+                _insert_into_folder(groups[group_key]["children"], inner_parts, file_entry)
 
         # Collect groups for this source
         source_groups = []

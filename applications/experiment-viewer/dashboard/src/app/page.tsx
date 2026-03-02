@@ -514,11 +514,23 @@ interface MdFile {
   source: string;
 }
 
+interface TreeNode {
+  type: "file" | "folder";
+  name: string;
+  // File properties (present when type === "file")
+  path?: string;
+  title?: string;
+  modified?: number;
+  source?: string;
+  // Folder properties (present when type === "folder")
+  children?: TreeNode[];
+}
+
 interface ExperimentGroup {
   key: string;
   label: string;
   summary: MdFile | null;
-  files: MdFile[];
+  children: TreeNode[];
   source: string;
 }
 
@@ -571,6 +583,7 @@ function ExperimentViewer() {
   const [searchQuery, setSearchQuery] = useState("");
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const [expandedFiles, setExpandedFiles] = useState<Record<string, boolean>>({});
+  const [expandedFolders, setExpandedFolders] = useState<Record<string, boolean>>({});
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   // ── Preview mode (uploaded or externally-opened .md files) ──
@@ -757,9 +770,21 @@ function ExperimentViewer() {
       const map: Record<string, string> = {};
       for (const s of sourcesData) map[s.label] = s.path;
       setSourceMap(map);
-      // Auto-select first file
-      if (expData.length > 0 && expData[0].files.length > 0) {
-        handleSelect(expData[0].files[0].path, expData[0].source);
+      // Auto-select first file (find first file node in tree)
+      const findFirstFile = (nodes: TreeNode[]): TreeNode | null => {
+        for (const n of nodes) {
+          if (n.type === "file") return n;
+          if (n.children) {
+            const found = findFirstFile(n.children);
+            if (found) return found;
+          }
+        }
+        return null;
+      };
+      if (expData.length > 0) {
+        // Prefer summary, else first file in children
+        const first = expData[0].summary || findFirstFile(expData[0].children || []);
+        if (first) handleSelect(first.path!, expData[0].source);
       }
       setInitialLoading(false);
     }).catch(() => {
@@ -778,10 +803,13 @@ function ExperimentViewer() {
     setLoading(true);
 
     // Auto-expand the sidebar group containing this file
+    const treeContainsPath = (nodes: TreeNode[], p: string): boolean =>
+      nodes.some((n) => n.type === "file" ? n.path === p : treeContainsPath(n.children || [], p));
+
     setGroups((currentGroups) => {
       for (const group of currentGroups) {
         if (group.source !== source) continue;
-        const isChild = group.files.some((f) => f.path === path);
+        const isChild = treeContainsPath(group.children || [], path);
         if (isChild) {
           const groupKey = `${source}-${group.key}`;
           // Expand child files list
@@ -811,27 +839,143 @@ function ExperimentViewer() {
     setExpandedFiles((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  // Filter files by search
+  // Filter tree nodes recursively by search
   const q = searchQuery.toLowerCase();
+
+  const filterTreeNodes = (nodes: TreeNode[]): TreeNode[] => {
+    if (!q) return nodes;
+    return nodes.reduce<TreeNode[]>((acc, node) => {
+      if (node.type === "file") {
+        if (
+          (node.title || "").toLowerCase().includes(q) ||
+          node.name.toLowerCase().includes(q)
+        ) {
+          acc.push(node);
+        }
+      } else {
+        const filteredChildren = filterTreeNodes(node.children || []);
+        if (filteredChildren.length > 0) {
+          acc.push({ ...node, children: filteredChildren });
+        }
+      }
+      return acc;
+    }, []);
+  };
+
+  const countTreeFiles = (nodes: TreeNode[]): number =>
+    nodes.reduce((n, node) => n + (node.type === "file" ? 1 : countTreeFiles(node.children || [])), 0);
+
   const filteredGroups = groups
     .map((g) => {
       const matchesSearch = (f: MdFile) =>
         f.title.toLowerCase().includes(q) ||
         f.name.toLowerCase().includes(q);
       const summaryMatches = g.summary && matchesSearch(g.summary);
-      const filteredFiles = g.files.filter(matchesSearch);
-      // Show group if summary or any child matches (or label matches)
+      const filteredChildren = filterTreeNodes(g.children);
       const labelMatches = g.label.toLowerCase().includes(q);
       return {
         ...g,
         summary: (summaryMatches || labelMatches || !q) ? g.summary : null,
-        files: (labelMatches || summaryMatches) && !q ? g.files : filteredFiles,
+        children: (labelMatches || summaryMatches) && !q ? g.children : filteredChildren,
       };
     })
-    .filter((g) => g.summary || g.files.length > 0);
+    .filter((g) => g.summary || countTreeFiles(g.children) > 0);
 
   // Group by source for sidebar section headers
   const sources = [...new Set(filteredGroups.map((g) => g.source))];
+
+  // Toggle folder expansion
+  const toggleFolder = (folderPath: string) => {
+    setExpandedFolders((prev) => ({ ...prev, [folderPath]: !prev[folderPath] }));
+  };
+
+  // Recursive tree node renderer
+  const renderTreeNode = (node: TreeNode, source: string, parentPath: string, depth: number) => {
+    if (node.type === "file") {
+      return (
+        <button
+          key={`${source}-${node.path}`}
+          onClick={() => handleSelect(node.path!, source)}
+          className={`
+            flex items-center gap-2 w-full px-3 py-1.5 text-sm rounded-md
+            transition-all duration-150
+            ${activePath === node.path && activeSource === source
+              ? "bg-accent text-accent-foreground font-medium shadow-sm"
+              : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+            }
+          `}
+          style={{ paddingLeft: `${12 + depth * 12}px` }}
+        >
+          <svg
+            className="h-3.5 w-3.5 flex-shrink-0 opacity-40"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={1.5}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+            />
+          </svg>
+          <span className="truncate text-xs">{node.title || node.name}</span>
+        </button>
+      );
+    }
+
+    // Folder node
+    const folderKey = `${source}-${parentPath}/${node.name}`;
+    const isExpanded = expandedFolders[folderKey] ?? false;
+    const children = node.children || [];
+
+    return (
+      <div key={folderKey}>
+        <button
+          onClick={() => toggleFolder(folderKey)}
+          className="flex items-center gap-1.5 w-full py-1.5 text-xs font-medium
+                     text-muted-foreground hover:text-foreground transition-colors rounded-md
+                     hover:bg-muted/40"
+          style={{ paddingLeft: `${8 + depth * 12}px` }}
+        >
+          <svg
+            className={`h-3 w-3 transition-transform duration-200 flex-shrink-0 ${isExpanded ? "rotate-90" : ""}`}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
+          <svg
+            className={`h-3.5 w-3.5 flex-shrink-0 ${isExpanded ? "text-blue-400/70" : "text-muted-foreground/50"}`}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={1.5}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d={isExpanded
+                ? "M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 00-1.883 2.542l.857 6a2.25 2.25 0 002.227 1.932H19.05a2.25 2.25 0 002.227-1.932l.857-6a2.25 2.25 0 00-1.883-2.542m-16.5 0V6A2.25 2.25 0 016 3.75h3.879a1.5 1.5 0 011.06.44l2.122 2.12a1.5 1.5 0 001.06.44H18A2.25 2.25 0 0120.25 9v.776"
+                : "M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"
+              }
+            />
+          </svg>
+          <span className="truncate">{node.name}</span>
+          <span className="text-[10px] text-muted-foreground/40 ml-auto pr-1">
+            {countTreeFiles(children)}
+          </span>
+        </button>
+        {isExpanded && (
+          <div className="border-l border-border/30" style={{ marginLeft: `${14 + depth * 12}px` }}>
+            {children.map((child) => renderTreeNode(child, source, `${parentPath}/${node.name}`, depth + 1))}
+          </div>
+        )}
+      </div>
+    );
+  };
 
   // Resolve relative URLs in markdown to point to the API
   const resolveMediaUrl = (src: string, filePath: string | null): string => {
@@ -965,7 +1109,7 @@ function ExperimentViewer() {
                     {group.summary ? (
                       <div className="flex items-center gap-0">
                         {/* Expand/collapse arrow for child files */}
-                        {group.files.length > 0 && (
+                        {group.children.length > 0 && (
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
@@ -1039,73 +1183,17 @@ function ExperimentViewer() {
                       </button>
                     )}
 
-                    {/* Child .md files — collapsible, hidden by default */}
+                    {/* Child nodes — collapsible tree */}
                     {group.summary ? (
-                      group.files.length > 0 && expandedFiles[`${source}-${group.key}`] && (
-                        <div className="ml-5 border-l border-border/40 pl-2 mt-0.5 space-y-0.5">
-                          {group.files.map((file) => (
-                            <button
-                              key={`${source}-${file.path}`}
-                              onClick={() => handleSelect(file.path, source)}
-                              className={`
-                                flex items-center gap-2 w-full px-3 py-1.5 text-sm rounded-md
-                                transition-all duration-150
-                                ${activePath === file.path && activeSource === source
-                                  ? "bg-accent text-accent-foreground font-medium shadow-sm"
-                                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                                }
-                              `}
-                            >
-                              <svg
-                                className="h-3.5 w-3.5 flex-shrink-0 opacity-40"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                strokeWidth={1.5}
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
-                                />
-                              </svg>
-                              <span className="truncate text-xs">{file.title}</span>
-                            </button>
-                          ))}
+                      group.children.length > 0 && expandedFiles[`${source}-${group.key}`] && (
+                        <div className="ml-5 border-l border-border/40 pl-1 mt-0.5 space-y-0.5">
+                          {group.children.map((node) => renderTreeNode(node, source, group.key, 1))}
                         </div>
                       )
                     ) : (
                       !collapsed[`${source}-${group.key}`] && (
                         <div className="ml-2 mt-0.5 space-y-0.5">
-                          {group.files.map((file) => (
-                            <button
-                              key={`${source}-${file.path}`}
-                              onClick={() => handleSelect(file.path, source)}
-                              className={`
-                                flex items-center gap-2 w-full px-3 py-1.5 text-sm rounded-md
-                                transition-all duration-150
-                                ${activePath === file.path && activeSource === source
-                                  ? "bg-accent text-accent-foreground font-medium shadow-sm"
-                                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                                }
-                              `}
-                            >
-                              <svg
-                                className="h-3.5 w-3.5 flex-shrink-0 opacity-40"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                strokeWidth={1.5}
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
-                                />
-                              </svg>
-                              <span className="truncate text-xs">{file.title}</span>
-                            </button>
-                          ))}
+                          {group.children.map((node) => renderTreeNode(node, source, group.key, 0))}
                         </div>
                       )
                     )}
@@ -1124,7 +1212,7 @@ function ExperimentViewer() {
         {/* Footer */}
         <div className="flex items-center justify-between px-4 py-3 border-t border-border text-xs text-muted-foreground">
           <span>
-            {groups.reduce((a, g) => a + g.files.length + (g.summary ? 1 : 0), 0)} files
+            {groups.reduce((a, g) => a + countTreeFiles(g.children) + (g.summary ? 1 : 0), 0)} files
             {sources.length > 1 && ` · ${sources.length} sources`}
           </span>
           <button
