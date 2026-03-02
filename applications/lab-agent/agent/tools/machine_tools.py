@@ -90,10 +90,52 @@ def get_machine_log() -> str:
 import urllib.parse
 
 
+def run_experiment_script(script_path: str) -> str:
+    """Run a Python script from the workspace and return its output.
+    
+    Use this for long-running operations like calibration, characterisation,
+    or any multi-step procedure that needs to poll the machine over time.
+    The script runs synchronously and its stdout is captured and returned.
+    
+    Args:
+        script_path: Relative path from workspace root (e.g. 'experiments/EXP_002/firmware/calibrate_rotation.py')
+    """
+    import subprocess
+    workspace = os.environ.get("LAB_WORKSPACE", "/opt/synthetica-lab")
+    full_path = os.path.join(workspace, script_path)
+    
+    if not os.path.isfile(full_path):
+        return f"ERROR: Script not found: {full_path}"
+    
+    try:
+        result = subprocess.run(
+            ["python3", full_path],
+            capture_output=True,
+            text=True,
+            timeout=600,  # 10 minute timeout
+            env={
+                **os.environ,
+                "LAB_WORKSPACE": workspace,
+                "MACHINE_IP": MACHINE_IP,
+            },
+            cwd=workspace,
+        )
+        output = result.stdout
+        if result.stderr:
+            output += f"\n\nSTDERR:\n{result.stderr}"
+        if result.returncode != 0:
+            output += f"\n\nExit code: {result.returncode}"
+        return output if output.strip() else "(no output)"
+    except subprocess.TimeoutExpired:
+        return "ERROR: Script timed out after 600 seconds"
+    except Exception as e:
+        return f"ERROR: {e}"
+
+
 MACHINE_TOOLS = {
     "send_command": {
         "function": send_command,
-        "description": "Send a command to the Cryptographic Beings machine's Arduino Nano via the ESP8266 serial bridge. Commands: MOVE <steps>, HOME, STATUS, STOP, SPEED <us>, ENABLE, DISABLE, ZERO, PING. Be cautious with MOVE — test small values first.",
+        "description": "Send a command to the Cryptographic Beings machine's Arduino Nano via the ESP8266 serial bridge. Commands: MOVE <steps>, MOVETO <pos>, HOME, STATUS, STOP, SPEED <sps>, ACCEL <a>, ENABLE, DISABLE, ZERO, PING. Be cautious with MOVE — test small values first.",
         "parameters": {
             "type": "object",
             "properties": {
@@ -116,6 +158,17 @@ MACHINE_TOOLS = {
         "parameters": {
             "type": "object",
             "properties": {},
+        },
+    },
+    "run_experiment_script": {
+        "function": run_experiment_script,
+        "description": "Run a Python experiment script from the workspace. Use this for long-running operations that need to poll the machine over time (calibration, characterisation, multi-step tests). The script runs synchronously and its output is returned. Timeout: 10 minutes.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "script_path": {"type": "string", "description": "Path relative to workspace root (e.g. 'experiments/EXP_002/firmware/calibrate_rotation.py')"},
+            },
+            "required": ["script_path"],
         },
     },
 }

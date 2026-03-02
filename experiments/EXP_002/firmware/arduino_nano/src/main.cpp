@@ -32,7 +32,7 @@
 #define DEFAULT_MAX_SPEED     2000.0   // Steps per second
 #define DEFAULT_ACCELERATION  1000.0   // Steps per second²
 #define HOME_SPEED            500.0    // Slower speed for homing
-#define HOME_MAX_STEPS        10000    // Max steps before homing fails
+#define HOME_MAX_STEPS        200000   // Max steps before homing fails (enough for geared motors)
 
 // ── AccelStepper (type 1 = DRIVER: step + dir) ──
 AccelStepper stepper(AccelStepper::DRIVER, PIN_STEP, PIN_DIR);
