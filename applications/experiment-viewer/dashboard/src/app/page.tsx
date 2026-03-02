@@ -543,7 +543,21 @@ function apiBase(): string {
 
 async function fetchExperiments(): Promise<ExperimentGroup[]> {
   const res = await fetch(`${apiBase()}/api/experiments`);
-  return res.json();
+  const data = await res.json();
+  // Normalize: backend may return old flat `files` or new nested `children`
+  return data.map((g: ExperimentGroup & { files?: MdFile[] }) => {
+    if (g.children) return g;
+    // Convert old `files` array to TreeNode children
+    const children: TreeNode[] = (g.files || []).map((f) => ({
+      type: "file" as const,
+      name: f.name,
+      path: f.path,
+      title: f.title,
+      modified: f.modified,
+      source: f.source,
+    }));
+    return { ...g, children };
+  });
 }
 
 async function fetchSources(): Promise<{ label: string; path: string }[]> {
