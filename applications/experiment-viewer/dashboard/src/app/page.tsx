@@ -871,15 +871,15 @@ function ExperimentViewer() {
         f.title.toLowerCase().includes(q) ||
         f.name.toLowerCase().includes(q);
       const summaryMatches = g.summary && matchesSearch(g.summary);
-      const filteredChildren = filterTreeNodes(g.children);
+      const filteredChildren = filterTreeNodes(g.children || []);
       const labelMatches = g.label.toLowerCase().includes(q);
       return {
         ...g,
         summary: (summaryMatches || labelMatches || !q) ? g.summary : null,
-        children: (labelMatches || summaryMatches) && !q ? g.children : filteredChildren,
+        children: (labelMatches || summaryMatches) && !q ? (g.children || []) : filteredChildren,
       };
     })
-    .filter((g) => g.summary || countTreeFiles(g.children) > 0);
+    .filter((g) => g.summary || countTreeFiles(g.children || []) > 0);
 
   // Group by source for sidebar section headers
   const sources = [...new Set(filteredGroups.map((g) => g.source))];
@@ -1109,7 +1109,7 @@ function ExperimentViewer() {
                     {group.summary ? (
                       <div className="flex items-center gap-0">
                         {/* Expand/collapse arrow for child files */}
-                        {group.children.length > 0 && (
+                        {(group.children || []).length > 0 && (
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
@@ -1185,15 +1185,15 @@ function ExperimentViewer() {
 
                     {/* Child nodes — collapsible tree */}
                     {group.summary ? (
-                      group.children.length > 0 && expandedFiles[`${source}-${group.key}`] && (
+                      (group.children || []).length > 0 && expandedFiles[`${source}-${group.key}`] && (
                         <div className="ml-5 border-l border-border/40 pl-1 mt-0.5 space-y-0.5">
-                          {group.children.map((node) => renderTreeNode(node, source, group.key, 1))}
+                          {(group.children || []).map((node) => renderTreeNode(node, source, group.key, 1))}
                         </div>
                       )
                     ) : (
                       !collapsed[`${source}-${group.key}`] && (
                         <div className="ml-2 mt-0.5 space-y-0.5">
-                          {group.children.map((node) => renderTreeNode(node, source, group.key, 0))}
+                          {(group.children || []).map((node) => renderTreeNode(node, source, group.key, 0))}
                         </div>
                       )
                     )}
@@ -1212,7 +1212,7 @@ function ExperimentViewer() {
         {/* Footer */}
         <div className="flex items-center justify-between px-4 py-3 border-t border-border text-xs text-muted-foreground">
           <span>
-            {groups.reduce((a, g) => a + countTreeFiles(g.children) + (g.summary ? 1 : 0), 0)} files
+            {groups.reduce((a, g) => a + countTreeFiles(g.children || []) + (g.summary ? 1 : 0), 0)} files
             {sources.length > 1 && ` · ${sources.length} sources`}
           </span>
           <button
