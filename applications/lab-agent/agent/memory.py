@@ -53,6 +53,25 @@ The workspace is at /opt/synthetica-lab. Key directories:
 
 """
 
+    # Architecture knowledge
+    arch = _read_file("applications/lab-agent/ARCHITECTURE.md")
+    if arch:
+        prompt += "## Lab Architecture\n\n"
+        prompt += arch + "\n\n"
+
+    # Load skills
+    skills_dir = os.path.join(WORKSPACE, "applications", "lab-agent", "skills")
+    if os.path.isdir(skills_dir):
+        skill_files = sorted(f for f in os.listdir(skills_dir) if f.endswith(".md"))
+        if skill_files:
+            prompt += "## Your Skills\n\n"
+            prompt += "You have the following skills. Follow these instructions when performing these tasks:\n\n"
+            for sf in skill_files:
+                skill_content = _read_file(os.path.join(skills_dir, sf))
+                if skill_content:
+                    prompt += f"### Skill: {sf.replace('.md', '').replace('_', ' ').title()}\n\n"
+                    prompt += skill_content + "\n\n"
+
     # EXP_003 domain knowledge (Marimo buoyancy model) — background biology context
     exp003_summary = _read_file("experiments/EXP_003/summary.md")
     if exp003_summary:
