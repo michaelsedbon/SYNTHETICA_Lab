@@ -21,6 +21,7 @@ Also supports **previewing arbitrary markdown files** via a URL parameter, and *
 | Backend | Python · FastAPI |
 | Frontend | Next.js (App Router) · Tailwind CSS v4 · shadcn/ui |
 | Markdown | react-markdown · remark-gfm · rehype-raw · rehype-highlight |
+| LaTeX | remark-math · rehype-katex (KaTeX CSS) |
 
 ---
 
@@ -112,9 +113,11 @@ Additional sources can be added via:
 
 - **Multi-source experiment browsing** with grouped file tree
 - **Dark-mode markdown renderer** with GFM, code highlighting, tables, images
+- **LaTeX equation rendering** via KaTeX (inline `$...$` and display `$$...$$`)
 - **Code file viewer** with syntax highlighting for 30+ languages
 - **"Open in editor"** button (VS Code / Cursor integration)
 - **Search** across all experiment files
 - **Arbitrary file preview** via `?preview=<path>` URL parameter
 - **Collapsible sidebar** with experiment groups and file lists
 - **Breadcrumb navigation** for deep file hierarchies
+- **Tree caching** (30s TTL) for fast sidebar loads on large workspaces

@@ -1,6 +1,6 @@
 # Applications Index
 
-> **7 applications** powering the SYNTHETIC Lab — from electrophysiology recording to 3D lab navigation.
+> **8 applications** powering the SYNTHETIC Lab — from electrophysiology recording to autonomous AI control.
 
 All lab applications live under `applications/`. Each app has a `DOCS.md` with full route tables, architecture diagrams, and feature lists. Apps are registered in the [App Launcher](#-app-launcher) and can be started/stopped from a single dashboard.
 
@@ -17,6 +17,7 @@ All lab applications live under `applications/`. Each app has a `DOCS.md` with f
 | 5 | [🧬 Plasmid Viewer](#-plasmid-viewer) | `plasmid-viewer` | 8003 · 3004 | FastAPI · Next.js · BioPython | ✅ Working |
 | 6 | [🧪 Virtual Lab](#-virtual-lab) | `virtual-lab` | 8080 | Three.js · Airtable · Vanilla JS | ✅ Working |
 | 7 | [🚀 App Launcher](#-app-launcher) | `launcher` | 3100 | Next.js | ✅ Working |
+| 8 | [🤖 Lab Agent](#-lab-agent) | `lab-agent` | 8003 | FastAPI · Ollama · WebSocket | ✅ Working |
 
 ---
 
@@ -32,6 +33,7 @@ Backend (Python FastAPI)          Frontend (Next.js / Static)
                                   3004  Plasmid Viewer
                                   3100  App Launcher
                                   8080  Virtual Lab (static)
+8003  Lab Agent API+WS
 ```
 
 ---
@@ -165,6 +167,26 @@ Landing page with app cards, real-time health monitoring (port polling), and the
 **Key capabilities:** App cards with icons & descriptions, health polling every 5s, start/stop process management, status badges (green/yellow/red), LAN-aware URLs.
 
 📄 **Full docs:** [`launcher/DOCS.md`](launcher/DOCS.md)
+
+---
+
+## 🤖 Lab Agent
+
+**Autonomous AI agent for hardware control and experiment management.**
+
+Ollama-powered agent (qwen2.5:14b) running on the local server. Controls the Cryptographic Beings machine via ESP8266/Arduino Nano, searches papers, writes code, and logs all actions on a persistent timeline.
+
+| Detail | Value |
+|--------|-------|
+| Port | 8003 (API + WebSocket) |
+| API Endpoints | 7 REST + 1 WebSocket |
+| LLM | qwen2.5:14b (local Ollama) |
+| Tools | 13 (file ops, terminal, HTTP, machine control, knowledge) |
+| Linked Experiment | EXP_002 |
+
+**Key capabilities:** Think → act → observe agent loop, ESP8266/Nano serial bridge control, OTA firmware updates, paper corpus search, JSONL session timelines, real-time WebSocket event streaming, workspace file browsing.
+
+📄 **Full docs:** [`lab-agent/DOCS.md`](lab-agent/DOCS.md)
 
 ---
 
