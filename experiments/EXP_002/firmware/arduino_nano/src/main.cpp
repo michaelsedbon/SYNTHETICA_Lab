@@ -24,10 +24,10 @@
  */
 
 #include <Arduino.h>
-#define PIN_STEP      4    // D4 → ISD04 PUL+
-#define PIN_DIR       5    // D5 → ISD04 DIR+
-#define PIN_ENABLE    6    // D6 → ISD04 ENA+ (optional, active LOW)
-#define PIN_HALL      2    // D2 ← Hall-effect sensor (interrupt capable)
+#define PIN_STEP      5    // D5 → ISD04 STP (pin 5)
+#define PIN_DIR       4    // D4 → ISD04 DIR (pin 4)
+#define PIN_ENABLE    6    // D6 → ISD04 ENA (pin 6) — may not be connected
+#define PIN_HALL      3    // D3 ← Hall-effect sensor (interrupt capable)
 
 // ── Motor parameters ──
 #define DEFAULT_STEP_DELAY_US  800   // Microseconds between steps (controls speed)
