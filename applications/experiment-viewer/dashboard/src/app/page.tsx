@@ -11,6 +11,7 @@ import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
 import mermaid from "mermaid";
 import hljs from "highlight.js";
+import { Bot } from "lucide-react";
 
 // ── Theme definitions ──────────────────────────────────────────────
 const CODE_THEMES = [
@@ -909,7 +910,7 @@ function ExperimentViewer() {
                        hover:bg-blue-600/30 hover:text-blue-300 transition-colors"
             title="Open Lab Agent"
           >
-            🤖 Agent
+            <Bot size={12} /> Agent
           </a>
         </div>
 
