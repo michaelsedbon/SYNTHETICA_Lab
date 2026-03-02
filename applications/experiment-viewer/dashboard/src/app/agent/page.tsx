@@ -4,9 +4,8 @@ import { useState, useEffect, useCallback, useRef } from "react";
 
 // ── Config ── Agent always runs on the server
 const AGENT_SERVER = "172.16.1.80";
-function agentBase(): string {
-    return `http://${AGENT_SERVER}:8003`;
-}
+const agentUrl = (path: string) => `http://${AGENT_SERVER}:8003${path}`;
+const agentWs = () => `ws://${AGENT_SERVER}:8003/ws/agent`;
 
 // ── Types ──
 interface TimelineEvent {
@@ -30,534 +29,425 @@ interface Session {
     event_count: number;
     first_event: string;
     last_event: string;
-    size_bytes: number;
 }
 
-// ── Event type config ──
-const EVENT_COLORS: Record<string, { bg: string; border: string; icon: string; label: string }> = {
-    reasoning: { bg: "bg-blue-500/20", border: "border-blue-500/40", icon: "💭", label: "Reasoning" },
-    tool_call: { bg: "bg-amber-500/20", border: "border-amber-500/40", icon: "🔧", label: "Tool Call" },
-    observation: { bg: "bg-green-500/20", border: "border-green-500/40", icon: "📊", label: "Observation" },
-    decision: { bg: "bg-purple-500/20", border: "border-purple-500/40", icon: "✅", label: "Decision" },
-    error: { bg: "bg-red-500/20", border: "border-red-500/40", icon: "⚠️", label: "Error" },
-    info: { bg: "bg-slate-500/20", border: "border-slate-500/40", icon: "ℹ️", label: "Info" },
-};
+interface FileEntry {
+    name: string;
+    is_dir: boolean;
+    size?: number;
+}
 
-const AGENT_COLORS: Record<string, string> = {
-    default: "bg-blue-500",
-    planner: "bg-violet-500",
-    operator: "bg-emerald-500",
-    analyst: "bg-amber-500",
+// ── Event icons ──
+const ICONS: Record<string, string> = {
+    reasoning: "💭",
+    tool_call: "🔧",
+    observation: "📊",
+    decision: "✅",
+    error: "⚠️",
+    info: "ℹ️",
 };
 
 // ── Helpers ──
-function formatTime(iso: string): string {
-    try {
-        const d = new Date(iso);
-        return d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
-    } catch {
-        return iso;
-    }
+function fmtTime(iso: string): string {
+    try { return new Date(iso).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" }); }
+    catch { return ""; }
 }
-
-function formatDuration(ms?: number): string {
+function fmtDur(ms?: number): string {
     if (!ms) return "";
-    if (ms < 1000) return `${ms}ms`;
-    return `${(ms / 1000).toFixed(1)}s`;
+    return ms < 1000 ? `${ms}ms` : `${(ms / 1000).toFixed(1)}s`;
 }
-
-function relativeTime(iso: string): string {
+function fmtAge(iso: string): string {
     try {
-        const d = new Date(iso);
-        const now = new Date();
-        const diff = now.getTime() - d.getTime();
-        if (diff < 60000) return "just now";
-        if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
-        if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
-        return d.toLocaleDateString();
-    } catch {
-        return iso;
-    }
+        const s = (Date.now() - new Date(iso).getTime()) / 1000;
+        if (s < 60) return "now";
+        if (s < 3600) return `${Math.floor(s / 60)}m`;
+        if (s < 86400) return `${Math.floor(s / 3600)}h`;
+        return new Date(iso).toLocaleDateString();
+    } catch { return ""; }
 }
 
-// ── Components ──
-
-function EventNode({
-    event,
-    isSelected,
-    onClick,
-}: {
-    event: TimelineEvent;
-    isSelected: boolean;
-    onClick: () => void;
-}) {
-    const config = EVENT_COLORS[event.event_type] || EVENT_COLORS.info;
-    return (
-        <button
-            onClick={onClick}
-            className={`
-        relative flex-shrink-0 w-10 h-10 rounded-full border-2 transition-all duration-200
-        flex items-center justify-center text-sm
-        ${config.bg} ${config.border}
-        ${isSelected ? "ring-2 ring-blue-400 scale-110" : "hover:scale-105 hover:brightness-125"}
-      `}
-            title={`${config.icon} ${event.title} — ${formatTime(event.timestamp)}`}
-        >
-            <span className="text-xs">{config.icon}</span>
-        </button>
-    );
-}
-
-function EventDetail({ event }: { event: TimelineEvent }) {
-    const config = EVENT_COLORS[event.event_type] || EVENT_COLORS.info;
-    return (
-        <div className={`rounded-lg border ${config.border} ${config.bg} p-4 text-sm`}>
-            <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                    <span className="text-base">{config.icon}</span>
-                    <span className="font-semibold text-foreground">{event.title}</span>
-                    <span className="text-xs text-muted-foreground px-2 py-0.5 rounded bg-muted/50">
-                        {config.label}
-                    </span>
-                </div>
-                <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                    {event.duration_ms !== undefined && (
-                        <span className="font-mono">{formatDuration(event.duration_ms)}</span>
-                    )}
-                    <span className="font-mono">{formatTime(event.timestamp)}</span>
-                </div>
-            </div>
-
-            {/* Content */}
-            {event.content && (
-                <div className="mb-3 text-foreground/80 whitespace-pre-wrap font-mono text-xs leading-relaxed bg-background/30 rounded p-3">
-                    {event.content}
-                </div>
-            )}
-
-            {/* Tool details */}
-            {event.tool_name && (
-                <div className="space-y-2">
-                    {event.tool_input && (
-                        <div>
-                            <div className="text-xs text-muted-foreground mb-1 uppercase tracking-wider">Input</div>
-                            <pre className="text-xs font-mono bg-background/30 rounded p-2 overflow-x-auto">
-                                {JSON.stringify(event.tool_input, null, 2)}
-                            </pre>
-                        </div>
-                    )}
-                    {event.tool_output && (
-                        <div>
-                            <div className="text-xs text-muted-foreground mb-1 uppercase tracking-wider">Output</div>
-                            <pre className="text-xs font-mono bg-background/30 rounded p-2 overflow-x-auto max-h-48 overflow-y-auto">
-                                {event.tool_output}
-                            </pre>
-                        </div>
-                    )}
-                </div>
-            )}
-
-            {/* Files touched */}
-            {event.files_touched.length > 0 && (
-                <div className="mt-2 flex items-center gap-2 flex-wrap">
-                    <span className="text-xs text-muted-foreground">Files:</span>
-                    {event.files_touched.map((f, i) => (
-                        <span key={i} className="text-xs font-mono px-1.5 py-0.5 rounded bg-muted/50 text-foreground/70">
-                            {f.split("/").pop()}
-                        </span>
-                    ))}
-                </div>
-            )}
-        </div>
-    );
-}
-
-function ChatMessage({ role, content }: { role: string; content: string }) {
-    const isUser = role === "user";
-    return (
-        <div className={`flex ${isUser ? "justify-end" : "justify-start"} mb-3`}>
-            <div
-                className={`
-          max-w-[85%] rounded-lg px-3.5 py-2.5 text-sm
-          ${isUser
-                        ? "bg-blue-600/30 border border-blue-500/30 text-foreground"
-                        : "bg-muted/50 border border-border text-foreground/90"
-                    }
-        `}
-            >
-                <div className="whitespace-pre-wrap">{content}</div>
-            </div>
-        </div>
-    );
-}
-
-// ── Main Page ──
-
+// ── Main ──
 export default function AgentPage() {
-    // ── State ──
     const [sessions, setSessions] = useState<Session[]>([]);
-    const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
+    const [sessionId, setSessionId] = useState<string | null>(null);
     const [events, setEvents] = useState<TimelineEvent[]>([]);
-    const [selectedEvent, setSelectedEvent] = useState<TimelineEvent | null>(null);
-    const [chatInput, setChatInput] = useState("");
-    const [chatMessages, setChatMessages] = useState<{ role: string; content: string }[]>([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [agentStatus, setAgentStatus] = useState<Record<string, unknown> | null>(null);
+    const [selected, setSelected] = useState<TimelineEvent | null>(null);
+    const [input, setInput] = useState("");
+    const [messages, setMessages] = useState<{ role: string; text: string }[]>([]);
+    const [busy, setBusy] = useState(false);
     const [connected, setConnected] = useState(false);
+    const [status, setStatus] = useState<Record<string, unknown> | null>(null);
 
     // Filters
-    const [filterAgent, setFilterAgent] = useState<string>("all");
-    const [filterType, setFilterType] = useState<string>("all");
+    const [fType, setFType] = useState("all");
 
-    const chatEndRef = useRef<HTMLDivElement>(null);
-    const timelineRef = useRef<HTMLDivElement>(null);
-    const wsRef = useRef<WebSocket | null>(null);
+    // File browser
+    const [filePath, setFilePath] = useState("/opt/synthetica-lab");
+    const [fileList, setFileList] = useState<FileEntry[]>([]);
+    const [fileContent, setFileContent] = useState<string | null>(null);
+    const [fileViewing, setFileViewing] = useState<string | null>(null);
 
-    // ── WebSocket for real-time events ──
+    // Right panel tab
+    const [tab, setTab] = useState<"timeline" | "files">("timeline");
+
+    const chatEnd = useRef<HTMLDivElement>(null);
+    const ws = useRef<WebSocket | null>(null);
+
+    // ── WebSocket ──
     useEffect(() => {
         function connect() {
-            const ws = new WebSocket(`ws://${AGENT_SERVER}:8003/ws/agent`);
-            ws.onopen = () => setConnected(true);
-            ws.onclose = () => {
-                setConnected(false);
-                setTimeout(connect, 3000);
-            };
-            ws.onerror = () => ws.close();
-            ws.onmessage = (msg) => {
+            const s = new WebSocket(agentWs());
+            s.onopen = () => setConnected(true);
+            s.onclose = () => { setConnected(false); setTimeout(connect, 3000); };
+            s.onerror = () => s.close();
+            s.onmessage = (m) => {
                 try {
-                    const event: TimelineEvent = JSON.parse(msg.data);
-                    setEvents((prev) => [...prev, event]);
-                    // Auto-scroll timeline
-                    setTimeout(() => {
-                        if (timelineRef.current) {
-                            timelineRef.current.scrollLeft = timelineRef.current.scrollWidth;
-                        }
-                    }, 50);
-                } catch {/* ignore */ }
+                    setEvents(p => [...p, JSON.parse(m.data)]);
+                } catch { }
             };
-            wsRef.current = ws;
+            ws.current = s;
         }
         connect();
-        return () => { wsRef.current?.close(); };
+        return () => { ws.current?.close(); };
     }, []);
 
-    // ── Load sessions ──
+    // ── Load sessions + status ──
     useEffect(() => {
-        fetch(`${agentBase()}/api/agent/sessions`)
-            .then((r) => r.json())
-            .then(setSessions)
-            .catch(() => { });
-
-        fetch(`${agentBase()}/api/agent/status`)
-            .then((r) => r.json())
-            .then(setAgentStatus)
-            .catch(() => { });
+        fetch(agentUrl("/api/agent/sessions")).then(r => r.json()).then(setSessions).catch(() => { });
+        fetch(agentUrl("/api/agent/status")).then(r => r.json()).then(setStatus).catch(() => { });
     }, [events.length]);
 
-    // ── Load session timeline ──
-    const loadSession = useCallback((sid: string) => {
-        setActiveSessionId(sid);
-        setSelectedEvent(null);
-        fetch(`${agentBase()}/api/agent/timeline/${sid}?limit=500`)
-            .then((r) => r.json())
-            .then((data: TimelineEvent[]) => {
-                setEvents(data);
-                setTimeout(() => {
-                    if (timelineRef.current) {
-                        timelineRef.current.scrollLeft = timelineRef.current.scrollWidth;
-                    }
-                }, 100);
+    // ── Load file list (direct API, no LLM) ──
+    const loadDir = useCallback((path: string) => {
+        setFilePath(path);
+        setFileContent(null);
+        setFileViewing(null);
+        const relPath = path.replace("/opt/synthetica-lab", "").replace(/^\//, "");
+        fetch(agentUrl(`/api/files/list?path=${encodeURIComponent(relPath)}`))
+            .then(r => r.json())
+            .then(data => {
+                if (data.entries) {
+                    setFileList(data.entries);
+                    setFilePath(data.path || path);
+                }
             })
             .catch(() => { });
     }, []);
 
-    // ── Send chat message ──
-    const sendMessage = useCallback(async () => {
-        if (!chatInput.trim() || isLoading) return;
-        const msg = chatInput.trim();
-        setChatInput("");
-        setChatMessages((prev) => [...prev, { role: "user", content: msg }]);
-        setIsLoading(true);
+    const viewFile = useCallback((path: string) => {
+        setFileViewing(path);
+        setFileContent(null);
+        fetch(agentUrl(`/api/files/read?path=${encodeURIComponent(path)}`))
+            .then(r => r.json())
+            .then(data => {
+                if (data.content) setFileContent(data.content);
+                else if (data.error) setFileContent(`Error: ${data.error}`);
+            })
+            .catch(() => { });
+    }, []);
 
+    // ── Load session ──
+    const loadSession = useCallback((sid: string) => {
+        setSessionId(sid);
+        setSelected(null);
+        fetch(agentUrl(`/api/agent/timeline/${sid}?limit=500`))
+            .then(r => r.json()).then(setEvents).catch(() => { });
+    }, []);
+
+    // ── Send message ──
+    const send = useCallback(async () => {
+        if (!input.trim() || busy) return;
+        const msg = input.trim();
+        setInput("");
+        setMessages(p => [...p, { role: "user", text: msg }]);
+        setBusy(true);
         try {
-            const res = await fetch(`${agentBase()}/api/agent/chat`, {
+            const res = await fetch(agentUrl("/api/agent/chat"), {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    message: msg,
-                    session_id: activeSessionId,
-                    experiment: "EXP_002",
-                }),
+                body: JSON.stringify({ message: msg, session_id: sessionId, experiment: "EXP_002" }),
             });
             const data = await res.json();
-            setActiveSessionId(data.session_id);
-
-            // Find the final response (last reasoning event with content)
-            const responseEvents: TimelineEvent[] = data.events || [];
-            setEvents((prev) => [...prev, ...responseEvents]);
-
-            const lastReasoning = responseEvents
-                .filter((e: TimelineEvent) => e.event_type === "reasoning" && e.content)
-                .pop();
-            if (lastReasoning) {
-                setChatMessages((prev) => [...prev, { role: "assistant", content: lastReasoning.content }]);
-            }
-
-            // Auto-scroll timeline
-            setTimeout(() => {
-                if (timelineRef.current) {
-                    timelineRef.current.scrollLeft = timelineRef.current.scrollWidth;
-                }
-            }, 100);
+            setSessionId(data.session_id);
+            const newEvents: TimelineEvent[] = data.events || [];
+            setEvents(p => [...p, ...newEvents]);
+            const last = newEvents.filter(e => e.event_type === "reasoning" && e.content).pop();
+            if (last) setMessages(p => [...p, { role: "agent", text: last.content }]);
         } catch (e) {
-            setChatMessages((prev) => [...prev, { role: "assistant", content: `Error: ${e}` }]);
-        } finally {
-            setIsLoading(false);
-        }
-    }, [chatInput, isLoading, activeSessionId]);
+            setMessages(p => [...p, { role: "agent", text: `Error: ${e}` }]);
+        } finally { setBusy(false); }
+    }, [input, busy, sessionId]);
 
-    // Auto-scroll chat
-    useEffect(() => {
-        chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, [chatMessages]);
+    useEffect(() => { chatEnd.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
 
-    // ── Filter events ──
-    const filteredEvents = events.filter((e) => {
-        if (filterAgent !== "all" && e.agent_id !== filterAgent) return false;
-        if (filterType !== "all" && e.event_type !== filterType) return false;
-        return true;
-    });
-
-    // Group events by agent for multi-lane timeline
-    const agentIds = [...new Set(events.map((e) => e.agent_id))];
+    const filtered = events.filter(e => fType === "all" || e.event_type === fType);
+    const agents = [...new Set(events.map(e => e.agent_id))];
+    const activeCount = status ? Object.keys((status as { agents?: Record<string, unknown> }).agents || {}).length : 0;
 
     return (
-        <div className="flex h-screen bg-background text-foreground">
-            {/* ── Left Panel: Sessions + Chat ── */}
-            <div className="w-[360px] flex flex-col border-r border-border bg-sidebar flex-shrink-0">
+        <div className="flex h-screen bg-background text-foreground" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
+
+            {/* ── Left: Chat ── */}
+            <aside className="w-80 flex flex-col border-r border-border bg-sidebar">
                 {/* Header */}
-                <div className="px-4 py-3 border-b border-border">
+                <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+                    <div className="flex items-center gap-2">
+                        <div className={`w-1.5 h-1.5 rounded-full ${connected ? "bg-green-500" : "bg-red-500"}`} />
+                        <span className="text-sm font-semibold">Lab Agent</span>
+                    </div>
+                    <a href="/" className="text-[11px] text-muted-foreground hover:text-foreground transition-colors">
+                        ← Experiments
+                    </a>
+                </div>
+
+                {/* Active agents */}
+                <div className="px-4 py-2 border-b border-border text-[11px] text-muted-foreground">
                     <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                            <div className={`w-2 h-2 rounded-full ${connected ? "bg-green-500 animate-pulse" : "bg-red-500"}`} />
-                            <h1 className="text-sm font-semibold">Lab Agent</h1>
-                        </div>
-                        <a
-                            href="/"
-                            className="text-xs text-muted-foreground hover:text-foreground transition-colors"
-                        >
-                            ← Experiments
-                        </a>
+                        <span>{activeCount} active session{activeCount !== 1 ? "s" : ""}</span>
+                        <span>{connected ? "● live" : "○ offline"}</span>
                     </div>
-                    {agentStatus && (
-                        <div className="text-[11px] text-muted-foreground mt-1">
-                            {Object.keys((agentStatus as { agents?: Record<string, unknown> }).agents || {}).length} active session(s)
-                            {" · "}
-                            {connected ? "WebSocket connected" : "Disconnected"}
-                        </div>
-                    )}
                 </div>
 
-                {/* Sessions list */}
-                <div className="border-b border-border">
-                    <div className="px-4 py-2 text-[11px] text-muted-foreground uppercase tracking-wider font-medium">
-                        Sessions
+                {/* Sessions */}
+                {sessions.length > 0 && (
+                    <div className="border-b border-border max-h-32 overflow-y-auto">
+                        {sessions.map(s => (
+                            <button key={s.session_id} onClick={() => loadSession(s.session_id)}
+                                className={`w-full text-left px-4 py-1.5 text-[11px] transition-colors ${sessionId === s.session_id ? "bg-accent" : "hover:bg-muted/30"}`}>
+                                <span className="font-mono">{s.session_id}</span>
+                                <span className="text-muted-foreground ml-2">{s.event_count} events · {s.last_event ? fmtAge(s.last_event) : ""}</span>
+                            </button>
+                        ))}
                     </div>
-                    <div className="max-h-[160px] overflow-y-auto">
-                        {sessions.length === 0 ? (
-                            <div className="px-4 py-3 text-xs text-muted-foreground/60">
-                                No sessions yet. Start a conversation below.
+                )}
+
+                {/* Messages */}
+                <div className="flex-1 overflow-y-auto px-3 py-3 space-y-2">
+                    {messages.length === 0 && (
+                        <div className="text-center text-muted-foreground/40 text-xs mt-12">
+                            <div className="text-lg mb-1">🧪</div>
+                            Ask the agent anything
+                        </div>
+                    )}
+                    {messages.map((m, i) => (
+                        <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+                            <div className={`max-w-[90%] rounded-md px-3 py-2 text-[13px] leading-relaxed whitespace-pre-wrap ${m.role === "user"
+                                ? "bg-blue-600/20 border border-blue-500/20"
+                                : "bg-muted/40 border border-border"
+                                }`}>
+                                {m.text}
                             </div>
-                        ) : (
-                            sessions.map((s) => (
-                                <button
-                                    key={s.session_id}
-                                    onClick={() => loadSession(s.session_id)}
-                                    className={`
-                    w-full text-left px-4 py-2 text-xs transition-colors border-b border-border/30
-                    ${activeSessionId === s.session_id
-                                            ? "bg-accent text-accent-foreground"
-                                            : "hover:bg-muted/40 text-foreground/70"
-                                        }
-                  `}
-                                >
-                                    <div className="flex items-center justify-between">
-                                        <span className="font-mono font-medium">{s.session_id}</span>
-                                        <span className="text-muted-foreground">{s.event_count} events</span>
-                                    </div>
-                                    <div className="text-[10px] text-muted-foreground mt-0.5">
-                                        {s.last_event ? relativeTime(s.last_event) : "—"}
-                                    </div>
-                                </button>
-                            ))
-                        )}
-                    </div>
-                </div>
-
-                {/* Chat messages */}
-                <div className="flex-1 overflow-y-auto px-3 py-3">
-                    {chatMessages.length === 0 && (
-                        <div className="text-center text-muted-foreground/50 text-xs mt-8">
-                            <div className="text-2xl mb-2">🧪</div>
-                            <div>Start a conversation with the Lab Agent</div>
-                            <div className="mt-1 text-[10px]">Ask about experiments, control the machine, or plan research</div>
                         </div>
-                    )}
-                    {chatMessages.map((m, i) => (
-                        <ChatMessage key={i} role={m.role} content={m.content} />
                     ))}
-                    {isLoading && (
-                        <div className="flex justify-start mb-3">
-                            <div className="bg-muted/50 border border-border rounded-lg px-4 py-3 text-sm">
-                                <div className="flex items-center gap-2 text-muted-foreground">
-                                    <div className="h-3 w-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                                    <span className="text-xs">Thinking...</span>
-                                </div>
-                            </div>
+                    {busy && (
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground px-2">
+                            <div className="h-3 w-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                            Thinking…
                         </div>
                     )}
-                    <div ref={chatEndRef} />
+                    <div ref={chatEnd} />
                 </div>
 
-                {/* Chat input */}
-                <div className="px-3 py-3 border-t border-border">
-                    <div className="flex gap-2">
-                        <input
-                            type="text"
-                            value={chatInput}
-                            onChange={(e) => setChatInput(e.target.value)}
-                            onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); } }}
-                            placeholder="Ask the agent..."
-                            className="flex-1 bg-muted/30 border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 transition-colors"
-                            disabled={isLoading}
-                        />
-                        <button
-                            onClick={sendMessage}
-                            disabled={isLoading || !chatInput.trim()}
-                            className="px-3 py-2 bg-blue-600/80 hover:bg-blue-600 disabled:opacity-30 disabled:cursor-not-allowed rounded-lg text-xs font-medium text-white transition-colors"
-                        >
-                            Send
+                {/* Input */}
+                <div className="px-3 py-2.5 border-t border-border">
+                    <div className="flex gap-1.5">
+                        <input type="text" value={input}
+                            onChange={e => setInput(e.target.value)}
+                            onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
+                            placeholder="Message…"
+                            disabled={busy}
+                            className="flex-1 bg-muted/30 border border-border rounded-md px-2.5 py-1.5 text-sm outline-none focus:border-blue-500/40 transition-colors placeholder:text-muted-foreground/40" />
+                        <button onClick={send} disabled={busy || !input.trim()}
+                            className="px-2.5 py-1.5 bg-foreground/10 hover:bg-foreground/15 disabled:opacity-20 rounded-md text-xs font-medium transition-colors">
+                            ↑
                         </button>
                     </div>
                 </div>
-            </div>
+            </aside>
 
-            {/* ── Right Panel: Timeline + Details ── */}
+            {/* ── Right: Timeline / Files ── */}
             <div className="flex-1 flex flex-col min-w-0">
-                {/* Toolbar / Filters */}
-                <div className="px-4 py-2.5 border-b border-border flex items-center gap-3 bg-sidebar/50">
-                    <span className="text-xs text-muted-foreground">Filter:</span>
-                    <select
-                        value={filterAgent}
-                        onChange={(e) => setFilterAgent(e.target.value)}
-                        className="text-xs bg-muted/30 border border-border rounded px-2 py-1 text-foreground outline-none"
-                    >
-                        <option value="all">All agents</option>
-                        {agentIds.map((a) => (
-                            <option key={a} value={a}>{a}</option>
-                        ))}
-                    </select>
-                    <select
-                        value={filterType}
-                        onChange={(e) => setFilterType(e.target.value)}
-                        className="text-xs bg-muted/30 border border-border rounded px-2 py-1 text-foreground outline-none"
-                    >
-                        <option value="all">All types</option>
-                        {Object.entries(EVENT_COLORS).map(([k, v]) => (
-                            <option key={k} value={k}>{v.icon} {v.label}</option>
-                        ))}
-                    </select>
+                {/* Tab bar */}
+                <div className="flex items-center px-4 py-2 border-b border-border gap-4">
+                    <button onClick={() => setTab("timeline")}
+                        className={`text-xs font-medium pb-0.5 transition-colors ${tab === "timeline" ? "text-foreground border-b border-foreground" : "text-muted-foreground hover:text-foreground"}`}>
+                        Timeline
+                    </button>
+                    <button onClick={() => setTab("files")}
+                        className={`text-xs font-medium pb-0.5 transition-colors ${tab === "files" ? "text-foreground border-b border-foreground" : "text-muted-foreground hover:text-foreground"}`}>
+                        Files
+                    </button>
                     <div className="flex-1" />
-                    <span className="text-[11px] text-muted-foreground font-mono">
-                        {filteredEvents.length} event{filteredEvents.length !== 1 ? "s" : ""}
-                    </span>
+                    {tab === "timeline" && (
+                        <>
+                            <select value={fType} onChange={e => setFType(e.target.value)}
+                                className="text-[11px] bg-transparent border border-border rounded px-1.5 py-0.5 text-muted-foreground outline-none">
+                                <option value="all">All</option>
+                                <option value="reasoning">💭 Reasoning</option>
+                                <option value="tool_call">🔧 Tools</option>
+                                <option value="error">⚠️ Errors</option>
+                                <option value="decision">✅ Decisions</option>
+                            </select>
+                            <span className="text-[11px] text-muted-foreground/50 font-mono">{filtered.length}</span>
+                        </>
+                    )}
                 </div>
 
-                {/* Horizontal Timeline */}
-                <div className="border-b border-border bg-background/50">
-                    {agentIds.length === 0 ? (
-                        <div className="h-24 flex items-center justify-center text-xs text-muted-foreground/50">
-                            No events yet — talk to the agent to get started
-                        </div>
-                    ) : (
-                        <div className="py-3">
-                            {agentIds.map((agentId) => {
-                                const agentEvents = filteredEvents.filter((e) => e.agent_id === agentId);
-                                if (agentEvents.length === 0) return null;
-                                const dotColor = AGENT_COLORS[agentId] || "bg-blue-500";
+                {/* ── Timeline Tab ── */}
+                {tab === "timeline" && (
+                    <div className="flex-1 flex flex-col overflow-hidden">
+                        {/* Timeline rail */}
+                        <div className="border-b border-border px-4 py-2 overflow-x-auto">
+                            {agents.length === 0 ? (
+                                <div className="h-12 flex items-center text-xs text-muted-foreground/40">Waiting for events…</div>
+                            ) : agents.map(aid => {
+                                const ae = filtered.filter(e => e.agent_id === aid);
+                                if (!ae.length) return null;
                                 return (
-                                    <div key={agentId} className="flex items-center px-4 mb-2 last:mb-0">
-                                        {/* Agent label */}
-                                        <div className="w-20 flex-shrink-0 flex items-center gap-1.5">
-                                            <div className={`w-2 h-2 rounded-full ${dotColor}`} />
-                                            <span className="text-[11px] text-muted-foreground font-medium truncate">{agentId}</span>
-                                        </div>
-                                        {/* Timeline track */}
-                                        <div
-                                            ref={timelineRef}
-                                            className="flex-1 overflow-x-auto flex items-center gap-1.5 py-1 scrollbar-thin"
-                                        >
-                                            <div className="h-[2px] w-3 bg-border flex-shrink-0" />
-                                            {agentEvents.map((event) => (
-                                                <div key={event.id} className="flex items-center gap-1.5 flex-shrink-0">
-                                                    <EventNode
-                                                        event={event}
-                                                        isSelected={selectedEvent?.id === event.id}
-                                                        onClick={() => setSelectedEvent(event)}
-                                                    />
-                                                    <div className="h-[2px] w-3 bg-border" />
-                                                </div>
+                                    <div key={aid} className="flex items-center gap-2 mb-1 last:mb-0">
+                                        <span className="w-16 text-[10px] text-muted-foreground truncate">{aid}</span>
+                                        <div className="flex items-center gap-px flex-1 overflow-x-auto py-1">
+                                            {ae.map(e => (
+                                                <button key={e.id} onClick={() => setSelected(e)}
+                                                    className={`w-6 h-6 rounded-full text-[10px] flex items-center justify-center flex-shrink-0 transition-all
+                            ${selected?.id === e.id ? "ring-1 ring-foreground scale-110" : "hover:scale-105 opacity-60 hover:opacity-100"}
+                            ${e.event_type === "error" ? "bg-red-500/20" : e.event_type === "tool_call" ? "bg-amber-500/15" : "bg-foreground/5"}`}
+                                                    title={`${e.title} — ${fmtTime(e.timestamp)}`}>
+                                                    {ICONS[e.event_type] || "·"}
+                                                </button>
                                             ))}
                                         </div>
                                     </div>
                                 );
                             })}
                         </div>
-                    )}
-                </div>
 
-                {/* Event Detail */}
-                <div className="flex-1 overflow-y-auto p-4">
-                    {selectedEvent ? (
-                        <EventDetail event={selectedEvent} />
-                    ) : filteredEvents.length > 0 ? (
-                        <div className="space-y-2">
-                            <div className="text-xs text-muted-foreground mb-3">
-                                All events (click a node above for details)
-                            </div>
-                            {filteredEvents.map((e) => {
-                                const config = EVENT_COLORS[e.event_type] || EVENT_COLORS.info;
-                                return (
-                                    <button
-                                        key={e.id}
-                                        onClick={() => setSelectedEvent(e)}
-                                        className="w-full text-left flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-muted/30 transition-colors border border-transparent hover:border-border/50"
-                                    >
-                                        <span className="text-sm">{config.icon}</span>
-                                        <span className="text-xs font-medium text-foreground/80 flex-1 truncate">{e.title}</span>
-                                        {e.tool_name && (
-                                            <span className="text-[10px] font-mono text-muted-foreground px-1.5 py-0.5 bg-muted/40 rounded">
-                                                {e.tool_name}
-                                            </span>
-                                        )}
-                                        {e.duration_ms !== undefined && (
-                                            <span className="text-[10px] font-mono text-muted-foreground">{formatDuration(e.duration_ms)}</span>
-                                        )}
-                                        <span className="text-[10px] font-mono text-muted-foreground/60">{formatTime(e.timestamp)}</span>
-                                    </button>
-                                );
-                            })}
+                        {/* Event detail / list */}
+                        <div className="flex-1 overflow-y-auto p-4">
+                            {selected ? (
+                                <div className="space-y-3">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2 text-sm">
+                                            <span>{ICONS[selected.event_type] || ""}</span>
+                                            <span className="font-medium">{selected.title}</span>
+                                            {selected.duration_ms != null && <span className="text-[11px] text-muted-foreground font-mono">{fmtDur(selected.duration_ms)}</span>}
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-[11px] text-muted-foreground font-mono">{fmtTime(selected.timestamp)}</span>
+                                            <button onClick={() => setSelected(null)} className="text-xs text-muted-foreground hover:text-foreground">✕</button>
+                                        </div>
+                                    </div>
+                                    {selected.content && (
+                                        <pre className="text-xs font-mono bg-muted/20 border border-border rounded-md p-3 whitespace-pre-wrap leading-relaxed overflow-x-auto">
+                                            {selected.content}
+                                        </pre>
+                                    )}
+                                    {selected.tool_input && (
+                                        <div>
+                                            <div className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Input</div>
+                                            <pre className="text-xs font-mono bg-muted/20 rounded-md p-2 overflow-x-auto border border-border">
+                                                {JSON.stringify(selected.tool_input, null, 2)}
+                                            </pre>
+                                        </div>
+                                    )}
+                                    {selected.tool_output && (
+                                        <div>
+                                            <div className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Output</div>
+                                            <pre className="text-xs font-mono bg-muted/20 rounded-md p-2 max-h-60 overflow-y-auto border border-border">
+                                                {selected.tool_output}
+                                            </pre>
+                                        </div>
+                                    )}
+                                    {selected.files_touched.length > 0 && (
+                                        <div className="flex gap-1 flex-wrap">
+                                            {selected.files_touched.map((f, i) => (
+                                                <span key={i} className="text-[10px] font-mono px-1.5 py-0.5 bg-muted/30 rounded">{f.split("/").pop()}</span>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            ) : filtered.length > 0 ? (
+                                <div className="space-y-px">
+                                    {filtered.map(e => (
+                                        <button key={e.id} onClick={() => setSelected(e)}
+                                            className="w-full text-left flex items-center gap-2 px-2 py-1.5 rounded hover:bg-muted/20 transition-colors text-[12px]">
+                                            <span className="w-4 text-center">{ICONS[e.event_type] || ""}</span>
+                                            <span className="flex-1 truncate text-foreground/70">{e.title}</span>
+                                            {e.tool_name && <span className="text-[10px] font-mono text-muted-foreground/60">{e.tool_name}</span>}
+                                            {e.duration_ms != null && <span className="text-[10px] font-mono text-muted-foreground/40">{fmtDur(e.duration_ms)}</span>}
+                                            <span className="text-[10px] font-mono text-muted-foreground/30">{fmtTime(e.timestamp)}</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="flex items-center justify-center h-full text-muted-foreground/30 text-xs">
+                                    Send a message to begin
+                                </div>
+                            )}
                         </div>
-                    ) : (
-                        <div className="flex items-center justify-center h-full text-muted-foreground/40">
-                            <div className="text-center">
-                                <div className="text-4xl mb-3">🤖</div>
-                                <div className="text-sm">Ready to assist</div>
-                                <div className="text-xs mt-1">Send a message to begin</div>
+                    </div>
+                )}
+
+                {/* ── Files Tab ── */}
+                {tab === "files" && (
+                    <div className="flex-1 flex flex-col overflow-hidden">
+                        {/* Path bar */}
+                        <div className="px-4 py-2 border-b border-border flex items-center gap-2">
+                            <span className="text-[11px] font-mono text-muted-foreground truncate flex-1">{filePath}</span>
+                            <button onClick={() => loadDir(filePath)} className="text-[11px] text-muted-foreground hover:text-foreground">↻</button>
+                            {filePath !== "/opt/synthetica-lab" && (
+                                <button onClick={() => loadDir(filePath.split("/").slice(0, -1).join("/") || "/")}
+                                    className="text-[11px] text-muted-foreground hover:text-foreground">↑ Up</button>
+                            )}
+                        </div>
+
+                        <div className="flex flex-1 overflow-hidden">
+                            {/* File list */}
+                            <div className="w-64 border-r border-border overflow-y-auto flex-shrink-0">
+                                {fileList.length === 0 ? (
+                                    <div className="px-4 py-8 text-xs text-muted-foreground/40 text-center">
+                                        Click ↻ to load directory
+                                    </div>
+                                ) : (
+                                    <div className="py-1">
+                                        {fileList.filter(f => f.is_dir).map(f => (
+                                            <button key={f.name} onClick={() => loadDir(`${filePath}/${f.name}`)}
+                                                className="w-full text-left px-3 py-1 text-[12px] hover:bg-muted/20 transition-colors flex items-center gap-1.5">
+                                                <span className="text-muted-foreground">📁</span>
+                                                <span className="truncate">{f.name}</span>
+                                            </button>
+                                        ))}
+                                        {fileList.filter(f => !f.is_dir).map(f => (
+                                            <button key={f.name} onClick={() => viewFile(`${filePath}/${f.name}`)}
+                                                className={`w-full text-left px-3 py-1 text-[12px] hover:bg-muted/20 transition-colors flex items-center gap-1.5
+                          ${fileViewing === `${filePath}/${f.name}` ? "bg-accent" : ""}`}>
+                                                <span className="text-muted-foreground/60">📄</span>
+                                                <span className="truncate flex-1">{f.name}</span>
+                                                {f.size != null && <span className="text-[10px] text-muted-foreground/40">{f.size > 1024 ? `${(f.size / 1024).toFixed(0)}K` : `${f.size}B`}</span>}
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* File content */}
+                            <div className="flex-1 overflow-auto">
+                                {fileViewing ? (
+                                    <div className="p-4">
+                                        <div className="text-[11px] text-muted-foreground font-mono mb-2">{fileViewing.split("/").pop()}</div>
+                                        <pre className="text-xs font-mono bg-muted/10 border border-border rounded-md p-3 whitespace-pre-wrap leading-relaxed overflow-x-auto">
+                                            {fileContent || "Loading…"}
+                                        </pre>
+                                    </div>
+                                ) : (
+                                    <div className="flex items-center justify-center h-full text-xs text-muted-foreground/30">
+                                        Select a file to view
+                                    </div>
+                                )}
                             </div>
                         </div>
-                    )}
-                </div>
+                    </div>
+                )}
             </div>
         </div>
     );

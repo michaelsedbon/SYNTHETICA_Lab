@@ -192,7 +192,56 @@ async def websocket_endpoint(ws: WebSocket):
             ws_clients.remove(ws)
 
 
-# ── Health check ──
+# ── File browsing (direct, no LLM) ──
+WORKSPACE = os.environ.get("LAB_WORKSPACE", "/opt/synthetica-lab")
+
+@app.get("/api/files/list")
+async def list_files(path: str = ""):
+    """List directory contents."""
+    target = os.path.join(WORKSPACE, path) if path else WORKSPACE
+    target = os.path.realpath(target)
+    if not target.startswith(WORKSPACE):
+        return {"error": "Outside workspace"}
+    if not os.path.isdir(target):
+        return {"error": "Not a directory"}
+    entries = []
+    try:
+        for name in sorted(os.listdir(target)):
+            if name.startswith("."):
+                continue
+            full = os.path.join(target, name)
+            is_dir = os.path.isdir(full)
+            size = os.path.getsize(full) if not is_dir else None
+            entries.append({"name": name, "is_dir": is_dir, "size": size})
+    except PermissionError:
+        return {"error": "Permission denied"}
+    return {"path": target, "entries": entries}
+
+
+@app.get("/api/files/read")
+async def read_file(path: str):
+    """Read a file's content."""
+    target = os.path.join(WORKSPACE, path) if not path.startswith("/") else path
+    target = os.path.realpath(target)
+    if not target.startswith(WORKSPACE):
+        return {"error": "Outside workspace"}
+    if not os.path.isfile(target):
+        return {"error": "Not a file"}
+    try:
+        size = os.path.getsize(target)
+        if size > 500_000:
+            return {"error": f"File too large ({size} bytes)", "path": target}
+        with open(target, "r", errors="replace") as f:
+            return {"path": target, "content": f.read(), "size": size}
+    except Exception as e:
+        return {"error": str(e)}
+
+
+# ── Health check + root ──
+@app.get("/")
+async def root():
+    return {"service": "lab-agent", "version": "0.1.0", "health": "ok"}
+
 @app.get("/health")
 async def health():
     return {"status": "ok", "service": "lab-agent"}
