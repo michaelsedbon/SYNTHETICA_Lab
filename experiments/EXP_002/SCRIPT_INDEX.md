@@ -55,12 +55,22 @@ python3 motor_level_controller.py --netlist # Generate KiCad netlist
 - WiFi connection (SSID: `MEDICALEX`)
 - ArduinoOTA for wireless firmware updates (port 8266)
 - mDNS hostname: `cryptobeings.local`
+- OLED SSD1306 128×64 display (I2C on D1/D2):
+  - Boot screen: "CRYPTOGRAPHIC BEINGS" + WiFi IP
+  - OTA progress bar during updates
 - ESP8266WebServer on port 80:
-  - `/` — HTML dashboard with auto-refresh logs and command form
-  - `/status` — JSON status (ip, uptime, heap, rssi)
+  - `/` — HTML dashboard with live WebSocket-driven log stream
+  - `/status` — JSON status (ip, uptime, heap, rssi, oled)
   - `/log` — JSON array of log entries (ring buffer, 50 entries)
   - `/send?cmd=...` — Send serial command to Nano
-- Serial bridge: relays commands via TX to Arduino Nano, logs RX responses
+- WebSocket debug server on port 81:
+  - Real-time debug log streaming (replaces Serial debug)
+  - Supports sending commands to Nano from WebSocket clients
+  - Auto-reconnect on disconnect
+- Serial bridge: hardware UART dedicated to Arduino Nano communication
+  - TX → Nano RX (commands), RX ← Nano TX (responses)
+
+**Library deps:** Adafruit SSD1306, Adafruit GFX, WebSockets (arduinoWebSockets)
 
 **Upload:**
 ```bash

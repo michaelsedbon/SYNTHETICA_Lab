@@ -31,15 +31,17 @@ Give **autonomous control** of the machine to a local **Ollama LLM** running on 
 - Documented ISD04 NEMA17 integrated stepper motors
 
 ### Phase 2: Firmware & Communication ✅ (partial)
-- **ESP8266 firmware deployed** — WiFi + OTA + web dashboard
+- **ESP8266 firmware deployed** — WiFi + OTA + web dashboard + OLED
   - IP: `172.16.1.115` / `cryptobeings.local`
-  - Web dashboard: http://172.16.1.115
-  - OTA updates enabled (no USB needed)
+  - Web dashboard: http://172.16.1.115 (live WebSocket debug logs)
+  - WebSocket debug pipe on port 81 (replaces Serial debug)
+  - OTA updates enabled (no USB needed, progress bar on OLED)
+  - OLED SSD1306 boot screen: title + WiFi IP
 - **Arduino Nano firmware deployed** — motor controller
   - Serial command protocol: MOVE, HOME, STATUS, STOP, SPEED
   - ISD04 stepper driver with trapezoidal acceleration
   - Hall-effect sensor homing support
-- **Not yet done**: Wire ESP↔Nano together, test full chain, add OLED
+- **Not yet done**: Wire ESP↔Nano together and test full serial bridge chain
 
 ### Phase 3: Ollama Integration 🔲
 - Deploy Ollama on local network server (172.16.1.80)
