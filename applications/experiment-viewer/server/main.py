@@ -126,7 +126,7 @@ def _title_from_md(path: Path) -> str:
 
 
 # Directories to skip during traversal
-SKIP_DIRS = {".venv", "venv", "node_modules", "__pycache__", ".git", ".next", "data", "lib"}
+SKIP_DIRS = {".venv", "venv", "node_modules", "__pycache__", ".git", ".next", "data"}
 
 
 # ── Tree cache ──────────────────────────────────────────────────────
