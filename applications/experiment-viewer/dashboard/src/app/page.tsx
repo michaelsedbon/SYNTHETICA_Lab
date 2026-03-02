@@ -863,7 +863,7 @@ function ExperimentViewer() {
   };
 
   const countTreeFiles = (nodes: TreeNode[]): number =>
-    nodes.reduce((n, node) => n + (node.type === "file" ? 1 : countTreeFiles(node.children || [])), 0);
+    (nodes || []).reduce((n, node) => n + (node.type === "file" ? 1 : countTreeFiles(node.children || [])), 0);
 
   const filteredGroups = groups
     .map((g) => {
