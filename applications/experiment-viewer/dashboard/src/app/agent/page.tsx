@@ -2,10 +2,10 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 
-// ── Config ──
+// ── Config ── Agent always runs on the server
+const AGENT_SERVER = "172.16.1.80";
 function agentBase(): string {
-    if (typeof window === "undefined") return "http://localhost:8003";
-    return `http://${window.location.hostname}:8003`;
+    return `http://${AGENT_SERVER}:8003`;
 }
 
 // ── Types ──
@@ -216,8 +216,7 @@ export default function AgentPage() {
     // ── WebSocket for real-time events ──
     useEffect(() => {
         function connect() {
-            const base = typeof window !== "undefined" ? window.location.hostname : "localhost";
-            const ws = new WebSocket(`ws://${base}:8003/ws/agent`);
+            const ws = new WebSocket(`ws://${AGENT_SERVER}:8003/ws/agent`);
             ws.onopen = () => setConnected(true);
             ws.onclose = () => {
                 setConnected(false);

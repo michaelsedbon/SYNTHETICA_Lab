@@ -895,11 +895,22 @@ function ExperimentViewer() {
         `}
       >
         {/* Header */}
-        <div className="flex items-center gap-2 px-4 py-4 border-b border-border">
-          <span className="text-xl">📓</span>
-          <h1 className="text-sm font-semibold tracking-tight text-foreground">
-            Experiment Notebooks
-          </h1>
+        <div className="flex items-center justify-between px-4 py-4 border-b border-border">
+          <div className="flex items-center gap-2">
+            <span className="text-xl">📓</span>
+            <h1 className="text-sm font-semibold tracking-tight text-foreground">
+              Experiment Notebooks
+            </h1>
+          </div>
+          <a
+            href="/agent"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium
+                       bg-blue-600/20 border border-blue-500/30 text-blue-400
+                       hover:bg-blue-600/30 hover:text-blue-300 transition-colors"
+            title="Open Lab Agent"
+          >
+            🤖 Agent
+          </a>
         </div>
 
         {/* Search */}
