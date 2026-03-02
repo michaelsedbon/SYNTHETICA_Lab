@@ -17,19 +17,45 @@ def send_command(command: str) -> str:
     
     Available commands: MOVE <steps>, HOME, STATUS, STOP, SPEED <us>,
     ENABLE, DISABLE, ZERO, PING
+    
+    Returns the Nano's response after a short wait.
     """
+    import time
     try:
         url = f"{MACHINE_URL}/send?cmd={urllib.parse.quote(command)}"
         req = urllib.request.Request(url, method="GET")
         req.add_header("User-Agent", "SyntheticaLabAgent/1.0")
-        with urllib.request.urlopen(req, timeout=10) as resp:
-            # The ESP redirects to /, but the command is sent
-            return f"OK: Sent '{command}' to Nano via ESP bridge"
-    except urllib.error.HTTPError as e:
-        # 302 redirect is expected (success)
-        if e.code == 302:
-            return f"OK: Sent '{command}' to Nano via ESP bridge"
-        return f"ERROR: HTTP {e.code}: {e.reason}"
+        try:
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                pass
+        except urllib.error.HTTPError as e:
+            if e.code != 302:  # 302 redirect is expected (success)
+                return f"ERROR: HTTP {e.code}: {e.reason}"
+        
+        # Wait for the Nano to process and respond
+        time.sleep(1.5)
+        
+        # Read the log to get the response
+        log_url = f"{MACHINE_URL}/log"
+        log_req = urllib.request.Request(log_url)
+        log_req.add_header("User-Agent", "SyntheticaLabAgent/1.0")
+        with urllib.request.urlopen(log_req, timeout=10) as resp:
+            entries = json.loads(resp.read().decode("utf-8"))
+        
+        # Find the TX>> (our command) and subsequent RX<< (Nano responses)
+        result_lines = []
+        found_cmd = False
+        for entry in entries:
+            if f"TX >> {command}" in entry:
+                found_cmd = True
+                result_lines = [entry]  # Reset — only keep from last matching command
+            elif found_cmd and "RX <<" in entry:
+                result_lines.append(entry)
+        
+        if result_lines:
+            return "Command sent. Log:\n" + "\n".join(result_lines)
+        else:
+            return f"Sent '{command}' but no response detected yet. Use get_machine_log() to check later."
     except Exception as e:
         return f"ERROR: Machine unreachable: {e}"
 
