@@ -65,16 +65,40 @@ When working with the AI assistant (Antigravity), use these commands:
 
 ```
 SYNTHETIC_PERSONAL_LAB/
-├── .agent/                    # AI assistant config
-│   ├── MANIFEST.md            # Project memory
-│   └── workflows/             # Slash-command workflows
+├── .agent/                    # AI assistant config (MANIFEST, workflows, skills)
+│   ├── MANIFEST.md            # Project memory — read every conversation
+│   ├── conventions.md         # Rules for the AI assistant
+│   ├── workflows/             # 9 slash-command workflows (/deploy, /catch-up, …)
+│   └── skills/                # 3 extended skills (fetch-papers, explore-network, …)
+├── applications/              # 7 web applications (see applications/INDEX.md)
+│   ├── INDEX.md               # App registry with ports, stacks, and status
+│   ├── fab-planner/           # Production planning (Next.js + Prisma + Three.js)
+│   ├── adc24-dashboard/       # Electrophysiology dashboard (FastAPI + Next.js)
+│   ├── experiment-viewer/     # Experiment notebook browser (FastAPI + Next.js)
+│   ├── research-scout/        # Interdisciplinary research mapper (FastAPI + Next.js)
+│   ├── plasmid-viewer/        # GenBank plasmid map viewer (FastAPI + Next.js)
+│   ├── virtual-lab/           # 3D lab model with Airtable inventory (Three.js)
+│   └── launcher/              # Central app dashboard (Next.js)
 ├── config.yaml                # API credentials (gitignored)
-├── scripts/                   # Python sync scripts
-├── papers/                    # Downloaded reference PDFs
-├── papers_txt/                # Plain-text extracts
+├── scripts/                   # Python sync & utility scripts (see scripts/README.md)
+├── papers/                    # Downloaded reference PDFs (user's collection)
+├── papers_txt/                # Plain-text extracts of user PDFs
 │   └── INDEX.md               # Paper index for AI lookup
-├── experiments/               # Per-experiment folders
+├── agent_papers/              # PDFs downloaded by AI assistant
+├── agent_papers_txt/          # Text extracts of AI-downloaded papers
+│   └── INDEX.md               # AI paper index
+├── experiments/               # Per-experiment folders (see experiments/README.md)
 │   ├── EXP_INDEX.md           # Experiment index for AI lookup
-│   └── EXP_001/               # Individual experiment data
+│   ├── EXPERIMENT_TEMPLATE.md # Template for new experiments
+│   └── EXP_001…003/           # Individual experiment data
+├── Project_space/             # Hardware design files & CAD assets
+│   └── Cryptographic_beings/  # Motor controller PCB (KiCad, SKiDL)
+├── Software/                  # Reference manuals & datasheets
+├── CHEATSHEET.md              # Quick links to Notion & Airtable
+├── SETUP_NEW_LAB.md           # Guide for cloning this scaffold
 └── README.md                  # This file
 ```
+
+## Deployment
+
+The production server runs at `172.16.1.80` (SSH key auth, user `michael`, repo at `/opt/synthetica-lab/`). Use `/deploy` to commit, push, and pull on the server. See `.agent/workflows/deploy.md` for full details including service restart commands.

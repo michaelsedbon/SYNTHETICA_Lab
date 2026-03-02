@@ -138,71 +138,28 @@ class Agent:
                 )
                 yield reasoning_event.to_dict()
 
-            # If no tool calls — agent wants to stop. Check if goal is done.
+            # If no tool calls — agent wants to stop. Decide if we should let it.
             if not tool_calls:
-                if self_prompts_sent < max_self_prompts:
+                # If agent barely did anything, nudge it once to keep going
+                if tool_calls_made < 3 and self_prompts_sent == 0:
                     self_prompts_sent += 1
-                    check = (
-                        f"STOP and EVALUATE. The original goal was:\n"
-                        f"\"{original_goal}\"\n\n"
-                        f"You have made {tool_calls_made} tool calls so far.\n"
-                        f"Is this goal FULLY achieved? Have you:\n"
-                        f"- Completed ALL requested steps?\n"
-                        f"- Written results/logs as requested?\n"
-                        f"- Verified the results make sense?\n\n"
-                        f"If YES and everything is done, respond with exactly: DONE\n"
-                        f"If NO, continue working — use your tools to complete the remaining steps."
+                    nudge = (
+                        f"You have only made {tool_calls_made} tool calls. "
+                        f"The original goal was: \"{original_goal}\"\n"
+                        f"Have you completed ALL steps? If not, keep using tools. "
+                        f"If yes, summarize what you did."
                     )
-                    self.messages.append({"role": "user", "content": check})
-                    check_event = self.timeline.log(
-                        "reasoning", "Self-check",
-                        f"Checking if goal is achieved ({self_prompts_sent}/{max_self_prompts}). "
-                        f"Tool calls so far: {tool_calls_made}",
-                    )
-                    yield check_event.to_dict()
+                    self.messages.append({"role": "user", "content": nudge})
+                    self.timeline.log("reasoning", "Self-check",
+                        f"Agent stopped after {tool_calls_made} tool calls. Nudging once.")
+                    continue
 
-                    # Get the LLM's self-evaluation
-                    iteration += 1
-                    try:
-                        eval_response = _ollama_chat(
-                            trim_conversation(self.messages, max_tokens=12000),
-                            self.tool_schemas,
-                        )
-                    except Exception:
-                        break  # LLM error — just stop
-
-                    eval_msg = eval_response.get("message", {})
-                    eval_content = eval_msg.get("content", "")
-                    eval_tools = eval_msg.get("tool_calls", [])
-                    self.messages.append(eval_msg)
-
-                    if eval_tools:
-                        # LLM decided to keep working with tool calls
-                        self.timeline.log("reasoning", "Continuing",
-                            f"Agent decided goal is NOT done — making more tool calls")
-                        # Fall through to tool execution below
-                        tool_calls = eval_tools
-                        content = eval_content
-                        if content:
-                            yield self.timeline.log(
-                                "reasoning", "LLM response", content
-                            ).to_dict()
-                    elif "DONE" in eval_content.upper():
-                        # Agent confirms it's done
-                        self.timeline.log("decision", "Goal achieved",
-                            f"Agent confirmed goal is complete after {tool_calls_made} tool calls.")
-                        self.is_running = False
-                        return
-                    else:
-                        # Agent gave text but didn't say DONE — nudge once more
-                        self.messages.append(eval_msg)
-                        continue
-                else:
-                    # Max self-prompts reached — stop
-                    self.timeline.log("decision", "Response complete",
-                        f"Max self-prompts reached. {content or '(no content)'}")
-                    self.is_running = False
-                    return
+                # Agent has done enough work or already been nudged — let it stop
+                self.timeline.log("decision", "Goal achieved",
+                    f"Agent completed task with {tool_calls_made} tool calls. "
+                    f"{content[:100] if content else '(no content)'}")
+                self.is_running = False
+                return
 
             # Execute tool calls
             for tc in tool_calls:
