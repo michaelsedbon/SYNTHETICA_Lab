@@ -97,6 +97,11 @@ class Agent:
         yield event.to_dict()
 
         iteration = 0
+        tool_calls_made = 0   # Track how many tool calls we've made
+        nudges_sent = 0       # Track how many "keep going" nudges we've sent
+        max_nudges = 2        # Don't nudge forever
+        min_tool_calls = 3    # Minimum tool calls before allowing text-only response
+
         while iteration < self.max_iterations:
             iteration += 1
 
@@ -133,8 +138,25 @@ class Agent:
                 )
                 yield reasoning_event.to_dict()
 
-            # If no tool calls, we're done — this is the final response
+            # If no tool calls — check if we should nudge or stop
             if not tool_calls:
+                if tool_calls_made < min_tool_calls and nudges_sent < max_nudges:
+                    # Agent stopped too early — nudge it to keep going
+                    nudges_sent += 1
+                    nudge = (
+                        "You have NOT completed the task yet. Do NOT explain — "
+                        "use your tools to continue with the next step. "
+                        "Keep calling tools until ALL steps are done."
+                    )
+                    self.messages.append({"role": "user", "content": nudge})
+                    nudge_event = self.timeline.log(
+                        "reasoning", "Auto-nudge",
+                        f"Agent tried to stop after {tool_calls_made} tool calls. Nudging to continue. ({nudges_sent}/{max_nudges})",
+                    )
+                    yield nudge_event.to_dict()
+                    continue  # Go back to the LLM
+
+                # OK to stop — either enough tool calls or max nudges reached
                 self.timeline.log("decision", "Response complete", content or "(no content)")
                 self.is_running = False
                 return
@@ -157,6 +179,7 @@ class Agent:
                 start = time.time()
                 result = execute_tool(tool_name, tool_args)
                 exec_duration = int((time.time() - start) * 1000)
+                tool_calls_made += 1
 
                 # Detect files touched
                 files_touched = []
