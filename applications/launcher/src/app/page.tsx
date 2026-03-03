@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { apps, type AppInfo } from "@/lib/apps";
+import { apps, type AppInfo, type OnlineAppInfo } from "@/lib/apps";
 
 /* -------------------------------------------------------------------------- */
 /*  Types                                                                     */
@@ -55,6 +55,19 @@ function useHealthPolling(intervalMs = 5000) {
   }, [intervalMs]);
 
   return health;
+}
+
+function useOnlineApps() {
+  const [onlineApps, setOnlineApps] = React.useState<OnlineAppInfo[]>([]);
+
+  React.useEffect(() => {
+    fetch("/api/online-apps")
+      .then((r) => r.json())
+      .then((data) => setOnlineApps(data.apps ?? []))
+      .catch(() => { });
+  }, []);
+
+  return onlineApps;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -302,12 +315,116 @@ function AppCard({
   );
 }
 
+function ProviderBadge({ provider }: { provider: OnlineAppInfo["provider"] }) {
+  const config: Record<string, { label: string; color: string }> = {
+    cloudflare: { label: "Cloudflare Tunnel", color: "orange" },
+    "github-pages": { label: "GitHub Pages", color: "emerald" },
+    vercel: { label: "Vercel", color: "white" },
+    other: { label: "Web", color: "blue" },
+  };
+  const c = config[provider] ?? config.other;
+  const colorClass =
+    c.color === "orange"
+      ? "bg-orange-500/15 text-orange-400 ring-orange-500/25"
+      : c.color === "emerald"
+        ? "bg-emerald-500/15 text-emerald-400 ring-emerald-500/25"
+        : c.color === "white"
+          ? "bg-white/10 text-white ring-white/20"
+          : "bg-blue-500/15 text-blue-400 ring-blue-500/25";
+
+  return (
+    <span
+      className={`inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ring-1 ${colorClass}`}
+    >
+      {c.label}
+    </span>
+  );
+}
+
+function RemoteAppCard({ app }: { app: OnlineAppInfo }) {
+  const hasUrl = app.url && app.url.length > 0;
+
+  return (
+    <div className="group relative flex flex-col gap-4 rounded-xl border border-white/[0.06] bg-gradient-to-br from-blue-500/[0.04] to-cyan-500/[0.02] p-6 transition-all duration-300 hover:border-blue-400/[0.15] hover:from-blue-500/[0.08] hover:to-cyan-500/[0.04] hover:shadow-[0_0_40px_-12px_rgba(56,189,248,0.1)]">
+      {/* Globe glow */}
+      <div className="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-br from-blue-500/0 to-cyan-500/0 opacity-0 transition-opacity duration-500 group-hover:from-blue-500/[0.04] group-hover:to-cyan-500/[0.04] group-hover:opacity-100" />
+
+      <div className="relative flex items-start justify-between">
+        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500/10 to-cyan-500/10 text-2xl ring-1 ring-blue-500/[0.15] transition-colors group-hover:ring-blue-400/[0.25]">
+          {app.icon}
+        </div>
+        <div className="flex items-center gap-2">
+          <ProviderBadge provider={app.provider} />
+          {hasUrl && (
+            <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <span className="inline-block h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_6px] shadow-emerald-400/50" />
+              Live
+            </span>
+          )}
+        </div>
+      </div>
+
+      <div className="relative flex flex-col gap-1.5">
+        <h2 className="text-lg font-semibold tracking-tight text-foreground">
+          {app.name}
+        </h2>
+        <p className="text-sm leading-relaxed text-muted-foreground">
+          {app.description}
+        </p>
+      </div>
+
+      <div className="relative mt-auto flex flex-wrap gap-1.5">
+        {app.tags.map((tag) => (
+          <span
+            key={tag}
+            className="rounded-md bg-white/[0.06] px-2 py-0.5 text-[11px] font-medium tracking-wide text-muted-foreground ring-1 ring-white/[0.04]"
+          >
+            {tag}
+          </span>
+        ))}
+      </div>
+
+      {/* Action bar */}
+      <div className="relative flex items-center justify-end border-t border-white/[0.06] pt-4 text-xs">
+        {hasUrl ? (
+          <a
+            href={app.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 rounded-md bg-blue-500/15 px-3 py-1.5 font-medium text-blue-400 ring-1 ring-blue-500/25 transition-all hover:bg-blue-500/25 hover:text-blue-300"
+          >
+            Open Online
+            <svg
+              className="h-3 w-3 transition-transform group-hover:translate-x-0.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-4.5-6H21m0 0v7.5m0-7.5l-10.5 10.5"
+              />
+            </svg>
+          </a>
+        ) : (
+          <span className="flex items-center gap-1 text-muted-foreground opacity-50">
+            Not configured
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
 /* -------------------------------------------------------------------------- */
 /*  Page                                                                      */
 /* -------------------------------------------------------------------------- */
 
 export default function Home() {
   const health = useHealthPolling(5000);
+  const onlineApps = useOnlineApps();
   const [, setTick] = React.useState(0);
 
   function triggerRefresh() {
@@ -379,6 +496,30 @@ export default function Home() {
           <span className="font-mono text-[11px] opacity-50">/create-app</span>
         </div>
       </section>
+
+      {/* Remote Access Section */}
+      {onlineApps.length > 0 && (
+        <section className="mt-16">
+          <div className="mb-6 flex items-center gap-3">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500/20 to-cyan-500/20 text-base ring-1 ring-blue-500/[0.12]">
+              🌐
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold tracking-tight">
+                Remote Access
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Apps accessible from anywhere on the internet
+              </p>
+            </div>
+          </div>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {onlineApps.map((app) => (
+              <RemoteAppCard key={app.slug} app={app} />
+            ))}
+          </div>
+        </section>
+      )}
     </main>
   );
 }

@@ -38,6 +38,19 @@ Backend (Python FastAPI)          Frontend (Next.js / Static)
 
 ---
 
+## 🌐 Online Access
+
+Some apps are accessible from the public internet, not just the LAN.
+
+| App | Hosting | URL | Notes |
+|-----|---------|-----|-------|
+| 📓 Experiment Notebooks | Cloudflare Quick Tunnel | `*.trycloudflare.com` | URL changes on tunnel restart; update `launcher/online-apps.json` |
+| 🧬 MoClo V3 Genome Assembly | GitHub Pages | [michaelsedbon.github.io/PhD/](https://michaelsedbon.github.io/PhD/) | Permanent, static site |
+
+> **Config file:** [`launcher/online-apps.json`](launcher/online-apps.json) — edit to update tunnel URLs or add new online apps. The Launcher reads this file and displays a "Remote Access" section on the dashboard.
+
+---
+
 ## 🏭 Fab Planner
 
 **Production planning for prosthesis & medical device manufacturing.**

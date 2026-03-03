@@ -1,0 +1,28 @@
+[
+    {
+        "slug": "experiment-viewer-online",
+        "name": "Experiment Notebooks",
+        "description": "Browse lab notebooks from anywhere — shared via Cloudflare Tunnel.",
+        "icon": "📓",
+        "url": "https://polished-sitting-manufacture-governments.trycloudflare.com",
+        "tags": [
+            "cloudflare",
+            "experiments",
+            "remote"
+        ],
+        "provider": "cloudflare"
+    },
+    {
+        "slug": "phd-genome-assembly",
+        "name": "MoClo V3 Genome Assembly",
+        "description": "E. coli MG1655 genome assembly planner for Modular Cloning.",
+        "icon": "🧬",
+        "url": "https://michaelsedbon.github.io/PhD/",
+        "tags": [
+            "github-pages",
+            "biology",
+            "MoClo"
+        ],
+        "provider": "github-pages"
+    }
+]

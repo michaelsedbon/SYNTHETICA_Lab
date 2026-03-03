@@ -158,6 +158,20 @@ export const apps: AppInfo[] = [
     },
 ];
 
+/* -------------------------------------------------------------------------- */
+/*  Online / Remote Apps                                                       */
+/* -------------------------------------------------------------------------- */
+
+export interface OnlineAppInfo {
+    slug: string;
+    name: string;
+    description: string;
+    icon: string;
+    url: string;
+    tags: string[];
+    provider: "cloudflare" | "github-pages" | "vercel" | "other";
+}
+
 /**
  * Build the full URL for an app.
  */
