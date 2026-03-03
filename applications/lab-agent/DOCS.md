@@ -8,7 +8,7 @@
 
 ## Purpose
 
-Autonomous AI lab agent running on the local server (`172.16.1.80`) using **Ollama** (`qwen2.5:14b`). Controls the Cryptographic Beings machine, reads papers, plans experiments, and documents everything on a visual timeline. Uses a think → act → observe agent loop with tool-use.
+Autonomous AI lab agent running on the local server (`172.16.1.80`). Uses **Gemini** (`gemini-2.5-flash`) for task planning and reflection, and **Ollama** (`qwen2.5:14b`) for tool execution. Controls the Cryptographic Beings machine, reads papers, plans experiments, and documents everything on a visual timeline.
 
 ---
 
@@ -16,8 +16,8 @@ Autonomous AI lab agent running on the local server (`172.16.1.80`) using **Olla
 
 | Layer | Technology |
 |-------|------------|
-| Backend | Python · FastAPI · Ollama API |
-| LLM | qwen2.5:14b (local, via Ollama) |
+| Backend | Python · FastAPI · Ollama API · Gemini API |
+| LLMs | Gemini 2.5 Flash (planner/reflector) + qwen2.5:14b (executor, local via Ollama) |
 | Real-time | WebSocket event streaming |
 | Data | JSONL session timelines |
 
@@ -68,7 +68,7 @@ OLLAMA_HOST=http://localhost:11434 LAB_WORKSPACE=/opt/synthetica-lab \
 ```
 lab-agent/
   agent/
-    core.py         — Main agent loop (think → act → observe)
+    core.py         — Plan-Execute-Reflect agent loop (Gemini plans, Ollama executes)
     tools/          — Tool registry (6 modules: files, terminal, http, machine, knowledge, meta)
     timeline.py     — Timeline event logging engine (JSONL)
     memory.py       — System prompt builder + context management
@@ -106,8 +106,19 @@ lab-agent/
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `OLLAMA_HOST` | `http://localhost:11434` | Ollama API endpoint |
+| `GEMINI_API_KEY` | (none) | Gemini API key for planner/reflector |
 | `LAB_WORKSPACE` | `/opt/synthetica-lab` | Workspace root for file access |
 | `AGENT_DATA_DIR` | `data/sessions/` | Session timeline storage |
+
+---
+
+## Routing & Safety
+
+**All tasks** go through Gemini Plan-Execute-Reflect when a Gemini API key is set. Ollama fallback is used only when Gemini is unavailable.
+
+Every `chat()` call has a `source` parameter (`user`, `scheduler`, `telegram`). For automated sources, hazardous hardware commands (MOVE, HOME, STOP, etc.) and dangerous tools (`run_command`, `run_experiment_script`) are **blocked at the tool execution layer**. Only `PING` and `STATUS` are permitted for scheduler/telegram tasks.
+
+See `ARCHITECTURE.md` for the full routing table and `2026-03-03_agent_routing_incident.md` for background.
 
 ---
 

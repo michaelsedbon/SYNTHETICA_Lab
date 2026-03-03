@@ -45,7 +45,7 @@ async def agent_execute(message: str, context: str = None) -> str:
 
     def run():
         collected = []
-        for event in agent.chat(message):
+        for event in agent.chat(message, source="scheduler"):
             collected.append(event)
             asyncio.run_coroutine_threadsafe(broadcast_event(event), loop)
         return collected
@@ -164,7 +164,7 @@ async def chat(req: ChatRequest):
 
     def run_agent():
         collected = []
-        for event in agent.chat(req.message):
+        for event in agent.chat(req.message, source="user"):
             collected.append(event)
             asyncio.run_coroutine_threadsafe(broadcast_event(event), loop)
         return collected
@@ -286,7 +286,8 @@ async def websocket_endpoint(ws: WebSocket):
                     loop = asyncio.get_event_loop()
 
                     def run():
-                        for event in agent.chat(msg.get("message", "")):
+                        source = msg.get("source", "user")
+                        for event in agent.chat(msg.get("message", ""), source=source):
                             asyncio.run_coroutine_threadsafe(
                                 broadcast_event(event), loop
                             )

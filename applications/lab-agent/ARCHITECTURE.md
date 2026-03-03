@@ -95,6 +95,31 @@ The agent can control hardware, write code, run experiments, and flash firmware 
 | GET | `/api/files/read?path=` | Read file content |
 | WS | `/ws/agent` | Real-time event stream |
 
+## Routing & Safety
+
+### LLM Routing
+
+When Gemini is available, **all tasks** go through Plan-Execute-Reflect:
+1. **Plan** (Gemini) — decomposes the goal into numbered steps
+2. **Execute** (Ollama) — runs each step via bounded ReAct loop
+3. **Reflect** (Gemini) — summarises outcomes, updates AGENT_STATE.md
+
+When Gemini is unavailable, falls back to a direct Ollama ReAct loop.
+
+### Source-Based Tool Restrictions
+
+Every `chat()` call carries a `source` tag:
+
+| Source | Origin | Restrictions |
+|--------|--------|-------------|
+| `user` | `/api/agent/chat`, WebSocket | Full tool access |
+| `scheduler` | Cron tasks (`hourly_status`, etc.) | Blocked: MOVE, MOVETO, HOME, STOP, SPEED, ACCEL, ENABLE, DISABLE, ZERO, LIGHT, LEVEL. Blocked tools: `run_command`, `run_experiment_script` |
+| `telegram` | Telegram bot bridge | Same restrictions as scheduler |
+
+Blocked calls return a `BLOCKED: ...` message to the LLM and are logged with ⛔ in the timeline.
+
+**Rationale:** See `2026-03-03_agent_routing_incident.md` for the incident that motivated these constraints.
+
 ## Agent Skills
 
 Skills are documented in `applications/lab-agent/skills/`. Each skill has instructions

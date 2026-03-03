@@ -117,14 +117,37 @@ def _needs_coding(text: str) -> bool:
     return any(kw in lower for kw in CODING_KEYWORDS)
 
 
+# Commands that are blocked for automated (scheduler/telegram) tasks.
+# Only PING and STATUS are safe for unsupervised execution.
+SCHEDULER_BLOCKED_COMMANDS = {
+    "MOVE", "MOVETO", "HOME", "STOP", "SPEED", "ACCEL",
+    "ENABLE", "DISABLE", "ZERO", "LIGHT", "LEVEL",
+}
+
+# Tools entirely blocked for automated tasks
+SCHEDULER_BLOCKED_TOOLS = {"run_command", "run_experiment_script"}
+
+
+def _is_command_blocked(command: str, source: str) -> bool:
+    """Check if a send_command call should be blocked based on source."""
+    if source == "user":
+        return False
+    # Extract the base command (e.g. "MOVE 100" → "MOVE")
+    base_cmd = command.strip().split()[0].upper() if command.strip() else ""
+    return base_cmd in SCHEDULER_BLOCKED_COMMANDS
+
+
 class Agent:
     """
     Autonomous lab agent with Plan-Execute-Reflect architecture.
 
-    When Gemini is available and task is complex:
-      Plan (Gemini) → Execute steps (Ollama ReAct) → Reflect (Gemini)
+    Routing logic:
+      - Gemini available → ALWAYS use Plan-Execute-Reflect (Gemini plans, Ollama executes)
+      - Gemini unavailable → direct ReAct loop with Ollama (fallback)
 
-    Otherwise: direct ReAct loop with Ollama (backward compatible).
+    Source-based safety:
+      - source="user" → full tool access
+      - source="scheduler"/"telegram" → hazardous hardware commands blocked
     """
 
     def __init__(
@@ -164,24 +187,29 @@ class Agent:
 
     # ── Plan-Execute-Reflect (Gemini + Ollama) ──────────────────────
 
-    def chat(self, user_message: str) -> Generator[dict, None, None]:
+    def chat(self, user_message: str, source: str = "user") -> Generator[dict, None, None]:
         """
         Process a user message.
 
-        If Gemini is available and task is complex → Plan-Execute-Reflect.
-        Otherwise → direct ReAct loop (backward compatible).
+        Routing:
+          - Gemini available → always Plan-Execute-Reflect
+          - Gemini unavailable → direct ReAct loop (fallback)
+
+        Source controls tool restrictions:
+          - "user" → full access
+          - "scheduler"/"telegram" → hazardous commands blocked
         """
         self.is_running = True
+        self.source = source
         self.messages.append({"role": "user", "content": user_message})
 
         # Log user message
-        event = self.timeline.log("info", "User message", user_message)
+        event = self.timeline.log("info", "User message",
+            f"[source={source}] {user_message}")
         yield event.to_dict()
 
-        # Decide: plan or direct execute?
-        use_planner = has_gemini() and _needs_planning(user_message)
-
-        if use_planner:
+        # Always plan with Gemini when available; fall back to ReAct otherwise
+        if has_gemini():
             yield from self._plan_execute_reflect(user_message)
         else:
             yield from self._react_loop(user_message)
@@ -419,6 +447,30 @@ class Agent:
                 tool_name = fn.get("name", "unknown")
                 tool_args = fn.get("arguments", {})
 
+                # ── Source-based safety check ──
+                source = getattr(self, "source", "user")
+                if tool_name in SCHEDULER_BLOCKED_TOOLS and source != "user":
+                    result = f"BLOCKED: Tool '{tool_name}' is not allowed for automated ({source}) tasks."
+                    self.timeline.log("tool_call", f"⛔ Blocked {tool_name}",
+                        f"Source={source}. {result}",
+                        tool_name=tool_name, tool_input=tool_args)
+                    self.messages.append({"role": "tool", "content": result})
+                    continue
+
+                if tool_name == "send_command" and _is_command_blocked(
+                    tool_args.get("command", ""), source
+                ):
+                    cmd = tool_args.get("command", "")
+                    result = (
+                        f"BLOCKED: Command '{cmd}' is not allowed for automated ({source}) tasks. "
+                        f"Only PING and STATUS are permitted."
+                    )
+                    self.timeline.log("tool_call", f"⛔ Blocked send_command({cmd})",
+                        f"Source={source}. {result}",
+                        tool_name=tool_name, tool_input=tool_args)
+                    self.messages.append({"role": "tool", "content": result})
+                    continue
+
                 self.timeline.log(
                     "tool_call", f"Calling {tool_name}",
                     json.dumps(tool_args, indent=2),
@@ -445,10 +497,35 @@ class Agent:
     def _execute_tools(self, tool_calls: list[dict]) -> int:
         """Execute tool calls and append results to conversation. Returns count."""
         count = 0
+        source = getattr(self, "source", "user")
+
         for tc in tool_calls:
             fn = tc.get("function", {})
             tool_name = fn.get("name", "unknown")
             tool_args = fn.get("arguments", {})
+
+            # ── Source-based safety check ──
+            if tool_name in SCHEDULER_BLOCKED_TOOLS and source != "user":
+                result = f"BLOCKED: Tool '{tool_name}' is not allowed for automated ({source}) tasks."
+                self.timeline.log("tool_call", f"⛔ Blocked {tool_name}",
+                    f"Source={source}. {result}",
+                    tool_name=tool_name, tool_input=tool_args)
+                self.messages.append({"role": "tool", "content": result})
+                continue
+
+            if tool_name == "send_command" and _is_command_blocked(
+                tool_args.get("command", ""), source
+            ):
+                cmd = tool_args.get("command", "")
+                result = (
+                    f"BLOCKED: Command '{cmd}' is not allowed for automated ({source}) tasks. "
+                    f"Only PING and STATUS are permitted."
+                )
+                self.timeline.log("tool_call", f"⛔ Blocked send_command({cmd})",
+                    f"Source={source}. {result}",
+                    tool_name=tool_name, tool_input=tool_args)
+                self.messages.append({"role": "tool", "content": result})
+                continue
 
             self.timeline.log(
                 "tool_call", f"Calling {tool_name}",
