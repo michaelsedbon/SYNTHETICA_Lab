@@ -13,6 +13,7 @@ import {
     Tag,
     FolderOpen,
     Plus,
+    Boxes,
     type LucideIcon,
 } from "lucide-react";
 
@@ -25,6 +26,7 @@ interface FileUploadProps {
 
 const BUILT_IN_STAGES: { key: string; label: string; icon: LucideIcon }[] = [
     { key: "design", label: "Design", icon: Palette },
+    { key: "assembly", label: "Assembly", icon: Boxes },
     { key: "cad", label: "CAD", icon: Cog },
     { key: "step", label: "STEP", icon: Package },
     { key: "cnc_program", label: "CNC Program", icon: Wrench },
@@ -36,6 +38,7 @@ const BUILT_IN_STAGES: { key: string; label: string; icon: LucideIcon }[] = [
 // Accepted file types per stage
 const STAGE_ACCEPT: Record<string, string> = {
     design: ".stl,.step,.stp,.obj,.3mf,.fbx",
+    assembly: ".step,.stp,.zip",
     cad: ".sldprt,.sldasm,.slddrw,.x_t,.x_b,.igs,.iges,.f3d",
     step: ".step,.stp",
     cnc_program: ".gcode,.nc,.ngc,.tap,.iso",
@@ -46,6 +49,7 @@ const STAGE_ACCEPT: Record<string, string> = {
 
 const STAGE_FILE_HINT: Record<string, string> = {
     design: "STL, STEP, STP, OBJ, 3MF, FBX",
+    assembly: "STEP, STP, ZIP (assembly export)",
     cad: "SLDPRT, SLDASM, F3D, X_T, IGS",
     step: "STEP, STP",
     cnc_program: "GCODE, NC, NGC, TAP, ISO",

@@ -30,6 +30,7 @@ import {
     X,
     ExternalLink,
     Star,
+    Boxes,
     type LucideIcon,
 } from "lucide-react";
 
@@ -56,9 +57,10 @@ interface DetailPanelProps {
 
 
 // Viewer tab definitions
-type ViewerTab = "design" | "cad" | "step" | "2d_drawing" | "laser_cutting";
+type ViewerTab = "design" | "assembly" | "cad" | "step" | "2d_drawing" | "laser_cutting";
 const VIEWER_TABS: { key: ViewerTab; label: string; icon: LucideIcon }[] = [
     { key: "design", label: "Design", icon: Palette },
+    { key: "assembly", label: "Assembly", icon: Boxes },
     { key: "cad", label: "CAD", icon: Cog },
     { key: "step", label: "STEP", icon: Package },
     { key: "2d_drawing", label: "2D Drawing", icon: Ruler },
@@ -69,6 +71,7 @@ const VIEWER_TABS: { key: ViewerTab; label: string; icon: LucideIcon }[] = [
 const REVISION_CATEGORIES: { key: string; label: string; icon?: LucideIcon }[] = [
     { key: "all", label: "All" },
     { key: "design", label: "Design", icon: Palette },
+    { key: "assembly", label: "Assembly", icon: Boxes },
     { key: "cad", label: "CAD", icon: Cog },
     { key: "step", label: "STEP", icon: Package },
     { key: "cnc_program", label: "CNC", icon: Wrench },
@@ -102,6 +105,7 @@ function toInputDate(dateStr: string | null | undefined): string {
 function getStageName(stage: string): string {
     const map: Record<string, string> = {
         design: "Design",
+        assembly: "Assembly",
         cad: "CAD",
         step: "STEP",
         cnc_program: "CNC",
@@ -116,6 +120,7 @@ function getStageName(stage: string): string {
 function getStageClass(stage: string): string {
     const map: Record<string, string> = {
         design: "badge-design",
+        assembly: "badge-assembly",
         cad: "badge-cad",
         step: "badge-step",
         cnc_program: "badge-manufacturing",
@@ -1439,7 +1444,7 @@ export default function DetailPanel({ partId, onClose, onPartUpdated, pushAction
                                             onClick={() => {
                                                 setSelectedRevisionId(rev.id);
                                                 // Also switch viewer tab to match this revision's stage
-                                                if (rev.uploadStage === "design" || rev.uploadStage === "cad" || rev.uploadStage === "step" || rev.uploadStage === "2d_drawing" || rev.uploadStage === "laser_cutting") {
+                                                if (rev.uploadStage === "design" || rev.uploadStage === "assembly" || rev.uploadStage === "cad" || rev.uploadStage === "step" || rev.uploadStage === "2d_drawing" || rev.uploadStage === "laser_cutting") {
                                                     setActiveViewerTab(rev.uploadStage);
                                                 }
                                             }}

@@ -175,6 +175,9 @@ async function createPartFromZip(
     const zip = new AdmZip(zipBuffer);
     const entries = zip.getEntries();
 
+    // Check if this is an assembly export (contains assembly.json)
+    const isAssembly = entries.some(e => path.basename(e.entryName) === "assembly.json");
+
     // Track version numbers per stage
     const stageVersions: Record<string, number> = {};
     const uploadedFiles: string[] = [];
@@ -186,7 +189,20 @@ async function createPartFromZip(
 
         const fileName = path.basename(entry.entryName);
         const ext = path.extname(fileName).toLowerCase();
-        const uploadStage = detectStage(fileName);
+        let uploadStage = detectStage(fileName);
+
+        // For assembly ZIPs: STEP files → "assembly" stage, skip individual STLs
+        if (isAssembly) {
+            if (ext === ".step" || ext === ".stp") {
+                uploadStage = "assembly";
+            } else if (ext === ".stl") {
+                // Skip per-component STLs in assembly ZIP (the STEP is the full assembly)
+                continue;
+            } else if (fileName === "assembly.json") {
+                // Save the manifest alongside the other files
+                uploadStage = "document";
+            }
+        }
 
         // Increment version for this stage
         stageVersions[uploadStage] = (stageVersions[uploadStage] || 0) + 1;
