@@ -12,6 +12,7 @@ import adsk.core
 import adsk.fusion
 import os
 import traceback
+import zipfile
 
 app = adsk.core.Application.get()
 ui = app.userInterface
@@ -166,7 +167,30 @@ def run(context):
             except Exception as e:
                 results.append(("DXF laser", False, str(e)))
 
-        # --- 7. Summary dialog ---
+        # --- 7. Package into ZIP ---
+        try:
+            zip_name = f"{safe_name}.zip"
+            zip_path = os.path.join(base_folder, zip_name)
+
+            # Auto-increment if ZIP already exists
+            counter = 2
+            while os.path.exists(zip_path):
+                zip_name = f"{safe_name}_{counter}.zip"
+                zip_path = os.path.join(base_folder, zip_name)
+                counter += 1
+
+            with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
+                for root, _dirs, files in os.walk(export_dir):
+                    for fname in files:
+                        full = os.path.join(root, fname)
+                        arcname = os.path.relpath(full, export_dir)
+                        zf.write(full, arcname)
+
+            results.append(("ZIP", True, zip_path))
+        except Exception as e:
+            results.append(("ZIP", False, str(e)))
+
+        # --- 8. Summary dialog ---
         lines = [f"Export results for '{comp_name}':", f"Folder: {export_dir}", ""]
         for label, ok, detail in results:
             status = "✓" if ok else "✗"

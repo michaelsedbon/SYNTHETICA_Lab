@@ -12,7 +12,7 @@ interface FileUploadProps {
 
 const BUILT_IN_STAGES = [
     { key: "design", label: "🎨 Design", icon: "🎨" },
-    { key: "solidworks", label: "🔩 SolidWorks", icon: "🔩" },
+    { key: "cad", label: "🔩 CAD", icon: "🔩" },
     { key: "cnc_program", label: "🔧 CNC Program", icon: "🔧" },
     { key: "2d_drawing", label: "📐 2D Drawing", icon: "📐" },
     { key: "laser_cutting", label: "✂️ Laser Cutting", icon: "✂️" },
@@ -22,7 +22,7 @@ const BUILT_IN_STAGES = [
 // Accepted file types per stage
 const STAGE_ACCEPT: Record<string, string> = {
     design: ".stl,.step,.stp,.obj,.3mf,.fbx",
-    solidworks: ".sldprt,.sldasm,.slddrw,.step,.stp,.x_t,.x_b,.igs,.iges",
+    cad: ".sldprt,.sldasm,.slddrw,.step,.stp,.x_t,.x_b,.igs,.iges,.f3d",
     cnc_program: ".gcode,.nc,.ngc,.tap,.iso",
     "2d_drawing": ".pdf,.dxf,.dwg,.svg,.png,.jpg,.jpeg",
     laser_cutting: ".dxf,.svg,.ai,.pdf",
@@ -31,14 +31,14 @@ const STAGE_ACCEPT: Record<string, string> = {
 
 const STAGE_FILE_HINT: Record<string, string> = {
     design: "STL, STEP, STP, OBJ, 3MF, FBX",
-    solidworks: "SLDPRT, SLDASM, STEP, STP, X_T, IGS",
+    cad: "SLDPRT, SLDASM, STEP, STP, F3D, X_T, IGS",
     cnc_program: "GCODE, NC, NGC, TAP, ISO",
     "2d_drawing": "PDF, DXF, DWG, SVG, PNG, JPG",
     laser_cutting: "DXF, SVG, AI, PDF",
     document: "PDF, DOC, DOCX, XLS, XLSX, CSV, TXT",
 };
 
-const DEFAULT_CUSTOM_ACCEPT = ".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,.md,.stl,.step,.stp,.obj,.3mf,.fbx,.png,.jpg,.jpeg,.svg,.zip";
+const DEFAULT_CUSTOM_ACCEPT = ".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,.md,.stl,.step,.stp,.obj,.3mf,.fbx,.png,.jpg,.jpeg,.svg,.zip,.f3d";
 
 export default function FileUpload({ partId, onUploadComplete, customStages = [], onAddCustomStage }: FileUploadProps) {
     const [dragging, setDragging] = useState(false);

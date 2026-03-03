@@ -35,10 +35,10 @@ interface DetailPanelProps {
 
 
 // Viewer tab definitions
-type ViewerTab = "design" | "solidworks" | "2d_drawing" | "laser_cutting";
+type ViewerTab = "design" | "cad" | "2d_drawing" | "laser_cutting";
 const VIEWER_TABS: { key: ViewerTab; label: string; icon: string }[] = [
     { key: "design", label: "Design", icon: "🎨" },
-    { key: "solidworks", label: "SolidWorks", icon: "🔩" },
+    { key: "cad", label: "CAD", icon: "🔩" },
     { key: "2d_drawing", label: "2D Drawing", icon: "📐" },
     { key: "laser_cutting", label: "Laser Cutting", icon: "✂️" },
 ];
@@ -47,7 +47,7 @@ const VIEWER_TABS: { key: ViewerTab; label: string; icon: string }[] = [
 const REVISION_CATEGORIES = [
     { key: "all", label: "All" },
     { key: "design", label: "🎨 Design" },
-    { key: "solidworks", label: "🔩 SolidWorks" },
+    { key: "cad", label: "🔩 CAD" },
     { key: "cnc_program", label: "🔧 CNC" },
     { key: "2d_drawing", label: "📐 2D Drawing" },
     { key: "laser_cutting", label: "✂️ Laser Cutting" },
@@ -79,7 +79,7 @@ function toInputDate(dateStr: string | null | undefined): string {
 function getStageName(stage: string): string {
     const map: Record<string, string> = {
         design: "Design",
-        solidworks: "SolidWorks",
+        cad: "CAD",
         cnc_program: "CNC",
         "2d_drawing": "2D Drawing",
         laser_cutting: "Laser Cutting",
@@ -92,7 +92,7 @@ function getStageName(stage: string): string {
 function getStageClass(stage: string): string {
     const map: Record<string, string> = {
         design: "badge-design",
-        solidworks: "badge-solidworks",
+        cad: "badge-cad",
         cnc_program: "badge-manufacturing",
         "2d_drawing": "badge-drawing",
         laser_cutting: "badge-laser",
@@ -1193,7 +1193,7 @@ export default function DetailPanel({ partId, onClose, onPartUpdated, pushAction
                             )}
                             {viewerRevisions.length === 0 && (
                                 <div style={{ padding: "12px 14px", color: "var(--text-muted)", fontSize: 12 }}>
-                                    No {activeViewerTab === "design" ? "design" : activeViewerTab === "solidworks" ? "SolidWorks" : activeViewerTab === "laser_cutting" ? "laser cutting" : "2D drawing"} files uploaded yet.
+                                    No {activeViewerTab === "design" ? "design" : activeViewerTab === "cad" ? "CAD" : activeViewerTab === "laser_cutting" ? "laser cutting" : "2D drawing"} files uploaded yet.
                                 </div>
                             )}
                         </div>
@@ -1414,7 +1414,7 @@ export default function DetailPanel({ partId, onClose, onPartUpdated, pushAction
                                             onClick={() => {
                                                 setSelectedRevisionId(rev.id);
                                                 // Also switch viewer tab to match this revision's stage
-                                                if (rev.uploadStage === "design" || rev.uploadStage === "solidworks" || rev.uploadStage === "2d_drawing" || rev.uploadStage === "laser_cutting") {
+                                                if (rev.uploadStage === "design" || rev.uploadStage === "cad" || rev.uploadStage === "2d_drawing" || rev.uploadStage === "laser_cutting") {
                                                     setActiveViewerTab(rev.uploadStage);
                                                 }
                                             }}
