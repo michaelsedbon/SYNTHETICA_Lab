@@ -120,6 +120,30 @@ def run(context):
             if not has_sheet_metal:
                 results.append(("DXF flat", False, "Skipped — no sheet metal bodies"))
 
+        # --- 6b. Export 2D DXF for laser cutting (any body, no sheet metal needed) ---
+        try:
+            dxf_laser_exported = False
+            for body in component.bRepBodies:
+                largest_face = _find_largest_planar_face(body)
+                if largest_face is None:
+                    continue
+
+                # Create a temporary sketch on the face — this projects all outer/inner edges
+                sketch = component.sketches.add(largest_face)
+
+                suffix = f"_{body.name}" if component.bRepBodies.count > 1 else ""
+                suffix = "".join(c if c.isalnum() or c in (" ", "-", "_") else "_" for c in suffix).strip()
+                dxf_path = os.path.join(export_dir, f"{safe_name}{suffix}_laser.dxf")
+
+                sketch.saveAsDXF(dxf_path)
+                results.append((f"DXF laser ({body.name})", True, dxf_path))
+                dxf_laser_exported = True
+
+            if not dxf_laser_exported:
+                results.append(("DXF laser", False, "No body with a planar face found"))
+        except Exception as e:
+            results.append(("DXF laser", False, str(e)))
+
         # --- 7. Summary dialog ---
         lines = [f"Export results for '{comp_name}':", f"Folder: {export_dir}", ""]
         for label, ok, detail in results:
@@ -134,6 +158,11 @@ def run(context):
 
 def _find_stationary_face(body: adsk.fusion.BRepBody):
     """Return the largest planar face on the body (used as the stationary face for flat patterns)."""
+    return _find_largest_planar_face(body)
+
+
+def _find_largest_planar_face(body: adsk.fusion.BRepBody):
+    """Return the largest planar face on the body, or None if no planar face exists."""
     best_face = None
     best_area = 0.0
     for face in body.faces:

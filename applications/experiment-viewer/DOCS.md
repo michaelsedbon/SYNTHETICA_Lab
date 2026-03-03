@@ -121,3 +121,20 @@ Additional sources can be added via:
 - **Collapsible sidebar** with experiment groups and file lists
 - **Breadcrumb navigation** for deep file hierarchies
 - **Tree caching** (30s TTL) for fast sidebar loads on large workspaces
+- **Share links** — copy direct URLs to specific experiment pages
+- **Deep-linking** via `?source=Lab&path=EXP_003/summary.md` query params
+
+---
+
+## Online Access (Cloudflare Tunnel)
+
+The viewer can be exposed publicly via Cloudflare Tunnel. Only port 3002 is tunnelled — the backend is proxied through Next.js rewrites (`/api/*` → `localhost:8001`).
+
+See **[ONLINE.md](file:///Users/michaelsedbon/Documents/SYNTHETIC_PERSONAL_LAB/applications/experiment-viewer/ONLINE.md)** for full setup instructions.
+
+### Sharing Links
+
+Click the **Share** button in the toolbar to copy a direct link like:
+```
+https://lab.yourdomain.com/?source=Lab&path=EXP_003/summary.md
+```

@@ -537,8 +537,8 @@ interface ExperimentGroup {
 // ── API helpers ────────────────────────────────────────────────────
 
 function apiBase(): string {
-  if (typeof window === "undefined") return "http://localhost:8001";
-  return `http://${window.location.hostname}:8001`;
+  // Use relative paths — Next.js rewrites proxy /api/* to the backend
+  return "";
 }
 
 async function fetchExperiments(): Promise<ExperimentGroup[]> {
@@ -599,6 +599,7 @@ function ExperimentViewer() {
   const [expandedFiles, setExpandedFiles] = useState<Record<string, boolean>>({});
   const [expandedFolders, setExpandedFolders] = useState<Record<string, boolean>>({});
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [shareCopied, setShareCopied] = useState(false);
 
   // ── Preview mode (uploaded or externally-opened .md files) ──
   const [previewMode, setPreviewMode] = useState(false);
@@ -774,6 +775,19 @@ function ExperimentViewer() {
     [activePath, activeSource, sourceMap]
   );
 
+  // Copy share link
+  const handleShareLink = useCallback(() => {
+    if (!activePath || previewMode) return;
+    const url = new URL(window.location.href);
+    url.search = "";
+    url.searchParams.set("source", activeSource);
+    url.searchParams.set("path", activePath);
+    navigator.clipboard.writeText(url.toString()).then(() => {
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 2000);
+    });
+  }, [activePath, activeSource, previewMode]);
+
   // Load experiment tree + source paths
   useEffect(() => {
     Promise.all([
@@ -784,6 +798,16 @@ function ExperimentViewer() {
       const map: Record<string, string> = {};
       for (const s of sourcesData) map[s.label] = s.path;
       setSourceMap(map);
+
+      // Deep-link: if ?path= and ?source= are in the URL, navigate directly
+      const urlPath = searchParams.get("path");
+      const urlSource = searchParams.get("source");
+      if (urlPath && !searchParams.get("preview")) {
+        handleSelect(urlPath, urlSource || "Lab");
+        setInitialLoading(false);
+        return;
+      }
+
       // Auto-select first file (find first file node in tree)
       const findFirstFile = (nodes: TreeNode[]): TreeNode | null => {
         for (const n of nodes) {
@@ -1312,6 +1336,35 @@ function ExperimentViewer() {
             className="hidden"
             onChange={handleFileUpload}
           />
+          {/* Share link button */}
+          {activePath && !previewMode && (
+            <button
+              onClick={handleShareLink}
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded-md
+                         border border-border/50 transition-all duration-200
+                         ${shareCopied
+                  ? "bg-green-500/20 text-green-400 border-green-500/30"
+                  : "bg-muted/50 text-muted-foreground hover:text-foreground hover:bg-muted/80"
+                }`}
+              title="Copy shareable link to this page"
+            >
+              {shareCopied ? (
+                <>
+                  <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                  </svg>
+                  Copied!
+                </>
+              ) : (
+                <>
+                  <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
+                  </svg>
+                  Share
+                </>
+              )}
+            </button>
+          )}
           <button
             onClick={() => fileInputRef.current?.click()}
             className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded-md
