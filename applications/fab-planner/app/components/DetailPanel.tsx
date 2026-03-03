@@ -11,6 +11,27 @@ import { Input } from "@/app/components/ui/input";
 import { Textarea } from "@/app/components/ui/textarea";
 import { Badge } from "@/app/components/ui/badge";
 import { Separator } from "@/app/components/ui/separator";
+import {
+    Palette,
+    Cog,
+    Package,
+    Wrench,
+    Ruler,
+    Scissors,
+    FileText,
+    Tag,
+    Trash2,
+    Download,
+    FolderOpen,
+    Upload,
+    ChevronDown,
+    ChevronRight,
+    Eye,
+    X,
+    ExternalLink,
+    Star,
+    type LucideIcon,
+} from "lucide-react";
 
 // Dynamic import for Three.js (no SSR)
 const ModelViewer = dynamic(() => import("./ModelViewer"), { ssr: false });
@@ -36,24 +57,24 @@ interface DetailPanelProps {
 
 // Viewer tab definitions
 type ViewerTab = "design" | "cad" | "step" | "2d_drawing" | "laser_cutting";
-const VIEWER_TABS: { key: ViewerTab; label: string; icon: string }[] = [
-    { key: "design", label: "Design", icon: "🎨" },
-    { key: "cad", label: "CAD", icon: "🔩" },
-    { key: "step", label: "STEP", icon: "📦" },
-    { key: "2d_drawing", label: "2D Drawing", icon: "📐" },
-    { key: "laser_cutting", label: "Laser Cutting", icon: "✂️" },
+const VIEWER_TABS: { key: ViewerTab; label: string; icon: LucideIcon }[] = [
+    { key: "design", label: "Design", icon: Palette },
+    { key: "cad", label: "CAD", icon: Cog },
+    { key: "step", label: "STEP", icon: Package },
+    { key: "2d_drawing", label: "2D Drawing", icon: Ruler },
+    { key: "laser_cutting", label: "Laser Cutting", icon: Scissors },
 ];
 
 // Revision category tabs
-const REVISION_CATEGORIES = [
+const REVISION_CATEGORIES: { key: string; label: string; icon?: LucideIcon }[] = [
     { key: "all", label: "All" },
-    { key: "design", label: "🎨 Design" },
-    { key: "cad", label: "🔩 CAD" },
-    { key: "step", label: "📦 STEP" },
-    { key: "cnc_program", label: "🔧 CNC" },
-    { key: "2d_drawing", label: "📐 2D Drawing" },
-    { key: "laser_cutting", label: "✂️ Laser Cutting" },
-    { key: "document", label: "📄 Document" },
+    { key: "design", label: "Design", icon: Palette },
+    { key: "cad", label: "CAD", icon: Cog },
+    { key: "step", label: "STEP", icon: Package },
+    { key: "cnc_program", label: "CNC", icon: Wrench },
+    { key: "2d_drawing", label: "2D Drawing", icon: Ruler },
+    { key: "laser_cutting", label: "Laser Cutting", icon: Scissors },
+    { key: "document", label: "Document", icon: FileText },
 ];
 
 function formatDateDisplay(dateStr: string | null | undefined): string {
@@ -155,7 +176,7 @@ function DrawingViewer({ fileUrl, fileType }: { fileUrl: string | null; fileType
         return (
             <div className="viewer-container">
                 <div className="viewer-placeholder">
-                    <div className="icon">📐</div>
+                    <div className="icon"><Ruler size={32} /></div>
                     <p>No 2D drawing uploaded yet</p>
                 </div>
             </div>
@@ -169,8 +190,8 @@ function DrawingViewer({ fileUrl, fileType }: { fileUrl: string | null; fileType
         return (
             <div className="viewer-container drawing-viewer">
                 <div className="drawing-viewer-controls">
-                    <button onClick={zoomIn} title="Zoom In">🔍+</button>
-                    <button onClick={zoomOut} title="Zoom Out">🔍−</button>
+                    <button onClick={zoomIn} title="Zoom In"><Eye size={13} /> +</button>
+                    <button onClick={zoomOut} title="Zoom Out"><Eye size={13} /> −</button>
                     <button onClick={resetView} title="Reset View">↺ Reset</button>
                     <span className="viewer-zoom-level">{Math.round(scale * 100)}%</span>
                 </div>
@@ -255,7 +276,7 @@ function DrawingViewer({ fileUrl, fileType }: { fileUrl: string | null; fileType
                                 console.error('Download failed:', err);
                             }
                         }}
-                    >📄 Open in Preview</button>
+                    ><FileText size={13} style={{ marginRight: 4 }} /> Open in Preview</button>
                 </div>
             </div>
         );
@@ -264,10 +285,10 @@ function DrawingViewer({ fileUrl, fileType }: { fileUrl: string | null; fileType
     return (
         <div className="viewer-container">
             <div className="viewer-placeholder">
-                <div className="icon">📄</div>
+                <div className="icon"><FileText size={32} /></div>
                 <p>Preview not available for .{fileType}</p>
                 <Button variant="default" size="sm" asChild style={{ marginTop: 8 }}>
-                    <a href={fileUrl} download>⬇ Download file</a>
+                    <a href={fileUrl} download><Download size={13} style={{ marginRight: 4 }} /> Download file</a>
                 </Button>
             </div>
         </div>
@@ -610,7 +631,7 @@ export default function DetailPanel({ partId, onClose, onPartUpdated, pushAction
         const stages = new Set(part.revisions.map((r) => r.uploadStage));
         return Array.from(stages)
             .filter((s) => s.startsWith("custom_"))
-            .map((s) => ({ key: s, label: `🏷️ ${s.replace("custom_", "")}` }));
+            .map((s) => ({ key: s, label: s.replace("custom_", ""), icon: Tag }));
     }, [part?.revisions]);
 
     const allRevisionTabs = [...REVISION_CATEGORIES, ...customRevisionTabs];
@@ -912,7 +933,7 @@ export default function DetailPanel({ partId, onClose, onPartUpdated, pushAction
                                 style={{ color: "var(--accent-blue)", cursor: "pointer", fontSize: 12, wordBreak: "break-all", textDecoration: "underline" }}
                                 title={isUrl ? "Open in browser" : "Open in Finder"}
                             >
-                                🔗 {value}
+                                <ExternalLink size={11} style={{ marginRight: 3 }} /> {value}
                             </a>
                             <span
                                 className="edit-icon"
@@ -1106,7 +1127,7 @@ export default function DetailPanel({ partId, onClose, onPartUpdated, pushAction
                                     }
                                 }}
                             >
-                                ⬇ Download All
+                                <Download size={13} style={{ marginRight: 4 }} /> Download All
                             </Button>
                         )}
                         <Button
@@ -1116,7 +1137,7 @@ export default function DetailPanel({ partId, onClose, onPartUpdated, pushAction
                             onClick={handleReveal}
                             title="Open folder in Finder"
                         >
-                            📂 Reveal
+                            <FolderOpen size={13} style={{ marginRight: 4 }} /> Reveal
                         </Button>
                         <Button
                             variant="outline"
@@ -1125,7 +1146,7 @@ export default function DetailPanel({ partId, onClose, onPartUpdated, pushAction
                             onClick={handleDeletePart}
                             title="Delete this part and all its files"
                         >
-                            🗑
+                            <Trash2 size={13} />
                         </Button>
                     </ButtonGroup>
                     <Button variant="ghost" size="icon-sm" onClick={onClose} title="Close panel">
@@ -1160,7 +1181,7 @@ export default function DetailPanel({ partId, onClose, onPartUpdated, pushAction
                                             className={`viewer-tab ${activeViewerTab === tab.key ? "active" : ""}`}
                                             onClick={() => setActiveViewerTab(tab.key)}
                                         >
-                                            {tab.icon} {tab.label}
+                                            {(() => { const Icon = tab.icon; return <Icon size={13} style={{ marginRight: 4 }} />; })()} {tab.label}
                                             {count > 0 && (
                                                 <span className="viewer-tab-count">{count}</span>
                                             )}
@@ -1278,7 +1299,7 @@ export default function DetailPanel({ partId, onClose, onPartUpdated, pushAction
                                 onClick={() => toggleSection("sharing")}
                             >
                                 <h3>
-                                    🔗 Sharing
+                                    <ExternalLink size={13} style={{ marginRight: 4 }} /> Sharing
                                 </h3>
                                 <span style={{ color: "var(--text-muted)", fontSize: 11 }}>
                                     {expandedSections.sharing !== false ? "▾" : "▸"}
@@ -1295,7 +1316,7 @@ export default function DetailPanel({ partId, onClose, onPartUpdated, pushAction
                                             </div>
                                             {targetProjectPath && (
                                                 <div className="sharing-project-path">
-                                                    <span style={{ color: "var(--text-muted)", fontSize: 11 }}>📁</span>
+                                                    <span style={{ color: "var(--text-muted)", fontSize: 11 }}><FolderOpen size={11} /></span>
                                                     <span style={{ fontSize: 11, color: "var(--text-secondary)" }}>{targetProjectPath}</span>
                                                 </div>
                                             )}
@@ -1389,7 +1410,7 @@ export default function DetailPanel({ partId, onClose, onPartUpdated, pushAction
                                             className={`revision-tab ${activeRevisionTab === tab.key ? "active" : ""}`}
                                             onClick={() => setActiveRevisionTab(tab.key)}
                                         >
-                                            {tab.label}
+                                            {(() => { const Icon = tab.icon; return Icon ? <Icon size={12} style={{ marginRight: 3 }} /> : null; })()}{tab.label}
                                             <span className="revision-tab-count">{count}</span>
                                         </button>
                                     );
@@ -1458,7 +1479,7 @@ export default function DetailPanel({ partId, onClose, onPartUpdated, pushAction
                                                     }}
                                                     title={`Download ${rev.fileName}`}
                                                 >
-                                                    ⬇
+                                                    <Download size={12} />
                                                 </button>
                                                 <button
                                                     className="btn-delete-rev"

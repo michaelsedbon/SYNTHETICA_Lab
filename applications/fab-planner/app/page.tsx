@@ -19,6 +19,24 @@ import { Separator } from "@/app/components/ui/separator";
 import BulkActionsBar from "@/app/components/BulkActionsBar";
 import ThemeToggle from "@/app/components/ThemeToggle";
 import {
+  Download,
+  Upload,
+  FolderOpen,
+  Settings,
+  BookOpen,
+  FileText,
+  ClipboardList,
+  Filter,
+  Star,
+  Calendar,
+  Search,
+  Package,
+  ArrowUp,
+  ArrowDown,
+  Plus,
+  Lock,
+} from "lucide-react";
+import {
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
@@ -796,7 +814,7 @@ export default function Home() {
         {leftPanelDragOver && (
           <div className="drop-overlay" style={{ position: 'absolute', inset: 0, zIndex: 50 }}>
             <div className="drop-overlay-content">
-              <span className="drop-overlay-icon">📥</span>
+              <span className="drop-overlay-icon"><Upload size={32} /></span>
               <span className="drop-overlay-text">Drop files to create parts</span>
             </div>
           </div>
@@ -827,7 +845,7 @@ export default function Home() {
                 title="Toggle project tree"
                 style={{ marginLeft: -10 }}
               >
-                📁
+                <FolderOpen size={16} />
               </button>
               <WorkspaceSwitcher
                 workspaces={ws.workspaces}
@@ -851,10 +869,10 @@ export default function Home() {
                     cursor: "default",
                   }}
                 >
-                  🔐 OWNER
+                  <Lock size={10} style={{ marginRight: 3 }} /> OWNER
                 </span>
               )}
-              <h2>⚙️ Production Queue</h2>
+              <h2><Settings size={14} style={{ display: "inline", marginRight: 4, verticalAlign: "middle" }} /> Production Queue</h2>
             </div>
           </div>
           <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
@@ -863,13 +881,13 @@ export default function Home() {
                 <ButtonGroup>
                   <Tooltip><TooltipTrigger asChild>
                     <Button variant="outline" size="sm" className="btn-grouped" onClick={() => { window.location.href = "/api/export"; }}>
-                      📥 Export
+                      <Download size={13} style={{ marginRight: 4 }} /> Export
                     </Button>
                   </TooltipTrigger><TooltipContent>Export all parts to Excel (CSV)</TooltipContent></Tooltip>
 
                   <Tooltip><TooltipTrigger asChild>
                     <Button variant="outline" size="sm" className={`btn-grouped ${showLogs ? "btn-active" : ""}`} onClick={() => { setShowLogs(!showLogs); if (!showLogs) { setSelectedPartIds(new Set()); data.setActiveStarredTab(null); } }}>
-                      📋 Logs
+                      <ClipboardList size={13} style={{ marginRight: 4 }} /> Logs
                     </Button>
                   </TooltipTrigger><TooltipContent>View application logs</TooltipContent></Tooltip>
 
@@ -883,19 +901,19 @@ export default function Home() {
                 <ButtonGroup>
                   <Tooltip><TooltipTrigger asChild>
                     <Button variant="outline" size="sm" className="btn-grouped" onClick={() => setShowSettings(true)}>
-                      ⚙️ Settings
+                      <Settings size={13} style={{ marginRight: 4 }} /> Settings
                     </Button>
                   </TooltipTrigger><TooltipContent>Manage field values and settings</TooltipContent></Tooltip>
 
                   <Tooltip><TooltipTrigger asChild>
                     <Button variant="outline" size="sm" className="btn-grouped" asChild>
-                      <a href="/docs" style={{ textDecoration: "none" }}>📘 Docs</a>
+                      <a href="/docs" style={{ textDecoration: "none" }}><BookOpen size={13} style={{ marginRight: 4 }} /> Docs</a>
                     </Button>
                   </TooltipTrigger><TooltipContent>Open documentation</TooltipContent></Tooltip>
 
                   <Tooltip><TooltipTrigger asChild>
                     <Button variant="outline" size="sm" className="btn-grouped" asChild>
-                      <a href="/complaints" style={{ textDecoration: "none" }}>📝 Complaints</a>
+                      <a href="/complaints" style={{ textDecoration: "none" }}><FileText size={13} style={{ marginRight: 4 }} /> Complaints</a>
                     </Button>
                   </TooltipTrigger><TooltipContent>Report issues & track complaints</TooltipContent></Tooltip>
                 </ButtonGroup>
@@ -936,7 +954,7 @@ export default function Home() {
                 }
               }}
             >
-              <span style={{ color: "var(--accent-orange)" }}>★</span> {sp.name}
+              <Star size={11} style={{ color: "var(--accent-orange)", fill: "var(--accent-orange)" }} /> {sp.name}
               <span className="tab-count">{data.parts.filter(p => p.projectId && data.getProjectAndChildIds(sp.id).includes(p.projectId)).length}</span>
             </button>
           ))}
@@ -957,7 +975,7 @@ export default function Home() {
             onClick={() => data.setShowFilters(!data.showFilters)}
             title="Toggle column filters"
           >
-            🔻 Filters{data.hasActiveFilters ? " ●" : ""}
+            <Filter size={13} style={{ marginRight: 4 }} /> Filters{data.hasActiveFilters ? " ●" : ""}
           </Button>
           <Button
             variant="ghost"
@@ -973,7 +991,7 @@ export default function Home() {
             }}
             title="Sort by importance (drag order)"
           >
-            ⭐ Importance{data.sortKey === "priorityOrder" ? (data.sortDir === "asc" ? " ▲" : " ▼") : ""}
+            <Star size={13} style={{ marginRight: 4 }} /> Importance{data.sortKey === "priorityOrder" ? (data.sortDir === "asc" ? " ▲" : " ▼") : ""}
           </Button>
           <Button
             variant="ghost"
@@ -982,7 +1000,7 @@ export default function Home() {
             onClick={() => setShowTimeline(!showTimeline)}
             title="Toggle timeline view"
           >
-            📅 Timeline
+            <Calendar size={13} style={{ marginRight: 4 }} /> Timeline
           </Button>
           {data.filteredParts.length > 0 && (
             <Button
@@ -991,7 +1009,7 @@ export default function Home() {
               onClick={() => downloadPartFiles(data.filteredParts.map((p) => p.id))}
               title="Download files for all displayed parts as ZIP"
             >
-              ⬇ Download All
+              <Download size={13} style={{ marginRight: 4 }} /> Download All
             </Button>
           )}
           {data.filteredParts.length > 0 && (
@@ -1040,7 +1058,7 @@ export default function Home() {
               }}
               title="Export displayed parts as CSV for ordering"
             >
-              📋 Export for Order
+              <ClipboardList size={13} style={{ marginRight: 4 }} /> Export for Order
             </Button>
           )}
           <span style={{ fontSize: 11, color: "var(--text-muted)" }}>
@@ -1159,7 +1177,7 @@ export default function Home() {
         {/* ── Empty state when filters return no results ── */}
         {data.filteredParts.length === 0 && (data.searchQuery || data.hasActiveFilters) && !showTimeline && (
           <div className="empty-state" style={{ padding: "48px 24px", textAlign: "center" }}>
-            <div className="empty-icon">🔍</div>
+            <div className="empty-icon"><Search size={32} /></div>
             <p style={{ margin: "8px 0 16px", color: "var(--text-secondary)" }}>No parts match your current filters</p>
             <Button variant="ghost" size="sm" onClick={() => { data.setSearchQuery(""); data.clearAllFilters(); }}>Clear all filters</Button>
           </div>
@@ -1361,13 +1379,13 @@ export default function Home() {
       ) : (
         <div key="empty" className="right-panel">
           <div className="empty-state">
-            <div className="empty-icon" style={{ fontSize: 40 }}>📦</div>
+            <div className="empty-icon" style={{ fontSize: 40 }}><Package size={40} /></div>
             <h3 style={{ marginTop: 12, fontWeight: 600, color: "var(--text-primary)" }}>No part selected</h3>
             <p style={{ margin: "8px 0 16px", maxWidth: 280, lineHeight: 1.5 }}>
               Click a part from the production queue to view details, 3D preview, and manage revisions.
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 6, fontSize: 11, color: "var(--text-muted)" }}>
-              <span>⬆⬇ Navigate parts</span>
+              <span><ArrowUp size={11} style={{ display: "inline" }} /><ArrowDown size={11} style={{ display: "inline" }} /> Navigate parts</span>
               <span><kbd style={{ padding: "1px 5px", border: "1px solid var(--border)", borderRadius: 3, fontSize: 10 }}>N</kbd> New part</span>
               <span><kbd style={{ padding: "1px 5px", border: "1px solid var(--border)", borderRadius: 3, fontSize: 10 }}>?</kbd> All shortcuts</span>
             </div>

@@ -2,6 +2,19 @@
 
 import { useRef, useState, useCallback } from "react";
 import { Button } from "@/app/components/ui/button";
+import {
+    Palette,
+    Cog,
+    Package,
+    Wrench,
+    Ruler,
+    Scissors,
+    FileText,
+    Tag,
+    FolderOpen,
+    Plus,
+    type LucideIcon,
+} from "lucide-react";
 
 interface FileUploadProps {
     partId: string;
@@ -10,14 +23,14 @@ interface FileUploadProps {
     onAddCustomStage?: (name: string) => void;
 }
 
-const BUILT_IN_STAGES = [
-    { key: "design", label: "🎨 Design", icon: "🎨" },
-    { key: "cad", label: "🔩 CAD", icon: "🔩" },
-    { key: "step", label: "📦 STEP", icon: "📦" },
-    { key: "cnc_program", label: "🔧 CNC Program", icon: "🔧" },
-    { key: "2d_drawing", label: "📐 2D Drawing", icon: "📐" },
-    { key: "laser_cutting", label: "✂️ Laser Cutting", icon: "✂️" },
-    { key: "document", label: "📄 Document", icon: "📄" },
+const BUILT_IN_STAGES: { key: string; label: string; icon: LucideIcon }[] = [
+    { key: "design", label: "Design", icon: Palette },
+    { key: "cad", label: "CAD", icon: Cog },
+    { key: "step", label: "STEP", icon: Package },
+    { key: "cnc_program", label: "CNC Program", icon: Wrench },
+    { key: "2d_drawing", label: "2D Drawing", icon: Ruler },
+    { key: "laser_cutting", label: "Laser Cutting", icon: Scissors },
+    { key: "document", label: "Document", icon: FileText },
 ];
 
 // Accepted file types per stage
@@ -50,9 +63,9 @@ export default function FileUpload({ partId, onUploadComplete, customStages = []
     const [uploadStage, setUploadStage] = useState("design");
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const allStages = [
+    const allStages: { key: string; label: string; icon: LucideIcon }[] = [
         ...BUILT_IN_STAGES,
-        ...customStages.map((name) => ({ key: `custom_${name}`, label: `🏷️ ${name}`, icon: "🏷️" })),
+        ...customStages.map((name) => ({ key: `custom_${name}`, label: name, icon: Tag })),
     ];
 
     const isCustom = uploadStage.startsWith("custom_");
@@ -132,17 +145,21 @@ export default function FileUpload({ partId, onUploadComplete, customStages = []
     return (
         <div>
             <div className="stage-selector" style={{ marginBottom: 8 }}>
-                {allStages.map((stage) => (
-                    <Button
-                        key={stage.key}
-                        variant={uploadStage === stage.key ? "secondary" : "ghost"}
-                        size="xs"
-                        onClick={() => setUploadStage(stage.key)}
-                        title={stage.label}
-                    >
-                        {stage.label}
-                    </Button>
-                ))}
+                {allStages.map((stage) => {
+                    const Icon = stage.icon;
+                    return (
+                        <Button
+                            key={stage.key}
+                            variant={uploadStage === stage.key ? "secondary" : "ghost"}
+                            size="xs"
+                            onClick={() => setUploadStage(stage.key)}
+                            title={stage.label}
+                        >
+                            <Icon size={13} style={{ marginRight: 4 }} />
+                            {stage.label}
+                        </Button>
+                    );
+                })}
                 <Button
                     variant="ghost"
                     size="xs"
@@ -150,7 +167,8 @@ export default function FileUpload({ partId, onUploadComplete, customStages = []
                     title="Add a custom upload category"
                     style={{ opacity: 0.7 }}
                 >
-                    + Custom
+                    <Plus size={13} style={{ marginRight: 4 }} />
+                    Custom
                 </Button>
             </div>
 
@@ -164,7 +182,7 @@ export default function FileUpload({ partId, onUploadComplete, customStages = []
                 onDragLeave={() => setDragging(false)}
                 onDrop={handleDrop}
             >
-                <div className="drop-icon">📁</div>
+                <div className="drop-icon"><FolderOpen size={24} /></div>
                 <p>
                     {uploading
                         ? "Uploading..."
