@@ -6,7 +6,8 @@ import {
     File, Folder, FolderOpen, Clock, Activity, Wrench,
     Brain, AlertTriangle, CheckCircle, Info, Filter,
     GripVertical, RefreshCw, ArrowUp, X, MessageSquare, FolderTree,
-    Circle, GitBranch
+    Circle, GitBranch, Cpu, Zap, Calendar, ToggleLeft, ToggleRight,
+    Plus, Trash2, Play, BookOpen, Sparkles, MessageCircle
 } from "lucide-react";
 
 // ── Config ──
@@ -14,23 +15,31 @@ const AGENT_SERVER = "172.16.1.80";
 const api = (path: string) => `http://${AGENT_SERVER}:8003${path}`;
 
 // ── Types ──
-interface TEvent {
-    id: string;
-    timestamp: string;
-    agent_id: string;
-    event_type: string;
-    title: string;
-    content: string;
-    tool_name?: string;
-    tool_input?: Record<string, unknown>;
-    tool_output?: string;
-    duration_ms?: number;
-    files_touched: string[];
-    session_id: string;
+type TEvent = {
+    id: string; timestamp: string; agent_id: string; event_type: string;
+    title: string; content: string; tool_name?: string;
+    tool_input?: Record<string, unknown>; tool_output?: string;
+    duration_ms?: number; files_touched: string[]; session_id: string;
     experiment?: string;
-}
-interface Session { session_id: string; event_count: number; first_event: string; last_event: string; }
-interface FileEntry { name: string; is_dir: boolean; size?: number | null; }
+};
+type Session = { session_id: string; event_count: number; first_event: string; last_event: string };
+type FileEntry = { name: string; is_dir: boolean; size?: number | null };
+type ScheduledTask = {
+    name: string; message: string; interval_seconds: number;
+    interval_human: string; experiment: string | null;
+    enabled: boolean; last_run: string | null; run_count: number;
+};
+type AgentStatus = {
+    agents: Record<string, {
+        session_id: string; agent_id: string; model: string;
+        coder_model?: string; gemini_model?: string | null;
+        planner_enabled: boolean; is_running: boolean;
+        active_experiment: string; message_count: number; event_count: number;
+    }>;
+    total_sessions: number;
+    scheduler: { tasks: ScheduledTask[] };
+    telegram: { enabled: boolean; chat_id: string | null };
+};
 
 // ── Event config ──
 const EVT: Record<string, { icon: typeof Brain; color: string }> = {
@@ -43,15 +52,15 @@ const EVT: Record<string, { icon: typeof Brain; color: string }> = {
 };
 
 // ── Helpers ──
-const fmtTime = (iso: string) => { try { return new Date(iso).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" }); } catch { return ""; } };
+const fmtTime = (iso: string) => { try { const d = new Date(iso); return d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" }); } catch { return ""; } };
 const fmtDur = (ms?: number) => !ms ? "" : ms < 1000 ? `${ms}ms` : `${(ms / 1000).toFixed(1)}s`;
 const fmtAge = (iso: string) => {
     try {
-        const s = (Date.now() - new Date(iso).getTime()) / 1000;
-        if (s < 60) return "now";
-        if (s < 3600) return `${Math.floor(s / 60)}m ago`;
-        if (s < 86400) return `${Math.floor(s / 3600)}h ago`;
-        return new Date(iso).toLocaleDateString();
+        const ms = Date.now() - new Date(iso).getTime();
+        if (ms < 60000) return "now";
+        if (ms < 3600000) return `${Math.floor(ms / 60000)}m`;
+        if (ms < 86400000) return `${Math.floor(ms / 3600000)}h`;
+        return `${Math.floor(ms / 86400000)}d`;
     } catch { return ""; }
 };
 const fmtSize = (b?: number | null) => {
@@ -64,33 +73,21 @@ const fmtSize = (b?: number | null) => {
 // ── Simple markdown renderer ──
 function MdRender({ text }: { text: string }) {
     const html = useMemo(() => {
-        let h = text
+        let s = text
             .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-            // Headers
-            .replace(/^### (.+)$/gm, '<h3 class="text-sm font-semibold mt-4 mb-1 text-foreground">$1</h3>')
-            .replace(/^## (.+)$/gm, '<h2 class="text-base font-semibold mt-5 mb-2 text-foreground">$1</h2>')
-            .replace(/^# (.+)$/gm, '<h1 class="text-lg font-bold mt-6 mb-2 text-foreground">$1</h1>')
-            // Bold / italic
-            .replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-foreground">$1</strong>')
-            .replace(/\*(.+?)\*/g, '<em>$1</em>')
-            // Inline code
-            .replace(/`([^`]+)`/g, '<code class="px-1 py-0.5 bg-muted/40 rounded text-[11px] font-mono">$1</code>')
-            // Code blocks
-            .replace(/```[\w]*\n([\s\S]*?)```/g, '<pre class="bg-muted/30 border border-border rounded-md p-3 my-2 text-[11px] font-mono overflow-x-auto whitespace-pre">$1</pre>')
-            // Lists
-            .replace(/^- (.+)$/gm, '<li class="ml-4 list-disc text-foreground/80">$1</li>')
-            .replace(/^(\d+)\. (.+)$/gm, '<li class="ml-4 list-decimal text-foreground/80">$2</li>')
-            // Horizontal rule
-            .replace(/^---$/gm, '<hr class="border-border my-4" />')
-            // Links
-            .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-blue-400 hover:underline" target="_blank">$1</a>')
-            // Paragraphs
-            .replace(/\n\n/g, '</p><p class="mb-2 text-foreground/80">');
-        return `<p class="mb-2 text-foreground/80">${h}</p>`;
+            .replace(/```(\w*)\n([\s\S]*?)```/g, '<pre class="bg-muted/10 border border-border rounded-md px-3 py-2 my-1.5 text-[11px] font-mono overflow-x-auto whitespace-pre-wrap">$2</pre>')
+            .replace(/`([^`]+)`/g, '<code class="bg-muted/20 px-1 py-0.5 rounded text-[11px] font-mono">$1</code>')
+            .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+            .replace(/\*(.+?)\*/g, "<em>$1</em>")
+            .replace(/^### (.+)$/gm, '<div class="text-[12px] font-semibold mt-2 mb-0.5">$1</div>')
+            .replace(/^## (.+)$/gm, '<div class="text-[13px] font-semibold mt-2.5 mb-0.5">$1</div>')
+            .replace(/^# (.+)$/gm, '<div class="text-[14px] font-bold mt-3 mb-1">$1</div>')
+            .replace(/^[-*] (.+)$/gm, '<div class="pl-3 relative"><span class="absolute left-0 text-muted-foreground/30">•</span> $1</div>')
+            .replace(/\n/g, "<br/>");
+        return s;
     }, [text]);
-    return <div className="text-[13px] leading-relaxed" dangerouslySetInnerHTML={{ __html: html }} />;
+    return <div className="text-[12px] leading-relaxed" dangerouslySetInnerHTML={{ __html: html }} />;
 }
-
 
 // ── Main component ──
 export default function AgentPage() {
@@ -102,7 +99,7 @@ export default function AgentPage() {
     const [messages, setMessages] = useState<{ role: string; text: string }[]>([]);
     const [busy, setBusy] = useState(false);
     const [connected, setConnected] = useState(false);
-    const [status, setStatus] = useState<Record<string, unknown> | null>(null);
+    const [status, setStatus] = useState<AgentStatus | null>(null);
     const [fType, setFType] = useState("all");
 
     // File browser
@@ -112,9 +109,17 @@ export default function AgentPage() {
     const [fileViewing, setFileViewing] = useState<string | null>(null);
 
     // Layout
-    const [tab, setTab] = useState<"timeline" | "files">("timeline");
+    const [tab, setTab] = useState<"timeline" | "files" | "scheduler" | "memory">("timeline");
     const [leftW, setLeftW] = useState(340);
     const dragRef = useRef<{ active: boolean; startX: number; startW: number }>({ active: false, startX: 0, startW: 340 });
+
+    // Scheduler
+    const [schedTasks, setSchedTasks] = useState<ScheduledTask[]>([]);
+    const [newTask, setNewTask] = useState({ name: "", message: "", interval: "3600" });
+    const [showAddTask, setShowAddTask] = useState(false);
+
+    // Memory
+    const [agentMemory, setAgentMemory] = useState<string | null>(null);
 
     const chatEnd = useRef<HTMLDivElement>(null);
     const timelineRef = useRef<HTMLDivElement>(null);
@@ -148,16 +153,25 @@ export default function AgentPage() {
     }, []);
 
     // ── Load sessions + status ──
-    useEffect(() => {
+    const loadStatus = useCallback(() => {
         fetch(api("/api/agent/sessions")).then(r => r.json()).then(setSessions).catch(() => { });
-        fetch(api("/api/agent/status")).then(r => r.json()).then(setStatus).catch(() => { });
-    }, [events.length]);
+        fetch(api("/api/agent/status")).then(r => r.json()).then((s: AgentStatus) => {
+            setStatus(s);
+            setSchedTasks(s.scheduler?.tasks || []);
+        }).catch(() => { });
+    }, []);
+
+    useEffect(() => { loadStatus(); }, [events.length, loadStatus]);
+
+    // Auto-refresh status every 30s
+    useEffect(() => {
+        const interval = setInterval(loadStatus, 30000);
+        return () => clearInterval(interval);
+    }, [loadStatus]);
 
     // ── File browser ──
     const loadDir = useCallback((path: string) => {
-        setFilePath(path);
-        setFileContent(null);
-        setFileViewing(null);
+        setFilePath(path); setFileContent(null); setFileViewing(null);
         const rel = path.replace("/opt/synthetica-lab", "").replace(/^\//, "");
         fetch(api(`/api/files/list?path=${encodeURIComponent(rel)}`))
             .then(r => r.json())
@@ -166,21 +180,28 @@ export default function AgentPage() {
     }, []);
 
     const openFile = useCallback((path: string) => {
-        setFileViewing(path);
-        setFileContent(null);
+        setFileViewing(path); setFileContent(null);
         fetch(api(`/api/files/read?path=${encodeURIComponent(path)}`))
             .then(r => r.json())
             .then(d => { setFileContent(d.content || d.error || "Could not read"); })
             .catch(() => { });
     }, []);
 
-    // auto-load root on first open
     useEffect(() => { if (tab === "files" && fileList.length === 0) loadDir("/opt/synthetica-lab"); }, [tab, fileList.length, loadDir]);
+
+    // ── Memory loader ──
+    const loadMemory = useCallback(() => {
+        fetch(api("/api/files/read?path=AGENT_STATE.md"))
+            .then(r => r.json())
+            .then(d => setAgentMemory(d.content || "Could not load AGENT_STATE.md"))
+            .catch(() => setAgentMemory("Failed to fetch AGENT_STATE.md"));
+    }, []);
+
+    useEffect(() => { if (tab === "memory") loadMemory(); }, [tab, loadMemory]);
 
     // ── Sessions ──
     const loadSession = useCallback((sid: string) => {
-        setSessionId(sid);
-        setSelected(null);
+        setSessionId(sid); setSelected(null);
         fetch(api(`/api/agent/timeline/${sid}?limit=500`))
             .then(r => r.json()).then(setEvents).catch(() => { });
     }, []);
@@ -189,13 +210,10 @@ export default function AgentPage() {
     const send = useCallback(async () => {
         if (!input.trim() || busy) return;
         const msg = input.trim();
-        setInput("");
-        setMessages(p => [...p, { role: "user", text: msg }]);
-        setBusy(true);
+        setInput(""); setMessages(p => [...p, { role: "user", text: msg }]); setBusy(true);
         try {
             const res = await fetch(api("/api/agent/chat"), {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
+                method: "POST", headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ message: msg, session_id: sessionId, experiment: "EXP_002" }),
             });
             const data = await res.json();
@@ -212,9 +230,58 @@ export default function AgentPage() {
 
     useEffect(() => { chatEnd.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
 
+    // ── Scheduler actions ──
+    const toggleTask = useCallback(async (name: string, enabled: boolean) => {
+        const action = enabled ? "disable" : "enable";
+        await fetch(api(`/api/scheduler/tasks/${name}/${action}`), { method: "POST" });
+        loadStatus();
+    }, [loadStatus]);
+
+    const deleteTask = useCallback(async (name: string) => {
+        await fetch(api(`/api/scheduler/tasks/${name}`), { method: "DELETE" });
+        loadStatus();
+    }, [loadStatus]);
+
+    const addTask = useCallback(async () => {
+        if (!newTask.name || !newTask.message) return;
+        await fetch(api("/api/scheduler/tasks"), {
+            method: "POST", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name: newTask.name, message: newTask.message, interval_seconds: parseInt(newTask.interval) || 3600 }),
+        });
+        setNewTask({ name: "", message: "", interval: "3600" });
+        setShowAddTask(false);
+        loadStatus();
+    }, [newTask, loadStatus]);
+
     const filtered = events.filter(e => fType === "all" || e.event_type === fType);
     const agents = [...new Set(events.map(e => e.agent_id))];
-    const activeAgents = status ? Object.entries((status as { agents?: Record<string, { is_running: boolean; message_count: number; event_count: number }> }).agents || {}) : [];
+    const activeAgents = status ? Object.entries(status.agents || {}) : [];
+
+    // Get first agent info for status bar
+    const firstAgent = activeAgents.length > 0 ? activeAgents[0][1] : null;
+
+    // Parse reflections from memory
+    const reflections = useMemo(() => {
+        if (!agentMemory) return [];
+        const parts = agentMemory.split(/---\s*\n+### Reflection/);
+        return parts.slice(1).map(p => "### Reflection" + p).slice(-5).reverse();
+    }, [agentMemory]);
+
+    // Next scheduled task time
+    const nextTaskIn = useMemo(() => {
+        const enabled = schedTasks.filter(t => t.enabled && t.last_run);
+        if (enabled.length === 0) return null;
+        const times = enabled.map(t => {
+            const lastRun = new Date(t.last_run!).getTime();
+            const nextRun = lastRun + t.interval_seconds * 1000;
+            return nextRun - Date.now();
+        });
+        const min = Math.min(...times);
+        if (min < 0) return "due";
+        if (min < 60000) return "<1m";
+        if (min < 3600000) return `${Math.floor(min / 60000)}m`;
+        return `${Math.floor(min / 3600000)}h`;
+    }, [schedTasks]);
 
     return (
         <div className="flex h-screen bg-background text-foreground select-none" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
@@ -232,12 +299,47 @@ export default function AgentPage() {
                     </a>
                 </div>
 
+                {/* ── Status Bar ── */}
+                <div className="border-b border-border px-3 py-2 space-y-1.5">
+                    {/* Models */}
+                    <div className="flex items-center gap-1 flex-wrap">
+                        <Cpu size={10} className="text-muted-foreground/50" />
+                        {firstAgent ? (
+                            <>
+                                <span className="text-[9px] font-mono px-1 py-0.5 bg-blue-500/10 text-blue-400 rounded border border-blue-500/20">{firstAgent.model}</span>
+                                {firstAgent.coder_model && (
+                                    <span className="text-[9px] font-mono px-1 py-0.5 bg-amber-500/10 text-amber-400 rounded border border-amber-500/20">{firstAgent.coder_model}</span>
+                                )}
+                                {firstAgent.gemini_model && (
+                                    <span className="text-[9px] font-mono px-1 py-0.5 bg-purple-500/10 text-purple-400 rounded border border-purple-500/20">{firstAgent.gemini_model}</span>
+                                )}
+                            </>
+                        ) : (
+                            <span className="text-[9px] text-muted-foreground/40">No agent running</span>
+                        )}
+                    </div>
+                    {/* Feature flags */}
+                    <div className="flex items-center gap-2 text-[9px]">
+                        <span className={`flex items-center gap-0.5 ${firstAgent?.planner_enabled ? "text-green-400" : "text-muted-foreground/30"}`}>
+                            <Sparkles size={8} /> Planner
+                        </span>
+                        <span className={`flex items-center gap-0.5 ${status?.telegram?.enabled ? "text-green-400" : "text-muted-foreground/30"}`}>
+                            <MessageCircle size={8} /> Telegram{status?.telegram?.chat_id ? ` ✓` : ""}
+                        </span>
+                        {nextTaskIn && (
+                            <span className="flex items-center gap-0.5 text-muted-foreground/60">
+                                <Calendar size={8} /> {nextTaskIn}
+                            </span>
+                        )}
+                    </div>
+                </div>
+
                 {/* Active agents */}
                 {activeAgents.length > 0 && (
                     <div className="border-b border-border">
                         <div className="px-3 py-1.5 text-[10px] text-muted-foreground uppercase tracking-wider">Active Agents</div>
                         {activeAgents.map(([sid, info]) => {
-                            const a = info as { is_running: boolean; message_count: number; event_count: number; model?: string; agent_id?: string; active_experiment?: string };
+                            const a = info;
                             return (
                                 <button key={sid} onClick={() => loadSession(sid)}
                                     className={`w-full text-left px-3 py-1.5 text-[11px] transition-colors flex items-center gap-2 ${sessionId === sid ? "bg-accent" : "hover:bg-muted/20"}`}>
@@ -324,6 +426,17 @@ export default function AgentPage() {
                         className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors ${tab === "timeline" ? "bg-foreground/5 text-foreground" : "text-muted-foreground hover:text-foreground"}`}>
                         <GitBranch size={12} /> Timeline
                     </button>
+                    <button onClick={() => setTab("scheduler")}
+                        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors ${tab === "scheduler" ? "bg-foreground/5 text-foreground" : "text-muted-foreground hover:text-foreground"}`}>
+                        <Calendar size={12} /> Scheduler
+                        {schedTasks.filter(t => t.enabled).length > 0 && (
+                            <span className="text-[9px] bg-green-500/20 text-green-400 px-1 rounded">{schedTasks.filter(t => t.enabled).length}</span>
+                        )}
+                    </button>
+                    <button onClick={() => setTab("memory")}
+                        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors ${tab === "memory" ? "bg-foreground/5 text-foreground" : "text-muted-foreground hover:text-foreground"}`}>
+                        <BookOpen size={12} /> Memory
+                    </button>
                     <button onClick={() => setTab("files")}
                         className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors ${tab === "files" ? "bg-foreground/5 text-foreground" : "text-muted-foreground hover:text-foreground"}`}>
                         <FolderTree size={12} /> Files
@@ -360,16 +473,12 @@ export default function AgentPage() {
                                         if (!ae.length) return null;
                                         return (
                                             <div key={aid} className="flex items-center gap-1.5 h-10 mb-1">
-                                                {/* Agent label */}
                                                 <div className="w-16 flex-shrink-0 flex items-center gap-1 pr-1">
                                                     <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${ai === 0 ? "bg-blue-400" : ai === 1 ? "bg-emerald-400" : "bg-amber-400"}`} />
                                                     <span className="text-[10px] text-muted-foreground truncate">{aid}</span>
                                                 </div>
-                                                {/* Track line + nodes */}
                                                 <div className="flex items-center flex-1 relative">
-                                                    {/* Base line */}
                                                     <div className="absolute inset-y-1/2 left-0 right-0 h-px bg-border" />
-                                                    {/* Nodes */}
                                                     <div className="flex items-center gap-0.5 relative z-10">
                                                         {ae.map((e, ei) => {
                                                             const cfg = EVT[e.event_type] || EVT.info;
@@ -465,6 +574,143 @@ export default function AgentPage() {
                             ) : (
                                 <div className="flex items-center justify-center h-full text-muted-foreground/20 text-[11px]">
                                     Send a message to begin
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
+
+                {/* ── Scheduler Tab ── */}
+                {tab === "scheduler" && (
+                    <div className="flex-1 overflow-y-auto">
+                        <div className="p-4 space-y-3">
+                            <div className="flex items-center justify-between">
+                                <div className="text-[13px] font-medium flex items-center gap-2">
+                                    <Calendar size={14} className="text-muted-foreground" />
+                                    Scheduled Tasks
+                                </div>
+                                <div className="flex items-center gap-1.5">
+                                    <button onClick={loadStatus}
+                                        className="text-[11px] text-muted-foreground hover:text-foreground transition-colors p-1 rounded hover:bg-muted/10">
+                                        <RefreshCw size={12} />
+                                    </button>
+                                    <button onClick={() => setShowAddTask(!showAddTask)}
+                                        className="text-[11px] flex items-center gap-1 px-2 py-1 bg-foreground/5 hover:bg-foreground/10 border border-border rounded-md transition-colors">
+                                        <Plus size={11} /> Add
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Add task form */}
+                            {showAddTask && (
+                                <div className="border border-border rounded-md p-3 space-y-2 bg-muted/5">
+                                    <input type="text" placeholder="Task name (e.g. check_sensor)"
+                                        value={newTask.name} onChange={e => setNewTask(p => ({ ...p, name: e.target.value }))}
+                                        className="w-full bg-transparent border border-border rounded-md px-2.5 py-1.5 text-[12px] outline-none focus:border-foreground/20" />
+                                    <textarea placeholder="Message to send to the agent…"
+                                        value={newTask.message} onChange={e => setNewTask(p => ({ ...p, message: e.target.value }))}
+                                        className="w-full bg-transparent border border-border rounded-md px-2.5 py-1.5 text-[12px] outline-none focus:border-foreground/20 h-16 resize-none" />
+                                    <div className="flex items-center gap-2">
+                                        <select value={newTask.interval} onChange={e => setNewTask(p => ({ ...p, interval: e.target.value }))}
+                                            className="text-[12px] bg-transparent border border-border rounded-md px-2 py-1 outline-none">
+                                            <option value="300">5 min</option>
+                                            <option value="900">15 min</option>
+                                            <option value="1800">30 min</option>
+                                            <option value="3600">1 hour</option>
+                                            <option value="7200">2 hours</option>
+                                            <option value="21600">6 hours</option>
+                                            <option value="43200">12 hours</option>
+                                            <option value="86400">24 hours</option>
+                                        </select>
+                                        <div className="flex-1" />
+                                        <button onClick={() => setShowAddTask(false)}
+                                            className="text-[11px] px-2.5 py-1 text-muted-foreground hover:text-foreground transition-colors">Cancel</button>
+                                        <button onClick={addTask} disabled={!newTask.name || !newTask.message}
+                                            className="text-[11px] px-2.5 py-1 bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 disabled:opacity-30 rounded-md transition-colors">Create</button>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Task list */}
+                            {schedTasks.length === 0 ? (
+                                <div className="text-center text-muted-foreground/30 text-[12px] py-12">
+                                    No scheduled tasks
+                                </div>
+                            ) : (
+                                <div className="space-y-1">
+                                    {schedTasks.map(task => (
+                                        <div key={task.name} className="flex items-start gap-3 p-3 border border-border rounded-md hover:bg-muted/5 transition-colors">
+                                            {/* Toggle */}
+                                            <button onClick={() => toggleTask(task.name, task.enabled)} className="mt-0.5">
+                                                {task.enabled
+                                                    ? <ToggleRight size={18} className="text-green-400" />
+                                                    : <ToggleLeft size={18} className="text-muted-foreground/30" />
+                                                }
+                                            </button>
+                                            {/* Info */}
+                                            <div className="flex-1 min-w-0">
+                                                <div className="flex items-center gap-2">
+                                                    <span className={`text-[12px] font-medium ${task.enabled ? "text-foreground" : "text-muted-foreground/50"}`}>{task.name}</span>
+                                                    <span className="text-[9px] font-mono px-1.5 py-0.5 bg-muted/20 text-muted-foreground rounded">{task.interval_human}</span>
+                                                </div>
+                                                <p className={`text-[11px] mt-0.5 line-clamp-2 ${task.enabled ? "text-muted-foreground" : "text-muted-foreground/30"}`}>
+                                                    {task.message}
+                                                </p>
+                                                <div className="flex items-center gap-3 mt-1 text-[9px] text-muted-foreground/40">
+                                                    {task.last_run && <span>Last: {fmtAge(task.last_run)} ago</span>}
+                                                    <span>Runs: {task.run_count}</span>
+                                                </div>
+                                            </div>
+                                            {/* Delete */}
+                                            <button onClick={() => deleteTask(task.name)}
+                                                className="text-muted-foreground/20 hover:text-red-400 transition-colors mt-0.5">
+                                                <Trash2 size={12} />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
+
+                {/* ── Memory Tab ── */}
+                {tab === "memory" && (
+                    <div className="flex-1 overflow-y-auto">
+                        <div className="p-4 space-y-4">
+                            <div className="flex items-center justify-between">
+                                <div className="text-[13px] font-medium flex items-center gap-2">
+                                    <BookOpen size={14} className="text-muted-foreground" />
+                                    Agent Memory (AGENT_STATE.md)
+                                </div>
+                                <button onClick={loadMemory}
+                                    className="text-muted-foreground/40 hover:text-foreground transition-colors p-1 rounded hover:bg-muted/10">
+                                    <RefreshCw size={12} />
+                                </button>
+                            </div>
+
+                            {/* Recent reflections */}
+                            {reflections.length > 0 && (
+                                <div className="space-y-2">
+                                    <div className="text-[10px] text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+                                        <Sparkles size={10} /> Recent Reflections ({reflections.length})
+                                    </div>
+                                    {reflections.map((r, i) => (
+                                        <div key={i} className="border border-border rounded-md p-3 bg-purple-500/5 border-purple-500/10">
+                                            <MdRender text={r} />
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {/* Full content */}
+                            {agentMemory ? (
+                                <div className="border border-border rounded-md p-4">
+                                    <MdRender text={agentMemory} />
+                                </div>
+                            ) : (
+                                <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground/40">
+                                    <Loader2 size={12} className="animate-spin" /> Loading…
                                 </div>
                             )}
                         </div>
