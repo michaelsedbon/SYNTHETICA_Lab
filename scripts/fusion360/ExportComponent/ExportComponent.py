@@ -120,29 +120,51 @@ def run(context):
             if not has_sheet_metal:
                 results.append(("DXF flat", False, "Skipped — no sheet metal bodies"))
 
-        # --- 6b. Export 2D DXF for laser cutting (any body, no sheet metal needed) ---
-        try:
-            dxf_laser_exported = False
-            for body in component.bRepBodies:
-                largest_face = _find_largest_planar_face(body)
-                if largest_face is None:
-                    continue
+        # --- 6b. Export 2D DXF for laser cutting (interactive, user picks a face) ---
+        laser_answer = ui.messageBox(
+            "Do you want to generate a laser-cut DXF for this component?",
+            "Laser Cut DXF",
+            adsk.core.MessageBoxButtonTypes.YesNoButtonType,
+            adsk.core.MessageBoxIconTypes.QuestionIconType,
+        )
+        if laser_answer == adsk.core.DialogResults.DialogYes:
+            try:
+                face_sel = ui.selectEntity(
+                    "Select the FLAT FACE to use for the laser-cut DXF profile",
+                    "Faces",
+                )
+                if face_sel:
+                    face = adsk.fusion.BRepFace.cast(face_sel.entity)
+                    if face is None:
+                        results.append(("DXF laser", False, "Selection is not a valid face"))
+                    else:
+                        body = face.body
+                        sketch_name = f"Laser Cut - {comp_name}"
 
-                # Create a temporary sketch on the face — this projects all outer/inner edges
-                sketch = component.sketches.add(largest_face)
+                        # Delete any previous sketch with the same name (overwrite)
+                        for i in range(component.sketches.count - 1, -1, -1):
+                            existing = component.sketches.item(i)
+                            if existing.name == sketch_name:
+                                existing.deleteMe()
+                                break
 
-                suffix = f"_{body.name}" if component.bRepBodies.count > 1 else ""
-                suffix = "".join(c if c.isalnum() or c in (" ", "-", "_") else "_" for c in suffix).strip()
-                dxf_path = os.path.join(export_dir, f"{safe_name}{suffix}_laser.dxf")
+                        # Create a new sketch on the selected face
+                        sketch = component.sketches.add(face)
+                        sketch.name = sketch_name
 
-                sketch.saveAsDXF(dxf_path)
-                results.append((f"DXF laser ({body.name})", True, dxf_path))
-                dxf_laser_exported = True
+                        # Project ALL edges of the body onto the sketch plane
+                        for edge in body.edges:
+                            sketch.project(edge)
 
-            if not dxf_laser_exported:
-                results.append(("DXF laser", False, "No body with a planar face found"))
-        except Exception as e:
-            results.append(("DXF laser", False, str(e)))
+                        # Export DXF
+                        dxf_filename = f"Laser Cut - {safe_name}.dxf"
+                        dxf_path = os.path.join(export_dir, dxf_filename)
+                        sketch.saveAsDXF(dxf_path)
+                        results.append(("DXF laser", True, dxf_path))
+                else:
+                    results.append(("DXF laser", False, "No face selected"))
+            except Exception as e:
+                results.append(("DXF laser", False, str(e)))
 
         # --- 7. Summary dialog ---
         lines = [f"Export results for '{comp_name}':", f"Folder: {export_dir}", ""]

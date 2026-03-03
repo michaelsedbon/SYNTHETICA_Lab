@@ -6,9 +6,15 @@ interface DxfViewerProps {
     fileUrl: string | null;
 }
 
+interface DxfVertex {
+    x: number;
+    y: number;
+    bulge?: number;
+}
+
 interface DxfEntity {
     type: string;
-    vertices?: { x: number; y: number }[];
+    vertices?: DxfVertex[];
     center?: { x: number; y: number };
     radius?: number;
     startAngle?: number;
@@ -20,6 +26,44 @@ interface DxfEntity {
     shape?: boolean;
     colorIndex?: number;
     layer?: string;
+}
+
+/**
+ * Convert a bulge value between two points into arc parameters.
+ * Bulge = tan(included_angle / 4). Positive = CCW, negative = CW.
+ */
+function bulgeToArc(p1: DxfVertex, p2: DxfVertex, bulge: number) {
+    const dx = p2.x - p1.x;
+    const dy = p2.y - p1.y;
+    const chordLen = Math.sqrt(dx * dx + dy * dy);
+    if (chordLen < 1e-10) return null;
+
+    const sagitta = Math.abs(bulge) * chordLen / 2;
+    const radius = (chordLen * chordLen / 4 + sagitta * sagitta) / (2 * sagitta);
+
+    // Midpoint of chord
+    const mx = (p1.x + p2.x) / 2;
+    const my = (p1.y + p2.y) / 2;
+
+    // Unit normal to chord (perpendicular)
+    const nx = -dy / chordLen;
+    const ny = dx / chordLen;
+
+    // Distance from midpoint to center
+    const d = radius - sagitta;
+    // Center is on the opposite side of the bulge sign
+    const sign = bulge > 0 ? 1 : -1;
+    const cx = mx + sign * d * nx;
+    const cy = my + sign * d * ny;
+
+    // Start and end angles
+    let startAngle = Math.atan2(p1.y - cy, p1.x - cx);
+    let endAngle = Math.atan2(p2.y - cy, p2.x - cx);
+
+    // bulge > 0 → CCW arc, bulge < 0 → CW arc
+    const counterClockwise = bulge > 0;
+
+    return { cx, cy, radius, startAngle, endAngle, counterClockwise };
 }
 
 interface DxfData {
@@ -115,8 +159,19 @@ export default function DxfViewer({ fileUrl }: DxfViewerProps) {
                 case "LWPOLYLINE":
                 case "POLYLINE":
                     if (entity.vertices) {
-                        for (const v of entity.vertices) {
-                            expandPoint(v.x, v.y);
+                        const verts = entity.vertices;
+                        const len = verts.length;
+                        for (let i = 0; i < len; i++) {
+                            expandPoint(verts[i].x, verts[i].y);
+                            // If this vertex has a bulge, expand for the arc
+                            if (verts[i].bulge && Math.abs(verts[i].bulge!) > 1e-6) {
+                                const next = verts[(i + 1) % len];
+                                const arc = bulgeToArc(verts[i], next, verts[i].bulge!);
+                                if (arc) {
+                                    expandPoint(arc.cx - arc.radius, arc.cy - arc.radius);
+                                    expandPoint(arc.cx + arc.radius, arc.cy + arc.radius);
+                                }
+                            }
                         }
                     }
                     break;
@@ -228,12 +283,28 @@ export default function DxfViewer({ fileUrl }: DxfViewerProps) {
                 case "LWPOLYLINE":
                 case "POLYLINE":
                     if (entity.vertices && entity.vertices.length > 0) {
-                        ctx.moveTo(entity.vertices[0].x, entity.vertices[0].y);
-                        for (let i = 1; i < entity.vertices.length; i++) {
-                            ctx.lineTo(entity.vertices[i].x, entity.vertices[i].y);
-                        }
-                        if (entity.shape) {
-                            ctx.closePath();
+                        const verts = entity.vertices;
+                        const len = verts.length;
+                        ctx.moveTo(verts[0].x, verts[0].y);
+                        for (let i = 0; i < len; i++) {
+                            const curr = verts[i];
+                            const nextIdx = (i + 1) % len;
+                            // Skip the closing segment if not a closed shape
+                            if (nextIdx === 0 && !entity.shape) break;
+                            const next = verts[nextIdx];
+
+                            if (curr.bulge && Math.abs(curr.bulge) > 1e-6) {
+                                // Draw arc segment
+                                const arc = bulgeToArc(curr, next, curr.bulge);
+                                if (arc) {
+                                    ctx.arc(arc.cx, arc.cy, arc.radius, arc.startAngle, arc.endAngle, !arc.counterClockwise);
+                                } else {
+                                    ctx.lineTo(next.x, next.y);
+                                }
+                            } else {
+                                // Straight line segment
+                                ctx.lineTo(next.x, next.y);
+                            }
                         }
                     }
                     break;
