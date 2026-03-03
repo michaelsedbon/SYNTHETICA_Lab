@@ -13,6 +13,7 @@ interface FileUploadProps {
 const BUILT_IN_STAGES = [
     { key: "design", label: "🎨 Design", icon: "🎨" },
     { key: "cad", label: "🔩 CAD", icon: "🔩" },
+    { key: "step", label: "📦 STEP", icon: "📦" },
     { key: "cnc_program", label: "🔧 CNC Program", icon: "🔧" },
     { key: "2d_drawing", label: "📐 2D Drawing", icon: "📐" },
     { key: "laser_cutting", label: "✂️ Laser Cutting", icon: "✂️" },
@@ -22,7 +23,8 @@ const BUILT_IN_STAGES = [
 // Accepted file types per stage
 const STAGE_ACCEPT: Record<string, string> = {
     design: ".stl,.step,.stp,.obj,.3mf,.fbx",
-    cad: ".sldprt,.sldasm,.slddrw,.step,.stp,.x_t,.x_b,.igs,.iges,.f3d",
+    cad: ".sldprt,.sldasm,.slddrw,.x_t,.x_b,.igs,.iges,.f3d",
+    step: ".step,.stp",
     cnc_program: ".gcode,.nc,.ngc,.tap,.iso",
     "2d_drawing": ".pdf,.dxf,.dwg,.svg,.png,.jpg,.jpeg",
     laser_cutting: ".dxf,.svg,.ai,.pdf",
@@ -31,7 +33,8 @@ const STAGE_ACCEPT: Record<string, string> = {
 
 const STAGE_FILE_HINT: Record<string, string> = {
     design: "STL, STEP, STP, OBJ, 3MF, FBX",
-    cad: "SLDPRT, SLDASM, STEP, STP, F3D, X_T, IGS",
+    cad: "SLDPRT, SLDASM, F3D, X_T, IGS",
+    step: "STEP, STP",
     cnc_program: "GCODE, NC, NGC, TAP, ISO",
     "2d_drawing": "PDF, DXF, DWG, SVG, PNG, JPG",
     laser_cutting: "DXF, SVG, AI, PDF",

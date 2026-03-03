@@ -16,9 +16,7 @@ const STAGE_MAP: Record<string, string> = {
     fbx: "design",
     glb: "design",
     gltf: "design",
-    // CAD files → "cad" (was "solidworks")
-    step: "cad",
-    stp: "cad",
+    // CAD files → "cad"
     f3d: "cad",
     sldprt: "cad",
     sldasm: "cad",
@@ -27,6 +25,9 @@ const STAGE_MAP: Record<string, string> = {
     igs: "cad",
     x_t: "cad",
     x_b: "cad",
+    // STEP files → "step"
+    step: "step",
+    stp: "step",
     // 2D Drawing files → "2d_drawing"
     dwg: "2d_drawing",
     svg: "2d_drawing",
