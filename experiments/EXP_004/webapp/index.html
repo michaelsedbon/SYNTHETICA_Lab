@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connector Mapper — Cryptographic Beings</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --surface: #12121a;
+            --surface2: #1a1a28;
+            --border: #2a2a3e;
+            --text: #e4e4ef;
+            --text-dim: #7a7a8e;
+            --accent: #6366f1;
+            --accent-glow: rgba(99, 102, 241, 0.3);
+            --green: #22c55e;
+            --green-glow: rgba(34, 197, 94, 0.3);
+            --red: #ef4444;
+            --red-glow: rgba(239, 68, 68, 0.3);
+            --orange: #f59e0b;
+            --orange-glow: rgba(245, 158, 11, 0.3);
+            --radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Background grid */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .app {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 32px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-left h1 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, var(--accent), #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-left p {
+            font-size: 13px;
+            color: var(--text-dim);
+            margin-top: 4px;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        /* Status indicator */
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--red);
+            box-shadow: 0 0 8px var(--red-glow);
+            transition: all 0.3s;
+        }
+
+        .status-dot.connected {
+            background: var(--green);
+            box-shadow: 0 0 8px var(--green-glow);
+            animation: pulse-green 2s infinite;
+        }
+
+        @keyframes pulse-green {
+
+            0%,
+            100% {
+                box-shadow: 0 0 8px var(--green-glow);
+            }
+
+            50% {
+                box-shadow: 0 0 16px var(--green-glow);
+            }
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--surface);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn:hover {
+            background: var(--surface2);
+            border-color: var(--accent);
+            box-shadow: 0 0 12px var(--accent-glow);
+        }
+
+        .btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .btn:disabled:hover {
+            background: var(--surface);
+            border-color: var(--border);
+            box-shadow: none;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5558e6;
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .btn-scan {
+            background: linear-gradient(135deg, var(--accent), #8b5cf6);
+            border: none;
+            color: white;
+            padding: 12px 28px;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-scan:hover {
+            box-shadow: 0 0 30px var(--accent-glow);
+            transform: translateY(-1px);
+        }
+
+        .btn-scan.scanning {
+            animation: scan-pulse 1s infinite;
+        }
+
+        @keyframes scan-pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px var(--accent-glow);
+            }
+
+            50% {
+                box-shadow: 0 0 40px rgba(99, 102, 241, 0.5);
+            }
+        }
+
+        /* Main layout */
+        .main {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 32px;
+            align-items: start;
+        }
+
+        /* Panel cards */
+        .panel-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            backdrop-filter: blur(10px);
+        }
+
+        .panel-title {
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-dim);
+            margin-bottom: 4px;
+        }
+
+        .panel-subtitle {
+            font-size: 12px;
+            color: var(--text-dim);
+            margin-bottom: 20px;
+            opacity: 0.7;
+        }
+
+        /* Connector grid */
+        .connector-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .connector {
+            aspect-ratio: 1;
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            background: var(--surface2);
+            min-width: 56px;
+            min-height: 56px;
+        }
+
+        .connector:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 16px var(--accent-glow);
+            transform: scale(1.05);
+        }
+
+        .connector.active {
+            border-color: var(--accent);
+            background: rgba(99, 102, 241, 0.15);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .connector.matched {
+            border-color: var(--green);
+            background: rgba(34, 197, 94, 0.1);
+            box-shadow: 0 0 16px var(--green-glow);
+        }
+
+        .connector.no-match {
+            border-color: var(--red);
+            background: rgba(239, 68, 68, 0.08);
+            box-shadow: 0 0 12px var(--red-glow);
+        }
+
+        .connector.scanning-pin {
+            border-color: var(--orange);
+            background: rgba(245, 158, 11, 0.15);
+            box-shadow: 0 0 16px var(--orange-glow);
+            animation: scan-node 0.5s ease-in-out;
+        }
+
+        @keyframes scan-node {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .connector .pin-label {
+            font-size: 10px;
+            color: var(--text-dim);
+            position: absolute;
+            bottom: -18px;
+            white-space: nowrap;
+        }
+
+        /* Center column — mapping display */
+        .center-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding-top: 60px;
+            min-width: 200px;
+        }
+
+        .mapping-lines {
+            width: 100%;
+            min-height: 420px;
+            position: relative;
+        }
+
+        .mapping-line {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 12px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            margin-bottom: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            transition: all 0.3s;
+            animation: fade-in 0.3s ease-out;
+        }
+
+        .mapping-line.connected-line {
+            border-color: var(--green);
+            background: rgba(34, 197, 94, 0.05);
+        }
+
+        .mapping-line.no-connection {
+            border-color: var(--border);
+            opacity: 0.5;
+        }
+
+        .mapping-line .arrow {
+            color: var(--green);
+            font-weight: 600;
+            margin: 0 8px;
+        }
+
+        .mapping-line .no-arrow {
+            color: var(--red);
+            margin: 0 8px;
+        }
+
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(-4px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Log area */
+        .log-section {
+            margin-top: 32px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .log-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            background: var(--surface2);
+        }
+
+        .log-header span {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-dim);
+        }
+
+        .log-content {
+            padding: 12px 16px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            line-height: 1.8;
+            color: var(--text-dim);
+        }
+
+        .log-content .log-entry {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            padding: 2px 0;
+        }
+
+        .log-content .log-entry .time {
+            color: var(--text-dim);
+            opacity: 0.5;
+            margin-right: 8px;
+        }
+
+        .log-content .log-entry.error {
+            color: var(--red);
+        }
+
+        .log-content .log-entry.success {
+            color: var(--green);
+        }
+
+        .log-content .log-entry.info {
+            color: var(--accent);
+        }
+
+        /* Results summary */
+        .results-bar {
+            margin-top: 24px;
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            flex: 1;
+            min-width: 140px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            text-align: center;
+        }
+
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .stat-card .label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-dim);
+            margin-top: 4px;
+        }
+
+        .stat-card.mapped .value {
+            color: var(--green);
+        }
+
+        .stat-card.unmapped .value {
+            color: var(--red);
+        }
+
+        .stat-card.multi .value {
+            color: var(--orange);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .main {
+                grid-template-columns: 1fr;
+            }
+
+            .center-col {
+                padding-top: 0;
+                order: -1;
+            }
+        }
+
+        /* Instructions overlay */
+        .instructions {
+            margin-top: 24px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+        }
+
+        .instructions h3 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--accent);
+        }
+
+        .instructions ol {
+            padding-left: 20px;
+            font-size: 13px;
+            line-height: 1.8;
+            color: var(--text-dim);
+        }
+
+        .instructions code {
+            background: var(--surface2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <h1>⚡ Connector Mapper</h1>
+                <p>EXP_004 — Cryptographic Beings Panel Mapping</p>
+            </div>
+            <div class="header-right">
+                <div class="status">
+                    <div class="status-dot" id="statusDot"></div>
+                    <span id="statusText">Disconnected</span>
+                </div>
+                <button class="btn" id="btnConnect" onclick="toggleConnection()">Connect</button>
+                <button class="btn btn-scan" id="btnScan" onclick="runScan()" disabled>Scan All</button>
+                <button class="btn" id="btnExport" onclick="exportResults()" disabled>Export JSON</button>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="results-bar" id="resultsBar" style="display:none;">
+            <div class="stat-card mapped">
+                <div class="value" id="statMapped">0</div>
+                <div class="label">Mapped</div>
+            </div>
+            <div class="stat-card unmapped">
+                <div class="value" id="statUnmapped">0</div>
+                <div class="label">No Connection</div>
+            </div>
+            <div class="stat-card multi">
+                <div class="value" id="statMulti">0</div>
+                <div class="label">Multi-connection</div>
+            </div>
+        </div>
+
+        <!-- Main panels -->
+        <div class="main" style="margin-top: 24px;">
+            <!-- Panel A -->
+            <div class="panel-card">
+                <div class="panel-title">Panel A — Front Grid</div>
+                <div class="panel-subtitle">Output pins D22–D37 • Click to test single connector</div>
+                <div class="connector-grid" id="panelA"></div>
+            </div>
+
+            <!-- Center mapping -->
+            <div class="center-col">
+                <div
+                    style="font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); font-weight: 600;">
+                    Mapping Results</div>
+                <div class="mapping-lines" id="mappingLines">
+                    <div style="text-align: center; color: var(--text-dim); font-size: 13px; margin-top: 40px;">
+                        Run a scan to see results
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel B -->
+            <div class="panel-card">
+                <div class="panel-title">Panel B — Top Plate</div>
+                <div class="panel-subtitle">Input pins D38–D53 • Internal pull-ups enabled</div>
+                <div class="connector-grid" id="panelB"></div>
+            </div>
+        </div>
+
+        <!-- Log -->
+        <div class="log-section">
+            <div class="log-header">
+                <span>Serial Log</span>
+                <button class="btn" style="padding: 4px 12px; font-size: 11px;" onclick="clearLog()">Clear</button>
+            </div>
+            <div class="log-content" id="logContent"></div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="instructions">
+            <h3>Quick Start</h3>
+            <ol>
+                <li>Click <strong>Connect</strong> and select the Arduino Mega serial port</li>
+                <li>You should see a <code>pong</code> response confirming the connection</li>
+                <li>Wire Panel A connectors to pins D22–D37 and Panel B connectors to pins D38–D53</li>
+                <li>Click <strong>Scan All</strong> to map all connectors automatically</li>
+                <li>Click any Panel A connector circle to test a single connector</li>
+                <li>Click <strong>Export JSON</strong> to download the mapping</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        // ==================== State ====================
+        let port = null;
+        let reader = null;
+        let writer = null;
+        let connected = false;
+        let scanResults = null;
+        let readBuffer = '';
+
+        const NUM = 16;
+
+        // ==================== Init grids ====================
+        function initGrids() {
+            const panelA = document.getElementById('panelA');
+            const panelB = document.getElementById('panelB');
+
+            for (let i = 0; i < NUM; i++) {
+                const nodeA = document.createElement('div');
+                nodeA.className = 'connector';
+                nodeA.id = `a${i}`;
+                nodeA.textContent = `A${i + 1}`;
+                nodeA.onclick = () => testSingle(i);
+                nodeA.innerHTML = `A${i + 1}<span class="pin-label">D${22 + i}</span>`;
+                panelA.appendChild(nodeA);
+
+                const nodeB = document.createElement('div');
+                nodeB.className = 'connector';
+                nodeB.id = `b${i}`;
+                nodeB.innerHTML = `B${i + 1}<span class="pin-label">D${38 + i}</span>`;
+                panelB.appendChild(nodeB);
+            }
+        }
+
+        // ==================== Serial ====================
+        async function toggleConnection() {
+            if (connected) {
+                await disconnect();
+            } else {
+                await connect();
+            }
+        }
+
+        async function connect() {
+            try {
+                port = await navigator.serial.requestPort();
+                await port.open({ baudRate: 115200 });
+
+                const textDecoder = new TextDecoderStream();
+                const readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
+                reader = textDecoder.readable.getReader();
+
+                const textEncoder = new TextEncoderStream();
+                const writableStreamClosed = textEncoder.readable.pipeTo(port.writable);
+                writer = textEncoder.writable.getWriter();
+
+                connected = true;
+                updateConnectionUI(true);
+                log('Connected to serial port', 'success');
+
+                // Start reading
+                readLoop();
+
+                // Send ping after a short delay
+                setTimeout(() => sendCommand({ cmd: 'ping' }), 500);
+
+            } catch (err) {
+                log(`Connection failed: ${err.message}`, 'error');
+            }
+        }
+
+        async function disconnect() {
+            try {
+                if (reader) {
+                    reader.cancel();
+                    reader = null;
+                }
+                if (writer) {
+                    writer.close();
+                    writer = null;
+                }
+                if (port) {
+                    await port.close();
+                    port = null;
+                }
+            } catch (e) { /* ignore */ }
+
+            connected = false;
+            updateConnectionUI(false);
+            log('Disconnected', 'info');
+        }
+
+        async function readLoop() {
+            try {
+                while (true) {
+                    const { value, done } = await reader.read();
+                    if (done) break;
+                    if (value) {
+                        readBuffer += value;
+                        let lines = readBuffer.split('\n');
+                        readBuffer = lines.pop(); // keep incomplete line in buffer
+
+                        for (const line of lines) {
+                            const trimmed = line.trim();
+                            if (trimmed) {
+                                handleSerialMessage(trimmed);
+                            }
+                        }
+                    }
+                }
+            } catch (err) {
+                if (connected) {
+                    log(`Read error: ${err.message}`, 'error');
+                    await disconnect();
+                }
+            }
+        }
+
+        async function sendCommand(obj) {
+            if (!writer) return;
+            const json = JSON.stringify(obj) + '\n';
+            log(`→ ${json.trim()}`, 'info');
+            await writer.write(json);
+        }
+
+        // ==================== Message handling ====================
+        function handleSerialMessage(msg) {
+            log(`← ${msg}`);
+
+            try {
+                const data = JSON.parse(msg);
+
+                switch (data.type) {
+                    case 'ready':
+                        log(`Firmware: ${data.msg}`, 'success');
+                        break;
+
+                    case 'pong':
+                        log(`Connected! Outputs: ${data.out}, Inputs: ${data.in}`, 'success');
+                        document.getElementById('btnScan').disabled = false;
+                        break;
+
+                    case 'scan':
+                        handleScanResult(data);
+                        break;
+
+                    case 'test':
+                        handleTestResult(data);
+                        break;
+
+                    case 'error':
+                        log(`Error: ${data.msg}`, 'error');
+                        break;
+                }
+            } catch (e) {
+                // Not JSON, just log as-is
+            }
+        }
+
+        // ==================== Scan ====================
+        async function runScan() {
+            if (!connected) return;
+
+            const btn = document.getElementById('btnScan');
+            btn.classList.add('scanning');
+            btn.textContent = 'Scanning...';
+            btn.disabled = true;
+
+            // Clear previous results
+            clearGridState();
+            document.getElementById('mappingLines').innerHTML =
+                '<div style="text-align:center;color:var(--text-dim);font-size:13px;margin-top:40px;">Scanning in progress...</div>';
+
+            await sendCommand({ cmd: 'scan' });
+        }
+
+        function handleScanResult(data) {
+            scanResults = data.map;
+
+            const btn = document.getElementById('btnScan');
+            btn.classList.remove('scanning');
+            btn.textContent = 'Scan All';
+            btn.disabled = false;
+            document.getElementById('btnExport').disabled = false;
+
+            // Process results
+            let mapped = 0, unmapped = 0, multi = 0;
+            const mappingLines = document.getElementById('mappingLines');
+            mappingLines.innerHTML = '';
+
+            for (const entry of data.map) {
+                const aIdx = entry[0];
+                const hits = entry[1];
+
+                const line = document.createElement('div');
+                line.className = 'mapping-line';
+
+                if (hits.length === 0) {
+                    line.classList.add('no-connection');
+                    line.innerHTML = `<span>A${aIdx + 1}</span><span class="no-arrow">✕</span><span style="color:var(--text-dim)">—</span>`;
+                    document.getElementById(`a${aIdx}`).classList.add('no-match');
+                    unmapped++;
+                } else if (hits.length === 1) {
+                    line.classList.add('connected-line');
+                    line.innerHTML = `<span>A${aIdx + 1}</span><span class="arrow">→</span><span>B${hits[0] + 1}</span>`;
+                    document.getElementById(`a${aIdx}`).classList.add('matched');
+                    document.getElementById(`b${hits[0]}`).classList.add('matched');
+                    mapped++;
+                } else {
+                    line.classList.add('connected-line');
+                    line.style.borderColor = 'var(--orange)';
+                    const hitLabels = hits.map(h => `B${h + 1}`).join(', ');
+                    line.innerHTML = `<span>A${aIdx + 1}</span><span class="arrow" style="color:var(--orange)">→</span><span style="color:var(--orange)">${hitLabels}</span>`;
+                    document.getElementById(`a${aIdx}`).classList.add('matched');
+                    document.getElementById(`a${aIdx}`).style.borderColor = 'var(--orange)';
+                    hits.forEach(h => {
+                        document.getElementById(`b${h}`).classList.add('matched');
+                        document.getElementById(`b${h}`).style.borderColor = 'var(--orange)';
+                    });
+                    multi++;
+                }
+
+                mappingLines.appendChild(line);
+            }
+
+            // Update stats
+            document.getElementById('resultsBar').style.display = 'flex';
+            document.getElementById('statMapped').textContent = mapped;
+            document.getElementById('statUnmapped').textContent = unmapped;
+            document.getElementById('statMulti').textContent = multi;
+
+            log(`Scan complete: ${mapped} mapped, ${unmapped} unmapped, ${multi} multi-connection`, 'success');
+        }
+
+        // ==================== Single test ====================
+        async function testSingle(pin) {
+            if (!connected) return;
+
+            clearGridState();
+            document.getElementById(`a${pin}`).classList.add('scanning-pin');
+            await sendCommand({ cmd: 'test', pin: pin });
+        }
+
+        function handleTestResult(data) {
+            clearGridState();
+            const aNode = document.getElementById(`a${data.pin}`);
+            aNode.classList.add('active');
+
+            if (data.hits.length === 0) {
+                aNode.classList.add('no-match');
+                log(`A${data.pin + 1}: no connection`, 'error');
+            } else {
+                aNode.classList.add('matched');
+                data.hits.forEach(h => {
+                    document.getElementById(`b${h}`).classList.add('matched');
+                });
+                const hitLabels = data.hits.map(h => `B${h + 1}`).join(', ');
+                log(`A${data.pin + 1} → ${hitLabels}`, 'success');
+            }
+        }
+
+        // ==================== UI helpers ====================
+        function updateConnectionUI(isConnected) {
+            const dot = document.getElementById('statusDot');
+            const text = document.getElementById('statusText');
+            const btn = document.getElementById('btnConnect');
+
+            if (isConnected) {
+                dot.classList.add('connected');
+                text.textContent = 'Connected';
+                btn.textContent = 'Disconnect';
+            } else {
+                dot.classList.remove('connected');
+                text.textContent = 'Disconnected';
+                btn.textContent = 'Connect';
+                document.getElementById('btnScan').disabled = true;
+                document.getElementById('btnExport').disabled = true;
+            }
+        }
+
+        function clearGridState() {
+            for (let i = 0; i < NUM; i++) {
+                const a = document.getElementById(`a${i}`);
+                const b = document.getElementById(`b${i}`);
+                a.className = 'connector';
+                b.className = 'connector';
+                a.style.borderColor = '';
+                b.style.borderColor = '';
+            }
+        }
+
+        function log(msg, type = '') {
+            const el = document.getElementById('logContent');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            const now = new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            entry.innerHTML = `<span class="time">${now}</span>${escapeHtml(msg)}`;
+            el.appendChild(entry);
+            el.scrollTop = el.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById('logContent').innerHTML = '';
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // ==================== Export ====================
+        function exportResults() {
+            if (!scanResults) return;
+
+            const mapping = {};
+            for (const entry of scanResults) {
+                const aLabel = `A${entry[0] + 1}`;
+                const bLabels = entry[1].map(h => `B${h + 1}`);
+                mapping[aLabel] = bLabels.length === 0 ? null : bLabels.length === 1 ? bLabels[0] : bLabels;
+            }
+
+            const blob = new Blob([JSON.stringify(mapping, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `connector_mapping_${new Date().toISOString().slice(0, 10)}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            log('Mapping exported as JSON', 'success');
+        }
+
+        // ==================== Init ====================
+        initGrids();
+
+        // Check Web Serial support
+        if (!('serial' in navigator)) {
+            log('⚠ Web Serial API not supported. Use Chrome or Edge.', 'error');
+            document.getElementById('btnConnect').disabled = true;
+        }
+    </script>
+</body>
+
+</html>

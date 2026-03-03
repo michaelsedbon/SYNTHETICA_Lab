@@ -601,6 +601,11 @@ function ExperimentViewer() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [shareCopied, setShareCopied] = useState(false);
 
+  // Close sidebar by default on mobile
+  useEffect(() => {
+    if (window.innerWidth < 768) setSidebarOpen(false);
+  }, []);
+
   // ── Preview mode (uploaded or externally-opened .md files) ──
   const [previewMode, setPreviewMode] = useState(false);
   const [previewFilename, setPreviewFilename] = useState<string>("");
