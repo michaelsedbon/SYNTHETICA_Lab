@@ -859,6 +859,9 @@ export default function Home() {
                 <span
                   title="Owner mode active"
                   style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 3,
                     fontSize: 10,
                     fontWeight: 700,
                     color: "#4ec9b0",
@@ -869,7 +872,7 @@ export default function Home() {
                     cursor: "default",
                   }}
                 >
-                  <Lock size={10} style={{ marginRight: 3 }} /> OWNER
+                  <Lock size={10} /> OWNER
                 </span>
               )}
               <h2><Settings size={14} style={{ display: "inline", marginRight: 4, verticalAlign: "middle" }} /> Production Queue</h2>
