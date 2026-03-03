@@ -284,7 +284,7 @@ export default function AgentPage() {
     }, [schedTasks]);
 
     return (
-        <div className="flex h-screen bg-background text-foreground select-none" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
+        <div className="flex h-screen bg-background text-foreground" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
 
             {/* ── Left Panel ── */}
             <aside className="flex flex-col border-r border-border bg-sidebar" style={{ width: leftW, minWidth: leftW }}>
