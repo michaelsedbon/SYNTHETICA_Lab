@@ -13,6 +13,7 @@ from typing import Optional
 
 OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
 OLLAMA_MODEL = os.environ.get("AGENT_MODEL", "qwen2.5:14b")
+OLLAMA_CODER_MODEL = os.environ.get("AGENT_CODER_MODEL", "qwen2.5-coder:14b")
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
 GEMINI_BASE = "https://generativelanguage.googleapis.com/v1beta"
@@ -30,10 +31,11 @@ def ollama_chat(
     tools: Optional[list[dict]] = None,
     temperature: float = 0.3,
     max_tokens: int = 4096,
+    model: Optional[str] = None,
 ) -> dict:
     """Call Ollama chat API. Returns {"content": str, "tool_calls": list}."""
     payload = {
-        "model": OLLAMA_MODEL,
+        "model": model or OLLAMA_MODEL,
         "messages": messages,
         "stream": False,
         "options": {

@@ -18,7 +18,7 @@ from typing import Generator
 from .tools import get_tool_schemas, execute_tool, TOOL_REGISTRY
 from .timeline import Timeline
 from .memory import build_system_prompt, trim_conversation
-from .llm import ollama_chat, gemini_chat, has_gemini, OLLAMA_MODEL, GEMINI_MODEL
+from .llm import ollama_chat, gemini_chat, has_gemini, OLLAMA_MODEL, OLLAMA_CODER_MODEL, GEMINI_MODEL
 
 DATA_DIR = os.environ.get("AGENT_DATA_DIR", "data/sessions")
 
@@ -97,6 +97,26 @@ def _parse_plan(text: str) -> list[str]:
     return steps
 
 
+# Keywords that suggest a step involves coding
+CODING_KEYWORDS = {
+    "write a script", "write script", "create script", "python script",
+    "bash script", "shell script", "cron", "crontab",
+    "firmware", "arduino", "esp", "platformio",
+    "write code", "write a program", "create a program",
+    "modify the code", "edit the code", "fix the code", "debug the code",
+    "write a function", "implement", "refactor",
+    ".py", ".sh", ".ino", ".cpp", ".c", ".js",
+    "pip install", "npm install", "requirements",
+    "dockerfile", "systemd", "service file",
+}
+
+
+def _needs_coding(text: str) -> bool:
+    """Heuristic: does this step involve coding?"""
+    lower = text.lower()
+    return any(kw in lower for kw in CODING_KEYWORDS)
+
+
 class Agent:
     """
     Autonomous lab agent with Plan-Execute-Reflect architecture.
@@ -137,7 +157,7 @@ class Agent:
         self.is_running = False
         self.max_iterations = 20  # Max tool-call loops per step
 
-        model_info = f"Ollama: {OLLAMA_MODEL}"
+        model_info = f"Ollama: {OLLAMA_MODEL} + Coder: {OLLAMA_CODER_MODEL}"
         if has_gemini():
             model_info += f" + Gemini: {GEMINI_MODEL}"
         self.timeline.log("info", "Agent initialized", model_info)
@@ -311,7 +331,9 @@ class Agent:
 
             try:
                 start = time.time()
-                response = ollama_chat(trimmed, self.tool_schemas)
+                # Route to coder model if this looks like a coding task
+                model = OLLAMA_CODER_MODEL if _needs_coding(goal) else None
+                response = ollama_chat(trimmed, self.tool_schemas, model=model)
                 llm_duration = int((time.time() - start) * 1000)
             except Exception as e:
                 error_event = self.timeline.log("error", "LLM call failed", str(e))
@@ -367,7 +389,9 @@ class Agent:
 
             try:
                 start = time.time()
-                response = ollama_chat(trimmed, self.tool_schemas)
+                # Route to coder model if this step involves coding
+                model = OLLAMA_CODER_MODEL if _needs_coding(step) else None
+                response = ollama_chat(trimmed, self.tool_schemas, model=model)
                 llm_duration = int((time.time() - start) * 1000)
             except Exception as e:
                 error_event = self.timeline.log("error", "LLM call failed", str(e))
@@ -456,6 +480,7 @@ class Agent:
             "session_id": self.session_id,
             "agent_id": self.agent_id,
             "model": OLLAMA_MODEL,
+            "coder_model": OLLAMA_CODER_MODEL,
             "gemini_model": GEMINI_MODEL if has_gemini() else None,
             "planner_enabled": has_gemini(),
             "is_running": self.is_running,
