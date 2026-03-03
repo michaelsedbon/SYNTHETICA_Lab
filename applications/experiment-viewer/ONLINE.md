@@ -1,4 +1,4 @@
-# Experiment Viewer — Online Access via Cloudflare Tunnel
+# Experiment Viewer — Online Access
 
 Expose the experiment viewer publicly so you can share lab notebook pages with collaborators.
 
@@ -14,37 +14,65 @@ Only port 3002 is tunnelled. The backend is proxied through Next.js via `rewrite
 
 ---
 
-## Setup (one-time, on the server)
+## What's on the Server
 
-### 1. Install cloudflared
+| What | Server path | Synced via |
+|------|-------------|------------|
+| Lab experiments (`.md` files) | `/opt/synthetica-lab/experiments` | `git pull` (deploy workflow) |
+| Lab images (`.png`, `.jpg`, etc.) | same as above | `rsync` (images are gitignored) |
+| PhD experiments + images | `/opt/PhD/experiments` | `git pull` + `rsync` |
+| Applications | `/opt/synthetica-lab/applications` | `git pull` |
+
+> **Important**: `*.png` is in `.gitignore`. New plots/images must be synced via rsync (see below).
+
+---
+
+## Quick Tunnel (temporary URL, no domain needed)
+
+Start a free temporary tunnel that gives a random `trycloudflare.com` URL:
 
 ```bash
-# Debian/Ubuntu
-curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg | sudo tee /usr/share/keyrings/cloudflare-main.gpg >/dev/null
-echo "deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/cloudflared.list
-sudo apt update && sudo apt install -y cloudflared
+# On the server
+ssh michael@172.16.1.80
+
+# Start tunnel (runs in background)
+nohup cloudflared tunnel --url http://localhost:3002 > /tmp/cloudflared-test.log 2>&1 &
+
+# Get the URL
+sleep 5 && grep 'trycloudflare' /tmp/cloudflared-test.log
+```
+
+⚠️ **The URL changes every time** the tunnel restarts (reboot, crash, manual restart).
+
+### Restart the tunnel
+
+```bash
+ssh michael@172.16.1.80 "pkill cloudflared 2>/dev/null; sleep 1; nohup cloudflared tunnel --url http://localhost:3002 > /tmp/cloudflared-test.log 2>&1 & sleep 5 && grep 'trycloudflare' /tmp/cloudflared-test.log"
+```
+
+---
+
+## Permanent Tunnel (requires a domain, ~$10/year)
+
+For a stable URL like `lab.yourdomain.com`:
+
+### 1. Install cloudflared (already done)
+```bash
+cloudflared --version  # 2026.2.0
 ```
 
 ### 2. Authenticate
-
 ```bash
 cloudflared tunnel login
 ```
 
-This opens a browser — pick the Cloudflare domain you want to use.
-
 ### 3. Create a named tunnel
-
 ```bash
 cloudflared tunnel create lab-viewer
+# Note the tunnel ID (UUID)
 ```
 
-Note the **tunnel ID** (UUID) printed.
-
-### 4. Configure the tunnel
-
-Create `~/.cloudflared/config.yml`:
-
+### 4. Configure `~/.cloudflared/config.yml`
 ```yaml
 tunnel: <TUNNEL_ID>
 credentials-file: /home/michael/.cloudflared/<TUNNEL_ID>.json
@@ -56,43 +84,65 @@ ingress:
 ```
 
 ### 5. Create DNS record
-
 ```bash
 cloudflared tunnel route dns lab-viewer lab.yourdomain.com
 ```
 
-### 6. Run as a systemd service
-
+### 6. Run as systemd service
 ```bash
 sudo cloudflared service install
 sudo systemctl enable cloudflared
 sudo systemctl start cloudflared
 ```
 
-### 7. Verify
-
-Open `https://lab.yourdomain.com` from any network. The experiment viewer should load with all content.
-
 ---
 
-## Quick testing (no domain needed)
+## Syncing Images to the Server
 
-For a quick test without a domain:
+Since `*.png` is gitignored, images must be synced separately via rsync.
 
+### Sync Lab images
 ```bash
-cloudflared tunnel --url http://localhost:3002
+rsync -avz --include='*/' --include='*.png' --include='*.jpg' --include='*.jpeg' --include='*.gif' --include='*.svg' --include='*.webp' --exclude='*' \
+  ~/Documents/SYNTHETIC_PERSONAL_LAB/experiments/ michael@172.16.1.80:/opt/synthetica-lab/experiments/
 ```
 
-This prints a temporary `https://xxxx.trycloudflare.com` URL. Works for testing but the URL changes each time.
+### Sync PhD images
+```bash
+rsync -avz --include='*/' --include='*.png' --include='*.jpg' --include='*.jpeg' --include='*.gif' --include='*.svg' --include='*.webp' --exclude='*' \
+  ~/Documents/PhD/experiments/ michael@172.16.1.80:/opt/PhD/experiments/
+```
 
 ---
 
-## Sharing Links
+## Features for Online Use
 
-The experiment viewer supports direct links to specific pages:
+- **Share button** — Click "Share" in the toolbar → copies a direct link to that experiment page
+- **Deep-linking** — URLs like `?source=Lab&path=EXP_003/summary.md` open a specific page directly
+- **Mobile-responsive** — Sidebar auto-closes on screens < 768px wide
+- **All sources** — Lab, PhD, and Applications are all available online
 
+---
+
+## Server Settings
+
+The experiment viewer sources are configured in:
 ```
-https://lab.yourdomain.com/?source=Lab&path=EXP_003/summary.md
+/opt/synthetica-lab/applications/experiment-viewer/server/settings.json
 ```
 
-Click the **Share** button in the toolbar to copy the link for the current page.
+Current configuration:
+```json
+{
+  "sources": [
+    { "label": "Lab", "path": "/opt/synthetica-lab/experiments" },
+    { "label": "PhD", "path": "/opt/PhD/experiments" },
+    { "label": "Applications", "path": "/opt/synthetica-lab/applications" }
+  ]
+}
+```
+
+After editing, restart the backend:
+```bash
+ssh michael@172.16.1.80 "kill \$(lsof -ti :8001) 2>/dev/null; sleep 1; cd /opt/synthetica-lab/applications/experiment-viewer/server && nohup python3 -m uvicorn main:app --host 0.0.0.0 --port 8001 > /tmp/exp-viewer.log 2>&1 &"
+```
