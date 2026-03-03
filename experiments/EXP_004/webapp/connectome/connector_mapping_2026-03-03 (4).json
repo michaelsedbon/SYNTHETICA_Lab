@@ -1,0 +1,38 @@
+[
+  {
+    "connector_L": "L16",
+    "connector_p": "p2",
+    "wires_connected": 4,
+    "wire_map": {
+      "aviator_pin1_red": [
+        "m_pin4"
+      ],
+      "aviator_pin2_black": [
+        "m_pin3"
+      ],
+      "aviator_pin3_white": [
+        "m_pin2"
+      ],
+      "aviator_pin4_blue": [
+        "m_pin1"
+      ]
+    }
+  },
+  {
+    "connector_L": "L10",
+    "connector_p": "p1",
+    "wires_connected": 3,
+    "wire_map": {
+      "aviator_pin1_red": [
+        "m_pin4"
+      ],
+      "aviator_pin2_black": [
+        "m_pin1"
+      ],
+      "aviator_pin3_white": [
+        "m_pin2",
+        "m_pin3"
+      ]
+    }
+  }
+]

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1925.26 1927.73">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #ee1c4e;
+      }
+
+      .cls-1, .cls-2, .cls-3, .cls-4 {
+        font-family: MyriadPro-Regular, 'Myriad Pro';
+        font-size: 125px;
+      }
+
+      .cls-2 {
+        fill: #3d57a7;
+      }
+
+      .cls-5 {
+        fill: #b7b7b7;
+      }
+
+      .cls-4 {
+        fill: #fff;
+      }
+
+      .cls-6 {
+        fill: #121212;
+      }
+
+      .cls-7 {
+        fill: #07202c;
+      }
+
+      .cls-8 {
+        letter-spacing: 0em;
+      }
+
+      .cls-9 {
+        letter-spacing: -.07em;
+      }
+
+      .cls-10 {
+        letter-spacing: -.02em;
+      }
+
+      .cls-11 {
+        letter-spacing: -.02em;
+      }
+
+      .cls-12 {
+        letter-spacing: 0em;
+      }
+
+      .cls-13 {
+        letter-spacing: 0em;
+      }
+
+      .cls-14 {
+        letter-spacing: 0em;
+      }
+
+      .cls-15 {
+        letter-spacing: 0em;
+      }
+
+      .cls-16 {
+        letter-spacing: 0em;
+      }
+
+      .cls-17 {
+        fill: none;
+        stroke: #b7b7b7;
+        stroke-miterlimit: 10;
+        stroke-width: 15px;
+      }
+
+      .cls-18 {
+        letter-spacing: 0em;
+      }
+    </style>
+  </defs>
+  <rect class="cls-7" x="1.2" width="1924.06" height="1927.73"/>
+  <rect class="cls-6" y="1.06" width="1923.04" height="320"/>
+  <text class="cls-4" transform="translate(54.15 196.61)"><tspan class="cls-9" x="0" y="0">T</tspan><tspan x="53.25" y="0">est </tspan><tspan class="cls-10" x="233.25" y="0">A</tspan><tspan x="307.12" y="0">vit</tspan><tspan class="cls-15" x="437.87" y="0">a</tspan><tspan class="cls-13" x="497.62" y="0">t</tspan><tspan x="538.24" y="0">or </tspan><tspan class="cls-16" x="674.24" y="0">C</tspan><tspan x="745.86" y="0">able - GX16-4 </tspan><tspan class="cls-11" x="1470.1" y="0">P</tspan><tspan x="1534.6" y="0">inout</tspan></text>
+  <g>
+    <circle class="cls-5" cx="775.19" cy="942.22" r="32.4"/>
+    <circle class="cls-5" cx="1151.56" cy="942.22" r="32.4"/>
+    <circle class="cls-5" cx="1151.56" cy="1314.05" r="32.4"/>
+    <circle class="cls-5" cx="775.19" cy="1314.05" r="32.4"/>
+  </g>
+  <g>
+    <circle class="cls-17" cx="946.82" cy="1128.14" r="440.28"/>
+    <rect class="cls-5" x="912.11" y="679.82" width="69.43" height="100.44" rx="27.24" ry="27.24"/>
+  </g>
+  <text class="cls-1" transform="translate(1381.5 971.58)"><tspan x="0" y="0">1 -- </tspan><tspan class="cls-18" x="193.87" y="0">R</tspan><tspan x="261.62" y="0">ed</tspan></text>
+  <text class="cls-3" transform="translate(1403.1 1380.43)"><tspan x="0" y="0">2 -- Black </tspan></text>
+  <text class="cls-4" transform="translate(39.21 1380.43)"><tspan class="cls-14" x="0" y="0">W</tspan><tspan class="cls-8" x="105.12" y="0">hi</tspan><tspan class="cls-12" x="203.75" y="0">t</tspan><tspan x="244.37" y="0">e -- 3 </tspan></text>
+  <text class="cls-2" transform="translate(76.24 962.32)"><tspan x="0" y="0">Bleu -- 4 </tspan></text>
+</svg>

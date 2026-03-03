@@ -7,7 +7,7 @@ import {
     Brain, AlertTriangle, CheckCircle, Info, Filter,
     GripVertical, RefreshCw, ArrowUp, X, MessageSquare, FolderTree,
     Circle, GitBranch, Cpu, Zap, Calendar, ToggleLeft, ToggleRight,
-    Plus, Trash2, Play, BookOpen, Sparkles, MessageCircle
+    Plus, Trash2, Play, BookOpen, Sparkles, MessageCircle, Copy, Check
 } from "lucide-react";
 
 // ── Config ──
@@ -87,6 +87,19 @@ function MdRender({ text }: { text: string }) {
         return s;
     }, [text]);
     return <div className="text-[12px] leading-relaxed" dangerouslySetInnerHTML={{ __html: html }} />;
+}
+
+// ── Copy button ──
+function CopyBtn({ text }: { text: string }) {
+    const [copied, setCopied] = useState(false);
+    return (
+        <button
+            onClick={(e) => { e.stopPropagation(); navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 1500); }}
+            className="flex-shrink-0 p-0.5 text-muted-foreground/30 hover:text-foreground transition-colors rounded"
+            title="Copy session ID">
+            {copied ? <Check size={10} className="text-green-400" /> : <Copy size={10} />}
+        </button>
+    );
 }
 
 // ── Main component ──
@@ -341,12 +354,14 @@ export default function AgentPage() {
                         {activeAgents.map(([sid, info]) => {
                             const a = info;
                             return (
-                                <button key={sid} onClick={() => loadSession(sid)}
-                                    className={`w-full text-left px-3 py-1.5 text-[11px] transition-colors flex items-center gap-2 ${sessionId === sid ? "bg-accent" : "hover:bg-muted/20"}`}>
-                                    <Circle size={6} className={a.is_running ? "text-green-400 fill-green-400" : "text-zinc-500 fill-zinc-500"} />
-                                    <span className="font-mono flex-1 truncate">{sid}</span>
-                                    <span className="text-muted-foreground/50">{a.event_count} ev</span>
-                                </button>
+                                <div key={sid} className={`flex items-center px-3 py-1.5 text-[11px] transition-colors gap-2 ${sessionId === sid ? "bg-accent" : "hover:bg-muted/20"}`}>
+                                    <button onClick={() => loadSession(sid)} className="flex items-center gap-2 flex-1 min-w-0 text-left">
+                                        <Circle size={6} className={a.is_running ? "text-green-400 fill-green-400" : "text-zinc-500 fill-zinc-500"} />
+                                        <span className="font-mono flex-1 truncate">{sid}</span>
+                                        <span className="text-muted-foreground/50">{a.event_count} ev</span>
+                                    </button>
+                                    <CopyBtn text={sid} />
+                                </div>
                             );
                         })}
                     </div>
@@ -360,12 +375,14 @@ export default function AgentPage() {
                             <span className="text-muted-foreground/40">{sessions.length}</span>
                         </div>
                         {sessions.map(s => (
-                            <button key={s.session_id} onClick={() => loadSession(s.session_id)}
-                                className={`w-full text-left px-3 py-1 text-[11px] transition-colors flex items-center gap-2 ${sessionId === s.session_id ? "bg-accent" : "hover:bg-muted/20"}`}>
-                                <Clock size={10} className="text-muted-foreground/40" />
-                                <span className="font-mono flex-1 truncate">{s.session_id}</span>
-                                <span className="text-muted-foreground/40">{fmtAge(s.last_event)}</span>
-                            </button>
+                            <div key={s.session_id} className={`flex items-center px-3 py-1 text-[11px] transition-colors gap-2 ${sessionId === s.session_id ? "bg-accent" : "hover:bg-muted/20"}`}>
+                                <button onClick={() => loadSession(s.session_id)} className="flex items-center gap-2 flex-1 min-w-0 text-left">
+                                    <Clock size={10} className="text-muted-foreground/40" />
+                                    <span className="font-mono flex-1 truncate">{s.session_id}</span>
+                                    <span className="text-muted-foreground/40">{fmtAge(s.last_event)}</span>
+                                </button>
+                                <CopyBtn text={s.session_id} />
+                            </div>
                         ))}
                     </div>
                 )}

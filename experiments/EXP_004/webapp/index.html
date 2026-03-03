@@ -23,7 +23,6 @@
             --red: #ef4444;
             --red-glow: rgba(239, 68, 68, 0.3);
             --orange: #f59e0b;
-            --orange-glow: rgba(245, 158, 11, 0.3);
             --radius: 12px;
         }
 
@@ -38,17 +37,12 @@
             background: var(--bg);
             color: var(--text);
             min-height: 100vh;
-            overflow-x: hidden;
         }
 
-        /* Background grid */
         body::before {
             content: '';
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            inset: 0;
             background-image:
                 linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
@@ -60,7 +54,7 @@
         .app {
             position: relative;
             z-index: 1;
-            max-width: 1400px;
+            max-width: 720px;
             margin: 0 auto;
             padding: 24px;
         }
@@ -70,24 +64,24 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 32px;
-            padding-bottom: 20px;
+            margin-bottom: 28px;
+            padding-bottom: 16px;
             border-bottom: 1px solid var(--border);
         }
 
-        .header-left h1 {
-            font-size: 24px;
+        .header h1 {
+            font-size: 22px;
             font-weight: 700;
-            letter-spacing: -0.5px;
             background: linear-gradient(135deg, var(--accent), #a78bfa);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .header-left p {
-            font-size: 13px;
+        .header p {
+            font-size: 12px;
             color: var(--text-dim);
-            margin-top: 4px;
+            margin-top: 2px;
         }
 
         .header-right {
@@ -96,17 +90,12 @@
             align-items: center;
         }
 
-        /* Status indicator */
         .status {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 100px;
+            gap: 6px;
             font-size: 13px;
-            font-weight: 500;
+            color: var(--text-dim);
         }
 
         .status-dot {
@@ -114,383 +103,341 @@
             height: 8px;
             border-radius: 50%;
             background: var(--red);
-            box-shadow: 0 0 8px var(--red-glow);
-            transition: all 0.3s;
         }
 
         .status-dot.connected {
             background: var(--green);
             box-shadow: 0 0 8px var(--green-glow);
-            animation: pulse-green 2s infinite;
-        }
-
-        @keyframes pulse-green {
-
-            0%,
-            100% {
-                box-shadow: 0 0 8px var(--green-glow);
-            }
-
-            50% {
-                box-shadow: 0 0 16px var(--green-glow);
-            }
         }
 
         /* Buttons */
         .btn {
-            padding: 10px 20px;
-            border: 1px solid var(--border);
+            padding: 8px 16px;
             border-radius: 8px;
-            background: var(--surface);
+            border: 1px solid var(--border);
+            background: var(--surface2);
             color: var(--text);
             font-family: 'Inter', sans-serif;
             font-size: 13px;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 6px;
         }
 
         .btn:hover {
-            background: var(--surface2);
             border-color: var(--accent);
             box-shadow: 0 0 12px var(--accent-glow);
         }
 
         .btn:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-
-        .btn:disabled:hover {
-            background: var(--surface);
-            border-color: var(--border);
+            opacity: 0.3;
+            cursor: default;
             box-shadow: none;
-        }
-
-        .btn-primary {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #5558e6;
-            box-shadow: 0 0 20px var(--accent-glow);
+            border-color: var(--border);
         }
 
         .btn-scan {
-            background: linear-gradient(135deg, var(--accent), #8b5cf6);
-            border: none;
-            color: white;
-            padding: 12px 28px;
-            font-size: 14px;
+            background: linear-gradient(135deg, var(--accent), #818cf8);
+            border-color: transparent;
+            color: #fff;
             font-weight: 600;
-            letter-spacing: 0.5px;
         }
 
-        .btn-scan:hover {
-            box-shadow: 0 0 30px var(--accent-glow);
-            transform: translateY(-1px);
+        .btn-scan.active {
+            background: linear-gradient(135deg, var(--red), #f87171);
+            animation: pulse-glow 1.5s ease-in-out infinite;
         }
 
-        .btn-scan.scanning {
-            animation: scan-pulse 1s infinite;
-        }
-
-        @keyframes scan-pulse {
+        @keyframes pulse-glow {
 
             0%,
             100% {
-                box-shadow: 0 0 20px var(--accent-glow);
+                box-shadow: 0 0 8px var(--red-glow);
             }
 
             50% {
-                box-shadow: 0 0 40px rgba(99, 102, 241, 0.5);
+                box-shadow: 0 0 20px var(--red-glow);
             }
         }
 
-        /* Main layout */
-        .main {
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
-            gap: 32px;
-            align-items: start;
-        }
-
-        /* Panel cards */
-        .panel-card {
+        /* Card */
+        .card {
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: var(--radius);
-            padding: 24px;
-            backdrop-filter: blur(10px);
+            padding: 20px;
+            margin-bottom: 20px;
         }
 
-        .panel-title {
-            font-size: 14px;
+        .card-title {
+            font-size: 13px;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
             color: var(--text-dim);
-            margin-bottom: 4px;
+            margin-bottom: 16px;
         }
 
-        .panel-subtitle {
-            font-size: 12px;
-            color: var(--text-dim);
-            margin-bottom: 20px;
-            opacity: 0.7;
-        }
-
-        /* Connector grid */
-        .connector-grid {
+        /* Wire display */
+        .wire-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 12px;
         }
 
-        .connector {
-            aspect-ratio: 1;
-            border: 2px solid var(--border);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-            background: var(--surface2);
-            min-width: 56px;
-            min-height: 56px;
-        }
-
-        .connector:hover {
-            border-color: var(--accent);
-            box-shadow: 0 0 16px var(--accent-glow);
-            transform: scale(1.05);
-        }
-
-        .connector.active {
-            border-color: var(--accent);
-            background: rgba(99, 102, 241, 0.15);
-            box-shadow: 0 0 20px var(--accent-glow);
-        }
-
-        .connector.matched {
-            border-color: var(--green);
-            background: rgba(34, 197, 94, 0.1);
-            box-shadow: 0 0 16px var(--green-glow);
-        }
-
-        .connector.no-match {
-            border-color: var(--red);
-            background: rgba(239, 68, 68, 0.08);
-            box-shadow: 0 0 12px var(--red-glow);
-        }
-
-        .connector.scanning-pin {
-            border-color: var(--orange);
-            background: rgba(245, 158, 11, 0.15);
-            box-shadow: 0 0 16px var(--orange-glow);
-            animation: scan-node 0.5s ease-in-out;
-        }
-
-        @keyframes scan-node {
-            0% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.1);
-            }
-
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        .connector .pin-label {
-            font-size: 10px;
-            color: var(--text-dim);
-            position: absolute;
-            bottom: -18px;
-            white-space: nowrap;
-        }
-
-        /* Center column — mapping display */
-        .center-col {
+        .wire {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
-            padding-top: 60px;
-            min-width: 200px;
+            gap: 8px;
+            padding: 16px 8px;
+            border-radius: 10px;
+            border: 2px solid var(--border);
+            background: var(--surface2);
+            transition: all 0.3s ease;
         }
 
-        .mapping-lines {
-            width: 100%;
-            min-height: 420px;
-            position: relative;
+        .wire.connected {
+            border-color: var(--green);
+            background: rgba(34, 197, 94, 0.08);
+            box-shadow: 0 0 16px var(--green-glow);
         }
 
-        .mapping-line {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 6px 12px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            margin-bottom: 4px;
+        .wire.disconnected {
+            border-color: var(--red);
+            background: rgba(239, 68, 68, 0.05);
+            opacity: 0.6;
+        }
+
+        .wire-label {
             font-family: 'JetBrains Mono', monospace;
             font-size: 13px;
+            font-weight: 600;
+        }
+
+        .wire-dot {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 3px solid var(--border);
             transition: all 0.3s;
-            animation: fade-in 0.3s ease-out;
         }
 
-        .mapping-line.connected-line {
+        .wire.connected .wire-dot {
             border-color: var(--green);
-            background: rgba(34, 197, 94, 0.05);
+            background: var(--green);
+            box-shadow: 0 0 12px var(--green-glow);
         }
 
-        .mapping-line.no-connection {
-            border-color: var(--border);
-            opacity: 0.5;
+        .wire-pin {
+            font-size: 11px;
+            color: var(--text-dim);
         }
 
-        .mapping-line .arrow {
-            color: var(--green);
-            font-weight: 600;
-            margin: 0 8px;
-        }
-
-        .mapping-line .no-arrow {
-            color: var(--red);
-            margin: 0 8px;
-        }
-
-        @keyframes fade-in {
-            from {
-                opacity: 0;
-                transform: translateY(-4px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Log area */
-        .log-section {
-            margin-top: 32px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            overflow: hidden;
-        }
-
-        .log-header {
+        /* Setup row */
+        .setup-row {
             display: flex;
+            gap: 12px;
             align-items: center;
-            justify-content: space-between;
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--border);
-            background: var(--surface2);
-        }
-
-        .log-header span {
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-dim);
-        }
-
-        .log-content {
-            padding: 12px 16px;
-            max-height: 200px;
-            overflow-y: auto;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
-            line-height: 1.8;
-            color: var(--text-dim);
-        }
-
-        .log-content .log-entry {
-            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-            padding: 2px 0;
-        }
-
-        .log-content .log-entry .time {
-            color: var(--text-dim);
-            opacity: 0.5;
-            margin-right: 8px;
-        }
-
-        .log-content .log-entry.error {
-            color: var(--red);
-        }
-
-        .log-content .log-entry.success {
-            color: var(--green);
-        }
-
-        .log-content .log-entry.info {
-            color: var(--accent);
-        }
-
-        /* Results summary */
-        .results-bar {
-            margin-top: 24px;
-            display: flex;
-            gap: 16px;
             flex-wrap: wrap;
         }
 
-        .stat-card {
+        .setup-row select {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--surface2);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
             flex: 1;
             min-width: 140px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 16px 20px;
+        }
+
+        /* Big status display */
+        .scan-status {
             text-align: center;
+            padding: 20px;
+            border-radius: var(--radius);
+            border: 2px solid var(--border);
+            margin-bottom: 16px;
+            transition: all 0.4s;
         }
 
-        .stat-card .value {
-            font-size: 32px;
-            font-weight: 700;
-            font-family: 'JetBrains Mono', monospace;
+        .scan-status.match {
+            border-color: var(--green);
+            background: rgba(34, 197, 94, 0.08);
+            box-shadow: 0 0 30px var(--green-glow);
         }
 
-        .stat-card .label {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        .scan-status.no-match {
+            border-color: var(--border);
+            background: var(--surface2);
+        }
+
+        .scan-status.scanning {
+            border-color: var(--accent);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .scan-status .icon {
+            font-size: 36px;
+            margin-bottom: 8px;
+        }
+
+        .scan-status .msg {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .scan-status .detail {
+            font-size: 12px;
             color: var(--text-dim);
             margin-top: 4px;
         }
 
-        .stat-card.mapped .value {
+        /* Results table */
+        .result-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        .result-row:last-child {
+            border-bottom: none;
+        }
+
+        .result-row .arrow {
+            color: var(--green);
+            font-weight: 700;
+        }
+
+        .result-row .wires {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-dim);
+        }
+
+        /* Log */
+        .log-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 20px;
+        }
+
+        .log-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border);
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-dim);
+        }
+
+        .log-content {
+            max-height: 150px;
+            overflow-y: auto;
+            padding: 8px 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+        }
+
+        .log-entry {
+            padding: 2px 0;
+            color: var(--text-dim);
+        }
+
+        .log-entry.success {
             color: var(--green);
         }
 
-        .stat-card.unmapped .value {
+        .log-entry.error {
             color: var(--red);
         }
 
-        .stat-card.multi .value {
-            color: var(--orange);
+        .log-entry .time {
+            color: var(--text-dim);
+            margin-right: 8px;
+            opacity: 0.5;
         }
 
-        /* Scrollbar */
+        /* Schematics toggle */
+        .schematics-section {
+            margin-top: 20px;
+        }
+
+        .schematics-toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 14px 20px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            cursor: pointer;
+            color: var(--text-dim);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .schematics-toggle h3 {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .schematics-toggle.open {
+            border-radius: var(--radius) var(--radius) 0 0;
+            border-bottom: none;
+        }
+
+        .schematics-grid {
+            display: none;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            padding: 20px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-top: none;
+            border-radius: 0 0 var(--radius) var(--radius);
+        }
+
+        .schematics-grid.open {
+            display: grid;
+        }
+
+        .schematic-card {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .schematic-card svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .schematic-card .card-label {
+            padding: 8px 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-dim);
+            border-top: 1px solid var(--border);
+        }
+
         ::-webkit-scrollbar {
             width: 6px;
         }
@@ -503,50 +450,6 @@
             background: var(--border);
             border-radius: 3px;
         }
-
-        /* Responsive */
-        @media (max-width: 900px) {
-            .main {
-                grid-template-columns: 1fr;
-            }
-
-            .center-col {
-                padding-top: 0;
-                order: -1;
-            }
-        }
-
-        /* Instructions overlay */
-        .instructions {
-            margin-top: 24px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 20px 24px;
-        }
-
-        .instructions h3 {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 12px;
-            color: var(--accent);
-        }
-
-        .instructions ol {
-            padding-left: 20px;
-            font-size: 13px;
-            line-height: 1.8;
-            color: var(--text-dim);
-        }
-
-        .instructions code {
-            background: var(--surface2);
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
-            color: var(--text);
-        }
     </style>
 </head>
 
@@ -554,9 +457,9 @@
     <div class="app">
         <!-- Header -->
         <div class="header">
-            <div class="header-left">
+            <div>
                 <h1>⚡ Connector Mapper</h1>
-                <p>EXP_004 — Cryptographic Beings Panel Mapping</p>
+                <p>EXP_004 — 4-Wire Cable Pair Testing</p>
             </div>
             <div class="header-right">
                 <div class="status">
@@ -564,53 +467,80 @@
                     <span id="statusText">Disconnected</span>
                 </div>
                 <button class="btn" id="btnConnect" onclick="toggleConnection()">Connect</button>
-                <button class="btn btn-scan" id="btnScan" onclick="runScan()" disabled>Scan All</button>
-                <button class="btn" id="btnExport" onclick="exportResults()" disabled>Export JSON</button>
             </div>
         </div>
 
-        <!-- Stats -->
-        <div class="results-bar" id="resultsBar" style="display:none;">
-            <div class="stat-card mapped">
-                <div class="value" id="statMapped">0</div>
-                <div class="label">Mapped</div>
+        <!-- Setup: select which p position is wired -->
+        <div class="card">
+            <div class="card-title">① Which p position is your M12/M8 plugged into?</div>
+            <div class="setup-row">
+                <select id="selectP">
+                    <option value="" disabled selected>Select p position…</option>
+                </select>
+                <button class="btn btn-scan" id="btnScan" onclick="toggleLiveScan()" disabled>▶ Start Scanning</button>
+                <button class="btn" id="btnExport" onclick="exportResults()" disabled>Export</button>
+                <button class="btn" onclick="document.getElementById('importFile').click()">⬆ Import</button>
+                <button class="btn" onclick="resetAll()" style="color:var(--red)">↻ Reset</button>
+                <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
             </div>
-            <div class="stat-card unmapped">
-                <div class="value" id="statUnmapped">0</div>
-                <div class="label">No Connection</div>
-            </div>
-            <div class="stat-card multi">
-                <div class="value" id="statMulti">0</div>
-                <div class="label">Multi-connection</div>
-            </div>
+            <div style="font-size:12px;color:var(--text-dim);margin-top:10px;">Then try each L connector on the
+                controller plate until you hear a beep.</div>
         </div>
 
-        <!-- Main panels -->
-        <div class="main" style="margin-top: 24px;">
-            <!-- Panel A -->
-            <div class="panel-card">
-                <div class="panel-title">Panel A — Front Grid</div>
-                <div class="panel-subtitle">Output pins D22–D37 • Click to test single connector</div>
-                <div class="connector-grid" id="panelA"></div>
+        <!-- Live scan status -->
+        <div class="card">
+            <div class="card-title">② Live Scan — Wire Continuity</div>
+            <div class="scan-status" id="scanStatus">
+                <div class="icon">🔌</div>
+                <div class="msg">Select a p position and press Start</div>
+                <div class="detail">Then try each L connector until you get a beep</div>
             </div>
-
-            <!-- Center mapping -->
-            <div class="center-col">
-                <div
-                    style="font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); font-weight: 600;">
-                    Mapping Results</div>
-                <div class="mapping-lines" id="mappingLines">
-                    <div style="text-align: center; color: var(--text-dim); font-size: 13px; margin-top: 40px;">
-                        Run a scan to see results
-                    </div>
+            <div class="wire-grid" id="wireGrid">
+                <div class="wire" id="wire0">
+                    <div class="wire-label">Avi Pin 1</div>
+                    <div class="wire-dot"></div>
+                    <div class="wire-pin" id="wireInfo0">🔴 Red</div>
+                </div>
+                <div class="wire" id="wire1">
+                    <div class="wire-label">Avi Pin 2</div>
+                    <div class="wire-dot"></div>
+                    <div class="wire-pin" id="wireInfo1">⚫ Black</div>
+                </div>
+                <div class="wire" id="wire2">
+                    <div class="wire-label">Avi Pin 3</div>
+                    <div class="wire-dot"></div>
+                    <div class="wire-pin" id="wireInfo2">⚪ White</div>
+                </div>
+                <div class="wire" id="wire3">
+                    <div class="wire-label">Avi Pin 4</div>
+                    <div class="wire-dot"></div>
+                    <div class="wire-pin" id="wireInfo3">🔵 Blue</div>
                 </div>
             </div>
+            <div id="confirmPanel"
+                style="display:none;text-align:center;margin-top:16px;padding:16px;border-radius:10px;border:2px solid var(--green);background:rgba(34,197,94,0.08);">
+                <div style="font-size:14px;font-weight:600;margin-bottom:10px;color:var(--green);">🔊 Connection found!
+                    Which L did you just plug in?</div>
+                <div class="setup-row" style="justify-content:center;">
+                    <select id="selectL" style="max-width:160px;">
+                        <option value="" disabled selected>Select L…</option>
+                    </select>
+                    <button class="btn" onclick="confirmMapping()"
+                        style="background:linear-gradient(135deg,var(--green),#16a34a);border-color:transparent;color:#fff;font-weight:600;padding:10px 20px;">
+                        ✓ Confirm
+                    </button>
+                </div>
+            </div>
+        </div>
 
-            <!-- Panel B -->
-            <div class="panel-card">
-                <div class="panel-title">Panel B — Top Plate</div>
-                <div class="panel-subtitle">Input pins D38–D53 • Internal pull-ups enabled</div>
-                <div class="connector-grid" id="panelB"></div>
+        <!-- Results -->
+        <div class="card">
+            <div class="card-title">③ Confirmed Mappings <span id="mappingCount" style="color:var(--green)"></span>
+            </div>
+            <div id="resultsContainer">
+                <div style="text-align:center;color:var(--text-dim);font-size:13px;padding:16px;">
+                    No mappings yet — scan connectors or import a JSON file
+                </div>
             </div>
         </div>
 
@@ -618,112 +548,201 @@
         <div class="log-section">
             <div class="log-header">
                 <span>Serial Log</span>
-                <button class="btn" style="padding: 4px 12px; font-size: 11px;" onclick="clearLog()">Clear</button>
+                <button class="btn" style="padding:3px 10px;font-size:11px;" onclick="clearLog()">Clear</button>
             </div>
             <div class="log-content" id="logContent"></div>
         </div>
 
-        <!-- Instructions -->
-        <div class="instructions">
-            <h3>Quick Start</h3>
-            <ol>
-                <li>Click <strong>Connect</strong> and select the Arduino Mega serial port</li>
-                <li>You should see a <code>pong</code> response confirming the connection</li>
-                <li>Wire Panel A connectors to pins D22–D37 and Panel B connectors to pins D38–D53</li>
-                <li>Click <strong>Scan All</strong> to map all connectors automatically</li>
-                <li>Click any Panel A connector circle to test a single connector</li>
-                <li>Click <strong>Export JSON</strong> to download the mapping</li>
-            </ol>
+        <!-- Quick Start Guide -->
+        <div class="card" style="border-color:rgba(99,102,241,0.3);">
+            <div class="card-title">📖 Quick Start</div>
+            <div style="font-size:13px;line-height:1.8;color:var(--text-dim);">
+                <strong style="color:var(--text);">Wiring (8 wires to Arduino Mega):</strong><br>
+                Aviator cable → <code>D22</code>(Red) <code>D23</code>(Black) <code>D24</code>(White)
+                <code>D25</code>(Blue)<br>
+                M12 cable → <code>D38</code>(White) <code>D39</code>(Blue) <code>D40</code>(Black)
+                <code>D41</code>(Red)<br>
+                M8 cable → <code>D38</code>(Blue) <code>D39</code>(Black) <code>D40</code>(White) <code>D41</code>(Red)
+                <div style="margin-top:10px;">
+                    <strong style="color:var(--text);">Workflow:</strong><br>
+                    1. Click <strong>Connect</strong> → select Arduino serial port<br>
+                    2. Plug M12/M8 into a <strong>p</strong> position → select it in the dropdown<br>
+                    3. Click <strong>▶ Start Scanning</strong><br>
+                    4. Try plugging the aviator cable into L1, L2, L3… until you hear a <strong>🔊 beep</strong><br>
+                    5. Select which L and click <strong>✓ Confirm</strong><br>
+                    6. Move M12/M8 to next p → repeat<br>
+                    7. <strong>Export</strong> when done — or <strong>Import</strong> a previous file to review/correct
+                </div>
+            </div>
+        </div>
+
+        <!-- Schematics Reference -->
+        <div class="schematics-section">
+            <button class="schematics-toggle" onclick="toggleSchematics()">
+                <h3>📐 Connector Schematics</h3>
+                <span class="chevron">▼</span>
+            </button>
+            <div class="schematics-grid" id="schematicsGrid">
+                <!-- Aviator GX16-4 -->
+                <div class="schematic-card">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+                        <rect width="500" height="500" fill="#07202c" rx="8" />
+                        <rect width="500" height="80" fill="#121212" rx="8" />
+                        <rect x="0" y="72" width="500" height="8" fill="#121212" />
+                        <text x="250" y="50" text-anchor="middle" fill="#fff" font-family="Inter,sans-serif"
+                            font-size="18" font-weight="600">Test Aviator Cable — GX16-4 Pinout</text>
+                        <circle cx="250" cy="260" r="110" fill="none" stroke="#b7b7b7" stroke-width="4" />
+                        <rect x="238" y="142" width="24" height="28" fill="#b7b7b7" rx="7" />
+                        <circle cx="200" cy="225" r="8" fill="#b7b7b7" />
+                        <circle cx="300" cy="225" r="8" fill="#b7b7b7" />
+                        <circle cx="300" cy="295" r="8" fill="#b7b7b7" />
+                        <circle cx="200" cy="295" r="8" fill="#b7b7b7" />
+                        <text x="380" y="230" fill="#ee1c4e" font-family="Inter,sans-serif" font-size="16"
+                            font-weight="600">1 — Red</text>
+                        <text x="380" y="300" fill="#888" font-family="Inter,sans-serif" font-size="16"
+                            font-weight="500">2 — Black</text>
+                        <text x="120" y="300" text-anchor="end" fill="#fff" font-family="Inter,sans-serif"
+                            font-size="16" font-weight="500">White — 3</text>
+                        <text x="120" y="230" text-anchor="end" fill="#3d57a7" font-family="Inter,sans-serif"
+                            font-size="16" font-weight="600">Blue — 4</text>
+                    </svg>
+                    <div class="card-label">Aviator GX16-4 — Test Cable</div>
+                </div>
+                <!-- M12 -->
+                <div class="schematic-card">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+                        <rect width="500" height="500" fill="#07202c" rx="8" />
+                        <rect width="500" height="80" fill="#121212" rx="8" />
+                        <rect x="0" y="72" width="500" height="8" fill="#121212" />
+                        <text x="250" y="50" text-anchor="middle" fill="#fff" font-family="Inter,sans-serif"
+                            font-size="18" font-weight="600">M12 — Pinout</text>
+                        <circle cx="250" cy="260" r="110" fill="none" stroke="#b7b7b7" stroke-width="4" />
+                        <rect x="238" y="142" width="24" height="28" fill="#b7b7b7" rx="7" />
+                        <circle cx="210" cy="225" r="8" fill="#b7b7b7" />
+                        <circle cx="290" cy="225" r="8" fill="#b7b7b7" />
+                        <circle cx="290" cy="295" r="8" fill="#b7b7b7" />
+                        <circle cx="210" cy="295" r="8" fill="#b7b7b7" />
+                        <text x="120" y="230" text-anchor="end" fill="#fff" font-family="Inter,sans-serif"
+                            font-size="16" font-weight="500">White — 1</text>
+                        <text x="380" y="230" fill="#ee1c4e" font-family="Inter,sans-serif" font-size="16"
+                            font-weight="600">4 — Red</text>
+                        <text x="120" y="300" text-anchor="end" fill="#3d57a7" font-family="Inter,sans-serif"
+                            font-size="16" font-weight="600">Blue — 2</text>
+                        <text x="380" y="300" fill="#888" font-family="Inter,sans-serif" font-size="16"
+                            font-weight="500">3 — Black</text>
+                    </svg>
+                    <div class="card-label">M12 Connector Cable</div>
+                </div>
+                <!-- M8 -->
+                <div class="schematic-card">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+                        <rect width="500" height="500" fill="#07202c" rx="8" />
+                        <rect width="500" height="80" fill="#121212" rx="8" />
+                        <rect x="0" y="72" width="500" height="8" fill="#121212" />
+                        <text x="250" y="50" text-anchor="middle" fill="#fff" font-family="Inter,sans-serif"
+                            font-size="18" font-weight="600">M8 Cable — Pinout</text>
+                        <circle cx="250" cy="260" r="85" fill="none" stroke="#b7b7b7" stroke-width="4" />
+                        <rect x="238" y="168" width="24" height="22" fill="#b7b7b7" rx="5" />
+                        <circle cx="210" cy="235" r="7" fill="#b7b7b7" />
+                        <circle cx="290" cy="235" r="7" fill="#b7b7b7" />
+                        <circle cx="290" cy="285" r="7" fill="#b7b7b7" />
+                        <circle cx="210" cy="285" r="7" fill="#b7b7b7" />
+                        <text x="120" y="240" text-anchor="end" fill="#3d57a7" font-family="Inter,sans-serif"
+                            font-size="16" font-weight="600">Blue — 1</text>
+                        <text x="380" y="240" fill="#ee1c4e" font-family="Inter,sans-serif" font-size="16"
+                            font-weight="600">4 — Red</text>
+                        <text x="120" y="290" text-anchor="end" fill="#888" font-family="Inter,sans-serif"
+                            font-size="16" font-weight="500">Black — 2</text>
+                        <text x="380" y="290" fill="#fff" font-family="Inter,sans-serif" font-size="16"
+                            font-weight="500">3 — White</text>
+                    </svg>
+                    <div class="card-label">M8 Connector Cable</div>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
         // ==================== State ====================
-        let port = null;
-        let reader = null;
-        let writer = null;
-        let connected = false;
-        let scanResults = null;
-        let readBuffer = '';
+        let port = null, reader = null, writer = null;
+        let readableStreamClosed = null, writableStreamClosed = null;
+        let connected = false, scanning = false, readBuffer = '';
+        let scanTimer = null;
+        let lastHits = [];
+        const mappings = []; // [{l: 'L3', p: 'p7', wires: 4}, ...]
 
-        const NUM = 16;
-
-        // ==================== Init grids ====================
-        function initGrids() {
-            const panelA = document.getElementById('panelA');
-            const panelB = document.getElementById('panelB');
-
-            for (let i = 0; i < NUM; i++) {
-                const nodeA = document.createElement('div');
-                nodeA.className = 'connector';
-                nodeA.id = `a${i}`;
-                nodeA.textContent = `A${i + 1}`;
-                nodeA.onclick = () => testSingle(i);
-                nodeA.innerHTML = `A${i + 1}<span class="pin-label">D${22 + i}</span>`;
-                panelA.appendChild(nodeA);
-
-                const nodeB = document.createElement('div');
-                nodeB.className = 'connector';
-                nodeB.id = `b${i}`;
-                nodeB.innerHTML = `B${i + 1}<span class="pin-label">D${38 + i}</span>`;
-                panelB.appendChild(nodeB);
+        // ==================== Populate selects ====================
+        (function init() {
+            const selL = document.getElementById('selectL');
+            const selP = document.getElementById('selectP');
+            for (let i = 1; i <= 16; i++) {
+                selL.innerHTML += `<option value="L${i}">L${i}</option>`;
             }
+            for (let i = 1; i <= 18; i++) {
+                const note = i === 1 ? ' (M12)' : (i === 17 || i === 18 ? ' (M8)' : '');
+                selP.innerHTML += `<option value="p${i}">p${i}${note}</option>`;
+            }
+        })();
+
+        // ==================== Audio ====================
+        let audioCtx = null;
+        function playBeep(freq = 880, duration = 0.3, volume = 0.8) {
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.type = 'square';
+                osc.frequency.value = freq;
+                gain.gain.value = volume;
+                osc.start();
+                gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (e) { }
+        }
+
+        function playMatchSound() {
+            playBeep(880, 0.15, 0.9);
+            setTimeout(() => playBeep(1320, 0.25, 0.9), 160);
         }
 
         // ==================== Serial ====================
         async function toggleConnection() {
-            if (connected) {
-                await disconnect();
-            } else {
-                await connect();
-            }
+            if (connected) await disconnect();
+            else await connectSerial();
         }
 
-        async function connect() {
+        async function connectSerial() {
             try {
                 port = await navigator.serial.requestPort();
                 await port.open({ baudRate: 115200 });
-
-                const textDecoder = new TextDecoderStream();
-                const readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
-                reader = textDecoder.readable.getReader();
-
-                const textEncoder = new TextEncoderStream();
-                const writableStreamClosed = textEncoder.readable.pipeTo(port.writable);
-                writer = textEncoder.writable.getWriter();
-
+                const dec = new TextDecoderStream();
+                readableStreamClosed = port.readable.pipeTo(dec.writable);
+                reader = dec.readable.getReader();
+                const enc = new TextEncoderStream();
+                writableStreamClosed = enc.readable.pipeTo(port.writable);
+                writer = enc.writable.getWriter();
                 connected = true;
                 updateConnectionUI(true);
                 log('Connected to serial port', 'success');
-
-                // Start reading
                 readLoop();
-
-                // Send ping after a short delay
-                setTimeout(() => sendCommand({ cmd: 'ping' }), 500);
-
             } catch (err) {
                 log(`Connection failed: ${err.message}`, 'error');
             }
         }
 
         async function disconnect() {
-            try {
-                if (reader) {
-                    reader.cancel();
-                    reader = null;
-                }
-                if (writer) {
-                    writer.close();
-                    writer = null;
-                }
-                if (port) {
-                    await port.close();
-                    port = null;
-                }
-            } catch (e) { /* ignore */ }
-
+            if (scanning) stopLiveScan();
             connected = false;
+            try {
+                if (reader) { await reader.cancel(); reader = null; }
+                if (readableStreamClosed) { await readableStreamClosed.catch(() => { }); readableStreamClosed = null; }
+                if (writer) { await writer.close().catch(() => { }); writer = null; }
+                if (writableStreamClosed) { await writableStreamClosed.catch(() => { }); writableStreamClosed = null; }
+                if (port) { await port.close(); port = null; }
+            } catch (e) { port = null; }
             updateConnectionUI(false);
             log('Disconnected', 'info');
         }
@@ -736,21 +755,15 @@
                     if (value) {
                         readBuffer += value;
                         let lines = readBuffer.split('\n');
-                        readBuffer = lines.pop(); // keep incomplete line in buffer
-
+                        readBuffer = lines.pop();
                         for (const line of lines) {
-                            const trimmed = line.trim();
-                            if (trimmed) {
-                                handleSerialMessage(trimmed);
-                            }
+                            const t = line.trim();
+                            if (t) handleMessage(t);
                         }
                     }
                 }
             } catch (err) {
-                if (connected) {
-                    log(`Read error: ${err.message}`, 'error');
-                    await disconnect();
-                }
+                if (connected) { log(`Read error: ${err.message}`, 'error'); await disconnect(); }
             }
         }
 
@@ -762,169 +775,219 @@
         }
 
         // ==================== Message handling ====================
-        function handleSerialMessage(msg) {
+        function handleMessage(msg) {
             log(`← ${msg}`);
-
             try {
                 const data = JSON.parse(msg);
-
                 switch (data.type) {
                     case 'ready':
                         log(`Firmware: ${data.msg}`, 'success');
+                        setTimeout(() => sendCommand({ cmd: 'ping' }), 200);
                         break;
-
                     case 'pong':
-                        log(`Connected! Outputs: ${data.out}, Inputs: ${data.in}`, 'success');
+                        log(`Connected! ${data.out} outputs, ${data.in} inputs`, 'success');
                         document.getElementById('btnScan').disabled = false;
                         break;
-
                     case 'scan':
                         handleScanResult(data);
                         break;
-
                     case 'test':
-                        handleTestResult(data);
+                        // single wire test (not used in live mode)
                         break;
-
                     case 'error':
                         log(`Error: ${data.msg}`, 'error');
                         break;
                 }
-            } catch (e) {
-                // Not JSON, just log as-is
-            }
+            } catch (e) { }
         }
 
-        // ==================== Scan ====================
-        async function runScan() {
+        // ==================== Live Scan ====================
+        function toggleLiveScan() {
+            if (scanning) stopLiveScan();
+            else startLiveScan();
+        }
+
+        function startLiveScan() {
             if (!connected) return;
+            const p = document.getElementById('selectP').value;
+            if (!p) {
+                log('Select a p position first', 'error');
+                return;
+            }
 
+            scanning = true;
+            lastHits = [];
             const btn = document.getElementById('btnScan');
-            btn.classList.add('scanning');
-            btn.textContent = 'Scanning...';
-            btn.disabled = true;
+            btn.textContent = '■ Stop';
+            btn.classList.add('active');
 
-            // Clear previous results
-            clearGridState();
-            document.getElementById('mappingLines').innerHTML =
-                '<div style="text-align:center;color:var(--text-dim);font-size:13px;margin-top:40px;">Scanning in progress...</div>';
+            const status = document.getElementById('scanStatus');
+            status.className = 'scan-status scanning';
+            status.querySelector('.icon').textContent = '📡';
+            status.querySelector('.msg').textContent = `Scanning ${p}... Try each L connector`;
+            status.querySelector('.detail').textContent = 'Plug the aviator cable into L1, L2, L3... until you hear a beep';
 
-            await sendCommand({ cmd: 'scan' });
+            document.getElementById('confirmPanel').style.display = 'none';
+
+            log(`▶ Live scan started for ${p} — try each L connector`, 'info');
+
+            // Send scan every 300ms
+            doScan();
+            scanTimer = setInterval(doScan, 300);
         }
+
+        function stopLiveScan() {
+            scanning = false;
+            clearInterval(scanTimer);
+            scanTimer = null;
+            const btn = document.getElementById('btnScan');
+            btn.textContent = '▶ Start Scanning';
+            btn.classList.remove('active');
+            log('■ Scan stopped', 'info');
+        }
+
+        function doScan() {
+            if (!scanning || !connected) return;
+            sendCommand({ cmd: 'scan' });
+        }
+
+        const AVI_COLORS = ['🔴 Red', '⚫ Black', '⚪ White', '🔵 Blue'];
+        const M12_COLORS = ['⚪ White', '🔵 Blue', '⚫ Black', '🔴 Red'];
+        let lastWireMap = null; // stored for export
 
         function handleScanResult(data) {
-            scanResults = data.map;
+            // New format: data.map = [[0,[1,3]], [1,[0]], [2,[]], [3,[2]]]
+            const map = data.map || [];
+            const wasConnected = lastHits.length > 0;
 
-            const btn = document.getElementById('btnScan');
-            btn.classList.remove('scanning');
-            btn.textContent = 'Scan All';
-            btn.disabled = false;
-            document.getElementById('btnExport').disabled = false;
+            let totalConnected = 0;
+            let wireDescriptions = [];
+            let currentHits = [];
 
-            // Process results
-            let mapped = 0, unmapped = 0, multi = 0;
-            const mappingLines = document.getElementById('mappingLines');
-            mappingLines.innerHTML = '';
+            for (const entry of map) {
+                const outPin = entry[0];
+                const inPins = entry[1];
+                const wire = document.getElementById(`wire${outPin}`);
+                const info = document.getElementById(`wireInfo${outPin}`);
 
-            for (const entry of data.map) {
-                const aIdx = entry[0];
-                const hits = entry[1];
-
-                const line = document.createElement('div');
-                line.className = 'mapping-line';
-
-                if (hits.length === 0) {
-                    line.classList.add('no-connection');
-                    line.innerHTML = `<span>A${aIdx + 1}</span><span class="no-arrow">✕</span><span style="color:var(--text-dim)">—</span>`;
-                    document.getElementById(`a${aIdx}`).classList.add('no-match');
-                    unmapped++;
-                } else if (hits.length === 1) {
-                    line.classList.add('connected-line');
-                    line.innerHTML = `<span>A${aIdx + 1}</span><span class="arrow">→</span><span>B${hits[0] + 1}</span>`;
-                    document.getElementById(`a${aIdx}`).classList.add('matched');
-                    document.getElementById(`b${hits[0]}`).classList.add('matched');
-                    mapped++;
+                if (inPins.length > 0) {
+                    wire.className = 'wire connected';
+                    const targets = inPins.map(p => `M-Pin${p + 1}`).join(', ');
+                    info.textContent = `Avi Pin${outPin + 1} → ${targets}`;
+                    totalConnected++;
+                    currentHits.push(outPin);
+                    wireDescriptions.push(`Avi-Pin${outPin + 1} → M-Pin${inPins[0] + 1}`);
                 } else {
-                    line.classList.add('connected-line');
-                    line.style.borderColor = 'var(--orange)';
-                    const hitLabels = hits.map(h => `B${h + 1}`).join(', ');
-                    line.innerHTML = `<span>A${aIdx + 1}</span><span class="arrow" style="color:var(--orange)">→</span><span style="color:var(--orange)">${hitLabels}</span>`;
-                    document.getElementById(`a${aIdx}`).classList.add('matched');
-                    document.getElementById(`a${aIdx}`).style.borderColor = 'var(--orange)';
-                    hits.forEach(h => {
-                        document.getElementById(`b${h}`).classList.add('matched');
-                        document.getElementById(`b${h}`).style.borderColor = 'var(--orange)';
-                    });
-                    multi++;
+                    wire.className = 'wire disconnected';
+                    info.textContent = `${AVI_COLORS[outPin]} — no link`;
                 }
-
-                mappingLines.appendChild(line);
             }
 
-            // Update stats
-            document.getElementById('resultsBar').style.display = 'flex';
-            document.getElementById('statMapped').textContent = mapped;
-            document.getElementById('statUnmapped').textContent = unmapped;
-            document.getElementById('statMulti').textContent = multi;
+            const isConnected = totalConnected > 0;
 
-            log(`Scan complete: ${mapped} mapped, ${unmapped} unmapped, ${multi} multi-connection`, 'success');
-        }
+            // Update status
+            const status = document.getElementById('scanStatus');
+            const p = document.getElementById('selectP').value;
 
-        // ==================== Single test ====================
-        async function testSingle(pin) {
-            if (!connected) return;
+            if (isConnected) {
+                status.className = 'scan-status match';
+                status.querySelector('.icon').textContent = '✅';
+                status.querySelector('.msg').textContent = `CONNECTION FOUND on ${p}!`;
+                status.querySelector('.detail').textContent = `${totalConnected}/4 wires — which L connector did you just plug in?`;
+                document.getElementById('confirmPanel').style.display = 'block';
+                lastWireMap = map;
 
-            clearGridState();
-            document.getElementById(`a${pin}`).classList.add('scanning-pin');
-            await sendCommand({ cmd: 'test', pin: pin });
-        }
-
-        function handleTestResult(data) {
-            clearGridState();
-            const aNode = document.getElementById(`a${data.pin}`);
-            aNode.classList.add('active');
-
-            if (data.hits.length === 0) {
-                aNode.classList.add('no-match');
-                log(`A${data.pin + 1}: no connection`, 'error');
+                if (!wasConnected) {
+                    playMatchSound();
+                    log(`🔊 CONNECTION on ${p}! (${totalConnected}/4 wires): ${wireDescriptions.join(', ')}`, 'success');
+                }
             } else {
-                aNode.classList.add('matched');
-                data.hits.forEach(h => {
-                    document.getElementById(`b${h}`).classList.add('matched');
-                });
-                const hitLabels = data.hits.map(h => `B${h + 1}`).join(', ');
-                log(`A${data.pin + 1} → ${hitLabels}`, 'success');
+                document.getElementById('confirmPanel').style.display = 'none';
+                lastWireMap = null;
+                if (scanning) {
+                    status.className = 'scan-status scanning';
+                    status.querySelector('.icon').textContent = '📡';
+                    status.querySelector('.msg').textContent = `Scanning ${p}... Try each L connector`;
+                    status.querySelector('.detail').textContent = 'No connection — try another L';
+                }
             }
+
+            lastHits = currentHits;
+        }
+
+        // ==================== Record mapping ====================
+        function confirmMapping() {
+            const l = document.getElementById('selectL').value;
+            const p = document.getElementById('selectP').value;
+            if (!l || !p) return;
+
+            // Remove existing mapping for this L or p
+            const existingL = mappings.findIndex(m => m.l === l);
+            if (existingL >= 0) mappings.splice(existingL, 1);
+            const existingP = mappings.findIndex(m => m.p === p);
+            if (existingP >= 0) mappings.splice(existingP, 1);
+
+            mappings.push({ l, p, wires: lastHits.length, wireMap: lastWireMap });
+            renderMappings();
+            log(`✓ Confirmed: ${l} → ${p}`, 'success');
+
+            // Hide confirm panel and reset L selector
+            document.getElementById('confirmPanel').style.display = 'none';
+            document.getElementById('selectL').selectedIndex = 0;
+
+            // Auto-advance p to next position
+            const selP = document.getElementById('selectP');
+            const nextIdx = selP.selectedIndex + 1;
+            if (nextIdx < selP.options.length) {
+                selP.selectedIndex = nextIdx;
+                log(`Next: plug M12/M8 into ${selP.value} and try each L`, 'info');
+            }
+
+            document.getElementById('btnExport').disabled = false;
+        }
+
+        function renderMappings() {
+            const container = document.getElementById('resultsContainer');
+            const countEl = document.getElementById('mappingCount');
+            if (mappings.length === 0) {
+                container.innerHTML = '<div style="text-align:center;color:var(--text-dim);font-size:13px;padding:16px;">No mappings yet — scan connectors or import a JSON file</div>';
+                countEl.textContent = '';
+                document.getElementById('btnExport').disabled = true;
+                return;
+            }
+            countEl.textContent = `(${mappings.length})`;
+            document.getElementById('btnExport').disabled = false;
+            const sorted = [...mappings].sort((a, b) => {
+                const na = parseInt(a.l.slice(1)), nb = parseInt(b.l.slice(1));
+                return na - nb;
+            });
+            container.innerHTML = sorted.map((m, idx) => {
+                const origIdx = mappings.indexOf(m);
+                let wireDetail = '';
+                if (m.wireMap) {
+                    const links = m.wireMap
+                        .filter(e => e[1].length > 0)
+                        .map(e => `Avi-Pin${e[0] + 1} → M-Pin${e[1][0] + 1}`)
+                        .join(' · ');
+                    wireDetail = `<div style="font-size:11px;color:var(--text-dim);margin-top:4px;width:100%;">${links} <span style="opacity:0.5">(see schematics for pin positions)</span></div>`;
+                }
+                return `<div class="result-row" style="flex-wrap:wrap;position:relative;">
+                    <strong>${m.l}</strong>
+                    <span class="arrow">→</span>
+                    <strong>${m.p}</strong>
+                    <span class="wires">(${m.wires}/4 wires)</span>
+                    <button onclick="deleteMapping(${origIdx})" title="Delete" style="margin-left:auto;background:none;border:none;color:var(--red);cursor:pointer;font-size:16px;padding:4px 8px;opacity:0.6;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">✕</button>
+                    ${wireDetail}
+                </div>`;
+            }).join('');
         }
 
         // ==================== UI helpers ====================
         function updateConnectionUI(isConnected) {
-            const dot = document.getElementById('statusDot');
-            const text = document.getElementById('statusText');
-            const btn = document.getElementById('btnConnect');
-
-            if (isConnected) {
-                dot.classList.add('connected');
-                text.textContent = 'Connected';
-                btn.textContent = 'Disconnect';
-            } else {
-                dot.classList.remove('connected');
-                text.textContent = 'Disconnected';
-                btn.textContent = 'Connect';
-                document.getElementById('btnScan').disabled = true;
-                document.getElementById('btnExport').disabled = true;
-            }
-        }
-
-        function clearGridState() {
-            for (let i = 0; i < NUM; i++) {
-                const a = document.getElementById(`a${i}`);
-                const b = document.getElementById(`b${i}`);
-                a.className = 'connector';
-                b.className = 'connector';
-                a.style.borderColor = '';
-                b.style.borderColor = '';
-            }
+            document.getElementById('statusDot').className = 'status-dot' + (isConnected ? ' connected' : '');
+            document.getElementById('statusText').textContent = isConnected ? 'Connected' : 'Disconnected';
+            document.getElementById('btnConnect').textContent = isConnected ? 'Disconnect' : 'Connect';
+            if (!isConnected) document.getElementById('btnScan').disabled = true;
         }
 
         function log(msg, type = '') {
@@ -932,46 +995,106 @@
             const entry = document.createElement('div');
             entry.className = `log-entry ${type}`;
             const now = new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            entry.innerHTML = `<span class="time">${now}</span>${escapeHtml(msg)}`;
+            const div = document.createElement('div');
+            div.textContent = msg;
+            entry.innerHTML = `<span class="time">${now}</span>${div.innerHTML}`;
             el.appendChild(entry);
             el.scrollTop = el.scrollHeight;
         }
 
-        function clearLog() {
-            document.getElementById('logContent').innerHTML = '';
-        }
+        function clearLog() { document.getElementById('logContent').innerHTML = ''; }
 
-        function escapeHtml(str) {
-            const div = document.createElement('div');
-            div.textContent = str;
-            return div.innerHTML;
-        }
+        const AVI_PIN_NAMES = ['pin1_red', 'pin2_black', 'pin3_white', 'pin4_blue'];
+        const M_PIN_NAMES = ['pin1', 'pin2', 'pin3', 'pin4'];
 
-        // ==================== Export ====================
         function exportResults() {
-            if (!scanResults) return;
-
-            const mapping = {};
-            for (const entry of scanResults) {
-                const aLabel = `A${entry[0] + 1}`;
-                const bLabels = entry[1].map(h => `B${h + 1}`);
-                mapping[aLabel] = bLabels.length === 0 ? null : bLabels.length === 1 ? bLabels[0] : bLabels;
-            }
-
-            const blob = new Blob([JSON.stringify(mapping, null, 2)], { type: 'application/json' });
+            const result = mappings.map(m => {
+                const entry = { connector_L: m.l, connector_p: m.p, wires_connected: m.wires };
+                if (m.wireMap) {
+                    entry.pin_map = {};
+                    for (const [outPin, inPins] of m.wireMap) {
+                        if (inPins.length > 0) {
+                            entry.pin_map[`aviator_pin${outPin + 1}`] = inPins.map(p => `m_pin${p + 1}`);
+                        }
+                    }
+                    entry._note = 'Pin numbers per connector schematics (see Aviator/M12/M8 diagrams)';
+                }
+                return entry;
+            });
+            const blob = new Blob([JSON.stringify(result, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
             a.download = `connector_mapping_${new Date().toISOString().slice(0, 10)}.json`;
             a.click();
             URL.revokeObjectURL(url);
-            log('Mapping exported as JSON', 'success');
+            log('Mapping exported', 'success');
         }
 
-        // ==================== Init ====================
-        initGrids();
+        function toggleSchematics() {
+            document.querySelector('.schematics-toggle').classList.toggle('open');
+            document.getElementById('schematicsGrid').classList.toggle('open');
+        }
 
-        // Check Web Serial support
+        // ==================== Import / Reset ====================
+        function importJSON(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (!Array.isArray(data)) throw new Error('Expected array');
+                    mappings.length = 0;
+                    for (const entry of data) {
+                        const m = {
+                            l: entry.connector_L,
+                            p: entry.connector_p,
+                            wires: entry.wires_connected || 0,
+                            wireMap: null
+                        };
+                        // Reconstruct wireMap from pin_map or wire_map (backwards compat)
+                        if (entry.pin_map || entry.wire_map) {
+                            const pinData = entry.pin_map || entry.wire_map;
+                            m.wireMap = [];
+                            for (let i = 0; i < 4; i++) {
+                                // Try new format: aviator_pin1, or old format: aviator_pin1_red
+                                const newKey = `aviator_pin${i + 1}`;
+                                const oldKey = `aviator_${AVI_PIN_NAMES[i]}`;
+                                const targets = pinData[newKey] || pinData[oldKey] || [];
+                                const inPins = targets.map(t => parseInt(t.replace(/m_?pin/, '')) - 1);
+                                m.wireMap.push([i, inPins]);
+                            }
+                        }
+                        mappings.push(m);
+                    }
+                    renderMappings();
+                    log(`Imported ${mappings.length} mappings from ${file.name}`, 'success');
+                } catch (err) {
+                    log(`Import error: ${err.message}`, 'error');
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = ''; // allow reimport of same file
+        }
+
+        function resetAll() {
+            if (mappings.length === 0) return;
+            if (!confirm(`Delete all ${mappings.length} mappings? This cannot be undone.`)) return;
+            mappings.length = 0;
+            renderMappings();
+            log('All mappings cleared', 'info');
+        }
+
+        function deleteMapping(idx) {
+            const m = mappings[idx];
+            if (!m) return;
+            mappings.splice(idx, 1);
+            renderMappings();
+            log(`Deleted mapping ${m.l} → ${m.p}`, 'info');
+        }
+
+        // Web Serial check
         if (!('serial' in navigator)) {
             log('⚠ Web Serial API not supported. Use Chrome or Edge.', 'error');
             document.getElementById('btnConnect').disabled = true;

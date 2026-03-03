@@ -1,58 +1,46 @@
 /*
- * Connector Mapper — Arduino Mega Firmware
- * EXP_004: Automated continuity scanning for Cryptographic Beings panels
+ * Connector Mapper — Arduino Mega Firmware v3.0
+ * EXP_004: Full cross-scan cable-pair testing for Cryptographic Beings
  *
- * Pin layout:
- *   Panel A (outputs): D22–D37  (16 connectors)
- *   Panel B (inputs):  D38–D53  (16 connectors, INPUT_PULLUP)
+ * Setup: ONE cable pair at a time
+ *   Aviator GX16-4 (controller plate side) — 4 output pins:
+ *     Pin1=Red→D22, Pin2=Black→D23, Pin3=White→D24, Pin4=Blue→D25
+ *   M12 or M8 (installation plate side) — 4 input pins:
+ *     Pin1→D38, Pin2→D39, Pin3→D40, Pin4→D41
  *
  * Protocol: JSON over Serial @ 115200 baud
- *   → {"cmd":"ping"}             ← {"type":"pong","out":16,"in":16}
- *   → {"cmd":"scan"}             ← {"type":"scan","map":[...]}
- *   → {"cmd":"test","pin":0}     ← {"type":"test","pin":0,"hits":[...]}
+ *   → {"cmd":"ping"}         ← {"type":"pong","out":4,"in":4}
+ *   → {"cmd":"scan"}         ← {"type":"scan","map":[[0,[1,3]],[1,[0]],[2,[]],[3,[2]]]}
+ *
+ * Scan does full 4×4 cross-test:
+ *   For each output pin, drives it LOW and reads ALL 4 input pins.
+ *   Reports which inputs went LOW for each output.
+ *   This catches cross-wired cables and broken wires.
  */
 
 #include <Arduino.h>
 #include <ArduinoJson.h>
 
-// ---------- Pin Configuration ----------
-const int NUM_CONNECTORS = 16;
+const int NUM_WIRES = 4;
+const int OUT_PINS[NUM_WIRES] = { 22, 23, 24, 25 };
+const int IN_PINS[NUM_WIRES]  = { 38, 39, 40, 41 };
 
-// Panel A: output pins (directly driven)
-const int PANEL_A_PINS[NUM_CONNECTORS] = {
-  22, 23, 24, 25, 26, 27, 28, 29,
-  30, 31, 32, 33, 34, 35, 36, 37
-};
-
-// Panel B: input pins (with internal pull-up)
-const int PANEL_B_PINS[NUM_CONNECTORS] = {
-  38, 39, 40, 41, 42, 43, 44, 45,
-  46, 47, 48, 49, 50, 51, 52, 53
-};
-
-// ---------- Forward declarations ----------
 void handlePing();
 void handleScan();
-void handleTest(int pin);
 void setAllOutputsHighZ();
 
-// ---------- Setup ----------
 void setup() {
   Serial.begin(115200);
   while (!Serial) { ; }
 
-  // Configure Panel B as inputs with pull-up
-  for (int i = 0; i < NUM_CONNECTORS; i++) {
-    pinMode(PANEL_B_PINS[i], INPUT_PULLUP);
+  for (int i = 0; i < NUM_WIRES; i++) {
+    pinMode(IN_PINS[i], INPUT_PULLUP);
   }
-
-  // Set all Panel A pins to INPUT (high-Z) initially
   setAllOutputsHighZ();
 
-  Serial.println("{\"type\":\"ready\",\"msg\":\"Connector Mapper v1.0\"}");
+  Serial.println("{\"type\":\"ready\",\"msg\":\"Connector Mapper v3.0 — full cross-scan\"}");
 }
 
-// ---------- Main Loop ----------
 void loop() {
   if (Serial.available()) {
     String line = Serial.readStringUntil('\n');
@@ -62,7 +50,7 @@ void loop() {
     JsonDocument doc;
     DeserializationError err = deserializeJson(doc, line);
     if (err) {
-      Serial.print("{\"type\":\"error\",\"msg\":\"JSON parse error: ");
+      Serial.print("{\"type\":\"error\",\"msg\":\"JSON parse: ");
       Serial.print(err.c_str());
       Serial.println("\"}");
       return;
@@ -70,7 +58,7 @@ void loop() {
 
     const char* cmd = doc["cmd"];
     if (!cmd) {
-      Serial.println("{\"type\":\"error\",\"msg\":\"Missing cmd field\"}");
+      Serial.println("{\"type\":\"error\",\"msg\":\"Missing cmd\"}");
       return;
     }
 
@@ -78,101 +66,64 @@ void loop() {
       handlePing();
     } else if (strcmp(cmd, "scan") == 0) {
       handleScan();
-    } else if (strcmp(cmd, "test") == 0) {
-      int pin = doc["pin"] | -1;
-      if (pin < 0 || pin >= NUM_CONNECTORS) {
-        Serial.println("{\"type\":\"error\",\"msg\":\"Invalid pin number\"}");
-      } else {
-        handleTest(pin);
-      }
     } else {
       Serial.println("{\"type\":\"error\",\"msg\":\"Unknown command\"}");
     }
   }
 }
 
-// ---------- Set all output pins to high-impedance (INPUT mode) ----------
 void setAllOutputsHighZ() {
-  for (int i = 0; i < NUM_CONNECTORS; i++) {
-    pinMode(PANEL_A_PINS[i], INPUT);       // high-Z
-    digitalWrite(PANEL_A_PINS[i], LOW);    // no pull-up
+  for (int i = 0; i < NUM_WIRES; i++) {
+    pinMode(OUT_PINS[i], INPUT);
+    digitalWrite(OUT_PINS[i], LOW);
   }
 }
 
-// ---------- Ping ----------
 void handlePing() {
   JsonDocument doc;
   doc["type"] = "pong";
-  doc["out"] = NUM_CONNECTORS;
-  doc["in"] = NUM_CONNECTORS;
+  doc["out"] = NUM_WIRES;
+  doc["in"] = NUM_WIRES;
   serializeJson(doc, Serial);
   Serial.println();
 }
 
-// ---------- Full Scan ----------
+// Full 4×4 cross-scan with double-read verification
 void handleScan() {
-  // Result: array of [panelA_index, [panelB_hits...]]
   JsonDocument doc;
   doc["type"] = "scan";
   JsonArray mapArr = doc["map"].to<JsonArray>();
 
-  for (int a = 0; a < NUM_CONNECTORS; a++) {
-    // Set all to high-Z first
+  for (int out = 0; out < NUM_WIRES; out++) {
     setAllOutputsHighZ();
+    delay(10);  // let pull-ups charge lines back to HIGH
 
-    // Drive this one pin LOW (it will pull the connected input LOW,
-    // while unconnected inputs stay HIGH via their pull-ups)
-    pinMode(PANEL_A_PINS[a], OUTPUT);
-    digitalWrite(PANEL_A_PINS[a], LOW);
-    delay(10);  // settling time
+    // Drive this output LOW
+    pinMode(OUT_PINS[out], OUTPUT);
+    digitalWrite(OUT_PINS[out], LOW);
+    delay(15);  // settle time for signal propagation
 
-    // Read all Panel B inputs
+    // Check ALL inputs with double-read verification
     JsonArray entry = mapArr.add<JsonArray>();
-    entry.add(a);
+    entry.add(out);
     JsonArray hits = entry.add<JsonArray>();
 
-    for (int b = 0; b < NUM_CONNECTORS; b++) {
-      if (digitalRead(PANEL_B_PINS[b]) == LOW) {
-        hits.add(b);
+    for (int in = 0; in < NUM_WIRES; in++) {
+      int read1 = digitalRead(IN_PINS[in]);
+      delay(2);
+      int read2 = digitalRead(IN_PINS[in]);
+      // Only count as connected if BOTH reads are LOW
+      if (read1 == LOW && read2 == LOW) {
+        hits.add(in);
       }
     }
 
-    // Release pin
-    pinMode(PANEL_A_PINS[a], INPUT);
-    digitalWrite(PANEL_A_PINS[a], LOW);
+    // Release
+    pinMode(OUT_PINS[out], INPUT);
+    digitalWrite(OUT_PINS[out], LOW);
   }
 
-  // Final cleanup
   setAllOutputsHighZ();
-
-  serializeJson(doc, Serial);
-  Serial.println();
-}
-
-// ---------- Test single pin ----------
-void handleTest(int pin) {
-  setAllOutputsHighZ();
-
-  // Drive the requested pin LOW
-  pinMode(PANEL_A_PINS[pin], OUTPUT);
-  digitalWrite(PANEL_A_PINS[pin], LOW);
-  delay(10);
-
-  JsonDocument doc;
-  doc["type"] = "test";
-  doc["pin"] = pin;
-  JsonArray hits = doc["hits"].to<JsonArray>();
-
-  for (int b = 0; b < NUM_CONNECTORS; b++) {
-    if (digitalRead(PANEL_B_PINS[b]) == LOW) {
-      hits.add(b);
-    }
-  }
-
-  // Release
-  pinMode(PANEL_A_PINS[pin], INPUT);
-  digitalWrite(PANEL_A_PINS[pin], LOW);
-
   serializeJson(doc, Serial);
   Serial.println();
 }

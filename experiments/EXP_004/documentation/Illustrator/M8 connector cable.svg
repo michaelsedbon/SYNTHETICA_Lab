@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1927.52 1951.35">
+  <defs>
+    <style>
+      .cls-1 {
+        letter-spacing: 0em;
+      }
+
+      .cls-2 {
+        fill: #ee1c4e;
+      }
+
+      .cls-2, .cls-3, .cls-4, .cls-5 {
+        font-family: MyriadPro-Regular, 'Myriad Pro';
+        font-size: 125px;
+      }
+
+      .cls-3 {
+        fill: #3d57a7;
+      }
+
+      .cls-6 {
+        fill: #b7b7b7;
+      }
+
+      .cls-5 {
+        fill: #fff;
+      }
+
+      .cls-7 {
+        fill: #121212;
+      }
+
+      .cls-8 {
+        fill: #07202c;
+      }
+
+      .cls-9 {
+        letter-spacing: 0em;
+      }
+
+      .cls-10 {
+        letter-spacing: -.02em;
+      }
+
+      .cls-11 {
+        letter-spacing: -.04em;
+      }
+
+      .cls-12 {
+        letter-spacing: 0em;
+      }
+
+      .cls-13 {
+        letter-spacing: 0em;
+      }
+
+      .cls-14 {
+        letter-spacing: 0em;
+      }
+
+      .cls-15 {
+        fill: none;
+        stroke: #b7b7b7;
+        stroke-miterlimit: 10;
+        stroke-width: 15px;
+      }
+
+      .cls-16 {
+        letter-spacing: 0em;
+      }
+    </style>
+  </defs>
+  <rect class="cls-8" x="3.45" y="23.63" width="1924.06" height="1927.73"/>
+  <rect class="cls-7" width="1923.04" height="320"/>
+  <text class="cls-5" transform="translate(519.06 195.56)"><tspan x="0" y="0">M8 </tspan><tspan class="cls-14" x="191.12" y="0">C</tspan><tspan class="cls-1" x="262.75" y="0">able - </tspan><tspan class="cls-10" x="577.61" y="0">P</tspan><tspan x="642.11" y="0">inout</tspan></text>
+  <g>
+    <circle class="cls-6" cx="698.43" cy="941.16" r="32.4"/>
+    <circle class="cls-6" cx="1196.69" cy="941.16" r="32.4"/>
+  </g>
+  <g>
+    <circle class="cls-6" cx="1092.54" cy="1312.99" r="32.4"/>
+    <circle class="cls-6" cx="802.57" cy="1312.99" r="32.4"/>
+  </g>
+  <g>
+    <circle class="cls-15" cx="946.82" cy="1127.08" r="440.28"/>
+    <rect class="cls-6" x="912.11" y="678.76" width="69.43" height="100.44" rx="27.24" ry="27.24"/>
+  </g>
+  <text class="cls-2" transform="translate(1381.5 970.52)"><tspan x="0" y="0">4 -- </tspan><tspan class="cls-16" x="193.87" y="0">R</tspan><tspan x="261.62" y="0">ed</tspan></text>
+  <text class="cls-4" transform="translate(43.84 1379.37)"><tspan x="0" y="0">Black -- 2</tspan></text>
+  <text class="cls-5" transform="translate(1393.84 1379.37)"><tspan x="0" y="0">3 --</tspan><tspan class="cls-11" x="167.37" y="0"> </tspan><tspan class="cls-13" x="189.37" y="0">W</tspan><tspan class="cls-9" x="294.49" y="0">hi</tspan><tspan class="cls-12" x="393.12" y="0">t</tspan><tspan x="433.74" y="0">e</tspan></text>
+  <text class="cls-3" transform="translate(76.24 961.26)"><tspan x="0" y="0">Bleu -- 1 </tspan></text>
+</svg>
