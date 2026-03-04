@@ -120,8 +120,8 @@ class FaceRenderer {
 
         // Face background gradient
         const faceGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r * 0.9);
-        faceGrad.addColorStop(0, '#2a2a2a');
-        faceGrad.addColorStop(1, '#1a1a1a');
+        faceGrad.addColorStop(0, '#353535');
+        faceGrad.addColorStop(1, '#222222');
         ctx.beginPath();
         ctx.arc(cx, cy, r * 0.88, 0, Math.PI * 2);
         ctx.fillStyle = faceGrad;
@@ -147,7 +147,7 @@ class FaceRenderer {
 
         // Activity indicator: subtle ring
         if (s.active) {
-            const ringAlpha = 0.1 + Math.sin(s.breathePhase * 2) * 0.05;
+            const ringAlpha = 0.25 + Math.sin(s.breathePhase * 2) * 0.1;
             const ringColor = s.llm === 'gemini' ? `rgba(66, 133, 244, ${ringAlpha})`
                 : s.llm === 'ollama' ? `rgba(232, 113, 10, ${ringAlpha})`
                     : `rgba(86, 156, 214, ${ringAlpha})`;
@@ -168,7 +168,7 @@ class FaceRenderer {
         // Eye white (dark grey in dark theme)
         ctx.beginPath();
         ctx.ellipse(ex, ey, w, h, 0, 0, Math.PI * 2);
-        ctx.fillStyle = '#444444';
+        ctx.fillStyle = '#555555';
         ctx.fill();
 
         if (h > w * 0.1) { // Only draw iris/pupil if eye is open enough
@@ -209,7 +209,7 @@ class FaceRenderer {
         ctx.beginPath();
         ctx.moveTo(mx - width, my);
         ctx.quadraticCurveTo(mx, my + width * curve * 1.5, mx + width, my);
-        ctx.strokeStyle = '#5a5a5a';
+        ctx.strokeStyle = '#777777';
         ctx.lineWidth = 3;
         ctx.lineCap = 'round';
         ctx.stroke();
