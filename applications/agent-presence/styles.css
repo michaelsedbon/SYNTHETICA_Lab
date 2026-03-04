@@ -4,15 +4,15 @@
    ══════════════════════════════════════════════════════════════ */
 
 :root {
-    --bg-primary: #0d0d0d;
-    --bg-secondary: #141414;
-    --bg-tertiary: #1a1a1a;
-    --bg-card: #1e1e1e;
-    --border: #2a2a2a;
-    --border-light: #333333;
-    --text-primary: #e0e0e0;
-    --text-secondary: #888888;
-    --text-muted: #555555;
+    --bg-primary: #0a0a0a;
+    --bg-secondary: #161616;
+    --bg-tertiary: #1c1c1c;
+    --bg-card: #222222;
+    --border: #3a3a3a;
+    --border-light: #4a4a4a;
+    --text-primary: #f0f0f0;
+    --text-secondary: #aaaaaa;
+    --text-muted: #777777;
 
     /* Accent colors */
     --accent-blue: #569cd6;
@@ -145,24 +145,24 @@ body {
 
 .agent-face canvas {
     border-radius: 50%;
-    background: var(--bg-secondary);
-    border: 2px solid var(--border);
+    background: #181818;
+    border: 3px solid #444444;
     transition: border-color 500ms ease;
 }
 
 .agent-face.active canvas {
     border-color: var(--accent-blue);
-    box-shadow: 0 0 30px rgba(86, 156, 214, 0.15);
+    box-shadow: 0 0 40px rgba(86, 156, 214, 0.3);
 }
 
 .agent-face.gemini canvas {
     border-color: var(--llm-gemini);
-    box-shadow: 0 0 30px rgba(66, 133, 244, 0.15);
+    box-shadow: 0 0 40px rgba(66, 133, 244, 0.3);
 }
 
 .agent-face.ollama canvas {
     border-color: var(--llm-ollama);
-    box-shadow: 0 0 30px rgba(232, 113, 10, 0.15);
+    box-shadow: 0 0 40px rgba(232, 113, 10, 0.3);
 }
 
 /* LLM Badge */
@@ -172,9 +172,9 @@ body {
     gap: 6px;
     padding: 4px 12px;
     border-radius: 20px;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    font-size: 11px;
+    background: #2a2a2a;
+    border: 1px solid #555;
+    font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.8px;
@@ -204,8 +204,8 @@ body {
 }
 
 .agent-label {
-    font-size: 12px;
-    font-weight: 500;
+    font-size: 14px;
+    font-weight: 600;
     color: var(--text-muted);
     letter-spacing: 0.5px;
 }

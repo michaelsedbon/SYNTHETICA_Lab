@@ -120,8 +120,8 @@ class FaceRenderer {
 
         // Face background gradient
         const faceGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r * 0.9);
-        faceGrad.addColorStop(0, '#1a1a1a');
-        faceGrad.addColorStop(1, '#111111');
+        faceGrad.addColorStop(0, '#2a2a2a');
+        faceGrad.addColorStop(1, '#1a1a1a');
         ctx.beginPath();
         ctx.arc(cx, cy, r * 0.88, 0, Math.PI * 2);
         ctx.fillStyle = faceGrad;
@@ -168,7 +168,7 @@ class FaceRenderer {
         // Eye white (dark grey in dark theme)
         ctx.beginPath();
         ctx.ellipse(ex, ey, w, h, 0, 0, Math.PI * 2);
-        ctx.fillStyle = '#2a2a2a';
+        ctx.fillStyle = '#444444';
         ctx.fill();
 
         if (h > w * 0.1) { // Only draw iris/pupil if eye is open enough
@@ -197,8 +197,8 @@ class FaceRenderer {
 
             // Highlight
             ctx.beginPath();
-            ctx.arc(irisX - pupilR * 0.3, irisY - pupilR * 0.3, pupilR * 0.25, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
+            ctx.arc(irisX - pupilR * 0.3, irisY - pupilR * 0.3, pupilR * 0.3, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
             ctx.fill();
         }
     }
@@ -209,8 +209,8 @@ class FaceRenderer {
         ctx.beginPath();
         ctx.moveTo(mx - width, my);
         ctx.quadraticCurveTo(mx, my + width * curve * 1.5, mx + width, my);
-        ctx.strokeStyle = '#3a3a3a';
-        ctx.lineWidth = 2.5;
+        ctx.strokeStyle = '#5a5a5a';
+        ctx.lineWidth = 3;
         ctx.lineCap = 'round';
         ctx.stroke();
     }
