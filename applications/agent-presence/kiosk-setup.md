@@ -1,29 +1,23 @@
-# Kiosk Setup Guide — Linux Server
+# Kiosk Setup — Agent Presence Dashboard
 
-One-time setup to make the server's monitor display the Agent Presence Dashboard automatically.
+Step-by-step guide to configure the Linux server as a dedicated kiosk display.
 
----
-
-## 1. Disable Lock Screen
-
-```bash
-# For GNOME (Ubuntu 24.04 with GDM3):
-gsettings set org.gnome.desktop.screensaver lock-enabled false
-gsettings set org.gnome.desktop.screensaver idle-activation-enabled false
-gsettings set org.gnome.desktop.session idle-delay 0
-```
+> **Status**: Already applied to `172.16.1.80` on March 4, 2026.
 
 ---
 
-## 2. Enable Auto-Login
+## Prerequisites
+
+- Ubuntu 24.04 with GNOME desktop
+- GDM3 display manager
+- User account `michael`
+- SSH access from Mac
+
+---
+
+## 1. Auto-Login
 
 Edit `/etc/gdm3/custom.conf`:
-
-```bash
-sudo nano /etc/gdm3/custom.conf
-```
-
-Add/uncomment under `[daemon]`:
 
 ```ini
 [daemon]
@@ -33,53 +27,37 @@ AutomaticLogin=michael
 
 ---
 
-## 3. Install Chromium (if not present)
+## 2. Disable Lock Screen
 
 ```bash
-sudo apt install chromium-browser -y
+# Run with GNOME session active
+export DISPLAY=:0
+export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+
+gsettings set org.gnome.desktop.screensaver lock-enabled false
+gsettings set org.gnome.desktop.screensaver idle-activation-enabled false
+gsettings set org.gnome.desktop.session idle-delay 0
+gsettings set org.gnome.desktop.lockdown disable-lock-screen true
+gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
+gsettings set org.gnome.settings-daemon.plugins.power idle-dim false
 ```
 
 ---
 
-## 4. Create Kiosk Autostart Entry
+## 3. Install Chromium & xdotool
 
 ```bash
-mkdir -p ~/.config/autostart
-
-cat > ~/.config/autostart/agent-presence.desktop << 'EOF'
-[Desktop Entry]
-Type=Application
-Name=Agent Presence Dashboard
-Exec=bash -c "sleep 5 && chromium-browser --kiosk --noerrdialogs --disable-infobars --disable-translate --no-first-run --fast --fast-start --disable-features=TranslateUI --disable-session-crashed-bubble http://localhost:3005"
-X-GNOME-Autostart-enabled=true
-EOF
+sudo snap install chromium
+sudo apt install -y xdotool
 ```
 
 ---
 
-## 5. Configure DPMS (Display Power Management)
+## 4. Dashboard systemd Service
 
-```bash
-# Auto screen-off after 5 minutes of no xset reset (overridden by dashboard)
-xset dpms 300 300 300
-xset s off   # disable built-in screensaver
-```
+Create `/etc/systemd/system/agent-presence.service`:
 
-Add to `~/.profile` for persistence:
-
-```bash
-echo 'xset dpms 300 300 300 && xset s off' >> ~/.profile
-```
-
----
-
-## 6. Start the Dashboard Server
-
-Add to systemd or crontab:
-
-```bash
-# Option A: systemd service
-sudo tee /etc/systemd/system/agent-presence.service << 'EOF'
+```ini
 [Unit]
 Description=Agent Presence Dashboard
 After=network.target
@@ -90,34 +68,91 @@ User=michael
 WorkingDirectory=/opt/synthetica-lab/applications/agent-presence
 ExecStart=/usr/bin/python3 serve.py
 Restart=always
+RestartSec=5
 Environment=DISPLAY=:0
+Environment=PRESENCE_PORT=3005
 
 [Install]
 WantedBy=multi-user.target
-EOF
+```
 
+Enable:
+
+```bash
 sudo systemctl daemon-reload
 sudo systemctl enable agent-presence
 sudo systemctl start agent-presence
 ```
 
-```bash
-# Option B: crontab
-crontab -e
-# Add: @reboot cd /opt/synthetica-lab/applications/agent-presence && python3 serve.py
+---
+
+## 5. Chromium Kiosk Autostart
+
+Create `~/.config/autostart/agent-presence.desktop`:
+
+```ini
+[Desktop Entry]
+Type=Application
+Name=Agent Presence Dashboard
+Exec=bash -c "sleep 5 && chromium-browser --kiosk --start-fullscreen --noerrdialogs --disable-infobars --disable-translate --no-first-run --disable-features=TranslateUI --disable-session-crashed-bubble http://localhost:3005 & sleep 8 && DISPLAY=:0 xdotool search --name Agent windowactivate key F11"
+X-GNOME-Autostart-enabled=true
 ```
 
 ---
 
-## 7. Reboot & Verify
+## 6. Lock Screen Disable Autostart
 
-```bash
-sudo reboot
+Create `~/.config/autostart/disable-lock.desktop`:
+
+```ini
+[Desktop Entry]
+Type=Application
+Name=Disable Lock Screen
+Exec=bash -c "gsettings set org.gnome.desktop.screensaver lock-enabled false && gsettings set org.gnome.desktop.lockdown disable-lock-screen true && xset dpms 0 0 0 && xset s off"
+X-GNOME-Autostart-enabled=true
 ```
 
-After reboot:
-1. Server should auto-login to GNOME
-2. Chromium opens in kiosk mode at `http://localhost:3005`
-3. Dashboard connects to lab-agent WebSocket at `:8003`
-4. Screen turns off after 5 minutes of inactivity
-5. Screen turns on when agent starts processing
+---
+
+## Verify
+
+```bash
+# Check service
+systemctl is-active agent-presence
+
+# Check HTTP
+curl -s -o /dev/null -w '%{http_code}' http://localhost:3005/
+
+# Check auto-login
+grep AutomaticLogin /etc/gdm3/custom.conf
+
+# Check lock screen
+gsettings get org.gnome.desktop.screensaver lock-enabled
+# Should be: false
+
+# Check autostart files
+ls ~/.config/autostart/
+```
+
+---
+
+## Maintenance
+
+### Refresh after code update
+
+```bash
+cd /opt/synthetica-lab && git pull
+DISPLAY=:0 XAUTHORITY=/run/user/1000/gdm/Xauthority xdotool key ctrl+shift+r
+```
+
+### Start GNOME without reboot
+
+```bash
+sudo systemctl start gdm3
+```
+
+### Force Chromium fullscreen
+
+```bash
+DISPLAY=:0 XAUTHORITY=/run/user/1000/gdm/Xauthority xdotool search --name Agent windowactivate key F11
+```

@@ -1,6 +1,6 @@
 # Applications Index
 
-> **8 applications** powering the SYNTHETIC Lab — from electrophysiology recording to autonomous AI control.
+> **9 applications** powering the SYNTHETIC Lab — from electrophysiology recording to autonomous AI control.
 
 All lab applications live under `applications/`. Each app has a `DOCS.md` with full route tables, architecture diagrams, and feature lists. Apps are registered in the [App Launcher](#-app-launcher) and can be started/stopped from a single dashboard.
 
@@ -209,7 +209,7 @@ Ollama-powered agent (qwen2.5:14b) running on the local server. Controls the Cry
 
 **Full-screen kiosk display showing AI agent activity on the server's monitor.**
 
-Animated face with LLM-colored irises (blue=Gemini, orange=Ollama), live terminal event feed, and compact timeline. Screen auto-on when agent is active, auto-off after idle.
+Animated face with LLM-colored irises (blue=Gemini, orange=Ollama), live terminal event feed, tabbed bottom panel (Timeline + LLM I/O with JSON formatting). Screen auto-on when agent is active, auto-off after idle.
 
 | Detail | Value |
 |--------|-------|
@@ -217,7 +217,7 @@ Animated face with LLM-colored irises (blue=Gemini, orange=Ollama), live termina
 | Data Source | Lab Agent WebSocket `:8003/ws/agent` |
 | Linked Experiment | — |
 
-**Key capabilities:** Canvas face animation, real-time WebSocket event feed, LLM detection badges, idle screen management (xset dpms), kiosk-mode Chromium autostart.
+**Key capabilities:** Canvas face animation, real-time WebSocket event feed, LLM detection badges, LLM I/O panel with smart JSON formatting, idle screen management (xset dpms), kiosk-mode Chromium autostart.
 
 📄 **Full docs:** [`agent-presence/README.md`](agent-presence/README.md)
 
