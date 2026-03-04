@@ -46,12 +46,21 @@
                     <div id="terminal-body"></div>
                 </div>
 
-                <!-- Timeline -->
-                <div id="timeline">
-                    <div id="timeline-header">
-                        <span class="timeline-title">⏱ Timeline</span>
+                <!-- Bottom panel: tabs -->
+                <div id="bottom-panel">
+                    <div id="bottom-tabs">
+                        <button class="tab active" data-tab="timeline" onclick="switchTab('timeline')">⏱
+                            Timeline</button>
+                        <button class="tab" data-tab="llmio" onclick="switchTab('llmio')">⚡ LLM I/O</button>
                     </div>
-                    <div id="timeline-body"></div>
+                    <div id="tab-content">
+                        <div id="timeline" class="tab-pane active">
+                            <div id="timeline-body"></div>
+                        </div>
+                        <div id="llmio" class="tab-pane">
+                            <div id="llmio-body"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -352,52 +352,82 @@ body {
     font-weight: 600;
 }
 
-/* ── Timeline ─────────────────────────────────────────────── */
-#timeline {
-    height: 220px;
+/* ── Bottom Panel (Tabs) ──────────────────────────────────── */
+#bottom-panel {
+    height: 280px;
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
-    border-top: 1px solid var(--border);
+    border-top: 2px solid var(--border);
 }
 
-#timeline-header {
+#bottom-tabs {
     display: flex;
-    align-items: center;
-    padding: 8px 16px;
     background: var(--bg-tertiary);
     border-bottom: 1px solid var(--border);
     flex-shrink: 0;
 }
 
-.timeline-title {
+#bottom-tabs .tab {
+    padding: 7px 20px;
     font-size: 12px;
     font-weight: 600;
-    color: var(--text-secondary);
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    font-family: var(--font-sans);
+    transition: all 150ms ease;
 }
 
-#timeline-body {
+#bottom-tabs .tab:hover {
+    color: var(--text-secondary);
+}
+
+#bottom-tabs .tab.active {
+    color: var(--text-primary);
+    border-bottom-color: var(--accent-blue);
+}
+
+#tab-content {
     flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+.tab-pane {
+    display: none;
+    position: absolute;
+    inset: 0;
     overflow-y: auto;
     padding: 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
 }
 
-#timeline-body::-webkit-scrollbar {
+.tab-pane.active {
+    display: block;
+}
+
+.tab-pane::-webkit-scrollbar {
     width: 6px;
 }
 
-#timeline-body::-webkit-scrollbar-track {
+.tab-pane::-webkit-scrollbar-track {
     background: transparent;
 }
 
-#timeline-body::-webkit-scrollbar-thumb {
+.tab-pane::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.08);
     border-radius: 3px;
+}
+
+/* Timeline cards */
+#timeline-body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
 .tl-card {
@@ -432,6 +462,131 @@ body {
     color: var(--text-muted);
     font-family: var(--font-mono);
     flex-shrink: 0;
+}
+
+/* ── LLM I/O Cards ────────────────────────────────────────── */
+#llmio-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.llmio-card {
+    border-radius: var(--radius-sm);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    animation: lineIn 200ms ease;
+}
+
+.llmio-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    background: var(--bg-tertiary);
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.llmio-header:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.llmio-direction {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 1px 6px;
+    border-radius: 3px;
+    letter-spacing: 0.5px;
+}
+
+.llmio-direction.input {
+    background: rgba(66, 133, 244, 0.2);
+    color: #70b0ff;
+}
+
+.llmio-direction.output {
+    background: rgba(78, 201, 176, 0.2);
+    color: #5eedb8;
+}
+
+.llmio-direction.tool-in {
+    background: rgba(156, 220, 254, 0.15);
+    color: #7de8ff;
+}
+
+.llmio-direction.tool-out {
+    background: rgba(206, 145, 120, 0.2);
+    color: #ffaa55;
+}
+
+.llmio-label {
+    flex: 1;
+    color: var(--text-secondary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.llmio-time {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    flex-shrink: 0;
+}
+
+.llmio-body {
+    padding: 8px 12px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    max-height: 150px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.llmio-body::-webkit-scrollbar {
+    width: 4px;
+}
+
+.llmio-body::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 2px;
+}
+
+.llmio-body .json-key {
+    color: #7de8ff;
+}
+
+.llmio-body .json-string {
+    color: #ce9178;
+}
+
+.llmio-body .json-number {
+    color: #b5cea8;
+}
+
+.llmio-body .json-bool {
+    color: #569cd6;
+}
+
+.llmio-body .json-null {
+    color: #569cd6;
+    font-style: italic;
+}
+
+.llmio-body .json-bracket {
+    color: #888;
+}
+
+.llmio-collapsed .llmio-body {
+    display: none;
 }
 
 /* ── Scanline Overlay ─────────────────────────────────────── */
