@@ -226,8 +226,9 @@
             <div class="llmio-body">${bodyContent || ''}</div>
         `;
 
-        llmioBody.insertBefore(card, llmioBody.firstChild);
-        while (llmioBody.children.length > MAX_LLMIO_CARDS) llmioBody.removeChild(llmioBody.lastChild);
+        llmioBody.appendChild(card);
+        while (llmioBody.children.length > MAX_LLMIO_CARDS) llmioBody.removeChild(llmioBody.firstChild);
+        llmioBody.scrollTop = llmioBody.scrollHeight;
     }
 
     // ==================== Smart JSON Formatting ====================
