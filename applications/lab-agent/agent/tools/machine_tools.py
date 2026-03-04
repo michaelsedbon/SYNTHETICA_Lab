@@ -187,6 +187,68 @@ def motor_set_accel(accel: int) -> str:
         return f"ERROR: {data.get('error', 'unknown')}"
 
 
+def motor_goto(target: str) -> str:
+    """Move the motor to a named position.
+    
+    Available positions:
+      - tube1, tube2, tube3, tube4, tube5 (algae tube positions)
+      - home (hall sensor reference, position 0)
+      - half (180°), quarter (90°), three_quarter (270°)
+    
+    Positions are computed from the calibrated steps-per-revolution.
+    Tube positions are evenly spaced (72° apart) with a configurable offset.
+    The motor automatically picks the correct direction.
+    
+    Args:
+        target: Position name (e.g. 'tube1', 'half', 'home')
+    """
+    data = _api_call("goto", params={"target": target}, timeout=60)
+    if data.get("ok"):
+        return f"OK — Moving to {data.get('target', target)} (step position {data.get('pos', '?')})"
+    else:
+        return f"ERROR: {data.get('error', 'unknown')}"
+
+
+def motor_positions() -> str:
+    """Get all named positions and their step values.
+    
+    Returns the full position map: tube1-5, home, half, quarter, three_quarter.
+    Also shows the current tube offset from the hall sensor.
+    """
+    data = _api_call("positions", timeout=15)
+    if data.get("ok"):
+        positions = data.get("positions", {})
+        offset = data.get("offset", 0)
+        lines = [f"Tube offset: {offset} steps"]
+        for name, pos in positions.items():
+            lines.append(f"  {name}: step {pos}")
+        return "\n".join(lines)
+    else:
+        return f"ERROR: {data.get('error', 'unknown')}"
+
+
+def motor_set_offset(offset: int) -> str:
+    """Set the tube offset: distance in steps from hall sensor to tube 1.
+    
+    This configures where tube 1 sits relative to the home/hall sensor position.
+    All other tube positions are recalculated automatically (evenly spaced).
+    
+    To measure the offset:
+    1. motor_home() to go to hall sensor
+    2. Manually move to tube 1 position
+    3. motor_status() to read the current position
+    4. motor_set_offset(that_position)
+    
+    Args:
+        offset: Steps from hall sensor to tube 1
+    """
+    data = _api_call("set-offset", params={"value": offset}, timeout=10)
+    if data.get("ok"):
+        return f"OK — Tube offset set to {data.get('offset', offset)} steps. Positions recalculated."
+    else:
+        return f"ERROR: {data.get('error', 'unknown')}"
+
+
 # ══════════════════════════════════════════════
 # ── Legacy tools (kept for backward compatibility) ──
 # ══════════════════════════════════════════════
@@ -396,6 +458,36 @@ MACHINE_TOOLS = {
                 "accel": {"type": "integer", "description": "Acceleration in steps/sec² (1-50000)"},
             },
             "required": ["accel"],
+        },
+    },
+    "motor_goto": {
+        "function": motor_goto,
+        "description": "Move to a named position: tube1-tube5 (algae tubes), home, half, quarter, three_quarter. Uses absolute positioning — direction is automatic.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "target": {"type": "string", "description": "Position name: tube1, tube2, tube3, tube4, tube5, home, half, quarter, three_quarter"},
+            },
+            "required": ["target"],
+        },
+    },
+    "motor_positions": {
+        "function": motor_positions,
+        "description": "List all named positions and their step values. Shows tube offset and positions for all tubes + home/half/quarter.",
+        "parameters": {
+            "type": "object",
+            "properties": {},
+        },
+    },
+    "motor_set_offset": {
+        "function": motor_set_offset,
+        "description": "Set the tube offset: steps from hall sensor to tube 1. All tube positions are recalculated. Measure by homing, then manually moving to tube 1 and reading the position.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "offset": {"type": "integer", "description": "Steps from hall sensor to tube 1"},
+            },
+            "required": ["offset"],
         },
     },
     # ── Legacy tools (backward compatibility) ──

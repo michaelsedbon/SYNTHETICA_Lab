@@ -456,6 +456,122 @@ void handleApiAccel() {
     }
 }
 
+void handleApiGoto() {
+    sendCorsHeaders();
+    if (!server.hasArg("target")) {
+        server.send(400, "application/json", "{\"ok\":false,\"error\":\"missing_target_param\"}");
+        return;
+    }
+    String target = server.arg("target");
+    target.toUpperCase();
+    apiSendAndCollect("GOTO " + target);
+    if (apiCollectLines(30000)) {
+        for (int i = 0; i < apiResponseCount; i++) {
+            String line = apiResponseLines[i];
+            if (line.startsWith("OK GOTO")) {
+                // Parse "OK GOTO TUBE1 POS:5943"
+                int posIdx = line.indexOf("POS:");
+                long pos = (posIdx >= 0) ? line.substring(posIdx + 4).toInt() : 0;
+                server.send(200, "application/json",
+                    "{\"ok\":true,\"target\":\"" + target + "\",\"pos\":" + String(pos) + "}");
+                return;
+            } else if (line.startsWith("ERROR:")) {
+                server.send(200, "application/json",
+                    "{\"ok\":false,\"error\":\"" + line + "\"}");
+                return;
+            }
+        }
+        server.send(200, "application/json", "{\"ok\":false,\"error\":\"unexpected_response\"}");
+    } else {
+        server.send(504, "application/json", "{\"ok\":false,\"error\":\"timeout\"}");
+    }
+}
+
+void handleApiPositions() {
+    sendCorsHeaders();
+    apiSendAndCollect("POSITIONS");
+    // POSITIONS returns multiple lines ending with END_POSITIONS
+    // Override apiCollectLines end-detection — we need to wait for END_POSITIONS
+    unsigned long start = millis();
+    while (millis() - start < 10000) {
+        while (Serial.available()) {
+            char c = Serial.read();
+            if (c == '\n') {
+                if (nanoBuffer.length() > 0) {
+                    debugLog("RX << " + nanoBuffer);
+                    if (apiResponseCount < API_RESPONSE_MAX) {
+                        apiResponseLines[apiResponseCount++] = nanoBuffer;
+                    }
+                    if (nanoBuffer == "END_POSITIONS") goto positions_done;
+                    if (nanoBuffer.startsWith("ERROR:")) {
+                        server.send(200, "application/json",
+                            "{\"ok\":false,\"error\":\"" + nanoBuffer + "\"}");
+                        apiWaiting = false;
+                        return;
+                    }
+                    nanoBuffer = "";
+                }
+            } else if (c != '\r') {
+                nanoBuffer += c;
+            }
+        }
+        yield();
+        delay(10);
+    }
+    apiWaiting = false;
+    server.send(504, "application/json", "{\"ok\":false,\"error\":\"timeout\"}");
+    return;
+
+    positions_done:
+    apiWaiting = false;
+    nanoBuffer = "";
+    // Build JSON from collected lines
+    String json = "{\"ok\":true,\"positions\":{";
+    long offset = 0;
+    bool first = true;
+    for (int i = 0; i < apiResponseCount; i++) {
+        String line = apiResponseLines[i];
+        if (line == "END_POSITIONS") break;
+        int colonIdx = line.indexOf(':');
+        if (colonIdx > 0) {
+            String key = line.substring(0, colonIdx);
+            String val = line.substring(colonIdx + 1);
+            key.toLowerCase();
+            if (key == "offset") {
+                offset = val.toInt();
+            } else {
+                if (!first) json += ",";
+                json += "\"" + key + "\":" + val;
+                first = false;
+            }
+        }
+    }
+    json += "},\"offset\":" + String(offset) + "}";
+    server.send(200, "application/json", json);
+}
+
+void handleApiSetOffset() {
+    sendCorsHeaders();
+    if (!server.hasArg("value")) {
+        server.send(400, "application/json", "{\"ok\":false,\"error\":\"missing_value_param\"}");
+        return;
+    }
+    long value = server.arg("value").toInt();
+    apiSendAndCollect("SET_OFFSET " + String(value));
+    if (apiCollectLines(5000)) {
+        for (int i = 0; i < apiResponseCount; i++) {
+            if (apiResponseLines[i].startsWith("OK OFFSET")) {
+                server.send(200, "application/json",
+                    "{\"ok\":true,\"offset\":" + String(value) + "}");
+                return;
+            }
+        }
+        server.send(200, "application/json", "{\"ok\":false,\"error\":\"unexpected_response\"}");
+    } else {
+        server.send(504, "application/json", "{\"ok\":false,\"error\":\"timeout\"}");
+    }
+}
+
 // ══════════════════════════════════════════════
 // ── WebSocket event handler ──
 // ══════════════════════════════════════════════
@@ -718,6 +834,9 @@ void setup() {
     server.on("/api/stop", handleApiStop);
     server.on("/api/speed", handleApiSpeed);
     server.on("/api/accel", handleApiAccel);
+    server.on("/api/goto", handleApiGoto);
+    server.on("/api/positions", handleApiPositions);
+    server.on("/api/set-offset", handleApiSetOffset);
 
     server.begin();
     debugLog("Web server started on port 80 (legacy + API)");

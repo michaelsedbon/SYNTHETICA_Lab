@@ -21,9 +21,14 @@
  * Serial protocol (115200 baud):
  *   Receives: MOVE <steps>, MOVETO <n>, HOME, STATUS, STOP, SPEED <sps>,
  *             ENABLE, DISABLE, ZERO, PING, ACCEL <val>,
- *             CALIBRATE, HALF, SPR
+ *             CALIBRATE, HALF, SPR,
+ *             GOTO <name>, SET_OFFSET <steps>, POSITIONS
  *   Sends:    OK, POS:<n>, HALL:<0|1>, ERROR:<msg>, HOMED, PONG,
  *             CAL_START, CAL_DONE SPR:<n>, CAL_FAIL, SPR:<n>
+ *
+ * Named positions (after calibration):
+ *   HOME, HALF, QUARTER, THREE_QUARTER,
+ *   TUBE1..TUBE5 (evenly spaced, offset from hall sensor)
  */
 
 #include <Arduino.h>
@@ -42,6 +47,7 @@
 #define CALIBRATION_SPEED     400.0    // Speed during calibration measurement
 #define HOME_MAX_STEPS        200000   // Max steps before homing fails
 #define CALIBRATION_ESCAPE    500      // Steps to move past magnet before re-measuring
+#define NUM_TUBES             5        // Number of algae tubes
 
 // ── AccelStepper (type 1 = DRIVER: step + dir) ──
 AccelStepper stepper(AccelStepper::DRIVER, PIN_STEP, PIN_DIR);
@@ -56,6 +62,38 @@ long stepsPerRevolution = 0;
 bool calibrated = false;
 bool calibrating = false;
 int calPhase = 0;  // 0=idle, 1=homing, 2=escaping magnet, 3=measuring
+
+// ── Named positions ──
+// tubeOffset = steps from hall sensor (home) to tube 1
+// Set via SET_OFFSET command after physically aligning
+long tubeOffset = 0;
+long namedPositions[NUM_TUBES + 4];  // tube1-5 + home, half, quarter, three_quarter
+const char* positionNames[] = {
+    "TUBE1", "TUBE2", "TUBE3", "TUBE4", "TUBE5",
+    "HOME", "HALF", "QUARTER", "THREE_QUARTER"
+};
+#define POS_COUNT (NUM_TUBES + 4)
+
+void computePositions() {
+    if (stepsPerRevolution == 0) return;
+    // Tubes: evenly spaced, starting at tubeOffset
+    for (int i = 0; i < NUM_TUBES; i++) {
+        namedPositions[i] = (tubeOffset + (long)i * stepsPerRevolution / NUM_TUBES) % stepsPerRevolution;
+    }
+    // Named fractions
+    namedPositions[NUM_TUBES]     = 0;                          // HOME
+    namedPositions[NUM_TUBES + 1] = stepsPerRevolution / 2;     // HALF
+    namedPositions[NUM_TUBES + 2] = stepsPerRevolution / 4;     // QUARTER
+    namedPositions[NUM_TUBES + 3] = 3L * stepsPerRevolution / 4; // THREE_QUARTER
+}
+
+long getNamedPosition(String name) {
+    name.toUpperCase();
+    for (int i = 0; i < POS_COUNT; i++) {
+        if (name == positionNames[i]) return namedPositions[i];
+    }
+    return -1;  // Not found
+}
 
 // ── Serial input ──
 String inputBuffer = "";
@@ -136,6 +174,9 @@ void updateCalibration() {
 
                     Serial.print("CAL_DONE SPR:");
                     Serial.println(stepsPerRevolution);
+
+                    // Compute named positions now that SPR is known
+                    computePositions();
                 }
             } else if (!stepper.isRunning()) {
                 // Motor stopped without finding hall on second pass
@@ -240,9 +281,52 @@ void processCommand(String cmd) {
             Serial.println("ERROR:NOT_CALIBRATED");
             return;
         }
-        long halfSteps = stepsPerRevolution / 2;
-        stepper.move(halfSteps);
-        Serial.print("OK HALF "); Serial.println(halfSteps);
+        long halfPos = stepsPerRevolution / 2;
+        stepper.moveTo(halfPos);
+        Serial.print("OK HALF "); Serial.println(halfPos);
+        return;
+    }
+
+    // ── GOTO <name> ── (absolute move to a named position)
+    if (cmd.startsWith("GOTO ")) {
+        if (!calibrated || stepsPerRevolution == 0) {
+            Serial.println("ERROR:NOT_CALIBRATED");
+            return;
+        }
+        String target = cmd.substring(5);
+        target.trim();
+        long pos = getNamedPosition(target);
+        if (pos < 0) {
+            Serial.print("ERROR:UNKNOWN_POS:"); Serial.println(target);
+            return;
+        }
+        stepper.moveTo(pos);
+        Serial.print("OK GOTO "); Serial.print(target);
+        Serial.print(" POS:"); Serial.println(pos);
+        return;
+    }
+
+    // ── SET_OFFSET <steps> ── (set tube offset from hall sensor)
+    if (cmd.startsWith("SET_OFFSET ")) {
+        tubeOffset = cmd.substring(11).toInt();
+        computePositions();
+        Serial.print("OK OFFSET "); Serial.println(tubeOffset);
+        return;
+    }
+
+    // ── POSITIONS ── (list all named positions)
+    if (cmd == "POSITIONS") {
+        if (!calibrated || stepsPerRevolution == 0) {
+            Serial.println("ERROR:NOT_CALIBRATED");
+            return;
+        }
+        Serial.print("OFFSET:"); Serial.println(tubeOffset);
+        for (int i = 0; i < POS_COUNT; i++) {
+            Serial.print(positionNames[i]);
+            Serial.print(":");
+            Serial.println(namedPositions[i]);
+        }
+        Serial.println("END_POSITIONS");
         return;
     }
 
