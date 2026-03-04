@@ -118,10 +118,10 @@ class FaceRenderer {
         ctx.scale(breatheScale, breatheScale);
         ctx.translate(-cx, -cy);
 
-        // Face background gradient
+        // Face background gradient — white face
         const faceGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r * 0.9);
-        faceGrad.addColorStop(0, '#353535');
-        faceGrad.addColorStop(1, '#222222');
+        faceGrad.addColorStop(0, '#e8e8e8');
+        faceGrad.addColorStop(1, '#c8c8c8');
         ctx.beginPath();
         ctx.arc(cx, cy, r * 0.88, 0, Math.PI * 2);
         ctx.fillStyle = faceGrad;
@@ -165,10 +165,10 @@ class FaceRenderer {
         const pupilR = w * 0.35 * state.pupilDilation;
         const irisR = w * 0.55;
 
-        // Eye white (dark grey in dark theme)
+        // Eye white
         ctx.beginPath();
         ctx.ellipse(ex, ey, w, h, 0, 0, Math.PI * 2);
-        ctx.fillStyle = '#555555';
+        ctx.fillStyle = '#ffffff';
         ctx.fill();
 
         if (h > w * 0.1) { // Only draw iris/pupil if eye is open enough
@@ -197,8 +197,8 @@ class FaceRenderer {
 
             // Highlight
             ctx.beginPath();
-            ctx.arc(irisX - pupilR * 0.3, irisY - pupilR * 0.3, pupilR * 0.3, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
+            ctx.arc(irisX - pupilR * 0.3, irisY - pupilR * 0.3, pupilR * 0.35, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
             ctx.fill();
         }
     }
@@ -209,7 +209,7 @@ class FaceRenderer {
         ctx.beginPath();
         ctx.moveTo(mx - width, my);
         ctx.quadraticCurveTo(mx, my + width * curve * 1.5, mx + width, my);
-        ctx.strokeStyle = '#777777';
+        ctx.strokeStyle = '#555555';
         ctx.lineWidth = 3;
         ctx.lineCap = 'round';
         ctx.stroke();
