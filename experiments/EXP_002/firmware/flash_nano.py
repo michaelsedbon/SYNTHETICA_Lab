@@ -228,7 +228,8 @@ class STK500:
         resp = self.recv(5)
         if len(resp) >= 5 and resp[0] == STK_INSYNC and resp[4] == STK_OK:
             sig = resp[1:4]
-            log(f"Signature: {sig.hex()} ({'ATmega328P' if sig == b'\\x1e\\x95\\x0f' else 'unknown'})")
+            chip = 'ATmega328P' if sig == b'\x1e\x95\x0f' else 'unknown'
+            log(f"Signature: {sig.hex()} ({chip})")
             return sig
         return None
 

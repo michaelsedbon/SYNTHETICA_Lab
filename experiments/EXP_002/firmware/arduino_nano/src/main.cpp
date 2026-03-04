@@ -4,6 +4,11 @@
  * Controls the ISD04 NEMA17 integrated stepper via AccelStepper.
  * Receives commands from ESP8266 over serial.
  *
+ * Auto-calibration on boot:
+ *   1. Homes to hall sensor (finds reference position)
+ *   2. Measures steps per full revolution (hall → hall)
+ *   3. Stores stepsPerRevolution for HALF command
+ *
  * Wiring (from old working code + ISD04 datasheet):
  *   D0 (RX) ← ESP8266 TX   (serial commands)
  *   D3      ← Hall sensor   (homing/position feedback, interrupt)
@@ -14,9 +19,11 @@
  *   GND     → (shared)
  *
  * Serial protocol (115200 baud):
- *   Receives: MOVE <steps>, HOME, STATUS, STOP, SPEED <sps>,
- *             ENABLE, DISABLE, ZERO, PING, ACCEL <val>
- *   Sends:    OK, POS:<n>, HALL:<0|1>, ERROR:<msg>, HOMED, PONG
+ *   Receives: MOVE <steps>, MOVETO <n>, HOME, STATUS, STOP, SPEED <sps>,
+ *             ENABLE, DISABLE, ZERO, PING, ACCEL <val>,
+ *             CALIBRATE, HALF, SPR
+ *   Sends:    OK, POS:<n>, HALL:<0|1>, ERROR:<msg>, HOMED, PONG,
+ *             CAL_START, CAL_DONE SPR:<n>, CAL_FAIL, SPR:<n>
  */
 
 #include <Arduino.h>
@@ -32,7 +39,9 @@
 #define DEFAULT_MAX_SPEED     2000.0   // Steps per second
 #define DEFAULT_ACCELERATION  1000.0   // Steps per second²
 #define HOME_SPEED            500.0    // Slower speed for homing
-#define HOME_MAX_STEPS        200000   // Max steps before homing fails (enough for geared motors)
+#define CALIBRATION_SPEED     400.0    // Speed during calibration measurement
+#define HOME_MAX_STEPS        200000   // Max steps before homing fails
+#define CALIBRATION_ESCAPE    500      // Steps to move past magnet before re-measuring
 
 // ── AccelStepper (type 1 = DRIVER: step + dir) ──
 AccelStepper stepper(AccelStepper::DRIVER, PIN_STEP, PIN_DIR);
@@ -41,6 +50,12 @@ AccelStepper stepper(AccelStepper::DRIVER, PIN_STEP, PIN_DIR);
 volatile bool hallTriggered = false;
 bool motorEnabled = true;
 bool homing = false;
+
+// ── Calibration state ──
+long stepsPerRevolution = 0;
+bool calibrated = false;
+bool calibrating = false;
+int calPhase = 0;  // 0=idle, 1=homing, 2=escaping magnet, 3=measuring
 
 // ── Serial input ──
 String inputBuffer = "";
@@ -56,6 +71,85 @@ void hallISR() {
 
 
 // ══════════════════════════════════════════════
+// ── Calibration routine (non-blocking, state machine) ──
+// ══════════════════════════════════════════════
+
+void startCalibration() {
+    calibrating = true;
+    calibrated = false;
+    calPhase = 1;  // Phase 1: home to hall sensor
+    hallTriggered = false;
+    stepper.setMaxSpeed(HOME_SPEED);
+    stepper.move(HOME_MAX_STEPS);
+    Serial.println("CAL_START");
+}
+
+void updateCalibration() {
+    if (!calibrating) return;
+
+    switch (calPhase) {
+        case 1:  // Homing: waiting for hall trigger
+            if (hallTriggered) {
+                stepper.stop();
+                // Let deceleration finish
+                if (!stepper.isRunning()) {
+                    stepper.setCurrentPosition(0);
+                    hallTriggered = false;
+                    // Phase 2: escape the magnet zone
+                    calPhase = 2;
+                    stepper.setMaxSpeed(CALIBRATION_SPEED);
+                    stepper.move(CALIBRATION_ESCAPE);
+                }
+            } else if (!stepper.isRunning()) {
+                // Motor stopped without finding hall
+                Serial.println("CAL_FAIL:NO_HALL");
+                calibrating = false;
+                calPhase = 0;
+                stepper.setMaxSpeed(DEFAULT_MAX_SPEED);
+            }
+            break;
+
+        case 2:  // Escaping magnet: waiting for escape move to finish
+            if (!stepper.isRunning()) {
+                // Now zero and start full rotation measurement
+                stepper.setCurrentPosition(0);
+                hallTriggered = false;
+                calPhase = 3;
+                stepper.setMaxSpeed(CALIBRATION_SPEED);
+                stepper.move(HOME_MAX_STEPS);  // Move until hall triggers again
+            }
+            break;
+
+        case 3:  // Measuring: waiting for hall to trigger again (= 1 full revolution)
+            if (hallTriggered) {
+                stepper.stop();
+                if (!stepper.isRunning()) {
+                    stepsPerRevolution = stepper.currentPosition();
+                    calibrated = true;
+                    calibrating = false;
+                    calPhase = 0;
+
+                    // Reset to working state
+                    stepper.setCurrentPosition(0);
+                    stepper.setMaxSpeed(DEFAULT_MAX_SPEED);
+                    hallTriggered = false;
+
+                    Serial.print("CAL_DONE SPR:");
+                    Serial.println(stepsPerRevolution);
+                }
+            } else if (!stepper.isRunning()) {
+                // Motor stopped without finding hall on second pass
+                Serial.println("CAL_FAIL:NO_HALL_2ND");
+                calibrating = false;
+                calPhase = 0;
+                stepper.setMaxSpeed(DEFAULT_MAX_SPEED);
+            }
+            break;
+    }
+}
+
+
+// ══════════════════════════════════════════════
 // ── Command processing ──
 // ══════════════════════════════════════════════
 
@@ -64,6 +158,12 @@ void processCommand(String cmd) {
     cmd.toUpperCase();
 
     if (cmd.length() == 0) return;
+
+    // Block motor commands during calibration
+    if (calibrating && cmd != "STOP" && cmd != "STATUS" && cmd != "PING") {
+        Serial.println("ERROR:CALIBRATING");
+        return;
+    }
 
     // ── PING ──
     if (cmd == "PING") {
@@ -78,6 +178,8 @@ void processCommand(String cmd) {
         Serial.print("ENABLED:"); Serial.println(motorEnabled ? 1 : 0);
         Serial.print("SPEED:"); Serial.println((int)stepper.maxSpeed());
         Serial.print("MOVING:"); Serial.println(stepper.isRunning() ? 1 : 0);
+        Serial.print("SPR:"); Serial.println(stepsPerRevolution);
+        Serial.print("CAL:"); Serial.println(calibrated ? 1 : 0);
         return;
     }
 
@@ -85,6 +187,12 @@ void processCommand(String cmd) {
     if (cmd == "STOP") {
         stepper.stop();
         homing = false;
+        if (calibrating) {
+            calibrating = false;
+            calPhase = 0;
+            stepper.setMaxSpeed(DEFAULT_MAX_SPEED);
+            Serial.println("CAL_ABORTED");
+        }
         Serial.println("OK STOPPED");
         return;
     }
@@ -117,6 +225,30 @@ void processCommand(String cmd) {
         stepper.setMaxSpeed(HOME_SPEED);
         stepper.move(HOME_MAX_STEPS);  // Move forward until hall triggers
         Serial.println("OK HOMING");
+        return;
+    }
+
+    // ── CALIBRATE ──
+    if (cmd == "CALIBRATE") {
+        startCalibration();
+        return;
+    }
+
+    // ── HALF ──
+    if (cmd == "HALF") {
+        if (!calibrated || stepsPerRevolution == 0) {
+            Serial.println("ERROR:NOT_CALIBRATED");
+            return;
+        }
+        long halfSteps = stepsPerRevolution / 2;
+        stepper.move(halfSteps);
+        Serial.print("OK HALF "); Serial.println(halfSteps);
+        return;
+    }
+
+    // ── SPR ── (query steps per revolution)
+    if (cmd == "SPR") {
+        Serial.print("SPR:"); Serial.println(stepsPerRevolution);
         return;
     }
 
@@ -187,8 +319,11 @@ void setup() {
     attachInterrupt(digitalPinToInterrupt(PIN_HALL), hallISR, FALLING);
 
     Serial.println("READY");
-    Serial.println("Cryptographic Beings - Nano Motor Controller (AccelStepper)");
-    Serial.println("Commands: MOVE <n>, MOVETO <n>, HOME, STATUS, STOP, SPEED <sps>, ACCEL <a>, ENABLE, DISABLE, ZERO, PING");
+    Serial.println("Cryptographic Beings - Nano Motor Controller v2 (auto-calibration)");
+
+    // ── Auto-calibration on boot ──
+    Serial.println("BOOT_CAL_START");
+    startCalibration();
 }
 
 
@@ -200,20 +335,25 @@ void loop() {
     // ── Run the stepper (must be called frequently) ──
     stepper.run();
 
-    // ── Handle homing ──
+    // ── Handle calibration state machine ──
+    updateCalibration();
+
+    // ── Handle homing (manual HOME command) ──
     if (homing && hallTriggered) {
         stepper.stop();
-        stepper.setCurrentPosition(0);
-        stepper.setMaxSpeed(DEFAULT_MAX_SPEED);
-        homing = false;
-        hallTriggered = false;
-        Serial.println("HOMED");
+        if (!stepper.isRunning()) {
+            stepper.setCurrentPosition(0);
+            stepper.setMaxSpeed(DEFAULT_MAX_SPEED);
+            homing = false;
+            hallTriggered = false;
+            Serial.println("HOMED");
+        }
     }
 
     // ── Report when movement finishes ──
     static bool wasRunning = false;
     bool running = stepper.isRunning();
-    if (wasRunning && !running && !homing) {
+    if (wasRunning && !running && !homing && !calibrating) {
         Serial.print("POS:"); Serial.println(stepper.currentPosition());
     }
     wasRunning = running;

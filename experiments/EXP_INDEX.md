@@ -39,3 +39,14 @@ Bio-hybrid machine (Marimo moss balls for binary data storage) — giving autono
 Mathematical model and simulation of the Cryptographic Beings machine. Models photosynthesis-driven O₂ buoyancy, circadian gating, and photobleaching of Marimo (*Aegagropila linnaei*) in a 3×6 tube architecture. Simulation runs at 74K–232K× real-time for parameter exploration. Key finding: arm light angular spread (30°) causes cross-talk between adjacent tubes at 61% encoding accuracy.
 
 ---
+
+## EXP_004
+**Title:** Connector Mapper — Cryptographic Beings
+**Start Date:** 2026-03-03
+**Airtable Links:** None
+**Folder:** `experiments/EXP_004/`
+
+Cable-pair continuity testing tool for the Cryptographic Beings installation. Arduino Mega-based 4×4 cross-scan discovers which controller plate connector (L1–L16) maps to which installation plate position (p1–p18) with full pin-to-pin wire mapping. Includes single-file HTML webapp with guided workflow, live scanning, and JSON import/export.
+
+---
+
