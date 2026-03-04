@@ -21,9 +21,9 @@
             <span id="clock"></span>
         </div>
 
-        <!-- Main two-panel layout -->
+        <!-- Main layout: Face | Feed+IO -->
         <div id="panels">
-            <!-- Left: Face(s) -->
+            <!-- Left: Face -->
             <div id="face-panel">
                 <div class="agent-face" id="agent-0">
                     <canvas id="face-canvas-0" width="600" height="600"></canvas>
@@ -35,32 +35,34 @@
                 </div>
             </div>
 
-            <!-- Right: Feed + Timeline -->
+            <!-- Right: split into top (feed + IO side by side) and bottom (timeline) -->
             <div id="feed-panel">
-                <!-- Terminal feed -->
-                <div id="terminal">
-                    <div id="terminal-header">
-                        <span class="terminal-title">⬤ Live Feed</span>
-                        <span id="event-count">0 events</span>
+                <!-- Top: two columns -->
+                <div id="feed-columns">
+                    <!-- Left column: Live Feed -->
+                    <div id="terminal">
+                        <div id="terminal-header">
+                            <span class="section-title">⬤ Live Feed</span>
+                            <span id="event-count">0 events</span>
+                        </div>
+                        <div id="terminal-body"></div>
                     </div>
-                    <div id="terminal-body"></div>
+
+                    <!-- Right column: LLM I/O -->
+                    <div id="llmio">
+                        <div id="llmio-header">
+                            <span class="section-title">⚡ LLM I/O</span>
+                        </div>
+                        <div id="llmio-body"></div>
+                    </div>
                 </div>
 
-                <!-- Bottom panel: tabs -->
-                <div id="bottom-panel">
-                    <div id="bottom-tabs">
-                        <button class="tab active" data-tab="timeline" onclick="switchTab('timeline')">⏱
-                            Timeline</button>
-                        <button class="tab" data-tab="llmio" onclick="switchTab('llmio')">⚡ LLM I/O</button>
+                <!-- Bottom: Timeline -->
+                <div id="timeline">
+                    <div id="timeline-header">
+                        <span class="section-title">⏱ Timeline</span>
                     </div>
-                    <div id="tab-content">
-                        <div id="timeline" class="tab-pane active">
-                            <div id="timeline-body"></div>
-                        </div>
-                        <div id="llmio" class="tab-pane">
-                            <div id="llmio-body"></div>
-                        </div>
-                    </div>
+                    <div id="timeline-body"></div>
                 </div>
             </div>
         </div>

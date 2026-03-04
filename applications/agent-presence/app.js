@@ -350,15 +350,7 @@
         return str.substring(0, maxLen) + '…';
     }
 
-    // ==================== Tab Switching (global) ====================
-    window.switchTab = function (tabId) {
-        document.querySelectorAll('#bottom-tabs .tab').forEach(t => {
-            t.classList.toggle('active', t.dataset.tab === tabId);
-        });
-        document.querySelectorAll('.tab-pane').forEach(p => {
-            p.classList.toggle('active', p.id === tabId);
-        });
-    };
+
 
     // Boot
     document.addEventListener('DOMContentLoaded', init);

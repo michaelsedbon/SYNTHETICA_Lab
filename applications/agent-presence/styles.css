@@ -28,14 +28,6 @@
     --llm-ollama: #e8710a;
     --llm-idle: #444444;
 
-    /* Subtle backgrounds */
-    --blue-subtle: rgba(86, 156, 214, 0.10);
-    --green-subtle: rgba(78, 201, 176, 0.10);
-    --red-subtle: rgba(244, 71, 71, 0.10);
-    --orange-subtle: rgba(206, 145, 120, 0.10);
-    --yellow-subtle: rgba(220, 220, 170, 0.10);
-    --purple-subtle: rgba(197, 134, 192, 0.10);
-
     --radius: 8px;
     --radius-sm: 4px;
     --transition: 150ms ease;
@@ -125,7 +117,7 @@ body {
 
 /* ── Face Panel (Left) ────────────────────────────────────── */
 #face-panel {
-    width: 45%;
+    width: 35%;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -218,12 +210,30 @@ body {
     overflow: hidden;
 }
 
-/* ── Terminal ─────────────────────────────────────────────── */
+/* ── Top: Two columns (Feed + LLM I/O) ───────────────────── */
+#feed-columns {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+    border-bottom: 2px solid var(--border);
+}
+
+/* Shared section header style */
+.section-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ── Terminal (left column) ───────────────────────────────── */
 #terminal {
     flex: 1;
     display: flex;
     flex-direction: column;
-    min-height: 0;
+    min-width: 0;
+    border-right: 1px solid var(--border);
 }
 
 #terminal-header {
@@ -234,14 +244,6 @@ body {
     background: var(--bg-tertiary);
     border-bottom: 1px solid var(--border);
     flex-shrink: 0;
-}
-
-.terminal-title {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
 }
 
 #event-count {
@@ -352,123 +354,43 @@ body {
     font-weight: 600;
 }
 
-/* ── Bottom Panel (Tabs) ──────────────────────────────────── */
-#bottom-panel {
-    height: 280px;
-    flex-shrink: 0;
+/* ── LLM I/O (right column) ──────────────────────────────── */
+#llmio {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    border-top: 2px solid var(--border);
+    min-width: 0;
 }
 
-#bottom-tabs {
+#llmio-header {
     display: flex;
+    align-items: center;
+    padding: 8px 16px;
     background: var(--bg-tertiary);
     border-bottom: 1px solid var(--border);
     flex-shrink: 0;
 }
 
-#bottom-tabs .tab {
-    padding: 7px 20px;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-muted);
-    background: none;
-    border: none;
-    border-bottom: 2px solid transparent;
-    cursor: pointer;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-family: var(--font-sans);
-    transition: all 150ms ease;
-}
-
-#bottom-tabs .tab:hover {
-    color: var(--text-secondary);
-}
-
-#bottom-tabs .tab.active {
-    color: var(--text-primary);
-    border-bottom-color: var(--accent-blue);
-}
-
-#tab-content {
+#llmio-body {
     flex: 1;
-    overflow: hidden;
-    position: relative;
-}
-
-.tab-pane {
-    display: none;
-    position: absolute;
-    inset: 0;
     overflow-y: auto;
     padding: 8px;
-}
-
-.tab-pane.active {
-    display: block;
-}
-
-.tab-pane::-webkit-scrollbar {
-    width: 6px;
-}
-
-.tab-pane::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.tab-pane::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 3px;
-}
-
-/* Timeline cards */
-#timeline-body {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.tl-card {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 6px 12px;
-    border-radius: var(--radius-sm);
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    font-size: 12px;
-    animation: lineIn 200ms ease;
-}
-
-.tl-icon {
-    font-size: 14px;
-    flex-shrink: 0;
-    width: 20px;
-    text-align: center;
-}
-
-.tl-title {
-    flex: 1;
-    color: var(--text-primary);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.tl-time {
-    font-size: 10px;
-    color: var(--text-muted);
-    font-family: var(--font-mono);
-    flex-shrink: 0;
-}
-
-/* ── LLM I/O Cards ────────────────────────────────────────── */
-#llmio-body {
     display: flex;
     flex-direction: column;
     gap: 8px;
+}
+
+#llmio-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+#llmio-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#llmio-body::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
 }
 
 .llmio-card {
@@ -589,6 +511,79 @@ body {
     display: none;
 }
 
+/* ── Timeline (bottom) ────────────────────────────────────── */
+#timeline {
+    height: 160px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+#timeline-header {
+    display: flex;
+    align-items: center;
+    padding: 6px 16px;
+    background: var(--bg-tertiary);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+#timeline-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 6px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+#timeline-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+#timeline-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#timeline-body::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+}
+
+.tl-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 12px;
+    border-radius: var(--radius-sm);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    font-size: 12px;
+    animation: lineIn 200ms ease;
+}
+
+.tl-icon {
+    font-size: 14px;
+    flex-shrink: 0;
+    width: 20px;
+    text-align: center;
+}
+
+.tl-title {
+    flex: 1;
+    color: var(--text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tl-time {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    flex-shrink: 0;
+}
+
 /* ── Scanline Overlay ─────────────────────────────────────── */
 #scanlines {
     position: fixed;
@@ -598,11 +593,7 @@ body {
     height: 100vh;
     pointer-events: none;
     z-index: 100;
-    background: repeating-linear-gradient(0deg,
-            transparent,
-            transparent 2px,
-            rgba(0, 0, 0, 0.03) 2px,
-            rgba(0, 0, 0, 0.03) 4px);
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.03) 2px, rgba(0, 0, 0, 0.03) 4px);
     opacity: 0.5;
 }
 
@@ -643,7 +634,7 @@ body {
     }
 }
 
-/* ── Multi-agent: dynamic column splits ───────────────────── */
+/* ── Multi-agent ──────────────────────────────────────────── */
 #face-panel.multi {
     flex-wrap: wrap;
     align-content: center;
@@ -654,7 +645,7 @@ body {
     height: 200px;
 }
 
-/* ── Idle state: dim everything ───────────────────────────── */
+/* ── Idle state ───────────────────────────────────────────── */
 body.idle #face-panel {
     opacity: 0.4;
     transition: opacity 2s ease;
