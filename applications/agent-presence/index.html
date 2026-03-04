@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYNTHETICA — Agent Presence</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div id="app">
+        <!-- Connection status bar -->
+        <div id="status-bar">
+            <span id="status-dot"></span>
+            <span id="status-text">Connecting…</span>
+            <span id="clock"></span>
+        </div>
+
+        <!-- Main two-panel layout -->
+        <div id="panels">
+            <!-- Left: Face(s) -->
+            <div id="face-panel">
+                <div class="agent-face" id="agent-0">
+                    <canvas id="face-canvas-0" width="400" height="400"></canvas>
+                    <div class="llm-badge" id="llm-badge-0">
+                        <span class="badge-dot"></span>
+                        <span class="badge-label">Idle</span>
+                    </div>
+                    <div class="agent-label" id="agent-label-0">Agent</div>
+                </div>
+            </div>
+
+            <!-- Right: Feed + Timeline -->
+            <div id="feed-panel">
+                <!-- Terminal feed -->
+                <div id="terminal">
+                    <div id="terminal-header">
+                        <span class="terminal-title">⬤ Live Feed</span>
+                        <span id="event-count">0 events</span>
+                    </div>
+                    <div id="terminal-body"></div>
+                </div>
+
+                <!-- Timeline -->
+                <div id="timeline">
+                    <div id="timeline-header">
+                        <span class="timeline-title">⏱ Timeline</span>
+                    </div>
+                    <div id="timeline-body"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scanline overlay -->
+        <div id="scanlines"></div>
+    </div>
+
+    <script src="face.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

@@ -18,6 +18,7 @@ All lab applications live under `applications/`. Each app has a `DOCS.md` with f
 | 6 | [🧪 Virtual Lab](#-virtual-lab) | `virtual-lab` | 8080 | Three.js · Airtable · Vanilla JS | ✅ Working |
 | 7 | [🚀 App Launcher](#-app-launcher) | `launcher` | 3100 | Next.js | ✅ Working |
 | 8 | [🤖 Lab Agent](#-lab-agent) | `lab-agent` | 8003 | FastAPI · Ollama · WebSocket | ✅ Working |
+| 9 | [👁 Agent Presence](#-agent-presence) | `agent-presence` | 3005 | Vanilla HTML/JS · Canvas · Python | ✅ Working |
 
 ---
 
@@ -34,6 +35,7 @@ Backend (Python FastAPI)          Frontend (Next.js / Static)
                                   3100  App Launcher
                                   8080  Virtual Lab (static)
 8003  Lab Agent API+WS
+                                  3005  Agent Presence Dashboard
 ```
 
 ---
@@ -200,6 +202,24 @@ Ollama-powered agent (qwen2.5:14b) running on the local server. Controls the Cry
 **Key capabilities:** Think → act → observe agent loop, ESP8266/Nano serial bridge control, OTA firmware updates, paper corpus search, JSONL session timelines, real-time WebSocket event streaming, workspace file browsing.
 
 📄 **Full docs:** [`lab-agent/DOCS.md`](lab-agent/DOCS.md)
+
+---
+
+## 👁 Agent Presence
+
+**Full-screen kiosk display showing AI agent activity on the server's monitor.**
+
+Animated face with LLM-colored irises (blue=Gemini, orange=Ollama), live terminal event feed, and compact timeline. Screen auto-on when agent is active, auto-off after idle.
+
+| Detail | Value |
+|--------|-------|
+| Port | 3005 (static Python HTTP + screen control API) |
+| Data Source | Lab Agent WebSocket `:8003/ws/agent` |
+| Linked Experiment | — |
+
+**Key capabilities:** Canvas face animation, real-time WebSocket event feed, LLM detection badges, idle screen management (xset dpms), kiosk-mode Chromium autostart.
+
+📄 **Full docs:** [`agent-presence/README.md`](agent-presence/README.md)
 
 ---
 

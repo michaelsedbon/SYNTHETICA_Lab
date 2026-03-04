@@ -1,0 +1,517 @@
+/* ══════════════════════════════════════════════════════════════
+   Agent Presence Dashboard — Styles
+   VS Code dark theme · Full-screen kiosk mode
+   ══════════════════════════════════════════════════════════════ */
+
+:root {
+    --bg-primary: #0d0d0d;
+    --bg-secondary: #141414;
+    --bg-tertiary: #1a1a1a;
+    --bg-card: #1e1e1e;
+    --border: #2a2a2a;
+    --border-light: #333333;
+    --text-primary: #e0e0e0;
+    --text-secondary: #888888;
+    --text-muted: #555555;
+
+    /* Accent colors */
+    --accent-blue: #569cd6;
+    --accent-green: #4ec9b0;
+    --accent-orange: #ce9178;
+    --accent-red: #f44747;
+    --accent-yellow: #dcdcaa;
+    --accent-purple: #c586c0;
+    --accent-cyan: #9cdcfe;
+
+    /* LLM colors */
+    --llm-gemini: #4285f4;
+    --llm-ollama: #e8710a;
+    --llm-idle: #444444;
+
+    /* Subtle backgrounds */
+    --blue-subtle: rgba(86, 156, 214, 0.10);
+    --green-subtle: rgba(78, 201, 176, 0.10);
+    --red-subtle: rgba(244, 71, 71, 0.10);
+    --orange-subtle: rgba(206, 145, 120, 0.10);
+    --yellow-subtle: rgba(220, 220, 170, 0.10);
+    --purple-subtle: rgba(197, 134, 192, 0.10);
+
+    --radius: 8px;
+    --radius-sm: 4px;
+    --transition: 150ms ease;
+    --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* ── Reset ────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text-primary);
+    background: var(--bg-primary);
+    -webkit-font-smoothing: antialiased;
+    cursor: none;
+    user-select: none;
+}
+
+/* ── App Container ────────────────────────────────────────── */
+#app {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+/* ── Status Bar ───────────────────────────────────────────── */
+#status-bar {
+    height: 32px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 16px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--text-secondary);
+    flex-shrink: 0;
+}
+
+#status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent-red);
+    transition: background 300ms ease;
+}
+
+#status-dot.connected {
+    background: var(--accent-green);
+    box-shadow: 0 0 6px rgba(78, 201, 176, 0.5);
+}
+
+#status-dot.connecting {
+    background: var(--accent-orange);
+    animation: pulse 1.5s ease infinite;
+}
+
+#clock {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+}
+
+/* ── Panels ───────────────────────────────────────────────── */
+#panels {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+}
+
+/* ── Face Panel (Left) ────────────────────────────────────── */
+#face-panel {
+    width: 40%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-primary);
+    border-right: 1px solid var(--border);
+    padding: 24px;
+    gap: 24px;
+}
+
+.agent-face {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.agent-face canvas {
+    border-radius: 50%;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border);
+    transition: border-color 500ms ease;
+}
+
+.agent-face.active canvas {
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 30px rgba(86, 156, 214, 0.15);
+}
+
+.agent-face.gemini canvas {
+    border-color: var(--llm-gemini);
+    box-shadow: 0 0 30px rgba(66, 133, 244, 0.15);
+}
+
+.agent-face.ollama canvas {
+    border-color: var(--llm-ollama);
+    box-shadow: 0 0 30px rgba(232, 113, 10, 0.15);
+}
+
+/* LLM Badge */
+.llm-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    transition: all 300ms ease;
+}
+
+.llm-badge .badge-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--llm-idle);
+    transition: background 300ms ease, box-shadow 300ms ease;
+}
+
+.llm-badge.gemini .badge-dot {
+    background: var(--llm-gemini);
+    box-shadow: 0 0 8px rgba(66, 133, 244, 0.6);
+}
+
+.llm-badge.ollama .badge-dot {
+    background: var(--llm-ollama);
+    box-shadow: 0 0 8px rgba(232, 113, 10, 0.6);
+}
+
+.llm-badge .badge-label {
+    color: var(--text-secondary);
+}
+
+.agent-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+}
+
+/* ── Feed Panel (Right) ───────────────────────────────────── */
+#feed-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* ── Terminal ─────────────────────────────────────────────── */
+#terminal {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+#terminal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    background: var(--bg-tertiary);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+.terminal-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+#event-count {
+    font-size: 10px;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+}
+
+#terminal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 0;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.6;
+    background: var(--bg-primary);
+}
+
+#terminal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+#terminal-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#terminal-body::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+}
+
+/* Terminal lines */
+.term-line {
+    padding: 2px 16px;
+    display: flex;
+    gap: 10px;
+    animation: lineIn 150ms ease;
+}
+
+.term-line:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.term-time {
+    color: var(--text-muted);
+    flex-shrink: 0;
+    font-size: 10px;
+    min-width: 60px;
+}
+
+.term-type {
+    flex-shrink: 0;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    min-width: 70px;
+}
+
+.term-type.reasoning {
+    color: var(--accent-green);
+}
+
+.term-type.tool_call {
+    color: var(--accent-cyan);
+}
+
+.term-type.decision {
+    color: var(--accent-yellow);
+}
+
+.term-type.error {
+    color: var(--accent-red);
+}
+
+.term-type.info {
+    color: var(--accent-purple);
+}
+
+.term-type.plan {
+    color: var(--accent-blue);
+}
+
+.term-type.reflect {
+    color: var(--accent-orange);
+}
+
+.term-content {
+    color: var(--text-primary);
+    word-break: break-word;
+    flex: 1;
+}
+
+.term-content.reasoning {
+    color: var(--accent-green);
+    opacity: 0.85;
+}
+
+.term-content.tool_call {
+    color: var(--accent-cyan);
+}
+
+.term-content.error {
+    color: var(--accent-red);
+}
+
+.term-tool-name {
+    color: var(--accent-blue);
+    font-weight: 600;
+}
+
+/* ── Timeline ─────────────────────────────────────────────── */
+#timeline {
+    height: 220px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--border);
+}
+
+#timeline-header {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    background: var(--bg-tertiary);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+.timeline-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+#timeline-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+#timeline-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+#timeline-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#timeline-body::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+}
+
+.tl-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    font-size: 12px;
+    animation: lineIn 200ms ease;
+}
+
+.tl-icon {
+    font-size: 14px;
+    flex-shrink: 0;
+    width: 20px;
+    text-align: center;
+}
+
+.tl-title {
+    flex: 1;
+    color: var(--text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tl-time {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    flex-shrink: 0;
+}
+
+/* ── Scanline Overlay ─────────────────────────────────────── */
+#scanlines {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 100;
+    background: repeating-linear-gradient(0deg,
+            transparent,
+            transparent 2px,
+            rgba(0, 0, 0, 0.03) 2px,
+            rgba(0, 0, 0, 0.03) 4px);
+    opacity: 0.5;
+}
+
+/* ── Animations ───────────────────────────────────────────── */
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.3;
+    }
+}
+
+@keyframes lineIn {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes breathe {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.02);
+    }
+}
+
+/* ── Multi-agent: dynamic column splits ───────────────────── */
+#face-panel.multi {
+    flex-wrap: wrap;
+    align-content: center;
+}
+
+#face-panel.multi .agent-face canvas {
+    width: 200px;
+    height: 200px;
+}
+
+/* ── Idle state: dim everything ───────────────────────────── */
+body.idle #face-panel {
+    opacity: 0.4;
+    transition: opacity 2s ease;
+}
+
+body.idle #feed-panel {
+    opacity: 0.3;
+    transition: opacity 2s ease;
+}
+
+body:not(.idle) #face-panel,
+body:not(.idle) #feed-panel {
+    opacity: 1;
+    transition: opacity 500ms ease;
+}
