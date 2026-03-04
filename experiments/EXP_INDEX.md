@@ -50,3 +50,13 @@ Cable-pair continuity testing tool for the Cryptographic Beings installation. Ar
 
 ---
 
+## EXP_005
+**Title:** Cryptographic Beings — High-Power Motor Control (DM542T)
+**Start Date:** 2026-03-04
+**Airtable Links:** None
+**Folder:** `experiments/EXP_005/`
+
+Setup and configuration of specialized motor control PCBs for DM542T drivers (Board 3 & 4). Uses 24V power and NEMA 23/34 motors. Dedicated workspace to isolate hardware-specific firmware (D4=Step, D2=Dir) from the standard EXP_002 installation.
+
+---
+
