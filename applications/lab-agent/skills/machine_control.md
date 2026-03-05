@@ -116,5 +116,29 @@ If calibration fails (no hall sensor found), `calibrated: 0`. In that case:
 - ESP IP: 172.16.1.115 (mDNS: cryptobeings.local)
 - Calibration speed: 400 steps/sec, default speed: 2000 steps/sec
 
+## Connector Wiring Map
+
+Mapping between controller plate L connectors (aviator GX16-4) and installation plate p positions (M12/M8). Determined via continuity testing in EXP_004 (2026-03-04).
+
+| Controller (L) | Installation (p) | Wires | Notes |
+|---|---|---|---|
+| L1 | p5 | 2/4 | |
+| L2 | p6 | 1/4 | Weak — possibly damaged cable |
+| L4 | p3 | 2/4 | |
+| L5 | p4 | 2/4 | |
+| L6 | p11 | 2/4 | |
+| L7 | p10 | 2/4 | |
+| L8 | p17 | 2/4 | |
+| L10 | p9 | 3/4 | |
+| L11 | p15 | 3/4 | |
+| L12 | p16 | 3/4 | |
+| L14 | p8 | 3/4 | |
+| L15 | p12 | 3/4 | |
+| L16 | p2 | 4/4 ✅ | Only clean full connection |
+
+**Not yet mapped:** L3, L9, L13 (no matching cable found). Installation positions p1, p7, p13, p14, p18 not yet tested.
+
+> **Note:** Most cables show only 2–3 of 4 wires connected. Many show m_pin2 and m_pin3 bridged together (appear as one signal). Only L16→p2 has a clean 4-wire mapping. Full pin-level detail in `experiments/EXP_004/webapp/connectome/`.
+
 ## Legacy interface
 The old `send_command("MOVE 500")` tool still works via `/send?cmd=`. Use the new API endpoints when possible — they return structured JSON instead of requiring log scraping.

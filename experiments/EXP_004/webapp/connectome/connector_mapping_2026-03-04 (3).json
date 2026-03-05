@@ -1,0 +1,211 @@
+[
+  {
+    "connector_L": "L16",
+    "connector_p": "p2",
+    "wires_connected": 4,
+    "pin_map": {
+      "aviator_pin1": [
+        "m_pin4"
+      ],
+      "aviator_pin2": [
+        "m_pin3"
+      ],
+      "aviator_pin3": [
+        "m_pin2"
+      ],
+      "aviator_pin4": [
+        "m_pin1"
+      ]
+    },
+    "_note": "Pin numbers per connector schematics (see Aviator/M12/M8 diagrams)"
+  },
+  {
+    "connector_L": "L4",
+    "connector_p": "p3",
+    "wires_connected": 2,
+    "pin_map": {
+      "aviator_pin1": [
+        "m_pin4"
+      ],
+      "aviator_pin2": [
+        "m_pin2",
+        "m_pin3"
+      ]
+    },
+    "_note": "Pin numbers per connector schematics (see Aviator/M12/M8 diagrams)"
+  },
+  {
+    "connector_L": "L5",
+    "connector_p": "p4",
+    "wires_connected": 2,
+    "pin_map": {
+      "aviator_pin1": [
+        "m_pin4"
+      ],
+      "aviator_pin2": [
+        "m_pin2",
+        "m_pin3"
+      ]
+    },
+    "_note": "Pin numbers per connector schematics (see Aviator/M12/M8 diagrams)"
+  },
+  {
+    "connector_L": "L1",
+    "connector_p": "p5",
+    "wires_connected": 2,
+    "pin_map": {
+      "aviator_pin1": [
+        "m_pin4"
+      ],
+      "aviator_pin2": [
+        "m_pin2",
+        "m_pin3"
+      ]
+    },
+    "_note": "Pin numbers per connector schematics (see Aviator/M12/M8 diagrams)"
+  },
+  {
+    "connector_L": "L2",
+    "connector_p": "p6",
+    "wires_connected": 1,
+    "pin_map": {
+      "aviator_pin1": [
+        "m_pin4"
+      ]
+    },
+    "_note": "Pin numbers per connector schematics (see Aviator/M12/M8 diagrams)"
+  },
+  {
+    "connector_L": "L14",
+    "connector_p": "p8",
+    "wires_connected": 3,
+    "pin_map": {
+      "aviator_pin1": [
+        "m_pin4"
+      ],
+      "aviator_pin2": [
+        "m_pin2",
+        "m_pin3"
+      ],
+      "aviator_pin4": [
+        "m_pin1"
+      ]
+    },
+    "_note": "Pin numbers per connector schematics (see Aviator/M12/M8 diagrams)"
+  },
+  {
+    "connector_L": "L10",
+    "connector_p": "p9",
+    "wires_connected": 3,
+    "pin_map": {
+      "aviator_pin1": [
+        "m_pin4"
+      ],
+      "aviator_pin2": [
+        "m_pin1"
+      ],
+      "aviator_pin3": [
+        "m_pin2",
+        "m_pin3"
+      ]
+    },
+    "_note": "Pin numbers per connector schematics (see Aviator/M12/M8 diagrams)"
+  },
+  {
+    "connector_L": "L7",
+    "connector_p": "p10",
+    "wires_connected": 2,
+    "pin_map": {
+      "aviator_pin1": [
+        "m_pin4"
+      ],
+      "aviator_pin2": [
+        "m_pin2",
+        "m_pin3"
+      ]
+    },
+    "_note": "Pin numbers per connector schematics (see Aviator/M12/M8 diagrams)"
+  },
+  {
+    "connector_L": "L6",
+    "connector_p": "p11",
+    "wires_connected": 2,
+    "pin_map": {
+      "aviator_pin1": [
+        "m_pin4"
+      ],
+      "aviator_pin2": [
+        "m_pin2",
+        "m_pin3"
+      ]
+    },
+    "_note": "Pin numbers per connector schematics (see Aviator/M12/M8 diagrams)"
+  },
+  {
+    "connector_L": "L15",
+    "connector_p": "p12",
+    "wires_connected": 3,
+    "pin_map": {
+      "aviator_pin1": [
+        "m_pin2",
+        "m_pin3"
+      ],
+      "aviator_pin2": [
+        "m_pin1"
+      ],
+      "aviator_pin3": [
+        "m_pin4"
+      ]
+    },
+    "_note": "Pin numbers per connector schematics (see Aviator/M12/M8 diagrams)"
+  },
+  {
+    "connector_L": "L11",
+    "connector_p": "p15",
+    "wires_connected": 3,
+    "pin_map": {
+      "aviator_pin1": [
+        "m_pin4"
+      ],
+      "aviator_pin2": [
+        "m_pin1"
+      ],
+      "aviator_pin3": [
+        "m_pin2"
+      ]
+    },
+    "_note": "Pin numbers per connector schematics (see Aviator/M12/M8 diagrams)"
+  },
+  {
+    "connector_L": "L12",
+    "connector_p": "p16",
+    "wires_connected": 3,
+    "pin_map": {
+      "aviator_pin1": [
+        "m_pin4"
+      ],
+      "aviator_pin2": [
+        "m_pin1"
+      ],
+      "aviator_pin3": [
+        "m_pin2"
+      ]
+    },
+    "_note": "Pin numbers per connector schematics (see Aviator/M12/M8 diagrams)"
+  },
+  {
+    "connector_L": "L8",
+    "connector_p": "p17",
+    "wires_connected": 2,
+    "pin_map": {
+      "aviator_pin1": [
+        "m_pin4"
+      ],
+      "aviator_pin2": [
+        "m_pin2",
+        "m_pin3"
+      ]
+    },
+    "_note": "Pin numbers per connector schematics (see Aviator/M12/M8 diagrams)"
+  }
+]

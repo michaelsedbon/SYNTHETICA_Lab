@@ -8,11 +8,12 @@ from .terminal_tools import TERMINAL_TOOLS
 from .http_tools import HTTP_TOOLS
 from .machine_tools import MACHINE_TOOLS
 from .knowledge_tools import KNOWLEDGE_TOOLS
+from .camera_tools import CAMERA_TOOLS
 
 # Master registry: name → (function, schema)
 TOOL_REGISTRY: dict = {}
 
-for tool_set in [FILE_TOOLS, TERMINAL_TOOLS, HTTP_TOOLS, MACHINE_TOOLS, KNOWLEDGE_TOOLS]:
+for tool_set in [FILE_TOOLS, TERMINAL_TOOLS, HTTP_TOOLS, MACHINE_TOOLS, KNOWLEDGE_TOOLS, CAMERA_TOOLS]:
     TOOL_REGISTRY.update(tool_set)
 
 

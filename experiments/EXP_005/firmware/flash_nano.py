@@ -49,7 +49,7 @@ def reset_nano():
     url = f"http://{ESP_IP}:{ESP_HTTP_PORT}/reset-nano"
     log(f"Resetting Nano via {url}")
     try:
-        resp = urllib.request.urlopen(url, timeout=5)
+        resp = urllib.request.urlopen(url, timeout=15)
         data = resp.read().decode()
         log(f"Reset response: {data}")
         return True

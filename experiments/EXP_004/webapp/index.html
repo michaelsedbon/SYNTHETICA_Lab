@@ -420,6 +420,26 @@
             border: 1px solid var(--border);
             border-radius: 8px;
             overflow: hidden;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .schematic-card::after {
+            content: 'Double-click to zoom';
+            position: absolute;
+            bottom: 36px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+        }
+
+        .schematic-card:hover::after {
+            opacity: 1;
         }
 
         .schematic-card svg {
@@ -436,6 +456,182 @@
             letter-spacing: 0.5px;
             color: var(--text-dim);
             border-top: 1px solid var(--border);
+        }
+
+        /* Schematic Zoom Overlay */
+        .zoom-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(8px);
+            justify-content: center;
+            align-items: center;
+            padding: 32px;
+            cursor: pointer;
+        }
+
+        .zoom-overlay.active {
+            display: flex;
+        }
+
+        .zoom-overlay .zoom-content {
+            max-width: 90vw;
+            max-height: 90vh;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 0 60px rgba(99, 102, 241, 0.2);
+            border: 1px solid var(--border);
+            background: var(--surface2);
+        }
+
+        .zoom-overlay .zoom-content svg {
+            width: 100%;
+            height: auto;
+            display: block;
+            max-height: 85vh;
+        }
+
+        .zoom-overlay .zoom-hint {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.5);
+            font-family: 'Inter', sans-serif;
+            pointer-events: none;
+        }
+
+        /* L Panel Visual */
+        .l-panel-visual {
+            margin-bottom: 20px;
+        }
+
+        .l-panel-visual .card-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .l-panel-progress {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-dim);
+            text-transform: none;
+            letter-spacing: 0;
+        }
+
+        .l-panel-svg-wrap {
+            background: var(--surface2);
+            border-radius: 8px;
+            padding: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .l-panel-svg-wrap svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .l-connector-group {
+            transition: all 0.4s ease;
+            cursor: default;
+        }
+
+        .l-connector-group .connector-ring {
+            transition: stroke 0.4s ease, filter 0.4s ease;
+        }
+
+        .l-connector-group .connector-pin {
+            transition: fill 0.4s ease;
+        }
+
+        .l-connector-group .connector-label {
+            transition: fill 0.4s ease;
+        }
+
+        .l-connector-group.mapped .connector-ring {
+            stroke: var(--green);
+            filter: drop-shadow(0 0 6px var(--green-glow));
+        }
+
+        .l-connector-group.mapped .connector-pin {
+            fill: var(--green);
+        }
+
+        .l-connector-group.mapped .connector-label {
+            fill: var(--green);
+        }
+
+        .l-connector-group.unmapped .connector-ring {
+            stroke: #555;
+        }
+
+        .l-connector-group.unmapped .connector-pin {
+            fill: #555;
+        }
+
+        .l-connector-group.unmapped .connector-label {
+            fill: #888;
+        }
+
+        .l-connector-group.conflict .connector-ring {
+            stroke: var(--orange);
+            filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.4));
+            animation: conflict-pulse 2s ease-in-out infinite;
+        }
+
+        .l-connector-group.conflict .connector-pin {
+            fill: var(--orange);
+        }
+
+        .l-connector-group.conflict .connector-label {
+            fill: var(--orange);
+        }
+
+        @keyframes conflict-pulse {
+
+            0%,
+            100% {
+                filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.3));
+            }
+
+            50% {
+                filter: drop-shadow(0 0 14px rgba(245, 158, 11, 0.6));
+            }
+        }
+
+        .l-panel-legend {
+            display: flex;
+            gap: 16px;
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--text-dim);
+        }
+
+        .l-panel-legend span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .legend-dot.mapped {
+            background: var(--green);
+            box-shadow: 0 0 6px var(--green-glow);
+        }
+
+        .legend-dot.unmapped {
+            background: #555;
         }
 
         ::-webkit-scrollbar {
@@ -541,6 +737,235 @@
                 <div style="text-align:center;color:var(--text-dim);font-size:13px;padding:16px;">
                     No mappings yet — scan connectors or import a JSON file
                 </div>
+            </div>
+        </div>
+
+        <!-- L Panel Visual -->
+        <div class="card l-panel-visual">
+            <div class="card-title">④ L Panel — Connector Map <span class="l-panel-progress" id="lPanelProgress"></span>
+            </div>
+            <div class="l-panel-svg-wrap">
+                <svg id="lPanelSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1927.04 1931.3">
+                    <rect fill="#07202c" x="2.97" y="3.57" width="1924.06" height="1927.73" />
+                    <rect fill="#121212" width="1923.04" height="320" />
+                    <text fill="#fff" font-family="Inter,sans-serif" font-size="125" font-weight="600" x="54"
+                        y="196">Controller Plate — L Connectors</text>
+                    <!-- L1 -->
+                    <g class="l-connector-group unmapped" id="lGroup1">
+                        <circle class="connector-ring" cx="405.66" cy="602.03" r="93.86" fill="none" stroke="#b7b7b7"
+                            stroke-width="15" />
+                        <rect class="connector-pin" x="398.26" y="506.45" width="14.8" height="21.41" rx="3.39"
+                            fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="369.07" cy="562.4" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="449.31" cy="562.4" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="449.31" cy="641.66" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="369.07" cy="641.66" r="6.91" fill="#b7b7b7" />
+                        <text class="connector-label" fill="#ee1c4e" font-family="Inter,sans-serif" font-size="100"
+                            x="363.94" y="794.29">L1</text>
+                    </g>
+                    <!-- L2 -->
+                    <g class="l-connector-group unmapped" id="lGroup2">
+                        <circle class="connector-ring" cx="778.56" cy="605.71" r="93.86" fill="none" stroke="#b7b7b7"
+                            stroke-width="15" />
+                        <rect class="connector-pin" x="771.16" y="510.14" width="14.8" height="21.41" rx="3.39"
+                            fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="741.97" cy="566.08" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="822.21" cy="566.08" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="822.21" cy="645.35" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="741.97" cy="645.35" r="6.91" fill="#b7b7b7" />
+                        <text class="connector-label" fill="#ee1c4e" font-family="Inter,sans-serif" font-size="100"
+                            x="739.71" y="794.29">L2</text>
+                    </g>
+                    <!-- L3 -->
+                    <g class="l-connector-group unmapped" id="lGroup3">
+                        <circle class="connector-ring" cx="1151.45" cy="602.03" r="93.86" fill="none" stroke="#b7b7b7"
+                            stroke-width="15" />
+                        <rect class="connector-pin" x="1144.05" y="506.45" width="14.8" height="21.41" rx="3.39"
+                            fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="1114.86" cy="562.4" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="1195.1" cy="562.4" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="1195.1" cy="641.66" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="1114.86" cy="641.66" r="6.91" fill="#b7b7b7" />
+                        <text class="connector-label" fill="#ee1c4e" font-family="Inter,sans-serif" font-size="100"
+                            x="1115.48" y="794.29">L3</text>
+                    </g>
+                    <!-- L4 -->
+                    <g class="l-connector-group unmapped" id="lGroup4">
+                        <circle class="connector-ring" cx="1524.35" cy="605.71" r="93.86" fill="none" stroke="#b7b7b7"
+                            stroke-width="15" />
+                        <rect class="connector-pin" x="1516.95" y="510.14" width="14.8" height="21.41" rx="3.39"
+                            fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="1487.76" cy="566.08" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="1568" cy="566.08" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="1568" cy="645.35" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="1487.76" cy="645.35" r="6.91" fill="#b7b7b7" />
+                        <text class="connector-label" fill="#ee1c4e" font-family="Inter,sans-serif" font-size="100"
+                            x="1491.25" y="794.29">L4</text>
+                    </g>
+                    <!-- L5 -->
+                    <g class="l-connector-group unmapped" id="lGroup5">
+                        <circle class="connector-ring" cx="405.66" cy="938.89" r="93.86" fill="none" stroke="#b7b7b7"
+                            stroke-width="15" />
+                        <rect class="connector-pin" x="398.26" y="843.31" width="14.8" height="21.41" rx="3.39"
+                            fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="369.07" cy="899.25" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="449.31" cy="899.25" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="449.31" cy="978.52" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="369.07" cy="978.52" r="6.91" fill="#b7b7b7" />
+                        <text class="connector-label" fill="#ee1c4e" font-family="Inter,sans-serif" font-size="100"
+                            x="363.94" y="1146.06">L5</text>
+                    </g>
+                    <!-- L6 -->
+                    <g class="l-connector-group unmapped" id="lGroup6">
+                        <circle class="connector-ring" cx="778.56" cy="942.57" r="93.86" fill="none" stroke="#b7b7b7"
+                            stroke-width="15" />
+                        <rect class="connector-pin" x="771.16" y="846.99" width="14.8" height="21.41" rx="3.39"
+                            fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="741.97" cy="902.94" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="822.21" cy="902.94" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="822.21" cy="982.2" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="741.97" cy="982.2" r="6.91" fill="#b7b7b7" />
+                        <text class="connector-label" fill="#ee1c4e" font-family="Inter,sans-serif" font-size="100"
+                            x="739.71" y="1146.06">L6</text>
+                    </g>
+                    <!-- L7 -->
+                    <g class="l-connector-group unmapped" id="lGroup7">
+                        <circle class="connector-ring" cx="1151.45" cy="938.89" r="93.86" fill="none" stroke="#b7b7b7"
+                            stroke-width="15" />
+                        <rect class="connector-pin" x="1144.05" y="843.31" width="14.8" height="21.41" rx="3.39"
+                            fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="1114.86" cy="899.25" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="1195.1" cy="899.25" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="1195.1" cy="978.52" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="1114.86" cy="978.52" r="6.91" fill="#b7b7b7" />
+                        <text class="connector-label" fill="#ee1c4e" font-family="Inter,sans-serif" font-size="100"
+                            x="1115.48" y="1146.06">L7</text>
+                    </g>
+                    <!-- L8 -->
+                    <g class="l-connector-group unmapped" id="lGroup8">
+                        <circle class="connector-ring" cx="1524.35" cy="942.57" r="93.86" fill="none" stroke="#b7b7b7"
+                            stroke-width="15" />
+                        <rect class="connector-pin" x="1516.95" y="846.99" width="14.8" height="21.41" rx="3.39"
+                            fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="1487.76" cy="902.94" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="1568" cy="902.94" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="1568" cy="982.2" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="1487.76" cy="982.2" r="6.91" fill="#b7b7b7" />
+                        <text class="connector-label" fill="#ee1c4e" font-family="Inter,sans-serif" font-size="100"
+                            x="1491.25" y="1146.06">L8</text>
+                    </g>
+                    <!-- L9 -->
+                    <g class="l-connector-group unmapped" id="lGroup9">
+                        <circle class="connector-ring" cx="405.66" cy="1275.75" r="93.86" fill="none" stroke="#b7b7b7"
+                            stroke-width="15" />
+                        <rect class="connector-pin" x="398.26" y="1180.17" width="14.8" height="21.41" rx="3.39"
+                            fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="369.07" cy="1236.11" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="449.31" cy="1236.11" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="449.31" cy="1315.38" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="369.07" cy="1315.38" r="6.91" fill="#b7b7b7" />
+                        <text class="connector-label" fill="#ee1c4e" font-family="Inter,sans-serif" font-size="100"
+                            x="363.94" y="1475.2">L9</text>
+                    </g>
+                    <!-- L10 -->
+                    <g class="l-connector-group unmapped" id="lGroup10">
+                        <circle class="connector-ring" cx="778.56" cy="1279.43" r="93.86" fill="none" stroke="#b7b7b7"
+                            stroke-width="15" />
+                        <rect class="connector-pin" x="771.16" y="1183.85" width="14.8" height="21.41" rx="3.39"
+                            fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="741.97" cy="1239.79" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="822.21" cy="1239.79" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="822.21" cy="1319.06" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="741.97" cy="1319.06" r="6.91" fill="#b7b7b7" />
+                        <text class="connector-label" fill="#ee1c4e" font-family="Inter,sans-serif" font-size="100"
+                            x="714.06" y="1475.2">L10</text>
+                    </g>
+                    <!-- L11 -->
+                    <g class="l-connector-group unmapped" id="lGroup11">
+                        <circle class="connector-ring" cx="1151.45" cy="1275.75" r="93.86" fill="none" stroke="#b7b7b7"
+                            stroke-width="15" />
+                        <rect class="connector-pin" x="1144.05" y="1180.17" width="14.8" height="21.41" rx="3.39"
+                            fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="1114.86" cy="1236.11" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="1195.1" cy="1236.11" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="1195.1" cy="1315.38" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="1114.86" cy="1315.38" r="6.91" fill="#b7b7b7" />
+                        <text class="connector-label" fill="#ee1c4e" font-family="Inter,sans-serif" font-size="100"
+                            x="1089.83" y="1475.2">L11</text>
+                    </g>
+                    <!-- L12 -->
+                    <g class="l-connector-group unmapped" id="lGroup12">
+                        <circle class="connector-ring" cx="1524.35" cy="1279.43" r="93.86" fill="none" stroke="#b7b7b7"
+                            stroke-width="15" />
+                        <rect class="connector-pin" x="1516.95" y="1183.85" width="14.8" height="21.41" rx="3.39"
+                            fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="1487.76" cy="1239.79" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="1568" cy="1239.79" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="1568" cy="1319.06" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="1487.76" cy="1319.06" r="6.91" fill="#b7b7b7" />
+                        <text class="connector-label" fill="#ee1c4e" font-family="Inter,sans-serif" font-size="100"
+                            x="1465.6" y="1475.2">L12</text>
+                    </g>
+                    <!-- L13 -->
+                    <g class="l-connector-group unmapped" id="lGroup13">
+                        <circle class="connector-ring" cx="405.66" cy="1612.6" r="93.86" fill="none" stroke="#b7b7b7"
+                            stroke-width="15" />
+                        <rect class="connector-pin" x="398.26" y="1517.03" width="14.8" height="21.41" rx="3.39"
+                            fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="369.07" cy="1572.97" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="449.31" cy="1572.97" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="449.31" cy="1652.24" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="369.07" cy="1652.24" r="6.91" fill="#b7b7b7" />
+                        <text class="connector-label" fill="#ee1c4e" font-family="Inter,sans-serif" font-size="100"
+                            x="338.29" y="1810.52">L13</text>
+                    </g>
+                    <!-- L14 -->
+                    <g class="l-connector-group unmapped" id="lGroup14">
+                        <circle class="connector-ring" cx="778.56" cy="1616.29" r="93.86" fill="none" stroke="#b7b7b7"
+                            stroke-width="15" />
+                        <rect class="connector-pin" x="771.16" y="1520.71" width="14.8" height="21.41" rx="3.39"
+                            fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="741.97" cy="1576.65" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="822.21" cy="1576.65" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="822.21" cy="1655.92" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="741.97" cy="1655.92" r="6.91" fill="#b7b7b7" />
+                        <text class="connector-label" fill="#ee1c4e" font-family="Inter,sans-serif" font-size="100"
+                            x="714.06" y="1810.52">L14</text>
+                    </g>
+                    <!-- L15 -->
+                    <g class="l-connector-group unmapped" id="lGroup15">
+                        <circle class="connector-ring" cx="1151.45" cy="1612.6" r="93.86" fill="none" stroke="#b7b7b7"
+                            stroke-width="15" />
+                        <rect class="connector-pin" x="1144.05" y="1517.03" width="14.8" height="21.41" rx="3.39"
+                            fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="1114.86" cy="1572.97" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="1195.1" cy="1572.97" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="1195.1" cy="1652.24" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="1114.86" cy="1652.24" r="6.91" fill="#b7b7b7" />
+                        <text class="connector-label" fill="#ee1c4e" font-family="Inter,sans-serif" font-size="100"
+                            x="1089.83" y="1810.52">L15</text>
+                    </g>
+                    <!-- L16 -->
+                    <g class="l-connector-group unmapped" id="lGroup16">
+                        <circle class="connector-ring" cx="1524.35" cy="1616.29" r="93.86" fill="none" stroke="#b7b7b7"
+                            stroke-width="15" />
+                        <rect class="connector-pin" x="1516.95" y="1520.71" width="14.8" height="21.41" rx="3.39"
+                            fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="1487.76" cy="1576.65" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="1568" cy="1576.65" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="1568" cy="1655.92" r="6.91" fill="#b7b7b7" />
+                        <circle class="connector-pin" cx="1487.76" cy="1655.92" r="6.91" fill="#b7b7b7" />
+                        <text class="connector-label" fill="#ee1c4e" font-family="Inter,sans-serif" font-size="100"
+                            x="1465.6" y="1810.52">L16</text>
+                    </g>
+                </svg>
+            </div>
+            <div class="l-panel-legend">
+                <span><span class="legend-dot mapped"></span> Mapped</span>
+                <span><span class="legend-dot unmapped"></span> Still to find</span>
+                <span><span class="legend-dot"
+                        style="background:var(--orange);box-shadow:0 0 6px rgba(245,158,11,0.4);"></span>
+                    Conflict</span>
             </div>
         </div>
 
@@ -658,8 +1083,311 @@
                     </svg>
                     <div class="card-label">M8 Connector Cable</div>
                 </div>
+                <!-- Plate to Installation -->
+                <div class="schematic-card">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1927 1927.73">
+                        <rect fill="#07202c" x="2.93" width="1924.06" height="1927.73" />
+                        <rect fill="#121212" y="1.06" width="1923.04" height="320" />
+                        <text fill="#fff" font-family="Inter,sans-serif" font-size="125" font-weight="600" x="54"
+                            y="197">Plate to installation</text>
+                        <circle cx="964.97" cy="1119.69" r="753.86" fill="none" stroke="#fff" stroke-width="10" />
+                        <circle cx="349.33" cy="1800.86" r="83.31" fill="none" stroke="#fff" stroke-width="10" />
+                        <circle cx="349.33" cy="1800.86" r="58.88" fill="none" stroke="#fff" stroke-width="10" />
+                        <circle cx="1762.58" cy="1791.6" r="58.88" fill="none" stroke="#fff" stroke-width="10" />
+                        <text fill="#ee1c4e" font-family="Inter,sans-serif" font-size="100" x="1516.22"
+                            y="1841.75">M8</text>
+                        <text fill="#ee1c4e" font-family="Inter,sans-serif" font-size="100" x="48"
+                            y="1843.29">M12</text>
+                        <g>
+                            <circle fill="#0b202b" cx="964.93" cy="1719.61" r="58.88" stroke="#fff" stroke-width="10" />
+                            <text fill="#ee1c4e" font-family="Inter,sans-serif" font-size="38.16" x="951.44"
+                                y="1730.2">p1</text>
+                        </g>
+                        <g>
+                            <circle fill="#0b202b" cx="1403.38" cy="698.5" r="58.39" stroke="#fff" stroke-width="10" />
+                            <circle fill="#0b202b" cx="1403.38" cy="698.5" r="41.27" stroke="#fff" stroke-width="10" />
+                            <text fill="#ee1c4e" font-family="Inter,sans-serif" font-size="38.16" x="1383.44"
+                                y="707.29">p2</text>
+                        </g>
+                        <g>
+                            <circle fill="#0b202b" cx="1407.73" cy="998.83" r="58.39" stroke="#fff" stroke-width="10" />
+                            <circle fill="#0b202b" cx="1407.73" cy="998.83" r="41.27" stroke="#fff" stroke-width="10" />
+                            <text fill="#ee1c4e" font-family="Inter,sans-serif" font-size="38.16" x="1387.79"
+                                y="1007.63">p3</text>
+                        </g>
+                        <g>
+                            <circle fill="#0b202b" cx="1167.64" cy="694.64" r="58.39" stroke="#fff" stroke-width="10" />
+                            <circle fill="#0b202b" cx="1167.64" cy="694.64" r="41.27" stroke="#fff" stroke-width="10" />
+                            <text fill="#ee1c4e" font-family="Inter,sans-serif" font-size="38.16" x="1149.67"
+                                y="706.26">p4</text>
+                        </g>
+                        <g>
+                            <circle fill="#0b202b" cx="822" cy="696.72" r="58.39" stroke="#fff" stroke-width="10" />
+                            <circle fill="#0b202b" cx="822" cy="696.72" r="41.27" stroke="#fff" stroke-width="10" />
+                            <text fill="#ee1c4e" font-family="Inter,sans-serif" font-size="38.16" x="804.59"
+                                y="705.74">p5</text>
+                        </g>
+                        <g>
+                            <circle fill="#0b202b" cx="545.51" cy="925.38" r="58.39" stroke="#fff" stroke-width="10" />
+                            <circle fill="#0b202b" cx="545.51" cy="925.38" r="41.27" stroke="#fff" stroke-width="10" />
+                            <text fill="#ee1c4e" font-family="Inter,sans-serif" font-size="38.16" x="526.87"
+                                y="938.71">p6</text>
+                        </g>
+                        <g>
+                            <circle fill="#0b202b" cx="477.38" cy="1149" r="58.39" stroke="#fff" stroke-width="10" />
+                            <circle fill="#0b202b" cx="477.38" cy="1149" r="41.27" stroke="#fff" stroke-width="10" />
+                            <text fill="#ee1c4e" font-family="Inter,sans-serif" font-size="38.16" x="457.2"
+                                y="1154.63">p7</text>
+                        </g>
+                        <g>
+                            <circle fill="#0b202b" cx="603.56" cy="1385.37" r="58.39" stroke="#fff" stroke-width="10" />
+                            <circle fill="#0b202b" cx="603.56" cy="1385.37" r="41.27" stroke="#fff" stroke-width="10" />
+                            <text fill="#ee1c4e" font-family="Inter,sans-serif" font-size="38.16" x="582.17"
+                                y="1395.31">p8</text>
+                        </g>
+                        <g>
+                            <circle fill="#0b202b" cx="795.09" cy="1529.82" r="58.39" stroke="#fff" stroke-width="10" />
+                            <circle fill="#0b202b" cx="795.09" cy="1529.82" r="41.27" stroke="#fff" stroke-width="10" />
+                            <text fill="#ee1c4e" font-family="Inter,sans-serif" font-size="38.16" x="765.77"
+                                y="1535.2">p9</text>
+                        </g>
+                        <g>
+                            <circle fill="#0b202b" cx="1132.66" cy="1512.65" r="58.39" stroke="#fff"
+                                stroke-width="10" />
+                            <circle fill="#0b202b" cx="1132.66" cy="1512.65" r="41.27" stroke="#fff"
+                                stroke-width="10" /><text fill="#ee1c4e" font-family="Inter,sans-serif"
+                                font-size="38.16" x="1093.55" y="1518.02">p10</text>
+                        </g>
+                        <g>
+                            <circle fill="#0b202b" cx="1342.66" cy="1317.92" r="58.39" stroke="#fff"
+                                stroke-width="10" />
+                            <circle fill="#0b202b" cx="1342.66" cy="1317.92" r="41.27" stroke="#fff"
+                                stroke-width="10" /><text fill="#ee1c4e" font-family="Inter,sans-serif"
+                                font-size="38.16" x="1306.69" y="1328.26">p11</text>
+                        </g>
+                        <g>
+                            <circle fill="#0b202b" cx="1207.94" cy="1013.62" r="58.39" stroke="#fff"
+                                stroke-width="10" />
+                            <circle fill="#0b202b" cx="1207.94" cy="1013.62" r="41.27" stroke="#fff"
+                                stroke-width="10" /><text fill="#ee1c4e" font-family="Inter,sans-serif"
+                                font-size="38.16" x="1181.72" y="1020.71">p12</text>
+                        </g>
+                        <g>
+                            <circle fill="#0b202b" cx="1047.21" cy="864.09" r="41.27" stroke="#fff" stroke-width="10" />
+                            <text fill="#ee1c4e" font-family="Inter,sans-serif" font-size="38.16" x="1018.7"
+                                y="872.6">p13</text>
+                        </g>
+                        <g>
+                            <circle fill="#0b202b" cx="837.57" cy="898.41" r="41.27" stroke="#fff" stroke-width="10" />
+                            <text fill="#ee1c4e" font-family="Inter,sans-serif" font-size="38.16" x="811.95"
+                                y="907.06">p14</text>
+                        </g>
+                        <g>
+                            <circle fill="#0b202b" cx="716.2" cy="1053.21" r="41.27" stroke="#fff" stroke-width="10" />
+                            <text fill="#ee1c4e" font-family="Inter,sans-serif" font-size="38.16" x="683.05"
+                                y="1061.72">p15</text>
+                        </g>
+                        <g>
+                            <circle fill="#0b202b" cx="770.28" cy="1243.9" r="41.27" stroke="#fff" stroke-width="10" />
+                            <text fill="#ee1c4e" font-family="Inter,sans-serif" font-size="38.16" x="737.14"
+                                y="1252.41">p16</text>
+                        </g>
+                        <g>
+                            <circle fill="#0b202b" cx="946.09" cy="1358.73" r="41.27" stroke="#fff" stroke-width="10" />
+                            <text fill="#ee1c4e" font-family="Inter,sans-serif" font-size="38.16" x="919.19"
+                                y="1367.09">p17</text>
+                        </g>
+                        <g>
+                            <circle fill="#0b202b" cx="1133.8" cy="1228.62" r="41.27" stroke="#fff" stroke-width="10" />
+                            <text fill="#ee1c4e" font-family="Inter,sans-serif" font-size="38.16" x="1102.47"
+                                y="1236.36">p18</text>
+                        </g>
+                        <text fill="#fff" font-family="Inter,sans-serif" font-size="45" x="1100" y="1700">Start
+                            Here</text>
+                    </svg>
+                    <div class="card-label">Plate to Installation — p Positions</div>
+                </div>
+                <!-- Controller Plate -->
+                <div class="schematic-card">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1927.04 1931.3">
+                        <rect fill="#07202c" x="2.97" y="3.57" width="1924.06" height="1927.73" />
+                        <rect fill="#121212" width="1923.04" height="320" />
+                        <text fill="#fff" font-family="Inter,sans-serif" font-size="125" font-weight="600" x="54"
+                            y="196">Connector to controller plate</text>
+                        <g>
+                            <circle cx="405.66" cy="602.03" r="93.86" fill="none" stroke="#b7b7b7" stroke-width="15" />
+                            <rect x="398.26" y="506.45" width="14.8" height="21.41" rx="3.39" fill="#b7b7b7" />
+                            <circle cx="369.07" cy="562.4" r="6.91" fill="#b7b7b7" />
+                            <circle cx="449.31" cy="562.4" r="6.91" fill="#b7b7b7" />
+                            <circle cx="449.31" cy="641.66" r="6.91" fill="#b7b7b7" />
+                            <circle cx="369.07" cy="641.66" r="6.91" fill="#b7b7b7" />
+                            <text fill="#ee1c4e" font-family="Inter,sans-serif" font-size="100" x="363.94"
+                                y="794.29">L1</text>
+                        </g>
+                        <g>
+                            <circle cx="778.56" cy="605.71" r="93.86" fill="none" stroke="#b7b7b7" stroke-width="15" />
+                            <rect x="771.16" y="510.14" width="14.8" height="21.41" rx="3.39" fill="#b7b7b7" />
+                            <circle cx="741.97" cy="566.08" r="6.91" fill="#b7b7b7" />
+                            <circle cx="822.21" cy="566.08" r="6.91" fill="#b7b7b7" />
+                            <circle cx="822.21" cy="645.35" r="6.91" fill="#b7b7b7" />
+                            <circle cx="741.97" cy="645.35" r="6.91" fill="#b7b7b7" />
+                            <text fill="#ee1c4e" font-family="Inter,sans-serif" font-size="100" x="739.71"
+                                y="794.29">L2</text>
+                        </g>
+                        <g>
+                            <circle cx="1151.45" cy="602.03" r="93.86" fill="none" stroke="#b7b7b7" stroke-width="15" />
+                            <rect x="1144.05" y="506.45" width="14.8" height="21.41" rx="3.39" fill="#b7b7b7" />
+                            <circle cx="1114.86" cy="562.4" r="6.91" fill="#b7b7b7" />
+                            <circle cx="1195.1" cy="562.4" r="6.91" fill="#b7b7b7" />
+                            <circle cx="1195.1" cy="641.66" r="6.91" fill="#b7b7b7" />
+                            <circle cx="1114.86" cy="641.66" r="6.91" fill="#b7b7b7" />
+                            <text fill="#ee1c4e" font-family="Inter,sans-serif" font-size="100" x="1115.48"
+                                y="794.29">L3</text>
+                        </g>
+                        <g>
+                            <circle cx="1524.35" cy="605.71" r="93.86" fill="none" stroke="#b7b7b7" stroke-width="15" />
+                            <rect x="1516.95" y="510.14" width="14.8" height="21.41" rx="3.39" fill="#b7b7b7" />
+                            <circle cx="1487.76" cy="566.08" r="6.91" fill="#b7b7b7" />
+                            <circle cx="1568" cy="566.08" r="6.91" fill="#b7b7b7" />
+                            <circle cx="1568" cy="645.35" r="6.91" fill="#b7b7b7" />
+                            <circle cx="1487.76" cy="645.35" r="6.91" fill="#b7b7b7" />
+                            <text fill="#ee1c4e" font-family="Inter,sans-serif" font-size="100" x="1491.25"
+                                y="794.29">L4</text>
+                        </g>
+                        <g>
+                            <circle cx="405.66" cy="938.89" r="93.86" fill="none" stroke="#b7b7b7" stroke-width="15" />
+                            <rect x="398.26" y="843.31" width="14.8" height="21.41" rx="3.39" fill="#b7b7b7" />
+                            <circle cx="369.07" cy="899.25" r="6.91" fill="#b7b7b7" />
+                            <circle cx="449.31" cy="899.25" r="6.91" fill="#b7b7b7" />
+                            <circle cx="449.31" cy="978.52" r="6.91" fill="#b7b7b7" />
+                            <circle cx="369.07" cy="978.52" r="6.91" fill="#b7b7b7" />
+                            <text fill="#ee1c4e" font-family="Inter,sans-serif" font-size="100" x="363.94"
+                                y="1146.06">L5</text>
+                        </g>
+                        <g>
+                            <circle cx="778.56" cy="942.57" r="93.86" fill="none" stroke="#b7b7b7" stroke-width="15" />
+                            <rect x="771.16" y="846.99" width="14.8" height="21.41" rx="3.39" fill="#b7b7b7" />
+                            <circle cx="741.97" cy="902.94" r="6.91" fill="#b7b7b7" />
+                            <circle cx="822.21" cy="902.94" r="6.91" fill="#b7b7b7" />
+                            <circle cx="822.21" cy="982.2" r="6.91" fill="#b7b7b7" />
+                            <circle cx="741.97" cy="982.2" r="6.91" fill="#b7b7b7" />
+                            <text fill="#ee1c4e" font-family="Inter,sans-serif" font-size="100" x="739.71"
+                                y="1146.06">L6</text>
+                        </g>
+                        <g>
+                            <circle cx="1151.45" cy="938.89" r="93.86" fill="none" stroke="#b7b7b7" stroke-width="15" />
+                            <rect x="1144.05" y="843.31" width="14.8" height="21.41" rx="3.39" fill="#b7b7b7" />
+                            <circle cx="1114.86" cy="899.25" r="6.91" fill="#b7b7b7" />
+                            <circle cx="1195.1" cy="899.25" r="6.91" fill="#b7b7b7" />
+                            <circle cx="1195.1" cy="978.52" r="6.91" fill="#b7b7b7" />
+                            <circle cx="1114.86" cy="978.52" r="6.91" fill="#b7b7b7" />
+                            <text fill="#ee1c4e" font-family="Inter,sans-serif" font-size="100" x="1115.48"
+                                y="1146.06">L7</text>
+                        </g>
+                        <g>
+                            <circle cx="1524.35" cy="942.57" r="93.86" fill="none" stroke="#b7b7b7" stroke-width="15" />
+                            <rect x="1516.95" y="846.99" width="14.8" height="21.41" rx="3.39" fill="#b7b7b7" />
+                            <circle cx="1487.76" cy="902.94" r="6.91" fill="#b7b7b7" />
+                            <circle cx="1568" cy="902.94" r="6.91" fill="#b7b7b7" />
+                            <circle cx="1568" cy="982.2" r="6.91" fill="#b7b7b7" />
+                            <circle cx="1487.76" cy="982.2" r="6.91" fill="#b7b7b7" />
+                            <text fill="#ee1c4e" font-family="Inter,sans-serif" font-size="100" x="1491.25"
+                                y="1146.06">L8</text>
+                        </g>
+                        <g>
+                            <circle cx="405.66" cy="1275.75" r="93.86" fill="none" stroke="#b7b7b7" stroke-width="15" />
+                            <rect x="398.26" y="1180.17" width="14.8" height="21.41" rx="3.39" fill="#b7b7b7" />
+                            <circle cx="369.07" cy="1236.11" r="6.91" fill="#b7b7b7" />
+                            <circle cx="449.31" cy="1236.11" r="6.91" fill="#b7b7b7" />
+                            <circle cx="449.31" cy="1315.38" r="6.91" fill="#b7b7b7" />
+                            <circle cx="369.07" cy="1315.38" r="6.91" fill="#b7b7b7" />
+                            <text fill="#ee1c4e" font-family="Inter,sans-serif" font-size="100" x="363.94"
+                                y="1475.2">L9</text>
+                        </g>
+                        <g>
+                            <circle cx="778.56" cy="1279.43" r="93.86" fill="none" stroke="#b7b7b7" stroke-width="15" />
+                            <rect x="771.16" y="1183.85" width="14.8" height="21.41" rx="3.39" fill="#b7b7b7" />
+                            <circle cx="741.97" cy="1239.79" r="6.91" fill="#b7b7b7" />
+                            <circle cx="822.21" cy="1239.79" r="6.91" fill="#b7b7b7" />
+                            <circle cx="822.21" cy="1319.06" r="6.91" fill="#b7b7b7" />
+                            <circle cx="741.97" cy="1319.06" r="6.91" fill="#b7b7b7" />
+                            <text fill="#ee1c4e" font-family="Inter,sans-serif" font-size="100" x="714.06"
+                                y="1475.2">L10</text>
+                        </g>
+                        <g>
+                            <circle cx="1151.45" cy="1275.75" r="93.86" fill="none" stroke="#b7b7b7"
+                                stroke-width="15" />
+                            <rect x="1144.05" y="1180.17" width="14.8" height="21.41" rx="3.39" fill="#b7b7b7" />
+                            <circle cx="1114.86" cy="1236.11" r="6.91" fill="#b7b7b7" />
+                            <circle cx="1195.1" cy="1236.11" r="6.91" fill="#b7b7b7" />
+                            <circle cx="1195.1" cy="1315.38" r="6.91" fill="#b7b7b7" />
+                            <circle cx="1114.86" cy="1315.38" r="6.91" fill="#b7b7b7" />
+                            <text fill="#ee1c4e" font-family="Inter,sans-serif" font-size="100" x="1089.83"
+                                y="1475.2">L11</text>
+                        </g>
+                        <g>
+                            <circle cx="1524.35" cy="1279.43" r="93.86" fill="none" stroke="#b7b7b7"
+                                stroke-width="15" />
+                            <rect x="1516.95" y="1183.85" width="14.8" height="21.41" rx="3.39" fill="#b7b7b7" />
+                            <circle cx="1487.76" cy="1239.79" r="6.91" fill="#b7b7b7" />
+                            <circle cx="1568" cy="1239.79" r="6.91" fill="#b7b7b7" />
+                            <circle cx="1568" cy="1319.06" r="6.91" fill="#b7b7b7" />
+                            <circle cx="1487.76" cy="1319.06" r="6.91" fill="#b7b7b7" />
+                            <text fill="#ee1c4e" font-family="Inter,sans-serif" font-size="100" x="1465.6"
+                                y="1475.2">L12</text>
+                        </g>
+                        <g>
+                            <circle cx="405.66" cy="1612.6" r="93.86" fill="none" stroke="#b7b7b7" stroke-width="15" />
+                            <rect x="398.26" y="1517.03" width="14.8" height="21.41" rx="3.39" fill="#b7b7b7" />
+                            <circle cx="369.07" cy="1572.97" r="6.91" fill="#b7b7b7" />
+                            <circle cx="449.31" cy="1572.97" r="6.91" fill="#b7b7b7" />
+                            <circle cx="449.31" cy="1652.24" r="6.91" fill="#b7b7b7" />
+                            <circle cx="369.07" cy="1652.24" r="6.91" fill="#b7b7b7" />
+                            <text fill="#ee1c4e" font-family="Inter,sans-serif" font-size="100" x="338.29"
+                                y="1810.52">L13</text>
+                        </g>
+                        <g>
+                            <circle cx="778.56" cy="1616.29" r="93.86" fill="none" stroke="#b7b7b7" stroke-width="15" />
+                            <rect x="771.16" y="1520.71" width="14.8" height="21.41" rx="3.39" fill="#b7b7b7" />
+                            <circle cx="741.97" cy="1576.65" r="6.91" fill="#b7b7b7" />
+                            <circle cx="822.21" cy="1576.65" r="6.91" fill="#b7b7b7" />
+                            <circle cx="822.21" cy="1655.92" r="6.91" fill="#b7b7b7" />
+                            <circle cx="741.97" cy="1655.92" r="6.91" fill="#b7b7b7" />
+                            <text fill="#ee1c4e" font-family="Inter,sans-serif" font-size="100" x="714.06"
+                                y="1810.52">L14</text>
+                        </g>
+                        <g>
+                            <circle cx="1151.45" cy="1612.6" r="93.86" fill="none" stroke="#b7b7b7" stroke-width="15" />
+                            <rect x="1144.05" y="1517.03" width="14.8" height="21.41" rx="3.39" fill="#b7b7b7" />
+                            <circle cx="1114.86" cy="1572.97" r="6.91" fill="#b7b7b7" />
+                            <circle cx="1195.1" cy="1572.97" r="6.91" fill="#b7b7b7" />
+                            <circle cx="1195.1" cy="1652.24" r="6.91" fill="#b7b7b7" />
+                            <circle cx="1114.86" cy="1652.24" r="6.91" fill="#b7b7b7" />
+                            <text fill="#ee1c4e" font-family="Inter,sans-serif" font-size="100" x="1089.83"
+                                y="1810.52">L15</text>
+                        </g>
+                        <g>
+                            <circle cx="1524.35" cy="1616.29" r="93.86" fill="none" stroke="#b7b7b7"
+                                stroke-width="15" />
+                            <rect x="1516.95" y="1520.71" width="14.8" height="21.41" rx="3.39" fill="#b7b7b7" />
+                            <circle cx="1487.76" cy="1576.65" r="6.91" fill="#b7b7b7" />
+                            <circle cx="1568" cy="1576.65" r="6.91" fill="#b7b7b7" />
+                            <circle cx="1568" cy="1655.92" r="6.91" fill="#b7b7b7" />
+                            <circle cx="1487.76" cy="1655.92" r="6.91" fill="#b7b7b7" />
+                            <text fill="#ee1c4e" font-family="Inter,sans-serif" font-size="100" x="1465.6"
+                                y="1810.52">L16</text>
+                        </g>
+                    </svg>
+                    <div class="card-label">Controller Plate — L Connectors</div>
+                </div>
             </div>
         </div>
+    </div>
+
+    <!-- Zoom Overlay -->
+    <div class="zoom-overlay" id="zoomOverlay" onclick="closeZoom()">
+        <div class="zoom-content" id="zoomContent" onclick="event.stopPropagation()"></div>
+        <div class="zoom-hint">Press Escape to close</div>
     </div>
 
     <script>
@@ -929,6 +1657,7 @@
 
             mappings.push({ l, p, wires: lastHits.length, wireMap: lastWireMap });
             renderMappings();
+            updateLPanelVisual();
             log(`✓ Confirmed: ${l} → ${p}`, 'success');
 
             // Hide confirm panel and reset L selector
@@ -957,12 +1686,27 @@
             }
             countEl.textContent = `(${mappings.length})`;
             document.getElementById('btnExport').disabled = false;
+
+            // Detect duplicate L conflicts
+            const lCounts = {};
+            mappings.forEach(m => { lCounts[m.l] = (lCounts[m.l] || 0) + 1; });
+            const conflictLs = new Set(Object.keys(lCounts).filter(l => lCounts[l] > 1));
+
+            let conflictBanner = '';
+            if (conflictLs.size > 0) {
+                const names = [...conflictLs].sort((a, b) => parseInt(a.slice(1)) - parseInt(b.slice(1))).join(', ');
+                conflictBanner = `<div style="background:rgba(245,158,11,0.1);border:1px solid var(--orange);border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:13px;color:var(--orange);">
+                    ⚠️ <strong>Conflict detected:</strong> ${names} mapped to multiple p positions. This likely indicates a wiring issue — check those connectors.
+                </div>`;
+            }
+
             const sorted = [...mappings].sort((a, b) => {
                 const na = parseInt(a.l.slice(1)), nb = parseInt(b.l.slice(1));
                 return na - nb;
             });
-            container.innerHTML = sorted.map((m, idx) => {
+            container.innerHTML = conflictBanner + sorted.map((m, idx) => {
                 const origIdx = mappings.indexOf(m);
+                const isConflict = conflictLs.has(m.l);
                 let wireDetail = '';
                 if (m.wireMap) {
                     const links = m.wireMap
@@ -971,8 +1715,9 @@
                         .join(' · ');
                     wireDetail = `<div style="font-size:11px;color:var(--text-dim);margin-top:4px;width:100%;">${links} <span style="opacity:0.5">(see schematics for pin positions)</span></div>`;
                 }
-                return `<div class="result-row" style="flex-wrap:wrap;position:relative;">
-                    <strong>${m.l}</strong>
+                const conflictBadge = isConflict ? '<span style="color:var(--orange);font-size:14px;margin-left:6px;" title="Multiple p positions mapped to this L — possible wiring issue">⚠️</span>' : '';
+                return `<div class="result-row" style="flex-wrap:wrap;position:relative;${isConflict ? 'border-left:3px solid var(--orange);' : ''}">
+                    <strong>${m.l}</strong>${conflictBadge}
                     <span class="arrow">→</span>
                     <strong>${m.p}</strong>
                     <span class="wires">(${m.wires}/4 wires)</span>
@@ -1036,6 +1781,34 @@
             document.getElementById('schematicsGrid').classList.toggle('open');
         }
 
+        // ==================== Schematic Zoom ====================
+        function openZoom(card) {
+            const svg = card.querySelector('svg');
+            if (!svg) return;
+            const overlay = document.getElementById('zoomOverlay');
+            const content = document.getElementById('zoomContent');
+            content.innerHTML = svg.outerHTML;
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeZoom() {
+            const overlay = document.getElementById('zoomOverlay');
+            overlay.classList.remove('active');
+            document.getElementById('zoomContent').innerHTML = '';
+            document.body.style.overflow = '';
+        }
+
+        // Attach double-click to all schematic cards
+        document.querySelectorAll('.schematic-card').forEach(card => {
+            card.addEventListener('dblclick', () => openZoom(card));
+        });
+
+        // Escape to close zoom
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeZoom();
+        });
+
         // ==================== Import / Reset ====================
         function importJSON(event) {
             const file = event.target.files[0];
@@ -1069,6 +1842,7 @@
                         mappings.push(m);
                     }
                     renderMappings();
+                    updateLPanelVisual();
                     log(`Imported ${mappings.length} mappings from ${file.name}`, 'success');
                 } catch (err) {
                     log(`Import error: ${err.message}`, 'error');
@@ -1083,6 +1857,7 @@
             if (!confirm(`Delete all ${mappings.length} mappings? This cannot be undone.`)) return;
             mappings.length = 0;
             renderMappings();
+            updateLPanelVisual();
             log('All mappings cleared', 'info');
         }
 
@@ -1091,7 +1866,36 @@
             if (!m) return;
             mappings.splice(idx, 1);
             renderMappings();
+            updateLPanelVisual();
             log(`Deleted mapping ${m.l} → ${m.p}`, 'info');
+        }
+
+        // ==================== L Panel Visual ====================
+        function updateLPanelVisual() {
+            const mappedLs = new Set(mappings.map(m => m.l));
+            // Detect conflicts: L mapped to multiple p
+            const lCounts = {};
+            mappings.forEach(m => { lCounts[m.l] = (lCounts[m.l] || 0) + 1; });
+            const conflictLs = new Set(Object.keys(lCounts).filter(l => lCounts[l] > 1));
+
+            for (let i = 1; i <= 16; i++) {
+                const group = document.getElementById(`lGroup${i}`);
+                if (!group) continue;
+                const lName = `L${i}`;
+                group.classList.remove('mapped', 'unmapped', 'conflict');
+                if (conflictLs.has(lName)) {
+                    group.classList.add('conflict');
+                } else if (mappedLs.has(lName)) {
+                    group.classList.add('mapped');
+                } else {
+                    group.classList.add('unmapped');
+                }
+            }
+            const progressEl = document.getElementById('lPanelProgress');
+            if (progressEl) {
+                const conflictNote = conflictLs.size > 0 ? ` · ⚠ ${conflictLs.size} conflict${conflictLs.size > 1 ? 's' : ''}` : '';
+                progressEl.textContent = `${mappedLs.size}/16 mapped${conflictNote}`;
+            }
         }
 
         // Web Serial check

@@ -1,17 +1,18 @@
 /*
- * ESP32-CAM Camera + WiFi Firmware
- * =================================
- * - Connects to WiFi (MEDICALEX)
- * - Initializes OV2640 camera
- * - Serves MJPEG stream at http://<ip>/stream
- * - Serves single JPEG capture at http://<ip>/capture
- * - Simple web UI at http://<ip>/
- * - Heartbeat blink on GPIO4 flash LED
+ * ESP32-CAM Camera Server
+ * ========================
+ * Uses esp_http_server (async, multi-client capable) instead of
+ * Arduino WebServer which causes boot loops with camera streaming.
+ *
+ * Endpoints:
+ *   GET /          → Web UI with embedded stream
+ *   GET /capture   → Single JPEG snapshot
+ *   GET /stream    → MJPEG live stream
  */
 
 #include <WiFi.h>
-#include <WebServer.h>
 #include "esp_camera.h"
+#include "esp_http_server.h"
 
 // ── WiFi credentials ──
 const char* ssid     = "MEDICALEX";
@@ -35,11 +36,16 @@ const char* password = "94110Med+";
 #define HREF_GPIO_NUM     23
 #define PCLK_GPIO_NUM     22
 
-// Flash LED
 #define LED_FLASH 4
 
-// Web server on port 80
-WebServer server(80);
+// MJPEG stream boundary
+#define PART_BOUNDARY "123456789000000000000987654321"
+static const char* _STREAM_CONTENT_TYPE = "multipart/x-mixed-replace;boundary=" PART_BOUNDARY;
+static const char* _STREAM_BOUNDARY = "\r\n--" PART_BOUNDARY "\r\n";
+static const char* _STREAM_PART = "Content-Type: image/jpeg\r\nContent-Length: %u\r\n\r\n";
+
+httpd_handle_t camera_httpd = NULL;
+httpd_handle_t stream_httpd = NULL;
 
 // ── Camera init ──
 bool initCamera() {
@@ -66,13 +72,12 @@ bool initCamera() {
     config.pixel_format = PIXFORMAT_JPEG;
     config.grab_mode    = CAMERA_GRAB_LATEST;
 
-    // Use higher resolution if PSRAM is available
     if (psramFound()) {
-        config.frame_size   = FRAMESIZE_VGA;    // 640x480
-        config.jpeg_quality = 10;               // 0-63, lower = better quality
+        config.frame_size   = FRAMESIZE_VGA;   // 640x480
+        config.jpeg_quality = 10;
         config.fb_count     = 2;
     } else {
-        config.frame_size   = FRAMESIZE_QVGA;   // 320x240
+        config.frame_size   = FRAMESIZE_QVGA;  // 320x240
         config.jpeg_quality = 12;
         config.fb_count     = 1;
     }
@@ -83,131 +88,148 @@ bool initCamera() {
         return false;
     }
 
-    // Fine-tune sensor settings
     sensor_t *s = esp_camera_sensor_get();
     if (s) {
-        s->set_brightness(s, 1);     // -2 to 2
-        s->set_contrast(s, 1);       // -2 to 2
-        s->set_saturation(s, 0);     // -2 to 2
-        s->set_whitebal(s, 1);       // 0 = disable, 1 = enable
-        s->set_awb_gain(s, 1);       // 0 = disable, 1 = enable
-        s->set_wb_mode(s, 0);        // 0-4
-        s->set_exposure_ctrl(s, 1);  // 0 = disable, 1 = enable
-        s->set_aec2(s, 0);           // 0 = disable, 1 = enable
-        s->set_gain_ctrl(s, 1);      // 0 = disable, 1 = enable
-        s->set_agc_gain(s, 0);       // 0-30
-        s->set_gainceiling(s, (gainceiling_t)6);  // 0-6
-        s->set_bpc(s, 1);            // 0 = disable, 1 = enable
-        s->set_wpc(s, 1);            // 0 = disable, 1 = enable
-        s->set_raw_gma(s, 1);        // 0 = disable, 1 = enable
-        s->set_lenc(s, 1);           // 0 = disable, 1 = enable
-        s->set_hmirror(s, 0);        // 0 = disable, 1 = enable
-        s->set_vflip(s, 0);          // 0 = disable, 1 = enable
+        s->set_brightness(s, 1);
+        s->set_contrast(s, 1);
+        s->set_whitebal(s, 1);
+        s->set_awb_gain(s, 1);
+        s->set_exposure_ctrl(s, 1);
+        s->set_gain_ctrl(s, 1);
     }
 
-    Serial.println("Camera initialized OK");
-    Serial.printf("PSRAM: %s (%d bytes free)\n",
+    Serial.printf("Camera OK | PSRAM: %s (%d KB free)\n",
         psramFound() ? "YES" : "NO",
-        psramFound() ? ESP.getFreePsram() : 0);
+        psramFound() ? ESP.getFreePsram() / 1024 : 0);
     return true;
 }
 
-// ── Handle single JPEG capture ──
-void handleCapture() {
+// ── /capture handler ──
+static esp_err_t capture_handler(httpd_req_t *req) {
     camera_fb_t *fb = esp_camera_fb_get();
     if (!fb) {
-        server.send(500, "text/plain", "Camera capture failed");
-        return;
+        httpd_resp_send_500(req);
+        return ESP_FAIL;
     }
-    server.sendHeader("Access-Control-Allow-Origin", "*");
-    server.send_P(200, "image/jpeg", (const char*)fb->buf, fb->len);
+
+    httpd_resp_set_type(req, "image/jpeg");
+    httpd_resp_set_hdr(req, "Content-Disposition", "inline; filename=capture.jpg");
+    httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "*");
+    esp_err_t res = httpd_resp_send(req, (const char*)fb->buf, fb->len);
     esp_camera_fb_return(fb);
+    return res;
 }
 
-// ── Handle MJPEG stream ──
-void handleStream() {
-    WiFiClient client = server.client();
+// ── /stream handler ──
+static esp_err_t stream_handler(httpd_req_t *req) {
+    esp_err_t res = ESP_OK;
+    char part_buf[64];
 
-    String response = "HTTP/1.1 200 OK\r\n";
-    response += "Content-Type: multipart/x-mixed-replace; boundary=frame\r\n";
-    response += "Access-Control-Allow-Origin: *\r\n";
-    response += "\r\n";
-    client.print(response);
+    res = httpd_resp_set_type(req, _STREAM_CONTENT_TYPE);
+    if (res != ESP_OK) return res;
 
-    while (client.connected()) {
+    httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "*");
+
+    while (true) {
         camera_fb_t *fb = esp_camera_fb_get();
         if (!fb) {
             Serial.println("Stream: capture failed");
+            res = ESP_FAIL;
             break;
         }
 
-        String header = "--frame\r\n";
-        header += "Content-Type: image/jpeg\r\n";
-        header += "Content-Length: " + String(fb->len) + "\r\n";
-        header += "\r\n";
-
-        client.print(header);
-        client.write(fb->buf, fb->len);
-        client.print("\r\n");
+        size_t hlen = snprintf(part_buf, 64, _STREAM_PART, fb->len);
+        res = httpd_resp_send_chunk(req, _STREAM_BOUNDARY, strlen(_STREAM_BOUNDARY));
+        if (res == ESP_OK)
+            res = httpd_resp_send_chunk(req, part_buf, hlen);
+        if (res == ESP_OK)
+            res = httpd_resp_send_chunk(req, (const char*)fb->buf, fb->len);
 
         esp_camera_fb_return(fb);
 
-        if (!client.connected()) break;
-        delay(30);  // ~30 fps cap
+        if (res != ESP_OK) break;
     }
+    return res;
 }
 
-// ── Web UI ──
-void handleRoot() {
+// ── / handler (web UI) ──
+static esp_err_t index_handler(httpd_req_t *req) {
     String ip = WiFi.localIP().toString();
-    String html = "<!DOCTYPE html><html><head>";
-    html += "<meta name='viewport' content='width=device-width,initial-scale=1'>";
-    html += "<title>ESP32-CAM</title>";
-    html += "<style>";
-    html += "body{font-family:monospace;background:#111;color:#0f0;margin:0;padding:20px;text-align:center}";
-    html += "h1{color:#0ff;margin-bottom:5px}";
-    html += ".info{color:#888;font-size:12px;margin-bottom:20px}";
-    html += "img{max-width:100%;border:2px solid #333;border-radius:8px}";
-    html += ".btn{background:#0a0;color:#000;border:none;padding:10px 20px;margin:5px;";
-    html += "cursor:pointer;font-family:monospace;font-weight:bold;border-radius:4px;font-size:14px}";
-    html += ".btn:hover{background:#0f0}";
-    html += ".controls{margin:15px 0}";
-    html += "</style></head><body>";
-    html += "<h1>ESP32-CAM</h1>";
-    html += "<div class='info'>IP: " + ip + " | ";
-    html += "RSSI: " + String(WiFi.RSSI()) + " dBm | ";
-    html += "PSRAM: " + String(psramFound() ? "YES" : "NO") + " | ";
-    html += "Heap: " + String(ESP.getFreeHeap() / 1024) + " KB</div>";
-    html += "<div><img id='stream' src='/stream'></div>";
-    html += "<div class='controls'>";
-    html += "<button class='btn' onclick=\"document.getElementById('stream').src='/stream?'+Date.now()\">Stream</button>";
-    html += "<button class='btn' onclick=\"document.getElementById('stream').src='/capture?'+Date.now()\">Snapshot</button>";
-    html += "</div>";
-    html += "<div class='info'>Stream: <a href='/stream' style='color:#0f0'>/stream</a> | ";
-    html += "Capture: <a href='/capture' style='color:#0f0'>/capture</a></div>";
-    html += "</body></html>";
-    server.send(200, "text/html", html);
+    String html = "<!DOCTYPE html><html><head>"
+        "<meta name='viewport' content='width=device-width,initial-scale=1'>"
+        "<title>ESP32-CAM</title>"
+        "<style>"
+        "body{font-family:monospace;background:#111;color:#0f0;margin:0;padding:20px;text-align:center}"
+        "h1{color:#0ff;margin-bottom:5px}"
+        ".info{color:#888;font-size:12px;margin-bottom:15px}"
+        "img{max-width:100%;border:2px solid #333;border-radius:8px}"
+        ".btn{background:#0a0;color:#000;border:none;padding:10px 20px;margin:5px;"
+        "cursor:pointer;font-family:monospace;font-weight:bold;border-radius:4px;font-size:14px}"
+        ".btn:hover{background:#0f0}"
+        "</style></head><body>"
+        "<h1>ESP32-CAM</h1>"
+        "<div class='info'>IP: " + ip + " | "
+        "PSRAM: " + String(psramFound() ? "YES" : "NO") + " | "
+        "Heap: " + String(ESP.getFreeHeap() / 1024) + " KB</div>"
+        "<div><img id='feed' src='http://" + ip + ":81/stream'></div>"
+        "<div style='margin:15px 0'>"
+        "<button class='btn' onclick=\"document.getElementById('feed').src='http://" + ip + ":81/stream?'+Date.now()\">Stream</button>"
+        "<button class='btn' onclick=\"document.getElementById('feed').src='/capture?'+Date.now()\">Snapshot</button>"
+        "</div>"
+        "<div class='info'>"
+        "Stream: <a href='http://" + ip + ":81/stream' style='color:#0f0'>:" + "81/stream</a> | "
+        "Capture: <a href='/capture' style='color:#0f0'>/capture</a>"
+        "</div></body></html>";
+
+    httpd_resp_set_type(req, "text/html");
+    return httpd_resp_send(req, html.c_str(), html.length());
+}
+
+// ── Start servers ──
+void startCameraServer() {
+    httpd_config_t config = HTTPD_DEFAULT_CONFIG();
+    config.server_port = 80;
+
+    // Main server on port 80 (UI + capture)
+    httpd_uri_t index_uri = { .uri = "/",        .method = HTTP_GET, .handler = index_handler,   .user_ctx = NULL };
+    httpd_uri_t capture_uri = { .uri = "/capture", .method = HTTP_GET, .handler = capture_handler, .user_ctx = NULL };
+
+    if (httpd_start(&camera_httpd, &config) == ESP_OK) {
+        httpd_register_uri_handler(camera_httpd, &index_uri);
+        httpd_register_uri_handler(camera_httpd, &capture_uri);
+        Serial.println("HTTP server on port 80 (UI + capture)");
+    }
+
+    // Stream server on port 81 (separate so streaming doesn't block UI)
+    config.server_port = 81;
+    config.ctrl_port += 1;
+
+    httpd_uri_t stream_uri = { .uri = "/stream", .method = HTTP_GET, .handler = stream_handler, .user_ctx = NULL };
+
+    if (httpd_start(&stream_httpd, &config) == ESP_OK) {
+        httpd_register_uri_handler(stream_httpd, &stream_uri);
+        Serial.println("Stream server on port 81 (/stream)");
+    }
 }
 
 void setup() {
     Serial.begin(115200);
     delay(1000);
-    Serial.println("\n\n================================");
-    Serial.println("ESP32-CAM Camera Server");
+    Serial.println("\n================================");
+    Serial.println("ESP32-CAM Camera Server v2");
     Serial.println("================================");
 
-    // Flash LED setup
     pinMode(LED_FLASH, OUTPUT);
     digitalWrite(LED_FLASH, LOW);
 
     // Boot blink
     for (int i = 0; i < 3; i++) {
-        digitalWrite(LED_FLASH, HIGH); delay(200);
-        digitalWrite(LED_FLASH, LOW);  delay(200);
+        digitalWrite(LED_FLASH, HIGH); delay(150);
+        digitalWrite(LED_FLASH, LOW);  delay(150);
     }
 
-    // ── Connect WiFi FIRST (before camera, GPIO0 XCLK interferes) ──
-    Serial.printf("Connecting to WiFi: %s\n", ssid);
+    // WiFi first (before camera — GPIO0 XCLK conflict)
+    Serial.printf("WiFi: connecting to %s\n", ssid);
     WiFi.mode(WIFI_STA);
     WiFi.begin(ssid, password);
 
@@ -220,84 +242,65 @@ void setup() {
     Serial.println();
 
     if (WiFi.status() == WL_CONNECTED) {
-        Serial.println("========== WiFi CONNECTED ==========");
-        Serial.printf("IP Address: %s\n", WiFi.localIP().toString().c_str());
-        Serial.printf("Signal: %d dBm\n", WiFi.RSSI());
-        Serial.println("=====================================");
+        Serial.printf("WiFi OK: %s (%d dBm)\n",
+            WiFi.localIP().toString().c_str(), WiFi.RSSI());
     } else {
-        Serial.println("WiFi connection failed! Will retry after camera init...");
+        Serial.println("WiFi FAILED — will retry after camera init");
     }
 
-    // ── Init camera AFTER WiFi ──
+    // Camera init
     if (!initCamera()) {
         Serial.println("FATAL: Camera init failed!");
-        while (true) {
-            digitalWrite(LED_FLASH, HIGH); delay(50);
-            digitalWrite(LED_FLASH, LOW);  delay(50);
-        }
+        while (1) { digitalWrite(LED_FLASH, HIGH); delay(50); digitalWrite(LED_FLASH, LOW); delay(50); }
     }
 
-    // Retry WiFi if it failed the first time
+    // Retry WiFi if needed
     if (WiFi.status() != WL_CONNECTED) {
-        Serial.println("Retrying WiFi...");
-        WiFi.disconnect();
-        delay(1000);
+        WiFi.disconnect(); delay(1000);
         WiFi.begin(ssid, password);
         attempts = 0;
-        while (WiFi.status() != WL_CONNECTED && attempts < 40) {
-            delay(500);
-            Serial.print(".");
-            attempts++;
-        }
+        while (WiFi.status() != WL_CONNECTED && attempts < 40) { delay(500); Serial.print("."); attempts++; }
         Serial.println();
     }
 
-    if (WiFi.status() == WL_CONNECTED) {
-        Serial.println("========== READY ==========");
-        Serial.printf("IP Address: %s\n", WiFi.localIP().toString().c_str());
-        Serial.println("");
-        Serial.println("Open in browser:");
-        Serial.printf("  http://%s/         (web UI)\n", WiFi.localIP().toString().c_str());
-        Serial.printf("  http://%s/stream   (MJPEG stream)\n", WiFi.localIP().toString().c_str());
-        Serial.printf("  http://%s/capture  (single JPEG)\n", WiFi.localIP().toString().c_str());
-        Serial.println("============================");
-
-        // Victory flash
-        for (int i = 0; i < 5; i++) {
-            digitalWrite(LED_FLASH, HIGH); delay(100);
-            digitalWrite(LED_FLASH, LOW);  delay(100);
-        }
-    } else {
+    if (WiFi.status() != WL_CONNECTED) {
         Serial.println("WiFi FAILED after retries!");
+        while (1) { digitalWrite(LED_FLASH, HIGH); delay(100); digitalWrite(LED_FLASH, LOW); delay(100); }
     }
 
-    // Web server routes
-    server.on("/", handleRoot);
-    server.on("/capture", handleCapture);
-    server.on("/stream", handleStream);
-    server.begin();
-    Serial.println("HTTP server started on port 80");
+    // Start HTTP servers
+    startCameraServer();
+
+    Serial.println("========== READY ==========");
+    Serial.printf("  http://%s/       (web UI)\n", WiFi.localIP().toString().c_str());
+    Serial.printf("  http://%s/capture (JPEG)\n", WiFi.localIP().toString().c_str());
+    Serial.printf("  http://%s:81/stream (MJPEG)\n", WiFi.localIP().toString().c_str());
+    Serial.println("============================");
+
+    // Victory flash
+    for (int i = 0; i < 5; i++) {
+        digitalWrite(LED_FLASH, HIGH); delay(80);
+        digitalWrite(LED_FLASH, LOW);  delay(80);
+    }
 }
 
 void loop() {
-    server.handleClient();
-
-    // Heartbeat every 10s (less frequent to not interfere with stream)
-    static unsigned long lastBlink = 0;
-    if (millis() - lastBlink > 10000) {
-        lastBlink = millis();
-        Serial.printf("[%lus] WiFi %s | IP: %s | RSSI: %d | Heap: %u\n",
+    static unsigned long lastLog = 0;
+    if (millis() - lastLog > 30000) {
+        lastLog = millis();
+        Serial.printf("[%lus] WiFi:%s IP:%s RSSI:%d Heap:%uKB\n",
             millis() / 1000,
             WiFi.status() == WL_CONNECTED ? "OK" : "LOST",
             WiFi.localIP().toString().c_str(),
             WiFi.RSSI(),
-            ESP.getFreeHeap());
+            ESP.getFreeHeap() / 1024);
     }
 
-    // Reconnect if WiFi drops
     if (WiFi.status() != WL_CONNECTED) {
         Serial.println("WiFi lost, reconnecting...");
         WiFi.reconnect();
         delay(5000);
     }
+
+    delay(100);
 }

@@ -99,8 +99,17 @@ void debugLog(String msg) {
     logBuffer[logIndex % LOG_SIZE] = entry;
     logIndex++;
 
+    // Sanitize: strip non-printable/non-ASCII bytes to keep WebSocket text frames valid UTF-8
+    String clean;
+    clean.reserve(entry.length());
+    for (unsigned int i = 0; i < entry.length(); i++) {
+        char c = entry[i];
+        if (c >= 0x20 && c < 0x7F) clean += c;  // printable ASCII only
+        else if (c == '\n' || c == '\t') clean += c;
+    }
+
     // Broadcast to all connected WebSocket clients
-    webSocket.broadcastTXT(entry);
+    webSocket.broadcastTXT(clean);
 }
 
 // ══════════════════════════════════════════════
@@ -613,68 +622,226 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
 // ══════════════════════════════════════════════
 
 void handleRoot() {
-    String html = "<!DOCTYPE html><html><head>";
-    html += "<meta name='viewport' content='width=device-width,initial-scale=1'>";
-    html += "<title>Cryptographic Beings</title>";
-    html += "<style>";
-    html += "body{font-family:monospace;background:#111;color:#0f0;padding:20px;margin:0}";
-    html += "h1{color:#0ff;border-bottom:1px solid #333;padding-bottom:10px;margin-top:0}";
-    html += ".log{background:#1a1a1a;padding:10px;border:1px solid #333;";
-    html += "max-height:400px;overflow-y:auto;font-size:12px;line-height:1.6}";
-    html += ".log div{padding:2px 0;border-bottom:1px solid #1f1f1f}";
-    html += ".info{color:#888;margin:10px 0;font-size:12px}";
-    html += "input{background:#222;color:#0f0;border:1px solid #444;padding:8px;";
-    html += "font-family:monospace;width:60%}";
-    html += "button{background:#0a0;color:#000;border:none;padding:8px 16px;";
-    html += "cursor:pointer;font-family:monospace;font-weight:bold}";
-    html += "button:hover{background:#0f0}";
-    html += ".status{color:#0ff;font-size:14px;margin-bottom:16px}";
-    html += ".ws-status{color:#f80;font-size:12px;margin:6px 0}";
-    html += "</style></head><body>";
-    html += "<h1>CRYPTOGRAPHIC BEINGS</h1>";
-    html += "<div class='status'>WiFi: " + WiFi.localIP().toString() + " | ";
-    html += "Uptime: " + String(millis() / 1000) + "s | ";
-    html += "Free RAM: " + String(ESP.getFreeHeap()) + " bytes</div>";
-    html += "<div class='ws-status' id='wsStatus'>WebSocket: connecting...</div>";
+    String html = R"rawhtml(<!DOCTYPE html><html><head>
+<meta name='viewport' content='width=device-width,initial-scale=1'>
+<title>Cryptographic Beings - Motor Control</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Courier New',monospace;background:#0a0a0f;color:#c8d6e5;min-height:100vh}
+.header{background:linear-gradient(135deg,#0d1117,#161b22);padding:16px 20px;border-bottom:1px solid #30363d}
+.header h1{font-size:16px;color:#58a6ff;letter-spacing:2px}
+.header .ip{font-size:11px;color:#8b949e;margin-top:4px}
+.ws-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#f85149;margin-right:6px;vertical-align:middle}
+.ws-dot.ok{background:#3fb950}
 
-    // Command form
-    html += "<h2>Send to Nano</h2>";
-    html += "<form id='cmdForm' onsubmit='sendCmd(event)'>";
-    html += "<input id='cmd' placeholder='e.g. MOVE 200, HOME, STATUS, PING, HALF, CALIBRATE'>";
-    html += " <button type='submit'>SEND</button></form>";
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px;max-width:900px;margin:0 auto}
+@media(max-width:600px){.grid{grid-template-columns:1fr}}
 
-    // Log output
-    html += "<h2>Live Debug Log</h2><div class='log' id='logDiv'></div>";
+.panel{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:14px}
+.panel h2{font-size:12px;color:#8b949e;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid #21262d;padding-bottom:6px}
 
-    // API quick links
-    html += "<h2>API Endpoints</h2>";
-    html += "<div class='info'>";
-    html += "<a href='/api/ping' style='color:#0f0'>GET /api/ping</a> | ";
-    html += "<a href='/api/status' style='color:#0f0'>GET /api/status</a> | ";
-    html += "<a href='/api/half' style='color:#0f0'>GET /api/half</a> | ";
-    html += "<a href='/api/home' style='color:#0f0'>GET /api/home</a> | ";
-    html += "<a href='/api/calibrate' style='color:#0f0'>GET /api/calibrate</a>";
-    html += "</div>";
+.btn-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.btn{background:#21262d;color:#c9d1d9;border:1px solid #30363d;padding:8px 12px;border-radius:6px;cursor:pointer;font-family:inherit;font-size:12px;transition:all .15s}
+.btn:hover{background:#30363d;border-color:#58a6ff}
+.btn:active{transform:scale(.95)}
+.btn.danger{border-color:#f8514950;color:#f85149}.btn.danger:hover{background:#f8514920}
+.btn.success{border-color:#3fb95050;color:#3fb950}.btn.success:hover{background:#3fb95020}
+.btn.warn{border-color:#d2992050;color:#d29920}.btn.warn:hover{background:#d2992020}
+.btn.primary{border-color:#58a6ff50;color:#58a6ff}.btn.primary:hover{background:#58a6ff20}
 
-    // JavaScript: WebSocket client
-    html += "<script>";
-    html += "var ws;var logDiv=document.getElementById('logDiv');";
-    html += "function connect(){";
-    html += "ws=new WebSocket('ws://'+location.hostname+':81/');";
-    html += "ws.onopen=function(){document.getElementById('wsStatus').innerHTML='WebSocket: <span style=color:#0f0>connected</span>';};";
-    html += "ws.onmessage=function(e){";
-    html += "var d=document.createElement('div');d.textContent=e.data;";
-    html += "logDiv.insertBefore(d,logDiv.firstChild);";
-    html += "if(logDiv.children.length>100)logDiv.removeChild(logDiv.lastChild);};";
-    html += "ws.onclose=function(){document.getElementById('wsStatus').innerHTML='WebSocket: <span style=color:red>disconnected</span> (reconnecting...)';setTimeout(connect,2000);};";
-    html += "ws.onerror=function(){ws.close();};";
-    html += "}connect();";
-    html += "function sendCmd(e){e.preventDefault();var c=document.getElementById('cmd').value;if(c&&ws&&ws.readyState===1){ws.send(c);document.getElementById('cmd').value='';}}";
-    html += "</script>";
+.sensor-box{display:flex;align-items:center;gap:12px;padding:10px;background:#0d1117;border-radius:6px;border:1px solid #21262d}
+.sensor-led{width:20px;height:20px;border-radius:50%;background:#21262d;border:2px solid #30363d;transition:all .2s}
+.sensor-led.active{background:#3fb950;box-shadow:0 0 12px #3fb95080}
+.sensor-label{font-size:13px;color:#8b949e}
+.sensor-val{font-size:18px;font-weight:bold;color:#c9d1d9}
+.sound-toggle{font-size:11px;color:#8b949e;cursor:pointer;user-select:none}
+.sound-toggle:hover{color:#58a6ff}
 
-    html += "<div class='info'>OTA enabled: " + String(hostname) + ".local:8266 | WS debug: port 81</div>";
-    html += "</body></html>";
+.status-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.stat{background:#0d1117;padding:8px;border-radius:4px;border:1px solid #21262d}
+.stat-label{font-size:10px;color:#8b949e;text-transform:uppercase}
+.stat-val{font-size:16px;color:#58a6ff;font-weight:bold;margin-top:2px}
 
+.cmd-input{display:flex;gap:6px;margin-bottom:8px}
+.cmd-input input{flex:1;background:#0d1117;color:#3fb950;border:1px solid #30363d;padding:8px 10px;border-radius:6px;font-family:inherit;font-size:12px;outline:none}
+.cmd-input input:focus{border-color:#58a6ff}
+
+.log-box{background:#0d1117;border:1px solid #21262d;border-radius:6px;padding:8px;max-height:300px;overflow-y:auto;font-size:11px;line-height:1.7}
+.log-box div{padding:1px 0;border-bottom:1px solid #161b22;word-break:break-all}
+.log-box .tx{color:#d29920}
+.log-box .rx{color:#3fb950}
+
+.range-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.range-row label{font-size:11px;color:#8b949e;min-width:50px}
+.range-row input[type=range]{flex:1;accent-color:#58a6ff}
+.range-row .val{font-size:12px;color:#58a6ff;min-width:50px;text-align:right}
+
+.full{grid-column:1/-1}
+</style></head><body>
+
+<div class='header'>
+  <h1>CRYPTOGRAPHIC BEINGS - MOTOR CONTROL</h1>
+  <div class='ip'><span class='ws-dot' id='wsDot'></span><span id='wsLabel'>Connecting...</span> | )rawhtml";
+    html += "IP: " + WiFi.localIP().toString() + " | Up: " + String(millis()/1000) + "s</div></div>";
+    html += R"rawhtml(
+</div>
+
+<div class='grid'>
+
+  <!-- Motor Controls -->
+  <div class='panel'>
+    <h2>Motor Controls</h2>
+    <div class='btn-row'>
+      <button class='btn' onclick='cmd("MOVE -1000")'>&lt;&lt; -1000</button>
+      <button class='btn' onclick='cmd("MOVE -100")'>&lt; -100</button>
+      <button class='btn danger' onclick='cmd("STOP")'>[STOP]</button>
+      <button class='btn' onclick='cmd("MOVE 100")'>100 &gt;</button>
+      <button class='btn' onclick='cmd("MOVE 1000")'>1000 &gt;&gt;</button>
+    </div>
+    <div class='btn-row'>
+      <button class='btn success' onclick='cmd("HOME")'>HOME</button>
+      <button class='btn warn' onclick='cmd("CALIBRATE")'>CALIBRATE</button>
+      <button class='btn primary' onclick='cmd("HALF")'>HALF</button>
+      <button class='btn' onclick='cmd("ZERO")'>ZERO</button>
+      <button class='btn' onclick='cmd("STATUS")'>STATUS</button>
+    </div>
+  </div>
+
+  <!-- Sensor -->
+  <div class='panel'>
+    <h2>Proximity Sensor</h2>
+    <div class='sensor-box'>
+      <div class='sensor-led' id='sensorLed'></div>
+      <div>
+        <div class='sensor-label'>HALL / PROXIMITY</div>
+        <div class='sensor-val' id='sensorVal'>--</div>
+      </div>
+    </div>
+    <div style='margin-top:8px'>
+      <span class='sound-toggle' id='soundBtn' onclick='toggleSound()'>Sound on trigger: ON</span>
+    </div>
+    <div style='margin-top:10px'>
+      <button class='btn primary' onclick='cmd("STATUS")' style='width:100%'>Refresh Sensor</button>
+    </div>
+  </div>
+
+  <!-- Speed / Accel -->
+  <div class='panel'>
+    <h2>Speed / Acceleration</h2>
+    <div class='range-row'>
+      <label>Speed</label>
+      <input type='range' id='speedSlider' min='200' max='5000' value='2000' oninput='document.getElementById("speedVal").textContent=this.value'>
+      <span class='val' id='speedVal'>2000</span>
+    </div>
+    <button class='btn' onclick='cmd("SPEED "+document.getElementById("speedSlider").value)' style='width:100%'>Apply Speed</button>
+    
+    <div class='range-row' style='margin-top:10px'>
+      <label>Accel</label>
+      <input type='range' id='accelSlider' min='10' max='200' value='50' oninput='document.getElementById("accelVal").textContent=this.value'>
+      <span class='val' id='accelVal'>50</span>
+    </div>
+    <button class='btn' onclick='cmd("ACCEL "+document.getElementById("accelSlider").value)' style='width:100%'>Apply Accel</button>
+  </div>
+
+  <!-- Status -->
+  <div class='panel'>
+    <h2>Status</h2>
+    <div class='status-grid'>
+      <div class='stat'><div class='stat-label'>Position</div><div class='stat-val' id='stPos'>--</div></div>
+      <div class='stat'><div class='stat-label'>Speed</div><div class='stat-val' id='stSpeed'>--</div></div>
+      <div class='stat'><div class='stat-label'>Moving</div><div class='stat-val' id='stMoving'>--</div></div>
+      <div class='stat'><div class='stat-label'>Calibrated</div><div class='stat-val' id='stCal'>--</div></div>
+      <div class='stat'><div class='stat-label'>SPR</div><div class='stat-val' id='stSpr'>--</div></div>
+      <div class='stat'><div class='stat-label'>Enabled</div><div class='stat-val' id='stEnabled'>--</div></div>
+    </div>
+  </div>
+
+  <!-- Command + Log -->
+  <div class='panel full'>
+    <h2>Command & Live Log</h2>
+    <div class='cmd-input'>
+      <input id='cmdIn' placeholder='Type command: MOVE 200, HOME, STATUS, PING...' onkeydown='if(event.key==="Enter")sendManual()'>
+      <button class='btn primary' onclick='sendManual()'>SEND</button>
+      <button class='btn' onclick='document.getElementById("logDiv").innerHTML=""'>CLEAR</button>
+    </div>
+    <div class='log-box' id='logDiv'></div>
+  </div>
+
+</div>
+
+<script>
+var ws,logDiv=document.getElementById('logDiv'),soundOn=true,lastHall=-1;
+var actx,beepReady=false;
+
+function initAudio(){
+  try{actx=new(window.AudioContext||window.webkitAudioContext)();beepReady=true;}catch(e){}
+}
+
+function beep(freq,dur){
+  if(!beepReady||!soundOn)return;
+  try{
+    var o=actx.createOscillator(),g=actx.createGain();
+    o.connect(g);g.connect(actx.destination);
+    o.type='sine';o.frequency.value=freq||880;
+    g.gain.value=0.3;
+    o.start();o.stop(actx.currentTime+(dur||0.15));
+  }catch(e){}
+}
+
+function toggleSound(){
+  soundOn=!soundOn;
+  if(soundOn&&!beepReady)initAudio();
+  document.getElementById('soundBtn').textContent='🔊 Sound on trigger: '+(soundOn?'ON':'OFF');
+}
+
+function connect(){
+  ws=new WebSocket('ws://'+location.hostname+':81/');
+  ws.onopen=function(){
+    document.getElementById('wsDot').className='ws-dot ok';
+    document.getElementById('wsLabel').textContent='Connected';
+    if(!beepReady)initAudio();
+  };
+  ws.onmessage=function(e){
+    var msg=e.data;
+    var d=document.createElement('div');
+    d.textContent=msg;
+    if(msg.indexOf('TX')>=0)d.className='tx';
+    else if(msg.indexOf('RX')>=0)d.className='rx';
+    logDiv.insertBefore(d,logDiv.firstChild);
+    if(logDiv.children.length>200)logDiv.removeChild(logDiv.lastChild);
+
+    // Parse status fields
+    if(msg.indexOf('RX << POS:')>=0){var v=msg.split('POS:')[1];document.getElementById('stPos').textContent=v;}
+    if(msg.indexOf('RX << SPEED:')>=0){var v=msg.split('SPEED:')[1];document.getElementById('stSpeed').textContent=v;}
+    if(msg.indexOf('RX << MOVING:')>=0){var v=msg.split('MOVING:')[1];document.getElementById('stMoving').textContent=v==='0'?'No':'YES';}
+    if(msg.indexOf('RX << CAL:')>=0){var v=msg.split('CAL:')[1];document.getElementById('stCal').textContent=v==='1'?'✅':'❌';}
+    if(msg.indexOf('RX << SPR:')>=0){var v=msg.split('SPR:')[1];document.getElementById('stSpr').textContent=v;}
+    if(msg.indexOf('RX << ENABLED:')>=0){var v=msg.split('ENABLED:')[1];document.getElementById('stEnabled').textContent=v==='1'?'✅':'❌';}
+    if(msg.indexOf('RX << HALL:')>=0){
+      var v=parseInt(msg.split('HALL:')[1]);
+      document.getElementById('sensorVal').textContent=v?'DETECTED':'clear';
+      var led=document.getElementById('sensorLed');
+      if(v){led.classList.add('active');}else{led.classList.remove('active');}
+      if(v&&lastHall===0){beep(880,0.15);setTimeout(function(){beep(1100,0.1);},160);}
+      lastHall=v;
+    }
+  };
+  ws.onclose=function(){
+    document.getElementById('wsDot').className='ws-dot';
+    document.getElementById('wsLabel').textContent='Disconnected (reconnecting...)';
+    setTimeout(connect,2000);
+  };
+  ws.onerror=function(){ws.close();};
+}
+connect();
+
+function cmd(c){if(ws&&ws.readyState===1)ws.send(c);}
+function sendManual(){var i=document.getElementById('cmdIn');if(i.value){cmd(i.value);i.value='';}}
+
+// Auto-poll status every 5s
+setInterval(function(){cmd('STATUS');},5000);
+</script>
+</body></html>)rawhtml";
     server.send(200, "text/html", html);
 }
 
@@ -734,9 +901,14 @@ void setup() {
     digitalWrite(PIN_NANO_RESET, HIGH);
 
     // ── OLED init ──
+    // Match original firmware init sequence (splash + delay required for stable display)
     Wire.begin();  // D1=SCL, D2=SDA (ESP8266 defaults)
     if (display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
         oledReady = true;
+        // Show Adafruit splash — this fully initializes the display buffer
+        display.display();
+        delay(100);
+        // Now safe to clear and write
         display.clearDisplay();
         display.setTextSize(1);
         display.setTextColor(SSD1306_WHITE);

@@ -58,12 +58,43 @@ Cable-pair continuity testing tool for the Cryptographic Beings installation. Us
 ## Progress
 
 - 2026-03-03: Firmware v1.0 → v3.0 (full cross-scan), webapp built with live scan, import/export, error correction
+- 2026-03-04: Added L panel visual map, plate schematics, double-click zoom, conflict detection. Completed first full mapping pass.
 
-## Results
+## Results — Connector Map (2026-03-04)
 
-_Mapping in progress._
+13 of 16 L connectors mapped. Data exported from `webapp/connectome/connector_mapping_2026-03-04 (3).json`.
+
+| L (Controller Plate) | p (Installation Plate) | Wires | Pin Mapping |
+|---|---|---|---|
+| L1 | p5 | 2/4 | avi1→m4, avi2→m2+m3 |
+| L2 | p6 | 1/4 | avi1→m4 |
+| L4 | p3 | 2/4 | avi1→m4, avi2→m2+m3 |
+| L5 | p4 | 2/4 | avi1→m4, avi2→m2+m3 |
+| L6 | p11 | 2/4 | avi1→m4, avi2→m2+m3 |
+| L7 | p10 | 2/4 | avi1→m4, avi2→m2+m3 |
+| L8 | p17 | 2/4 | avi1→m4, avi2→m2+m3 |
+| L10 | p9 | 3/4 | avi1→m4, avi2→m1, avi3→m2+m3 |
+| L11 | p15 | 3/4 | avi1→m4, avi2→m1, avi3→m2 |
+| L12 | p16 | 3/4 | avi1→m4, avi2→m1, avi3→m2 |
+| L14 | p8 | 3/4 | avi1→m4, avi2→m2+m3, avi4→m1 |
+| L15 | p12 | 3/4 | avi1→m2+m3, avi2→m1, avi3→m4 |
+| L16 | p2 | 4/4 ✅ | avi1→m4, avi2→m3, avi3→m2, avi4→m1 |
+
+### Unmapped
+
+| Not found | Notes |
+|---|---|
+| L3, L9, L13 | No L connector found for these positions |
+| p1, p7, p13, p14, p18 | No matching cable tested yet |
+
+### Observations
+
+- **Only L16→p2 has a clean 4/4 mapping.** All other cables show partial connectivity (1–3 wires).
+- Many cables show `avi2→m2+m3` (pin 2 bridged to both m2 and m3), suggesting a common wiring pattern or possible short between m_pin2 and m_pin3 on the M12/M8 side.
+- L2→p6 has only 1/4 wires — this cable may be damaged or have very high resistance on 3 wires.
 
 ## References
 
 - EXP_002: Main Cryptographic Beings experiment
 - `documentation/Illustrator/` — annotated connector SVGs
+- `webapp/connectome/` — exported JSON mapping files

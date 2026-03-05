@@ -405,11 +405,10 @@ void setup() {
     attachInterrupt(digitalPinToInterrupt(PIN_HALL), hallISR, FALLING);
 
     Serial.println("READY");
-    Serial.println("Cryptographic Beings - Nano Motor Controller v2 (auto-calibration)");
+    Serial.println("Cryptographic Beings - Nano Motor Controller v2 (manual mode)");
 
-    // ── Auto-calibration on boot ──
-    Serial.println("BOOT_CAL_START");
-    startCalibration();
+    // Motor sits idle — all control via web interface
+    // (Use CALIBRATE command manually when sensor is verified)
 }
 
 
