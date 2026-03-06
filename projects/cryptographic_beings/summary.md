@@ -26,6 +26,7 @@ Key subsystems:
 
 ## Knowledge Base
 
+- [System Documentation](SYSTEM_DOCUMENTATION.md) — Complete system reference: firmware, networking, API, wiring, agent integration
 - [Connector Mapping](knowledge/connector_mapping.md) — How the machine's 16 GX16-4 aviator connectors map to installation plate positions
 
 ## Hardware

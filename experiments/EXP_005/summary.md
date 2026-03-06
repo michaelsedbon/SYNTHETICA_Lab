@@ -16,23 +16,29 @@ Compared to the standard Motor Level Controller (EXP_002), this hardware revisio
 - Supports **DM556** (higher current, up to 5.6A).
 - Features an **MCP23017 I/O expander**.
 - Includes **screw terminals** for proximity probes and power.
-- Uses a unique pin mapping (D4=Step, D2=Dir).
+- Uses a unique pin mapping (D4=Step, D2=Dir, D7=Hall).
 
 ## Goal
 
-Successfully configure, flash, and verify two additional motor control boards (Board 3 and Board 4) using the modern EXP_002 firmware adapted for this specific hardware layout.
+Successfully configure, flash, and verify motor control boards using the bare ESP8266 + Arduino Nano dual-tier architecture over WiFi (OTA).
 
 ## Progress
 
 - Reverse engineered board from photos and old code.
-- Identified pin mapping: **D4 (Step)**, **D2 (Dir)**, **D3 (Sensor)**, **D5 (Nano Reset)**.
+- Identified pin mapping: **D4 (Step)**, **D2 (Dir)**, **D7 (Hall)**, **D5 (Nano Reset)**.
 - Established dedicated EXP_005 workspace to avoid conflicts with EXP_002 production hardware.
+- **2026-03-06**: Rewrote firmware from scratch (barebone) to debug serial communication issues.
+- ✅ Serial communication verified (PING → PONG, STATUS, MOVE).
+- ✅ Web dashboard deployed with motor controls and connection status indicator.
+- ✅ Motor control commands: MOVE, HOME, CALIBRATE, HALF, STOP, SPEED, ACCEL.
 
 ## Results
 
-_No results yet._
+- ESP8266 and Arduino Nano communicate reliably over serial at 115200 baud.
+- Web dashboard at `http://172.16.1.115/` provides full motor control.
+- OTA flashing works for both ESP (ArduinoOTA) and Nano (STK500v1 over TCP bridge).
 
 ## References
 
+- [Firmware README](firmware/README.md)
 - [Reverse Engineering Analysis](file:///Users/michaelsedbon/.gemini/antigravity/brain/fc55654d-b2f4-4236-bb5f-65c881349f02/reverse_engineering_analysis.md)
-- [Implementation Plan](file:///Users/michaelsedbon/.gemini/antigravity/brain/fc55654d-b2f4-4236-bb5f-65c881349f02/implementation_plan.md)

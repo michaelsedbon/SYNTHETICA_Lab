@@ -144,8 +144,9 @@ def parse_hex(hex_path):
 class STK500:
     """Minimal STK500v1 programmer over TCP socket."""
     
-    def __init__(self, host, port, timeout=2):
+    def __init__(self, host, port, timeout=5):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
         self.sock.settimeout(timeout)
         self.sock.connect((host, port))
         log(f"Connected to TCP bridge at {host}:{port}")
@@ -156,7 +157,15 @@ class STK500:
     def send(self, data):
         self.sock.sendall(data)
     
-    def recv(self, n, timeout=2):
+    def flush_input(self):
+        """Flush any pending input data."""
+        self.sock.settimeout(0.1)
+        try:
+            self.sock.recv(4096)
+        except:
+            pass
+    
+    def recv(self, n, timeout=3):
         self.sock.settimeout(timeout)
         buf = b""
         while len(buf) < n:
@@ -171,20 +180,14 @@ class STK500:
     
     def sync(self):
         """Synchronize with bootloader."""
-        for attempt in range(5):
-            # Flush anything pending
-            self.sock.settimeout(0.1)
-            try:
-                self.sock.recv(1024)
-            except:
-                pass
-            
+        for attempt in range(8):
+            self.flush_input()
             self.send(bytes([STK_GET_SYNC, CRC_EOP]))
-            resp = self.recv(2, timeout=0.5)
+            resp = self.recv(2, timeout=1.0)
             if len(resp) >= 2 and resp[0] == STK_INSYNC and resp[1] == STK_OK:
                 log(f"Sync OK (attempt {attempt + 1})")
                 return True
-            time.sleep(0.05)
+            time.sleep(0.1)
         
         log("FAILED to sync with bootloader")
         return False
@@ -209,7 +212,7 @@ class STK500:
         lo = word_addr & 0xFF
         hi = (word_addr >> 8) & 0xFF
         self.send(bytes([STK_LOAD_ADDRESS, lo, hi, CRC_EOP]))
-        resp = self.recv(2)
+        resp = self.recv(2, timeout=3)
         return len(resp) >= 2 and resp[0] == STK_INSYNC and resp[1] == STK_OK
     
     def prog_page(self, data):
@@ -217,11 +220,31 @@ class STK500:
         length = len(data)
         hi = (length >> 8) & 0xFF
         lo = length & 0xFF
-        # STK_PROG_PAGE, length_hi, length_lo, memtype='F', data..., CRC_EOP
         cmd = bytes([STK_PROG_PAGE, hi, lo, ord('F')]) + data + bytes([CRC_EOP])
         self.send(cmd)
-        resp = self.recv(2, timeout=5)  # Page write can take time
+        resp = self.recv(2, timeout=8)  # Page write can take time
         return len(resp) >= 2 and resp[0] == STK_INSYNC and resp[1] == STK_OK
+    
+    def flash_page_with_retry(self, addr, data, max_retries=3):
+        """Flash a single page with retry logic."""
+        word_addr = addr // 2
+        for attempt in range(max_retries):
+            if attempt > 0:
+                log(f"  Retry {attempt}/{max_retries} for page at {addr:#06x}")
+                self.flush_input()
+                time.sleep(0.2)
+                # Re-sync before retrying
+                if not self.sync():
+                    continue
+                if not self.enter_progmode():
+                    continue
+            
+            if not self.load_address(word_addr):
+                continue
+            if not self.prog_page(data):
+                continue
+            return True  # Success
+        return False  # All retries failed
     
     def read_signature(self):
         self.send(bytes([STK_READ_SIGN, CRC_EOP]))
@@ -266,16 +289,15 @@ def flash(hex_path):
         if not stk.enter_progmode():
             return False
         
-        # Program each page
+        # Program each page (with retry logic for WiFi reliability)
         total = len(pages)
         for i, (addr, data) in enumerate(pages):
-            word_addr = addr // 2  # STK500 uses word addresses
-            if not stk.load_address(word_addr):
-                log(f"Failed to set address {addr:#06x}")
+            if not stk.flash_page_with_retry(addr, data):
+                log(f"Failed to program page at {addr:#06x} after retries")
                 return False
-            if not stk.prog_page(data):
-                log(f"Failed to program page at {addr:#06x}")
-                return False
+            
+            # Small delay between pages to avoid overwhelming the TCP bridge
+            time.sleep(0.03)
             
             pct = (i + 1) * 100 // total
             if (i + 1) % 10 == 0 or i == total - 1:

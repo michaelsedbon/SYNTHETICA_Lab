@@ -51,25 +51,48 @@ Chronological record of all actions, changes, and observations.
 2. **OLED init sequence** — added `display.display()` + `delay(100)` splash before clearing (matches old working firmware pattern)
 3. **Disabled auto-calibration on boot** — Nano `setup()` no longer calls `startCalibration()`. Motor sits idle until commanded via web interface.
 
+## 2026-03-06 — Nano Firmware Flashed (Auto-Cal Disabled)
+
+- Flashed updated Nano firmware via OTA (`flash_nano.py arduino_nano`)
+- Required power-cycle trick: unplug → re-plug → flash within first seconds before old auto-cal blocks ESP HTTP server
+- **Reset response:** `{"ok":true,"msg":"Nano reset, bootloader active"}`
+- **Signature:** `1e950f` (ATmega328P confirmed)
+- **Flash:** 110/110 pages written (13,962 bytes), completed in ~9 seconds
+- **Post-flash status:** `pos:0, hall:1, moving:0, calibrated:0, speed:2000`
+- ✅ Motor is idle on boot — no auto-calibration
+- ✅ Proximity sensor responding (`hall:1` — sensor is triggered at current position)
+
 ## ⚠ PENDING — Must Complete Next Session
 
-### Nano firmware not yet deployed
-- The Nano is still running OLD firmware with auto-calibration (motor moves on boot)
-- The updated firmware (no auto-cal) is compiled but **not yet flashed**
-- **Reason:** ESP HTTP server blocks when Nano floods serial during calibration, preventing OTA flash
-- **To fix:** Unplug USB → wait for ESP to join WiFi → immediately run `python3 flash_nano.py arduino_nano` before calibration blocks things. Alternatively, power-cycle the board and flash in the first 10s window.
+### ~~Nano firmware not yet deployed~~ ✅ DONE (2026-03-06)
+- Flashed via power-cycle trick + `flash_nano.py arduino_nano`
 
 ### OLED display still glitchy
-- Tried: `Wire.begin()`, `setRotation(2)`, splash screen init sequence
-- Display shows garbled/inverted text on this PCB — may be a hardware difference (different SSD1306 variant or 128x32 vs 128x64)
-- Old working firmware used identical Adafruit_SSD1306 library and init code
 - **Low priority** — dashboard provides all info via web
 
-### Motor direction
+### Motor direction — NEEDS TESTING
 - On first boot, motor went UP instead of DOWN toward the sensor
-- After Nano firmware update deploys, test direction and swap DIR wiring or negate step direction in firmware if needed
+- Test with `MOVE 100` / `MOVE -100` via dashboard and check physical direction
+- If wrong: swap DIR wiring or negate in firmware (`stepper.setPinsInverted(true, false, false)`)
 
-### Sensor not yet tested
-- Proximity sensor is wired but untested
-- Use dashboard "Refresh Sensor" or STATUS command to check HALL value
-- Sound beep should play in browser when sensor triggers
+### ~~Sensor not yet tested~~ ✅ CONFIRMED WORKING (2026-03-06)
+- Status shows `hall:1` — sensor is triggered at current position
+- Still need to test: does it toggle when object moves away?
+
+## 2026-03-06 — Barebone Firmware Restart
+
+Serial communication between ESP and Nano stopped working. Rewrote both firmwares from scratch to isolate the issue.
+
+### Changes
+- **ESP8266**: Stripped from 896 to ~170 lines. Removed OLED, WebSocket, all motor-specific API endpoints. Kept: WiFi, OTA, serial bridge, TCP bridge, `/api/ping`, `/api/send`.
+- **Arduino Nano**: Stripped from 464 to ~100 lines. Removed calibration, named positions, homing. Kept: PING/PONG, STATUS, MOVE, STOP, SPEED. Added LED blink on boot.
+- **platformio.ini**: Removed OLED/WebSocket library dependencies.
+
+### Result
+- ✅ ESP flashed via OTA — 15 seconds
+- ✅ Nano flashed via `flash_nano.py` — 81 pages, ATmega328P confirmed
+- ✅ `PING → PONG` working
+- ✅ `STATUS → POS:0` working
+- ✅ `MOVE 100 → OK MOVE 100` working
+
+**Root cause hypothesis**: Removing the OLED (I2C on D1/D2) and WebSocket server eliminated interference. The OLED's I2C init may have been corrupting serial lines on boot.
