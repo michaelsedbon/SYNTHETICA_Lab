@@ -1,0 +1,766 @@
+
+--- Page 1 ---
+Original article 
+Radiation dose rates from patients receiving iodine-131 therapy 
+for carcinoma of the thyroid 
+S.F. Barringtonl, 2, A.G. Kettle 1, M.J. O'Dohertyl, 2, C.R Wells 1, E.J.R. Somer 2, A.J. Coakley~ 
+1 Department of Nuclear Medicine, Kent and Canterbury Hospital, Ethelbert Road, Canterbury CT1 3NG, UK 
+2 St. Thomas' Hospital, Lambeth Palace Road, London SEI 7EM, UK 
+Received 23 July and in revised form 27 September 1995 
+Abstract. Patients treated with radioiodine present a ra- 
+diation hazard and precautions are necessary to limit the 
+radiation dose to family members, nursing staff and 
+members of the public. The precautions advised are usu- 
+ally based on instantaneous dose rates or iodine reten- 
+tion and do not take into account the time spent in close 
+proximity with a patient. We have combined whole-body 
+dose rate measurements taken from 86 thyroid cancer 
+patients after radioiodine administration with published 
+data on nursing and social contact times to calculate the 
+cumulative dose that may be received by an individual in 
+contact with a patient. These dose estimates have been 
+used to calculate restrictions to patients' behaviour to 
+limit received doses to less than 1 mSv. We have also 
+measured urinary iodide excretion in 19 patients to esti- 
+mate the potential risk from the discharge of radioiodide 
+into the domestic drainage system. The dose rate decay 
+was biexponential for patients receiving radioiodine to 
+ablate the thyroid after surgery (the ablation group, A) 
+and monoexponential for these receiving subsequent 
+treatments for residual or recurrent disease (the follow- 
+up group, FU). The faster clearance in the follow-up pa- 
+tients generally resulted in less stringent restrictions than 
+those advised for ablation patients. For typical activities 
+of 1850 MBq for the ablation patients and 3700 MBq or 
+7400 MBq for the follow-up patients, the following re- 
+strictions were advised. Patients could travel in a private 
+car for up to 8 h on the day of treatment (for an adminis- 
+tered activity of 1850 MBq in group A) or 4 and 2 h (for 
+activities of 3700 or 7400 MBq in group FU) respective- 
+ly. Patients should remain off work for 3 days (1850 
+MBq/group A) or 2 days (up to 7400 MBq/group FU). 
+Partners should avoid close contact and sleep apart for 
+16 days (1850 MBq/group A) or 4-5 days (3700 or 7400 
+MBq/group FU). Contact with children should be re- 
+stricted according to their age, ranging from 16 days 
+(1850 MBq/group A) or 4-5 days (3700 or 7400 MBq in 
+group FU) for younger children, down to 10 days (1850 
+MBq/group A) or 4 days (up to 7400 MBq/group FU) 
+for older children. The cumulative dose to nursing staff 
+Correspondence to: S.F. Barrington for the week after treatment was dependent on patient 
+mobility and was estimated at 0.08 mSv for a self-caring 
+patient to 6.3 mSv for a totally helpless patient (1840 
+MBq/group A). Corresponding doses to nurses looking 
+after patients in group FU were 0.18-12.3 mSv (3700 
+MBq) or 0.36-24.6 mSv (7400 MBq). Sensible guide- 
+lines can be derived to limit the dose received by mem- 
+bers of the public and staff who may come into contact 
+with cancer patient treated with radioiodine to less than 
+1 mSv. The rapid clearance of radioiodine in patients 
+treated on one or more than one occasion means that 
+therapy could be administered at home to selected pa- 
+tients with suitable domestic circumstances. In most 
+cases the restriction times, despite the high administered 
+activities, are less than those for patients treated for thy- 
+rotoxicosis. The concentration of radioiodide in domes- 
+tic drainage systems should not pose a significant risk. 
+Key words: Thyroid carcinoma - Iodine radioisotopes - 
+Radiometry 
+Eur J Nucl Med (1996) 23:123-130 
+Introduction 
+The greatest potential radiation hazard encountered in 
+the practice of nuclear medicine arises from the adminis- 
+tration of radioiodine; therapeutic doses of iodine-131 
+commonly range from 150 to 7400 MBq, the larger ac- 
+tivities being used to ablate thyroid remnants or to treat 
+metastases in patients with thyroid cancer. Precautions 
+are advised to limit the radiation exposure of members 
+of the public and staff with whom a treated patient may 
+come into contact. These precautions vary between 
+countries, but recommendations are usually based on 
+measurement of iodine retention or instantaneous dose 
+rates [1, 2]. Treatment at home has been advocated [3], 
+but the majority of patients who receive high doses of ra- 
+dioiodine are isolated in hospital for a period of time for 
+radiation protection purposes. 
+European Journal of Nuclear Medicine 
+Vol. 23, No. 2, February 1996 - © Springer-Verlag 1996 
+
+--- Page 2 ---
+124 
+Potential sources of risk include both emitted radia- 
+tion and excretion of radioactivity in exhaled breath, per- 
+spiration, urine and saliva [4, 5]. Apart from urinary io- 
+dide excretion other contamination risks are small com- 
+pared with emitted radiation [6]. Direct irradiation of the 
+public and health workers is the major concern. The In- 
+ternational Commission on Radiological Protection 
+(ICRP) recently revised their recommendations to re- 
+duce the annual dose a member of the public should be 
+allowed to receive from 5 mSv to 1 mSv [7]. To concur 
+with these recommendations, changes in national guide- 
+lines are well as the introduction of European-wide leg- 
+islation are anticipated. 
+The dose received by an individual from a patient will 
+be governed by iodine distribution, the rate of iodine 
+clearance and the time spent in close proximity with the 
+person. Guidelines to limit radiation exposure should 
+ideally make use, therefore, of iodine retention and in- 
+stantaneous dose rate measurements in combination with 
+published data on social and nursing contact times 
+[8-11]. This paper sets out the restrictions that could be 
+applied to patients with thyroid cancer using this ap- 
+proach and also assesses the potential problems associat- 
+ed with the discharge of radioactive urine into the drain- 
+age system. 
+Materials and methods 
+Whole-body dose rates were measured in consecutive patients re- 
+ceiving radioiodine for thyroid carcinoma. The study population 
+comprised two groups, the ablation group (A) and the follow-up 
+group (FU). The former included patients receiving radioiodine 
+for the first time, to ablate the thyroid after surgery; the latter were 
+patients receiving second or subsequent therapeutic doses for sus- 
+pected residual, recurrent or metastatic disease. The activity ad- 
+ministered to group A was dependent on the nature of thyroid sur- 
+gery performed (hemithyroidectomy or "total" thyroidectomy). 
+Activity administered to group FU was determined by the extent 
+of disease, assessed by clinical examination, thallium scan, post 
+therapy iodine scanning, plasma thyroglobulin levels, radiology or 
+any combination of these. Patients were maintained on thyroxine 
+and changed to triiodothyronine prior to therapy and this was dis- 
+continued 10 days prior to the radioiodine administration and re- 
+started after 7 days. 
+Dose rates were measured on all patients at 1 m from the ante- 
+rior mid trunk at intervals during admission and after hospital dis- 
+charge for up to 11 days. Measurements at 0.1 m and 0.5 m were 
+also made in some patients. Two dose meters were used, an RD8 
+Universal Survey Meter (Wallac, Turku, Finland) and an RO10 
+ionisation chamber (Eberline Instrument Company, Sussex, En- 
+gland). The readings obtained from the two meters were normali- 
+sed to the RO10 which was calibrated against a secondary stan- 
+dard instrument using a caesium- 137 source. 
+The dose rate was plotted against time and regression analysis 
+using the method of least squares to fit the data was performed to 
+derive the relationship between the two variables. The effective 
+half-time for dose rate decay was then calculated for the two 
+groups of patients. The following assumptions were made from 
+previously published work with regard to contact between a treat- 
+ed patient and members of the public [8, 9] and a treated patient 
+and nursing staff [10, 11]: 1. For travel by private transport, the driver sat 1.0 m from the pa- 
+tient and no other passenger was present in the vehicle. 
+2. For travel by public transport, the patient was at a distance of 
+0.1 m from fellow passengers. 
+3. On return to work, the patient sat next to the same colleague at 
+a distance of 1.0 m for a working day of 8 h. 
+4. At home, the patient spent 6 h at 1.0 m, followed by 8 h at 0.1 
+m (asleep) from the partner. 
+5. The periods of time spent by a child in close contact with a pa- 
+tient were assumed to be governed by the age of the child and 
+were considered in three age groups: (a) the young infant (<2 
+years) spent 15 periods of close contact (0.1 m) of 35 min during 
+every 24-h period with the parent; (b) the 2- to 5-year-old child 
+spent 4 h at 0.1 m from the parent and 8 h at 1.0 m; (c) the school- 
+child aged 5-11 years spent 2 h at 0.1 m and 4 h at 1 m. 
+6. For nursing contact, it was assumed that the nurse provided 
+continuous care for an individual patient, working a 7-day shift 
+for the first week after the patient was treated. The time spent and 
+the proximity of contact with the patient varies according to the 
+patient's dependency and was considered in five groups. The time 
+spent per 8-h shift at 0.1 m, 0.5 m and 1.0 m from the patient was 
+taken as follows: (a) with a totally helpless patient, 67 min, 128 
+rain and 30 min, respectively; (b) with a partially helpless patient, 
+17, 91, and 56 min; (c) with a chairfast/bedfast patient, 5, 56 and 
+32 min; (a) with a semi-ambulant patient, 0, 7 and 31 rain; (e) 
+with a totally ambulant patient, 0, 5 and 8 rain. 
+Details of how patients are categorised into the above groups 
+are given in the Aberdeen formula [11] and has previously been 
+used by Mountford et al. [10] in the assessment of dose rates from 
+adult patients undergoing nuclear medicine investigations. 
+The cumulative dose received by members of the public who 
+may come into contact with a patient was estimated using Mount- 
+ford's method [12]. The method assumes that an individual is in 
+regular contact with a patient for the same amount of time and that 
+the duration of time between contacts (t) is identical. The doses re- 
+ceived during each contact period form a geometric series where 
+the common ratio between successive terms is e -~t, where 9~ is the 
+effective dose rate decay, As At is small in comparison to a year, 
+the annual cumulative dose can be calculated by summing the geo- 
+metric series to infinity, if there is a monoexponential dose rate de- 
+cay. For a biexponential decay, the total dose is calculated by add- 
+ing the contribution of the two monoexponential decay curves and 
+weighting them appropriately. The cumulative dose received by 
+nursing staff was calculated by summing the dose received during 
+each contact period over the 7 days following treatment. 
+Periods of restriction were calculated by an iterativc process to 
+find the number of whole days necessary to limit contact between 
+a patient and a member of the public or designated "cater" to en- 
+sure that the individual does not receive a dose exceeding 1 mSv. 
+The model assumes that the dose received at a distance greater 
+than 1.0 m is negligible. 
+For comparative purposes, data were also collected retrospec- 
+tively from tracer studies performed on thyroid carcinoma patients 
+at St. Thomas's Hospital, London using a shadow shield whole- 
+body counter (constructed in house). The effective dose rate decay 
+was calculated from whole-body retention measurements made on 
+days 1, 2, 3, 6 and 7 after administration of tracer doses of iodine 
+(131I). 
+Twenty-four-hour urine collections were also obtained in a 
+subset of patients for up to 5 days after radioiodine administra- 
+tion, to measure urinary iodide excretion. A 10-ml aliquot of the 
+known volume of urine collected over each 24-h period was 
+counted in a standard isotope calibrator. 
+European Journal of Nuclear Medicine Vol. 23, No. 2, February 1996 
+
+--- Page 3 ---
+Water board estimates of local domestic water consumption 
+were used to calculate activity concentration in the effluent leav- 
+ing homes of patients treated with radioiodine. 
+Results 
+Eighty-six therapies were administered during the study 
+period, 42 were ablation treatments (group A) and 44 
+were follow-up treatments (group FU). All these patients 
+had dose rate measurements at 1.0 m. Eight in group A 
+and 17 in group FU also had measurements made at 0.5 125 
+m and 0.1 m. Amongst the group FU, disease was local- 
+ised to the neck in 33. Eleven had metastases: four in the 
+mediastinum, five in lung and two in bone. Mean activi- 
+ty administered to group A was 2646 MBq (range 1074- 
+5769). Mean activity administered to group FU was 
+5461 MBq (range 3753-7622). 
+The serial mean dose rates and the upper 95th percen- 
+tile for the two groups are shown in Tables 1 and 2 at the 
+0.1 m, 0.5 m and 1.0 m distances. 
+The mean dose rate decayed biexponentially in the 
+ablation patients (A) according to the following equa- 
+tions: 
+Table 1. Dose rate from ablation patients (gSv/h per MBq administered activity) 
+Distance Days 0 1 2 3 4 5 6 7 9 11 
+0.1 m Mean 0.665 0.187 0.088 0.069 0.053 - 0.035 0.016 0.026 0.018 
+Standard 
+deviation 0.423 0.056 0.060 0.071 0.08 - 0.027 0.023 - - 
+Sample number 8 8 7 5 4 - 2 4 1 1 
+Upper 95th 
+percentile 1.422 0.273 0.187 0.179 0.163 - 0.060 0.048 - - 
+Mean 0.114 0.049 0,025 0.019 0.014 - 0.013 0.007 0.006 0.003 
+Standard 
+deviation 0.024 0.018 0.019 0.021 0.021 - - 0.008 - - 
+Sample number 8 8 7 5 4 - 1 5 1 1 
+Upper 95th 
+percentile 0.145 0,080 0.058 0.052 0.043 - - 0.018 - - 
+1.0 m Mean 0.046 0.019 0.009 0.007 0.007 0.004 0.006 0.004 0,002 - 
+Standard 
+deviation 0.011 0,006 0.006 0.007 0.006 0.002 - 0.003 - - 
+Sample number 40 42 36 16 11 2 1 5 1 - 
+Upper 95th 
+percentile 0.065 0,029 0.021 0.022 0.018 0.006 - 0.008 - - 0.5 m 
+Table 2. Dose rate from follow-up patients (~tSv/h per MBq administered activity) 
+Distance Days 0 1 2 3 4 6 7 8 
+0.1 m Mean 0.746 0.274 0.085 0.030 0,026 0.002 0,001 0.0008 
+Standard 
+deviation 0.418 0.240 0.084 0.036 0,027 0.0009 0.001 0.0002 
+Sample number 17 17 15 8 9 3 5 3 
+Upper 95th 
+percentile 1.436 0.773 0.223 0,090 0.075 0.003 0.002 0.00l 
+Mean 0.126 0.051 0.017 0.006 0.002 0.001 0.0003 0.0002 
+Standard 
+deviation 0.061 0.037 0.014 0.007 0.001 0,008 0.00002 0.00002 
+Sample number 17 17 15 8 9 3 4 2 
+Upper 95th 
+percentile 0.251 0.126 0.039 0.018 0,005 0.002 0.0003 0.0002 
+1.0 m Mean 0.046 0.019 0.007 0.003 0.002 0.002 0.004 0.00008 
+Standard 
+deviation 0.014 0.02 0.006 0.002 0.001 - 0.003 0.00009 
+Sample number 43 44 43 20 13 1 8 2 
+Upper 95th 
+percentile 0.066 0.041 0.014 0.007 0.004 - 0.0002 0.00009 0.5 m 
+European Journal of Nuclear Medicine Vol. 23, No. 2, February 1996 
+
+--- Page 4 ---
+126 
+Table 3. Guidelines to restrict the public dose to 1 mSv 
+Group Activity 
+(MBq) Private Private Private 
+travel a travel a travel a 
+allowed up allowed 24 h allowes 48 h 
+to 24 h post post dose post dose 
+dose (h) (h) 
+(h) Time off 
+work 
+(days) Time to Time to Time to Time to 
+sleep apart restrict restrict restrict 
+and restrict contact contact contact 
+day contact with child with child with child 
+from <2 years 2-5 years 5-11 years 
+partner (days) (days) (days) 
+(days) 
+Ablation patients 1850 8 20.5 24 
+(A) 3700 4 10 18.5 
+5550 2.5 6.5 12.5 
+7400 2 5 9 
+Follow -up 
+patients (FU) 1850 8 20.5 24 
+3700 4 10 24 
+5550 2.5 6.5 17 
+7400 2 5 13 3 16 16 13 10 
+7 20 20 17 13 
+10 22 22 19 16 
+12 23 24 21 17 
+1 3 4 3 2 
+2 4 4 4 3 
+2 4 5 4 3 
+2 5 5 4 4 
+a Travel times have been rounded down to the nearest 0.5 h 
+D(0=D(0 ) (0.84e-l-v5%0.16e -°-19t) at 0.1 m distance 
+D(0--D(0 ~ (0.73e-1.23t+0.27e -°.24t) at 0.5 m distance 
+D(t~=D(o ) (0.76e-L39%O.24e -°.16t) at 1.0 m distance, 
+where D t is the dose rate t days after the initial dose rate 
+D o, measured at approximately 2 h after radioiodine ad- 
+ministration. The mean half-life (+1 SD) of the short and 
+long components of the dose rate decay were 0.39 
+(_+0.03) and 3.65 (+0.75) days respectively at the 0.1 m 
+distance. The corresponding values for the 0.5 m dis- 
+tance were 0.56 (_+0.15) and 2.86 (_+1.31) days and for 
+the 1.0 m distance, 0.50 (+0.09) and 4.28 (-+1.55) days. 
+The mean dose rate decreased monoexponentially in 
+the follow-up patients (FU) as follows: 
+D(t)=D(0 ~ e -1.°3t at 0,1 m distance 
+D(o=D(o ) e -0.95t at 0.5 m distance 
+D(o=D(o ) e -°'93t at 1.0 m distance. 
+The mean half-life of the dose rate decay -+(1 SD) was 
+0.67_+(0.01) days at 0.1 m, 0.73__.(0.02) days at 0.5 m and 
+0.75-+(0.01) days at 1.0 m. 
+The data were non-parametric; the distribution of 
+dose rate measurements had a positive skew in group A 
+at the 1 m distance and at all distances for group FU. 
+Therefore the upper 95th percentile measurement was 
+selected in preference to variance measures taken around 
+the mean to calculate the cumulative dose associated 
+with each of the distances and patterns of behaviour. The 
+periods of restriction necessary to prevent an individual 
+in contact with a treated patient from exceeding a 1 mSv 
+annual dose limit were calculated for the two groups us- 
+ing the above equations. 
+Periods of restriction 
+Group A (ablation) - members of the public. Periods of 
+restriction across the range of potential administered ac- tivities of radioiodine to group A are listed in Table 3, 
+and the doses resulting if no restriction is applied are 
+shown in Table 4. 
+If a patient receives a typical dose of 1850 MBq (50 
+mCi), a journey time of up to 8 h is permissible in a pri- 
+vate car on the day of treatment. The permissible travel 
+time increases to 20.5 h the following day. Travel using 
+public transport would be restricted to 1 h 1 day after 
+treatment with 1850 MBq. The patient should remain off 
+work for 3 days. Partners are required to sleep apart for 
+16 days. Sleeping together would result in the partner re- 
+ceiving an estimated dose of 25.9 mSv. The time for 
+which close contact with children should be restricted is 
+16 days (for a child under 2 years), 13 days (for a child 
+aged 2-5 years) or 10 days (for a child aged 5-11 years). 
+Estimated doses to children where restrictions are not 
+observed are 33.1 mSv, 17.3 mSv and 8.7 mSv in the 
+three respective age categories. 
+Group FU (follow-up) - members of the public. The pe- 
+riods of restriction placed on patients after follow-up 
+treatments are shorter, despite higher activities generally 
+being administered, as illustrated in Table 3. The cumu- 
+lative doses if no restrictions are observed are given in 
+Table 4. 
+Typical administered activities of 3700MBq (100 
+mCi) or 7400 MBq (200 mCi) to a patient in the group 
+FU permits a journey time of 4 h (3700 MBq) or 2 h 
+(7400 MBq) in a private car on the day of treatment. 
+Travel using public transport would be restricted to 1 h 2 
+days after treatment with 3700 MBq and 2 h 3 days after 
+treatment with 7400 MBq. The patient requires 2 days 
+off work (3700 MBq or 7400 MBq) and should sleep 
+alone for 4 days (3700 MBq) or 5 days (7400 MBq). 
+Contact at 1.0 m or closer with children should be avoid- 
+ed for 4 days (3700 MBq) or 5 days (7400 MBq) where 
+children are under 2 years of age. Similar contact should 
+European Journal of Nuclear Medicine Vol. 23, No. 2, February 1996 
+
+--- Page 5 ---
+Table 4. Cumulative annual dose in mSv to members of public if no restrictions are observed 
+Activity Work colleague Partner Child <2 years Child 2-5 years Child 5-11 years 
+(MBq) 127 
+Ablation patients 1850 2.3 25.9 33.1 17.3 8.8 
+(A) 3700 4.5 51.8 66.1 34.6 17.5 
+5550 6.8 77.7 99.2 52.0 26.3 
+7400 9.0 103.6 132.2 69.3 35.0 
+Follow-up patients 1850 1.3 17.7 25.0 12.8 6.5 
+(FU) 3700 2.7 35.4 50.0 25.5 12.9 
+5550 4.0 53.1 74.9 38.3 19.4 
+7400 5.4 70.8 99.9 51.0 25.9 
+Table g. Cumulative dose in mSv to nursing staff in the 7 days after treatment of a patient treated with 131I 
+Activity Totally helpless Partially helpless Chairfast/ Semi-ambulant Totally ambulant 
+(MBq) patient patient bedfast patient patient patient 
+Ablation patients 1850 6.3 2.4 1.0 0.2 0.08 
+(A) 3700 12.6 4.8 2.1 0.4 0.16 
+5550 19.0 7.1 3.1 0.6 0.25 
+7400 25.3 9.5 4.2 0.8 0.33 
+Follow-up patients 1850 6.2 2.5 1.1 0.2 0.09 
+(FU) 3700 12.3 4.9 2.3 0.4 0.18 
+5550 18.5 7.4 3.4 0.6 0.27 
+7400 24.6 9.9 4.6 0.8 0.36 
+be avoided for 4 days if the child is older than 2 years 
+(3700 MBq or 7400 MBq). 
+Cumulative dose to nursing staff from group A 
+and FU patients 
+The estimated dose received by nursing staff is deter- 
+mined by the patient's mobility and the degree of nurs- 
+ing care required. The results are given in Table 5 for the 
+dose received during the 7 days following treatment. 
+They demonstrate that after an administered activity of 
+1850 MBq (50 mCi) in group A patients, the dose re- 
+ceived whilst caring for a totally helpless patient would 
+be 6.3 mSv, for a partially helpless patient 2.4 mSv, for a 
+chairfast patient 1.0 mSv, for a semi-ambulant patient 
+0.2 mSv and for a totally ambulant patient 0.08 mSv. For 
+administered activities of 3700 MBq (100 mCi) or 7400 
+MBq (200 mCi) in the FU patients the dose received by 
+a nurse would be 12.3 mSv or 24.6 mSv looking after a 
+totally helpless patient, 4.9 mSv or 9.9 mSv looking af- 
+ter a partially helpless patient, 2.3 mSv or 4.6 mSv with 
+a chairfast/bedfast patient, 0.4 mSv or 0.8 mSv with a 
+semi-ambulant patient and 0.18 mSv or 0.36 mSv if the 
+patient is totally ambulant respectively. 
+Comparative data on dose rate decay from tracer studies 
+Results for radioiodine clearance assessed from whole- 
+body retention measurements following tracer doses of Table 6. Percentage of administered activity excreted in urine 
+Days 1 2 3 4 5 
+Mean 55.6 17.5 4.8 4.2 2.3 
+Standard 9.6 10.6 2.0 4.2 1.6 
+deviation 
+Sample 18 17 13 9 2 
+111-185 MBq in the St. Thomas's patients were again 
+divided into two groups. There were 16 studies in abla- 
+tion patients (A) and 121 studies in follow-up patients 
+(FU). The clearance was biexponential in group A with 
+half times (_+1 SD) of 0.62 (___0.02) days and 6.6 (+0.4) 
+days. The clearance was monoexponential in group FU 
+with a half-time of 0.62 (_+0.01) days. 
+Urinary radioiodine excretion data 
+The daily percentages of administered activity excreted 
+in the urine from the 19 patients studied are shown in 
+Table 6. Average annual domestic water usage for a sin- 
+gle person is 52 m 3 and for a family of four is 150 m 3 
+[personal communication from Southern Water, UK]. 
+This enables an approximation to be made of the activity 
+concentration in MBq/I in the effluent discharged into 
+the main drain from a patient's home after treatment. In- 
+European Journal of Nuclear Medicine Vol. 23, No. 2, February 1996 
+
+--- Page 6 ---
+128 
+gestion of 13 1 of effluent by a sewerage worker on the 
+day of treatment of a patient receiving 5500 MBq (150 
+mCi), living alone, would be required to reach the pro- 
+posed revised annual limit of intake of 8x105 Bq [7], an 
+unlikely event. 
+Discussion 
+Advice given to patients receiving radioiodine therapy is 
+based on retained activity or instantaneous dose rate 
+measurement and takes little or no account of patient be- 
+haviour. The doses received by staff, members of the 
+public and family will be influenced by the patients' re- 
+tained activity and the length and proximity of contact 
+with those individuals. 
+The retained dose will vary depending on the amount 
+of functioning thyroid tissue present and the rate of renal 
+and bowel excretion. The reduction in activity (measured 
+by dose rate) in the ablation patients was biexponential, 
+probably due to rapid redistribution of radioiodine from 
+the stomach into the thyroid. These patients were a het- 
+erogeneous group who had undergone a variety of surgi- 
+cal procedures. Many patients had a total thyroidectomy 
+but some had a lobectomy only and when treated signifi- 
+cant amounts of thyroid tissue remained. The data were 
+skewed towards the higher dose rates at the 1 m distance 
+in group A by two such patients who had hemi- 
+thyroidectomies and evidence of sizeable thyroid rem- 
+nants on post-therapy scans. There were differences in 
+the curve fits obtained at the various distances in both 
+groups. The variation is, however, small and lies within 
+the error of the measurement itself. The dose rates were 
+particularly difficult to measure 4-5 days after treatment 
+as they were sufficiently low as to be at the limit of the 
+sensitivity of the dosemeters used. This made accurate 
+definition of the slow component of radioiodine clear- 
+ance for the ablation group using dose rate decay mea- 
+surements especially difficult. However, the comparative 
+whole-body counting data from the tracer studies con- 
+firms the difference in the clearance of radioiodine in ab- 
+lation versus follow-up patients, with a biexponential 
+pattern seen in the former and a monoexponential pat- 
+tern in the latter. It is reassuring that the half-time of the 
+first component for group A and that of the single com- 
+ponent for group FU from the whole-body tracer studies 
+are very similar to those obtained from the dose rate de- 
+cay measurements recorded from our therapy patients. 
+The second component in group A from the whole-body 
+counting data was, however, significantly longer in the 
+St. Thomas' whole-body data. This would seem to add 
+weight to the likelihood of inaccuracies occurring in de- 
+fining the second component for the ablation therapy pa- 
+tients. Other possible explanations for the discrepancy 
+are the small size of the sample of the St. Thomas' abla- 
+tion patients (n=16) or that there is a true difference in 
+the handling of small and large administered activities of 
+radioiodine [13, 14]. Whatever the explanation, the dif- ference between the two second component fits is small 
+and will have little impact on the overall clearance of ra- 
+dioiodine. 
+In the FU group, the majority of whom had only min- 
+imal functioning thyroid tissue, there was a monoexpo- 
+nential and more rapid dose rate decay. These data were 
+skewed towards the higher values by two patients with 
+pulmonary metastases and one with residual disease in 
+the neck which accumulated radioiodine. The positive 
+skew was greater in the FU group than group A because 
+of the very high iodine retention of these three patients. 
+The effect of these three patients on cumulative dose is 
+more marked in behaviour models, such as the nursing 
+model, where the individual spends significant periods 
+of contact at the 0.1 m and 0.5 m distances because the 
+sample size for these distances was smaller than for the 
+1.0 m distance. Interestingly though, other patients with 
+metastases did not produce dose rate measurements 
+greater than two standard deviations above the mean. We 
+have not made a distinction, therefore, between advice 
+offered to follow-up patients with local and metastatic 
+disease, although if a patient is known to have excep- 
+tionally high retention within the neck or within metas- 
+tases, advice could be modified for that individual. 
+The use of the 95th percentile rather than measures of 
+variance around the mean was intended to take account 
+of the non-parametric distribution of the data in both 
+groups, allowing a high predictive confidence for the pa- 
+tient population. The clear difference in the kinetics of 
+therapeutic radioiodine between the two groups implies 
+that the nature of the advice offered to patients will need 
+to be altered for initial and subsequent treatments. It 
+may also change depending on whether a single or sev- 
+eral treatments are administered in 1 year. 
+The periods of restriction calculated for group A cov- 
+er a similar time period to those recommended for thyro- 
+toxic patients in previous work from our institution [8]. 
+The restrictions for group FU are, however, significantly 
+shorter than for the thyrotoxic patients. Culver and 
+Dworkin also observed this in their patients; they con- 
+cluded that although the initial dose rates were higher in 
+patients treated for carcinoma compared with thyrotoxic 
+patients, the carcinoma patients cleared the iodine more 
+rapidly. Contact with others could therefore be resumed 
+more quickly. The 1-m dose rates in the study by Culver 
+and Dworkin were very similar to our own, although di- 
+rect comparison is difficult because their measurements 
+were done following hospital discharge rather than from 
+the time of therapy administration [15]. Also they did 
+not use behavioural studies to predict radiation doses re- 
+ceived by patient contacts. If contact distances and dura- 
+tion of contact are used to predict doses to other individ- 
+uals then travel home in private transport is possible in 
+most cases from the time of administration. Typical trav- 
+el times may be between 2 and 8 h for doses between 
+7400 MBq and 1850 MBq. If the driver is the spouse, 
+subsequent contacts with the patient will need to be al- 
+tered to take account of the dose received during the 
+European Journal of Nuclear Medicine Vol. 23, No. 2, February 1996 
+
+--- Page 7 ---
+129 
+journey home. Public transport travel for 1 h, assuming 
+0.I m contact distances, cannot be resumed until 24 h 
+after therapy for the ablation group (1850 MBq) or until 
+48 h or 72 h in the follow-up group for 3700 MBq and 
+7400 MBq respectively. 
+The length of time for which patients in group A 
+treated with 1850 MBq (50 mCi) should be advised to 
+sleep separately from their partner or to restrict contact 
+with children under 2 years of age is 16 days. The dose 
+to such a child if the advice is not heeded is 33 mSv and 
+indicates that a period of isolation between child and the 
+treated parent would be desirable. This may be achieved 
+by the child staying with extended family for the 16-day 
+period of restriction or, if this is not possible, then at the 
+clinician's discretion the parent may be required to stay 
+in hospital for a prolonged period. The advice given to 
+patients on subsequent treatments (group FU) is likely to 
+cause fewer problems with domestic arrangements as the 
+corresponding periods of restriction are significantly 
+shorter, at 4-5 days. The present UK guidance notes rec- 
+ommend that close contact may be resumed with chil- 
+dren of all ages once the retained activity in the patient 
+falls to 30 MBq [1]. Using our data encompassing the 
+social model and the biokinetic data the retained activity 
+may vary between 29 and 230 MBq before the "normal" 
+social contact can be resumed. This discrepancy between 
+the advice given in the UK guidance notes and our own 
+results calls into question the merit of advice based sole- 
+ly on retained activity. 
+The data with regard to doses incurred by nursing 
+staff, if we consider an annual dose limit of 1 mSv, indi- 
+cate that the administration of radioiodine to patients 
+who are not at least semi-ambulant is impractical, unless 
+nursing duties are shared amongst several individuals. 
+Pregnant members of staff are precluded from nursing 
+any individual who is not at least semi-ambulant and 
+should be avoided if at all possible even if the patient is 
+self-caring. 
+The sharing of nursing duties amongst several indi- 
+viduals may have important resource implications for a 
+busy radiotherapy ward. Consideration should be given 
+in the interpretation of these figures as to whether an in- 
+dividual nurse will be required to care for more than one 
+radio-iodine-treated patient in a single year. A nurse em- 
+ployed in a radiotherapy ward may also be looking after 
+other patients with radiation sources in situ and this will 
+need to be taken into account. The figures are, of course, 
+based on UK nursing practices and may need to be mod- 
+ified if European working patterns are substantially dif- 
+ferent. 
+The ICRP has suggested that nurses and adults who 
+knowingly and willingly incur exposure to radiation in 
+the role of "carers" to patients undergoing therapy could 
+be regarded separately fi'om members of the public [7]. 
+These individuals would then be subject to dose con- 
+straints rather than dose limits. Data in the form of cu- 
+mulative dose estimates such as those presented here for 
+both the home and hospital situation may be useful in the appropriate definition of dose constraints. The Na- 
+tional Radiological Protection Board has suggested that 
+a reference dose level of 5 mSv is appropriate in this cir- 
+cumstance and would apply to each treatment, rather 
+than function as a cumulative dose permissible in any 
+one year [ 16]. 
+The rapid clearance of radioiodine from patients re- 
+ceiving follow-up treatments raises the possibility of 
+treating selected patients with suitable domestic circum- 
+stances at home. The potential doses received by nurses 
+could be used as an argument for sharing the radiation 
+burden with family carers in a domestic rather than a 
+hospital environment. This would also have significant 
+financial and resource implications. A suitably trained 
+person could travel to the patient's home to administer 
+radioiodine therapy. Alternatively the patient could be 
+treated in hospital and allowed to drive home, preferably 
+unaccompanied by their partner. As a prerequisite for 
+home treatment, the clinician responsible for the pa- 
+tient's care should be clear that the patient and adult 
+family members can adequately comprehend the radia- 
+tion risks attached to treatment and the necessary behav- 
+ioural restrictions after appropriate counselling. Admis- 
+sion to hospital for observation is usually desirable for 
+first treatments, because of possible nausea and radiation 
+thyroiditis. Thereafter, measurements presented here in- 
+dicate that enforced hospital isolation, whilst occasional- 
+ly indicated on clinical grounds, should not be mandato- 
+ry for radiation protection purposes. Whilst significant 
+exposure of family members can occur, the clinician in- 
+volved could use his/her judgement to decide whether an 
+individual patient may be treated at home, provided 
+there are no children in the family. The concept of adult 
+family members acting as "carers" should also be in- 
+cluded in the decision-making process. 
+Other considerations for home treatment are contami- 
+nation within the household and outside the household 
+due to excreted activity via sewage. The risk within the 
+household from contamination via perspiration, saliva 
+and exhaled breath should be considered in addition to 
+that from emitted radiation. For carcinoma patients, the 
+contamination risk is highest at 24 h. In comparison with 
+emitted radiation though, the risk is small [4, 5]. Radio- 
+iodine transferred through contamination to family 
+members is almost entirely concentrated in the thyroid. 
+In one study where skin and thyroid doses were mea- 
+sured, external exposures exceeded internal thyroid dose 
+equivalents by a factor of 113 [6]. Contamination can be 
+substantially reduced by simple hygiene precautions in- 
+cluding frequent hand washing and showering, avoiding 
+sharing eating utensils or toothbrushes and the wearing 
+of disposable slippers to prevent the transfer of sweat via 
+floor surfaces [4, 6]. 
+The outside contamination risk which is related to ex- 
+cretion of iodine into domestic water drainage systems 
+does not appear to pose a problem for sewerage employ- 
+ees. The activity concentrations in the effluent is higher 
+than recommended by the Association of University Ra- 
+European Journal of Nuclear Medicine Vol. 23, No. 2, February 1996 
+
+--- Page 8 ---
+130 
+diation Protection Officers in their guidance notes about 
+applying for authorisation to discharge radioactive waste 
+[17]. However, the administration of radioiodine in a pa- 
+tient's home is likely to be an infrequent occurrence in 
+the community as a whole. To apply the same strict cri- 
+teria to domestic sites as to industrial and hospital sites 
+where discharge of radioactivity occurs on a daily basis 
+is therefore unnecessary. 
+Our data show that sensible guidelines can be drawn 
+up to restrict the annual dose to less than 1 mSv for chil- 
+dren of all ages and members of the public. This dose 
+limit can also be achieved for partners and for nurses but 
+these groups are likely to be regarded as "carers" and to 
+be able to receive higher doses. The data presented here 
+could be used to determine suitable dose constraints for 
+these carers. The restrictions can be modified according 
+to the number of therapies administered in 1 year. It is 
+clear that measurements of retained activity, without ref- 
+erence to patient behaviour patterns, are insufficient to 
+formulate adequate advice on restrictions. 
+References 
+1. National Radiological Protection Board. Guidance notes Jbr 
+the protection of persons against ionising radiation arising 
+from medical and dental use. London: HMSO; 1985: 57. 
+2. Title 10, Chapter 1, Cose of Federal Regulations - Energy, 
+Part 35, Section 35.75, 31 October 1986. 
+3. Allen HC Jr, Zelenski JR 430 non-hospitalised thyroid cancer 
+patients treated with single doses of 40-400 mCi [abstract]. J 
+Nucl Med 1992; 33: 784. 
+4. Ibis E, Wilson CR, Collier BD, Akansel G, Isitman AT, Yoss 
+RG. Iodine- 131 contamination from thyroid cancer patients. J 
+NucIMed 1992; 33: 2110-2115. 
+5. Nishisawa K, Ohara K, Ohshima M, Maekoshi H, Orito T. 
+Monitoring of iodine excretion and used materials of patients 
+treated with 1-131. Health Phys 1980; 38: 467-481. 6. Jacobsen AR Plato PA, Toeroek D. Contamination of the 
+home and environment by patients treated with iodine-131: 
+initial results. Am J Public Health 1978; 68: 225-230. 
+7. International Commission on Radiological Protection. 1990 
+Recommentations of the International Commission on Radio- 
+logical Protection. Annals of the ICRP 1991: 21(1-3). Oxford: 
+Pergamon Press, ICRP Publication 60. 
+8. O'Doherty MJ, Kettle AG, Eustance CNR Mountford PJ, Coa- 
+kley AJ. Radiatio dose rates from adult patients receiving 131I 
+therapy for thyrotoxicosis. Nucl Meal Commun 1993; 14: 
+160-168. 
+9. Rose MR, Prescott MC, Herman KJ. Excretion of iodine-123- 
+hippuran, technetium-99m-red blood cells and technetium- 
+99m-macroaggregated albumin into breast milk. J Nucl Med 
+1990; 31:978-984. 
+10. Mountford PJ, O'Doherty MJ, Forge NI, Jeffries A, Coakley 
+AJ. Radiation dose rates from adult patients undergoing nucle- 
+ar medicine investigations. Nucl Med Commun 1991; 12: 
+767-777. 
+11. Crompton HM, Mitchell H, Cameron J McL. The Aberdeen 
+formula. Nursing Times 1976; 26 August: 121-124. 
+12. Mountford PJ. Estimation of close contact doses to young in- 
+fants from surface dose rates on radioactive adults. Nucl Med 
+Commun 1987; 8: 857-863. 
+13. Singh B, Sharma M, Patel MC, Raghavendran KV, Berman M. 
+Kinetics of large therapy doses of 131-I in patients with thy- 
+roid cancer. J Nucl Med 1973; 15: 674-678. 
+14. Ronga G, Fiorentino A, Pasiero E, Signore A, Todino V, Tum- 
+marello MA, Filesi M, Baschieri I. Can iodine 131 whole 
+body scan be replaced by thyroglubulin measurement in the 
+post-surgical follow-up of differentiated thyroid carcinoma? J 
+Nucl Med 1990; 31: 1766-1771. 
+15. Culver CM, Dworkin HJ. Radiation safety considerations for 
+post-iodine I131 thyroid cancer therapy. J Nucl Med 1992; 33: 
+1402-1405. 
+16. National Radiological Protection Board. Occupational, public 
+and medical exposure. Documents of the NRPB, vol 4: no 2. 
+London: HMSO, 1993. 
+17. Association of University Radiation Protection Officers. AU- 
+PRO Guidance Note No 3: Completion of RSA 3 Forms. Uni- 
+versity of Leicester, 1990. 
+European Journal of Nuclear Medicine Vol. 23, No. 2, February 1996 

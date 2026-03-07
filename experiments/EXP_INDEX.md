@@ -60,3 +60,23 @@ Setup and configuration of specialized motor control PCBs for DM542T drivers (Bo
 
 ---
 
+## EXP_006
+**Title:** Fungal Electrophysiology Literature Review & Characterization
+**Start Date:** 2026-03-06
+**Airtable Links:** None
+**Folder:** `experiments/EXP_006/`
+**Project:** Bio Electronic Music
+
+Literature review and quantitative characterization of fungal mycelium electrophysiology, focusing on *Pleurotus eryngii* spiking behaviour and blue/UV light-evoked responses. Based on Mishra et al. 2024 (Science Robotics). Includes paper index (8 papers), citation network analysis, and comprehensive data report.
+
+---
+
+## EXP_007
+**Title:** MyceliumBrain — Reproducing DishBrain with Fungal Networks
+**Start Date:** 2026-03-06
+**Airtable Links:** None
+**Folder:** `experiments/EXP_007/`
+
+Feasibility study for reproducing the DishBrain paradigm (in vitro neurons playing Pong) using *P. eryngii* mycelium networks. Comprehensive literature review (16 papers with inline citations), gap analysis, and 4-phase experimental plan. Key precedent: non-living EAP hydrogels showed 8-10% Pong improvement via ion memory (Strong et al. 2024).
+
+---

@@ -1,0 +1,50 @@
+
+--- Page 1 ---
+Schoolnik and c olleagues point out 
+that these data conflict with previous 
+studies showing that chemotaxis genes are downregulated in cholera patient rice-water stools, and they discuss the possible reasons for these contrasting results.
+The effect of RpoS on virulence 
+gene expression was also addressed in a series of experiments. The research team reasoned that the continued production of virulence factors after bacterial detachment would be ineffectual and so RpoS might downregulate virulence gene expression. In accordance, virulence assays confirmed that RpoS markedly downregulated cholera toxin production in vitro . 
+The authors conclude by proposing a 
+model for the role of RpoS in V . cholerae  
+infection, detailing its part in the genetic programme that integrates the mucosal escape response and the control of virulence and chemotaxis.
+Shannon Amoils
+ORIGINAL RESEARCH PAPER  Nielsen, A. T., 
+Dolganov, N. A. et al.  RpoS controls the Vibrio 
+cholerae  mucosal escape response. PLoS Pathog.  
+2, e109 (2006)
+by a complex feedforward regula-
+tory cascade comprising σs and the 
+regulators MlrA and CsgD. The authors found that the antagonistic control of curli formation by Y daM and Y ciR occurs at the level of csgD  
+transcription. 
+In addition, rather than being 
+global regulators, the GGDEF/EAL proteins Y daM and Y ciR func-tion only on csgD  transcription, 
+as indicated by genome-wide transcription analysis. The authors speculate that this high selectivity for a single target might be the result of the ‘functional sequestration’ of these two proteins, and that this might contribute to the specificity of cyclic-di-GMP signalling in the presence of multiple GGDEF/EAL proteins.
+Sheilagh Molloy
+ORIGINAL RESEARCH PAPER Weber, H. et al . 
+Cyclic-di-GMP-mediated signalling within the σs 
+network of Escherichia coli . Mol. Microbiol . 62, 
+1014–1034 (2006) 
+FURTHER READING Romling, U., Gomelsky, M. & 
+Galperin, M. Y . C-di-GMP: the dawning of a novel bacterial signalling system. Mol. Microbiol . 57, 
+629–639 (2005)Persistent viral infections are responsible for some 
+of the most devastating human diseases, including AIDS and hepatitis. Now, two research groups have concluded that elevated interleukin-10 (IL-10) production causes the immunosuppression that allows viruses to persist unchecked by the immune system. Moreover, by administering a therapeutic antibody to block IL-10 action, the ability of the immune system to clear persistent viruses can be restored . 
+Intense research has been directed towards 
+understanding the mechanisms that underlie virus persistence. Cell-mediated immunity is essential for virus clearance, but persistent viruses can avoid this antiviral response by inducing immunosuppression. Strategies for inducing immunosuppression include physical deletion of virus-specific T-cell subsets, a useful tactic that is used by HIV-1, hepatitis B and C viruses and lymphocytic choriomeningitis virus (LCMV). Concomitant with the deletion of T-cell subsets is the loss of T-cell cytolytic functions, which results in an inability to kill virus-infected cells. The latest research from groups led by Michael Oldstone and Matthias von Herrath has established a clear link between cytokine production and T-cell function in persistent LCMV infection. 
+One extremely useful model system for 
+probing the subtle interplay between virus replication and the host response during persistence is the infection of rodents with the arenavirus LCMV .  Infection with LCMV can produce either an acute or a persistent infection depending on the virus strain, route of infection and the infectious dose. Both of the studies just published investigated the basis of persistence using this model. 
+Initial studies by Brooks et al . and Ejrnaes et al.  
+revealed elevated concentrations of IL-10 in mice infected with a persistent LCMV strain compared with mice infected with an acute LCMV strain.  When knockout mice that fail to produce IL-10 were infected with a persistent LCMV strain they had increased cytotoxic T-cell activity compared with wild-type mice. In addition, the IL-10 knockout mouse model that was infected with a persistent LCMV strain produced memory T-cells that enabled resistance to reinfection with LCMV . 
+By using an antibody to 
+block signalling by IL-10 through the IL-10 receptor, a persistent LCMV infection was completely resolved. Both groups showed that treatment of persistently infected mice with the anti-IL-10 antibody led to the resolution of a persistent LCMV infection, even when the antibody was administered during established infection. This showed the pivotal importance of the cytokine IL-10 in the maintenance of persistent viral infections. Researchers will now be hoping to build on these findings to specifically define just how IL-10 modulates T-cell functions.
+This research might herald the use of new 
+therapies based on blocking IL-10 functions for the treatment of HIV-1 and hepatitis B and C virus infections. But the authors caution that the immunosuppressive role of IL-10 should be confirmed for each persistent virus before launching new therapeutic strategies, and that care must be taken in the design of therapeutic regimes, because modulating cytokine function could lead to immunopathology.
+Susan Jones
+ORIGINAL RESEARCH PAPERS Ejrnaes, M. et al.  Resolution of a 
+chronic viral infection after interleukin-10 receptor blockade. J. Exp. 
+Med.  09 October 2006 (doi:10.1085/jem.20061462-12) | Brooks, D. 
+G. et al.  Interleukin-10 determines viral clearance or persistence in 
+vivo . Nature Med.  15 October 2006 (doi:10.1038/nm1492)  HOST RESPONSE
+Viral persistence: IL-10 is the keyRESEARCH HIGHLIGHTS
+NATURE REVIEWS | MICROBIOLOGY   VOLUME 4 | DECEMBER 2006 | 879
+© 2006 Nature Publishing Group   
