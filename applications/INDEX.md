@@ -1,6 +1,6 @@
 # Applications Index
 
-> **9 applications** powering the SYNTHETIC Lab — from electrophysiology recording to autonomous AI control.
+> **10 applications** powering the SYNTHETIC Lab — from electrophysiology recording to autonomous AI control.
 
 All lab applications live under `applications/`. Each app has a `DOCS.md` with full route tables, architecture diagrams, and feature lists. Apps are registered in the [App Launcher](#-app-launcher) and can be started/stopped from a single dashboard.
 
@@ -19,6 +19,7 @@ All lab applications live under `applications/`. Each app has a `DOCS.md` with f
 | 7 | [🚀 App Launcher](#-app-launcher) | `launcher` | 3100 | Next.js | ✅ Working |
 | 8 | [🤖 Lab Agent](#-lab-agent) | `lab-agent` | 8003 | FastAPI · Ollama · WebSocket | ✅ Working |
 | 9 | [👁 Agent Presence](#-agent-presence) | `agent-presence` | 3005 | Vanilla HTML/JS · Canvas · Python | ✅ Working |
+| 10 | [🍄 Mycelium Sim](#-mycelium-sim) | `mycelium-sim` | 8765 (WS) | P5.js · Python · WebSocket | ✅ Working |
 
 ---
 
@@ -36,6 +37,7 @@ Backend (Python FastAPI)          Frontend (Next.js / Static)
                                   8080  Virtual Lab (static)
 8003  Lab Agent API+WS
                                   3005  Agent Presence Dashboard
+8765  Mycelium Sim WS             file:// Mycelium Sim (static)
 ```
 
 ---
@@ -220,6 +222,25 @@ Animated face with LLM-colored irises (blue=Gemini, orange=Ollama), live termina
 **Key capabilities:** Canvas face animation, real-time WebSocket event feed, LLM detection badges, LLM I/O panel with smart JSON formatting, idle screen management (xset dpms), kiosk-mode Chromium autostart.
 
 📄 **Full docs:** [`agent-presence/README.md`](agent-presence/README.md)
+
+---
+
+## 🍄 Mycelium Sim
+
+**Interactive spatial simulation of fungal mycelium electrical spiking.**
+
+Real-time 50-node network model with gap junction coupling. Place optic fibers, flood lights, or electrodes and watch signal propagation. Includes browser sonification (spikes → music in selectable scales).
+
+| Detail | Value |
+|--------|-------|
+| Port | 8765 (Python WebSocket server) |
+| Frontend | Static HTML/P5.js (file://) |
+| Linked Experiment | EXP_006 |
+| Model Backend | 6 Python modules in `experiments/EXP_006/model/` |
+
+**Key capabilities:** Random geometric graph, gap junction coupling, WC-1 photoreceptor kinetics, spike-frequency adaptation, optic fiber stimulation (Gaussian falloff), electrical stimulation (mono/biphasic/pulse train), Web Audio sonification, scale selection, speed/node controls.
+
+📄 **Full docs:** [`mycelium-sim/README.md`](mycelium-sim/README.md)
 
 ---
 

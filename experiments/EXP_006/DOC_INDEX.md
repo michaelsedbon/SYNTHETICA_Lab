@@ -11,4 +11,6 @@ Index of all markdown and documentation files in this experiment.
 | `SCRIPT_INDEX.md` | Script and file index |
 | `DOC_INDEX.md` | This file |
 | `REPORT.md` | Characterization of fungal electrophysiology data |
+| `MODEL.md` | Mathematical model description (equations, parameters, validation) |
 | `agent_papers_txt/INDEX.md` | Index of downloaded papers |
+| `citation_network_report.md` | Citation network analysis |
