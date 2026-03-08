@@ -121,6 +121,8 @@ async function toggleSkill(skillName, install) {
 }
 
 // ─── Preview Panel ───
+let _rawPreviewContent = '';  // store raw text for copy
+
 async function openPreview(skillName, skillPath) {
     try {
         const res = await fetch(`${API}/api/skill/preview?path=${encodeURIComponent(skillPath)}`);
@@ -128,8 +130,9 @@ async function openPreview(skillName, skillPath) {
         const data = await res.json();
 
         selectedSkillPath = skillPath;
+        _rawPreviewContent = data.content;
         document.getElementById('previewSkillName').textContent = skillName;
-        document.getElementById('previewContent').innerHTML = highlightMarkdown(data.content);
+        document.getElementById('previewContent').innerHTML = renderMarkdownPreview(data.content);
         document.getElementById('appRoot').classList.add('preview-open');
 
         // Update card selection
@@ -146,18 +149,17 @@ async function openPreview(skillName, skillPath) {
 function closePreview() {
     document.getElementById('appRoot').classList.remove('preview-open');
     selectedSkillPath = null;
+    _rawPreviewContent = '';
     document.querySelectorAll('.skill-card.selected').forEach(c => c.classList.remove('selected'));
 }
 
 async function copyPreviewContent() {
-    const content = document.getElementById('previewContent').textContent;
     try {
-        await navigator.clipboard.writeText(content);
+        await navigator.clipboard.writeText(_rawPreviewContent);
         showToast('Copied to clipboard', 'success');
     } catch (err) {
-        // Fallback
         const textarea = document.createElement('textarea');
-        textarea.value = content;
+        textarea.value = _rawPreviewContent;
         document.body.appendChild(textarea);
         textarea.select();
         document.execCommand('copy');
@@ -180,25 +182,27 @@ async function openInFinder() {
     }
 }
 
-function highlightMarkdown(text) {
-    // Basic syntax highlighting for SKILL.md preview
-    return text.split('\n').map(line => {
-        // YAML frontmatter delimiters
-        if (line === '---') return `<span class="fm-delim">${esc(line)}</span>`;
-        // YAML key: value
-        if (/^[a-zA-Z_-]+:/.test(line) && !line.startsWith('#')) {
-            const [key, ...rest] = line.split(':');
-            return `<span class="fm-key">${esc(key)}</span>:<span class="fm-value">${esc(rest.join(':'))}</span>`;
-        }
-        // Markdown headings
-        if (/^#{1,4}\s/.test(line)) return `<span class="md-heading">${esc(line)}</span>`;
-        // Bold text
-        line = esc(line);
-        line = line.replace(/\*\*(.+?)\*\*/g, '<span class="md-bold">**$1**</span>');
-        // Inline code
-        line = line.replace(/`([^`]+)`/g, '<span class="md-code">`$1`</span>');
-        return line;
-    }).join('\n');
+function renderMarkdownPreview(text) {
+    let html = '';
+    let body = text;
+
+    // Extract YAML frontmatter
+    const fmMatch = text.match(/^---\s*\n([\s\S]*?)\n---\s*\n?([\s\S]*)$/);
+    if (fmMatch) {
+        const fmLines = fmMatch[1].split('\n').map(line => {
+            const m = line.match(/^([a-zA-Z_-]+):\s*(.*)/);
+            if (m) {
+                return `<span class="fm-key">${esc(m[1])}</span>: <span class="fm-value">${esc(m[2])}</span>`;
+            }
+            return esc(line);
+        }).join('\n');
+        html += `<div class="preview-frontmatter">${fmLines}</div>`;
+        body = fmMatch[2];
+    }
+
+    // Render markdown body with marked.js
+    html += marked.parse(body);
+    return html;
 }
 
 // ─── Rendering ───
