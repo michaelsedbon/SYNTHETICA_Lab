@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill Manager — Antigravity</title>
+    <meta name="description" content="Manage AI agent skills across all Antigravity workspaces">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+
+<body>
+    <div class="app" id="appRoot">
+        <!-- Top Bar -->
+        <header class="topbar">
+            <h1>
+                <i data-lucide="zap" class="icon-header"></i>
+                Skill Manager
+            </h1>
+            <div class="search-box">
+                <i data-lucide="search" class="search-icon"></i>
+                <input type="text" id="searchInput" placeholder="Search skills...">
+            </div>
+            <div class="filter-group">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="installed">
+                    <i data-lucide="check-circle" class="icon-btn"></i> Installed
+                </button>
+                <button class="filter-btn" data-filter="built-in">
+                    <i data-lucide="cpu" class="icon-btn"></i> Built-in
+                </button>
+                <button class="filter-btn" data-filter="custom">
+                    <i data-lucide="wrench" class="icon-btn"></i> Custom
+                </button>
+                <button class="filter-btn" data-filter="third-party">
+                    <i data-lucide="globe" class="icon-btn"></i> Third-party
+                </button>
+            </div>
+        </header>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i data-lucide="folder-open" class="icon-sidebar"></i>
+                Workspaces
+            </div>
+            <div id="workspaceList">
+                <div class="loading-state">
+                    <div class="spinner"></div>
+                    <span>Scanning...</span>
+                </div>
+            </div>
+            <div class="stats-bar" id="statsBar" style="display:none;">
+                <div class="stat">
+                    <i data-lucide="layout-grid" class="icon-stat"></i>
+                    <span class="stat-value" id="statWorkspaces">0</span>
+                    <span>workspaces</span>
+                </div>
+                <div class="stat">
+                    <i data-lucide="layers" class="icon-stat"></i>
+                    <span class="stat-value" id="statLibrary">0</span>
+                    <span>skills</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main" id="mainContent">
+            <div class="empty-state">
+                <i data-lucide="package" class="empty-icon"></i>
+                <div class="title">Select a workspace</div>
+                <div class="subtitle">Choose a workspace from the sidebar to manage its skills</div>
+            </div>
+        </main>
+
+        <!-- Preview Sidebar (hidden by default) -->
+        <aside class="preview-panel" id="previewPanel">
+            <div class="preview-header">
+                <div class="preview-title">
+                    <i data-lucide="file-text" class="icon-preview"></i>
+                    <span id="previewSkillName">SKILL.md</span>
+                </div>
+                <div class="preview-actions">
+                    <button class="preview-btn" id="btnOpenFinder" title="Reveal in Finder">
+                        <i data-lucide="folder-open"></i>
+                    </button>
+                    <button class="preview-btn" id="btnCopyContent" title="Copy content">
+                        <i data-lucide="copy"></i>
+                    </button>
+                    <button class="preview-btn" id="btnClosePreview" title="Close">
+                        <i data-lucide="x"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="preview-body" id="previewBody">
+                <pre id="previewContent" class="preview-code"></pre>
+            </div>
+        </aside>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

@@ -1,6 +1,6 @@
 # Applications Index
 
-> **10 applications** powering the SYNTHETIC Lab — from electrophysiology recording to autonomous AI control.
+> **11 applications** powering the SYNTHETIC Lab — from electrophysiology recording to autonomous AI control.
 
 All lab applications live under `applications/`. Each app has a `DOCS.md` with full route tables, architecture diagrams, and feature lists. Apps are registered in the [App Launcher](#-app-launcher) and can be started/stopped from a single dashboard.
 
@@ -20,6 +20,7 @@ All lab applications live under `applications/`. Each app has a `DOCS.md` with f
 | 8 | [🤖 Lab Agent](#-lab-agent) | `lab-agent` | 8003 | FastAPI · Ollama · WebSocket | ✅ Working |
 | 9 | [👁 Agent Presence](#-agent-presence) | `agent-presence` | 3005 | Vanilla HTML/JS · Canvas · Python | ✅ Working |
 | 10 | [🍄 Mycelium Sim](#-mycelium-sim) | `mycelium-sim` | 8765 (WS) | P5.js · Python · WebSocket | ✅ Working |
+| 11 | [⚡ Skill Manager](#-skill-manager) | `skill-manager` | 8004 | FastAPI · Vanilla JS | ✅ Working |
 
 ---
 
@@ -38,6 +39,7 @@ Backend (Python FastAPI)          Frontend (Next.js / Static)
 8003  Lab Agent API+WS
                                   3005  Agent Presence Dashboard
 8765  Mycelium Sim WS             file:// Mycelium Sim (static)
+8004  Skill Manager API+Static
 ```
 
 ---
@@ -253,6 +255,42 @@ All applications follow a consistent **VS Code-inspired dark theme** with:
 - Font: Inter (Google Fonts)
 - Border radius: 4–8px
 - Smooth transitions (150ms ease)
+
+---
+
+## ⚡ Skill Manager
+
+> Manage AI agent skills across all Antigravity workspaces from the browser.
+
+| Detail | Value |
+|--------|-------|
+| **Port** | 8004 (FastAPI serves both API and static frontend) |
+| **Stack** | Python FastAPI · Vanilla HTML/JS/CSS |
+| **Directory** | `applications/skill-manager/` |
+| **Data source** | `~/antigravity-skills/` (central skill library) |
+
+### Features
+
+- **Auto-discovery** — scans for `.agent/` directories to find all workspaces on each request
+- **234 skills** from the central library (58 built-in + 3 custom + 173 third-party)
+- **Toggle install/uninstall** — creates/removes symlinks via `~/antigravity-skills/install.sh`
+- **SKILL.md preview** — click any card to see the full skill definition in a slide-in panel
+- **Subcategory clustering** — groups skills by domain (Bioinformatics, Clinical, Databases, etc.)
+- **Search & filter** — by name, description, category, or subcategory
+- **Open in Finder** — reveal any skill directory in macOS Finder
+- **Lucide icons** — consistent vector iconography throughout
+
+### API Routes
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/workspaces` | Discover all Antigravity workspaces |
+| GET | `/api/skills` | List all available skills from the library |
+| GET | `/api/workspace/skills?path=...` | Get installed skills for a workspace |
+| GET | `/api/skill/preview?path=...` | Return raw SKILL.md content |
+| POST | `/api/install` | Install a skill (create symlink) |
+| POST | `/api/uninstall` | Uninstall a skill (remove symlink) |
+| POST | `/api/open-finder` | Open path in macOS Finder |
 
 ---
 

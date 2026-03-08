@@ -156,6 +156,24 @@ export const apps: AppInfo[] = [
             },
         ],
     },
+    {
+        slug: "skill-manager",
+        name: "Skill Manager",
+        description:
+            "Manage AI agent skills across all Antigravity workspaces. Browse 234 skills, toggle install/uninstall per workspace, search and filter by category.",
+        icon: "⚡",
+        frontendPort: 8004,
+        tags: ["agent", "skills", "management"],
+        managed: true,
+        startCommands: [
+            {
+                cwd: "applications/skill-manager/server",
+                cmd: "python3 -m uvicorn main:app --host 0.0.0.0 --port 8004",
+                port: 8004,
+                label: "frontend",
+            },
+        ],
+    },
 ];
 
 /* -------------------------------------------------------------------------- */
