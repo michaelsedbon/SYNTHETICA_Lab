@@ -15,7 +15,7 @@ Mishra et al. 2024 — *Sensorimotor control of robots mediated by electrophysio
 
 ## Hardware
 
-### LED Driver Board (EXP_009)
+### LED-DRV8 — 8-Channel Driver Board (EXP_009)
 
 An 8-channel LED driver board is available for light stimulation of mycelium.
 
@@ -69,7 +69,7 @@ curl -X POST http://leddriver.local/api/pattern \
   -d '{"name":"pulse","speed":50,"brightness":100}'
 ```
 
-### LED Array
+### LED-RING — Circular LED Array
 
 A circular LED array (~70 LEDs in radial spiral) on a separate PCB. Passive board — just needs 12V+ and GND switched by the driver board.
 

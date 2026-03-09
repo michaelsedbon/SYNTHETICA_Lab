@@ -18,7 +18,7 @@ Drive LEDs with available PCB hardware to optically stimulate mycelium and obser
 
 Two boards were identified from photos in `Resources/`:
 
-### Board 1 — 8-Channel Driver Board
+### LED-DRV8 — 8-Channel Driver Board
 - **MCU:** ESP32-S3-WROOM-1 (WiFi/BLE, USB-C)
 - **PWM Controller:** NXP PCA9685PW — 16-ch, 12-bit, I2C
 - **Drivers:** 8× TI DRV8870 H-bridge (6.5–45V, 3.6A peak)
@@ -26,7 +26,7 @@ Two boards were identified from photos in `Resources/`:
 - **Power:** 12V barrel jack, AMS1117-3.3 LDO
 - **I2C Pins:** SDA = GPIO6, SCL = GPIO1 *(discovered via GPIO pin scanner)*
 
-### Board 2 — Circular LED Array
+### LED-RING — Circular LED Array
 - ~70 SMD LEDs in radial spiral pattern
 - Current-limiting resistors (R1–R54)
 - 12V+/GND input pads

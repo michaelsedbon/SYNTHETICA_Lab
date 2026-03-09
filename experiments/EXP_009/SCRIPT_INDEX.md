@@ -17,8 +17,8 @@ Index of all scripts, firmware, data files, and generated artifacts.
 | File | Type | Description |
 |------|------|-------------|
 | `TIERED_DESIGNS.md` | Documentation | Functional block decomposition, signal flow, specs |
-| `driver_board_prebom.csv` | BOM | Pre-BOM for the 8-channel driver board |
-| `led_array_prebom.csv` | BOM | Pre-BOM for the circular LED array board |
+| `driver_board_prebom.csv` | BOM | Pre-BOM for LED-DRV8 (8-channel driver board) |
+| `led_array_prebom.csv` | BOM | Pre-BOM for LED-RING (circular LED array) |
 | `SOURCED_BOM.csv` | BOM | Final BOM with LCSC part numbers, footprints, pricing |
 | `SOURCING_REPORT.md` | Documentation | LCSC sourcing decisions, cost breakdown (~$23/board) |
 
@@ -38,7 +38,7 @@ Index of all scripts, firmware, data files, and generated artifacts.
 
 | File | Description |
 |------|-------------|
-| `IMG_0777.jpg` | Full driver board overview |
-| `IMG_0778.jpg` | Close-up — PCA9685PW + DRV8870 drivers |
-| `IMG_0779.jpg` | Close-up — DRV8870 + barrel jack + screw terminals |
-| `IMG_0780.jpg` | Circular LED array board |
+| `IMG_0777.jpg` | LED-DRV8 — full board overview |
+| `IMG_0778.jpg` | LED-DRV8 — close-up PCA9685PW + DRV8870 drivers |
+| `IMG_0779.jpg` | LED-DRV8 — close-up barrel jack + screw terminals |
+| `IMG_0780.jpg` | LED-RING — circular LED array board |

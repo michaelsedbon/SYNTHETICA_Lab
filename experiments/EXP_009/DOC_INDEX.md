@@ -8,29 +8,54 @@ Index of all markdown and documentation files in this experiment.
 
 | File | Description |
 |------|-------------|
-| [summary.md](file:///Users/michaelsedbon/Documents/SYNTHETIC_PERSONAL_LAB/experiments/EXP_009/summary.md) | Experiment overview, PCB identification, LED control feasibility |
-| [LOG.md](file:///Users/michaelsedbon/Documents/SYNTHETIC_PERSONAL_LAB/experiments/EXP_009/LOG.md) | Chronological log — PCB analysis, pipeline execution, build results |
-| [SCRIPT_INDEX.md](file:///Users/michaelsedbon/Documents/SYNTHETIC_PERSONAL_LAB/experiments/EXP_009/SCRIPT_INDEX.md) | Index of all scripts, Atopile files, BOMs, and resources |
-| [DOC_INDEX.md](file:///Users/michaelsedbon/Documents/SYNTHETIC_PERSONAL_LAB/experiments/EXP_009/DOC_INDEX.md) | This file |
+| [summary.md](summary.md) | Experiment overview, board specs, API docs, pipeline progress |
+| [LOG.md](LOG.md) | Chronological log — PCB analysis, firmware debug, I2C fix |
+| [SCRIPT_INDEX.md](SCRIPT_INDEX.md) | Index of all scripts, Atopile files, BOMs |
+| [DOC_INDEX.md](DOC_INDEX.md) | This file |
+
+## Hardware
+
+| Board | Name | Description |
+|-------|------|-------------|
+| Board 1 | **LED-DRV8** | 8-channel driver: ESP32-S3 + PCA9685 + 8× DRV8870 |
+| Board 2 | **LED-RING** | Circular LED array: ~70 LEDs in radial spiral, passive 12V |
+
+## Firmware
+
+| File | Description |
+|------|-------------|
+| [main.cpp](firmware/src/main.cpp) | ESP32-S3 firmware — WiFi, REST API, PCA9685 I2C, debug endpoints |
+| [index.html](firmware/data/index.html) | Web dashboard — channel sliders, patterns, debug panel |
+| [platformio.ini](firmware/platformio.ini) | PlatformIO build config (USB + OTA environments) |
+
+**Dashboard:** http://leddriver.local · **OTA:** port 3232
 
 ## PCB Documentation
 
 | File | Description |
 |------|-------------|
-| [TIERED_DESIGNS.md](file:///Users/michaelsedbon/Documents/SYNTHETIC_PERSONAL_LAB/experiments/EXP_009/pcb/TIERED_DESIGNS.md) | Functional blocks, signal flow, component specs for both boards |
-| [SOURCING_REPORT.md](file:///Users/michaelsedbon/Documents/SYNTHETIC_PERSONAL_LAB/experiments/EXP_009/pcb/SOURCING_REPORT.md) | LCSC sourcing decisions, cost breakdown (~$23/board) |
-| [SOURCED_BOM.csv](file:///Users/michaelsedbon/Documents/SYNTHETIC_PERSONAL_LAB/experiments/EXP_009/pcb/SOURCED_BOM.csv) | Full BOM with LCSC part numbers, footprints, pricing |
-| [driver_board_prebom.csv](file:///Users/michaelsedbon/Documents/SYNTHETIC_PERSONAL_LAB/experiments/EXP_009/pcb/driver_board_prebom.csv) | Pre-BOM for the 8-channel driver board |
-| [led_array_prebom.csv](file:///Users/michaelsedbon/Documents/SYNTHETIC_PERSONAL_LAB/experiments/EXP_009/pcb/led_array_prebom.csv) | Pre-BOM for the circular LED array |
+| [TIERED_DESIGNS.md](pcb/TIERED_DESIGNS.md) | Functional blocks, signal flow, specs for LED-DRV8 and LED-RING |
+| [SOURCING_REPORT.md](pcb/SOURCING_REPORT.md) | LCSC sourcing decisions, cost breakdown (~$23/board) |
+| [SOURCED_BOM.csv](pcb/SOURCED_BOM.csv) | Full BOM with LCSC part numbers, footprints, pricing |
+| [driver_board_prebom.csv](pcb/driver_board_prebom.csv) | Pre-BOM for LED-DRV8 |
+| [led_array_prebom.csv](pcb/led_array_prebom.csv) | Pre-BOM for LED-RING |
 
 ## Atopile Schematic
 
 | File | Description |
 |------|-------------|
-| [main.ato](file:///Users/michaelsedbon/Documents/SYNTHETIC_PERSONAL_LAB/experiments/EXP_009/pcb/atopile/elec/src/main.ato) | Top-level board definition |
-| [power.ato](file:///Users/michaelsedbon/Documents/SYNTHETIC_PERSONAL_LAB/experiments/EXP_009/pcb/atopile/elec/src/power.ato) | 12V input + 3.3V LDO |
-| [mcu.ato](file:///Users/michaelsedbon/Documents/SYNTHETIC_PERSONAL_LAB/experiments/EXP_009/pcb/atopile/elec/src/mcu.ato) | ESP32-S3 module |
-| [pwm.ato](file:///Users/michaelsedbon/Documents/SYNTHETIC_PERSONAL_LAB/experiments/EXP_009/pcb/atopile/elec/src/pwm.ato) | PCA9685PW 16-ch PWM |
-| [drivers.ato](file:///Users/michaelsedbon/Documents/SYNTHETIC_PERSONAL_LAB/experiments/EXP_009/pcb/atopile/elec/src/drivers.ato) | 8× DRV8870 H-bridge |
-| [connectors.ato](file:///Users/michaelsedbon/Documents/SYNTHETIC_PERSONAL_LAB/experiments/EXP_009/pcb/atopile/elec/src/connectors.ato) | USB-C connector |
-| [led_array.ato](file:///Users/michaelsedbon/Documents/SYNTHETIC_PERSONAL_LAB/experiments/EXP_009/pcb/atopile/elec/src/led_array.ato) | Passive LED array board |
+| [main.ato](pcb/atopile/elec/src/main.ato) | Top-level board definition (LED-DRV8) |
+| [power.ato](pcb/atopile/elec/src/power.ato) | 12V input + AMS1117-3.3 LDO |
+| [mcu.ato](pcb/atopile/elec/src/mcu.ato) | ESP32-S3 (I2C: SDA=GPIO6, SCL=GPIO1) |
+| [pwm.ato](pcb/atopile/elec/src/pwm.ato) | PCA9685PW 16-ch PWM controller |
+| [drivers.ato](pcb/atopile/elec/src/drivers.ato) | 8× DRV8870 H-bridge driver channels |
+| [connectors.ato](pcb/atopile/elec/src/connectors.ato) | USB-C connector |
+| [led_array.ato](pcb/atopile/elec/src/led_array.ato) | LED-RING passive LED array |
+
+## Generated Outputs
+
+| File | Description |
+|------|-------------|
+| [schematic.kicad_sch](pcb/schematic.kicad_sch) | KiCad schematic (generated by ato-to-schematic skill) |
+| build/default.net | KiCad netlist (generated by `ato build`) |
+| build/default.csv | BOM (generated by `ato build`) |
