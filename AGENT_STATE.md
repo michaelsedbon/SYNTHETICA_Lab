@@ -67,3 +67,27 @@ My goal is to characterise this machine, make it fully autonomous, and run exper
 2. Run a full revolution and verify position accuracy
 3. Begin characterising motor behaviour (speed, smoothness, repeatability)
 4. Plan first biological experiment (light exposure → buoyancy)
+
+---
+
+## Applications = Git Submodules
+
+**CRITICAL:** Every app in `applications/` is a **git submodule** with its own private GitHub repo at `github.com/michaelsedbon/<app-name>`.
+
+**When modifying any app:**
+1. Use `/push-app` workflow to commit + push (submodule first, then main repo pointer)
+2. Use `/push-all-apps` to batch push all modified apps
+3. Use `/pull-apps` to fetch latest from all submodule remotes
+4. **Never** commit app files directly in the main SYNTHETICA_Lab repo — always commit inside the submodule
+
+**13 submodules:** adc24-dashboard, agent-presence, audits, experiment-viewer, fab-planner, lab-agent, launcher, mycelium-sim, plasmid-viewer, research-scout, skill-manager, theme-showcase, virtual-lab
+
+---
+
+## Hardware: LED-DRV8 + LED-RING (EXP_009)
+
+- **LED-DRV8**: ESP32-S3 + PCA9685 + 8× DRV8870, REST API at `http://leddriver.local`
+- **LED-RING**: ~70 LED circular array, passive 12V, driven by LED-DRV8
+- **I2C pins**: SDA = GPIO6, SCL = GPIO1
+- **Firmware**: `experiments/EXP_009/firmware/`, OTA on port 3232
+- **API**: `/api/channel`, `/api/all`, `/api/pattern`, `/api/stop`, `/api/status`

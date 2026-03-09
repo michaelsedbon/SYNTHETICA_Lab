@@ -1,6 +1,11 @@
 # Applications Index
 
-> **11 applications** powering the SYNTHETIC Lab — from electrophysiology recording to autonomous AI control.
+> **13 applications** powering the SYNTHETIC Lab — from electrophysiology recording to autonomous AI control.
+
+> [!IMPORTANT]
+> **All apps are git submodules.** Each has its own repo at `github.com/michaelsedbon/<app-name>`.  
+> Use `/push-app` to commit changes, `/push-all-apps` for batch pushes, `/pull-apps` to update.  
+> **Never commit app files directly in the main SYNTHETICA_Lab repo.**
 
 All lab applications live under `applications/`. Each app has a `DOCS.md` with full route tables, architecture diagrams, and feature lists. Apps are registered in the [App Launcher](#-app-launcher) and can be started/stopped from a single dashboard.
 
