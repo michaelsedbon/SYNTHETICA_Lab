@@ -1,1 +1,0 @@
-# SYNTHETICA Lab Agent

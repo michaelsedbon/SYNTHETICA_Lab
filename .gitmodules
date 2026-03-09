@@ -4,3 +4,36 @@
 [submodule "applications/agent-presence"]
 	path = applications/agent-presence
 	url = https://github.com/michaelsedbon/agent-presence.git
+[submodule "applications/audits"]
+	path = applications/audits
+	url = https://github.com/michaelsedbon/audits.git
+[submodule "applications/experiment-viewer"]
+	path = applications/experiment-viewer
+	url = https://github.com/michaelsedbon/experiment-viewer.git
+[submodule "applications/fab-planner"]
+	path = applications/fab-planner
+	url = https://github.com/michaelsedbon/fab-planner.git
+[submodule "applications/lab-agent"]
+	path = applications/lab-agent
+	url = https://github.com/michaelsedbon/lab-agent.git
+[submodule "applications/launcher"]
+	path = applications/launcher
+	url = https://github.com/michaelsedbon/launcher.git
+[submodule "applications/mycelium-sim"]
+	path = applications/mycelium-sim
+	url = https://github.com/michaelsedbon/mycelium-sim.git
+[submodule "applications/plasmid-viewer"]
+	path = applications/plasmid-viewer
+	url = https://github.com/michaelsedbon/plasmid-viewer.git
+[submodule "applications/research-scout"]
+	path = applications/research-scout
+	url = https://github.com/michaelsedbon/research-scout.git
+[submodule "applications/skill-manager"]
+	path = applications/skill-manager
+	url = https://github.com/michaelsedbon/skill-manager.git
+[submodule "applications/theme-showcase"]
+	path = applications/theme-showcase
+	url = https://github.com/michaelsedbon/theme-showcase.git
+[submodule "applications/virtual-lab"]
+	path = applications/virtual-lab
+	url = https://github.com/michaelsedbon/virtual-lab.git

@@ -1,5 +1,0 @@
-fastapi
-uvicorn[standard]
-biopython
-python-multipart
-aiosqlite
