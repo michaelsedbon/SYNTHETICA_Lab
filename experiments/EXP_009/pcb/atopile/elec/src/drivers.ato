@@ -1,0 +1,149 @@
+# ============================================================
+# H-Bridge Driver Module — 8× DRV8870
+# Each channel: 2 PWM inputs (IN1/IN2), 2 outputs (OUT1/OUT2)
+# ISEN current-sense resistor sets current limit
+# Reference: TI DRV8870 datasheet, HSOP-8
+# ============================================================
+
+from "generics/resistors.ato" import Resistor
+from "generics/capacitors.ato" import Capacitor
+
+component DRV8870:
+    lcsc_id = "C86590"
+    footprint = "SOP-8_L4.9-W3.9-P1.27-LS6.0-BL-EP"
+    signal GND ~ pin 1
+    signal IN2 ~ pin 2
+    signal IN1 ~ pin 3
+    signal VREF ~ pin 4
+    signal VM ~ pin 5
+    signal OUT1 ~ pin 6
+    signal ISEN ~ pin 7
+    signal OUT2 ~ pin 8
+
+component ScrewTerminal2P:
+    lcsc_id = "C8269"
+    footprint = "P5.08-2P-THT"
+    signal p1 ~ pin 1   # M*+
+    signal p2 ~ pin 2   # M*-
+
+# Single driver channel: DRV8870 + sense resistor + screw terminal
+module DriverChannel:
+    signal vm        # 12V motor supply
+    signal gnd       # ground
+    signal in1       # PWM input 1 (from PCA9685)
+    signal in2       # PWM input 2 (from PCA9685)
+    signal out_plus  # screw terminal + output
+    signal out_minus # screw terminal - output
+
+    drv = new DRV8870
+    r_isen = new Resistor
+    c_vm = new Capacitor
+    terminal = new ScrewTerminal2P
+
+    # Power
+    vm ~ drv.VM
+    gnd ~ drv.GND
+
+    # VM decoupling (100nF per driver)
+    vm ~ c_vm.p1
+    gnd ~ c_vm.p2
+    c_vm.value = 100nF +/- 10%
+    c_vm.package = "0402"
+
+    # VREF tied to VM (no current regulation limit beyond ISEN)
+    vm ~ drv.VREF
+
+    # Current sense: ISEN → 0.2Ω → GND
+    # I_trip = V_ISEN / (5 × R_ISEN) ≈ 200mV / (5 × 0.2) = 0.2A continuous
+    drv.ISEN ~ r_isen.p1
+    gnd ~ r_isen.p2
+    r_isen.value = 200mohm +/- 1%
+    r_isen.package = "0805"
+
+    # PWM inputs from PCA9685
+    in1 ~ drv.IN1
+    in2 ~ drv.IN2
+
+    # Motor/LED outputs → screw terminal
+    out_plus ~ drv.OUT1
+    out_minus ~ drv.OUT2
+    out_plus ~ terminal.p1
+    out_minus ~ terminal.p2
+
+# All 8 driver channels
+module Drivers:
+    signal vm
+    signal gnd
+    # PWM inputs (16 channels: pairs of IN1/IN2 for each DRV8870)
+    signal pwm0
+    signal pwm1
+    signal pwm2
+    signal pwm3
+    signal pwm4
+    signal pwm5
+    signal pwm6
+    signal pwm7
+    signal pwm8
+    signal pwm9
+    signal pwm10
+    signal pwm11
+    signal pwm12
+    signal pwm13
+    signal pwm14
+    signal pwm15
+
+    # Channel 1 (M1)
+    ch1 = new DriverChannel
+    vm ~ ch1.vm
+    gnd ~ ch1.gnd
+    pwm0 ~ ch1.in1
+    pwm1 ~ ch1.in2
+
+    # Channel 2 (M2)
+    ch2 = new DriverChannel
+    vm ~ ch2.vm
+    gnd ~ ch2.gnd
+    pwm2 ~ ch2.in1
+    pwm3 ~ ch2.in2
+
+    # Channel 3 (M3)
+    ch3 = new DriverChannel
+    vm ~ ch3.vm
+    gnd ~ ch3.gnd
+    pwm4 ~ ch3.in1
+    pwm5 ~ ch3.in2
+
+    # Channel 4 (M4)
+    ch4 = new DriverChannel
+    vm ~ ch4.vm
+    gnd ~ ch4.gnd
+    pwm6 ~ ch4.in1
+    pwm7 ~ ch4.in2
+
+    # Channel 5 (M5)
+    ch5 = new DriverChannel
+    vm ~ ch5.vm
+    gnd ~ ch5.gnd
+    pwm8 ~ ch5.in1
+    pwm9 ~ ch5.in2
+
+    # Channel 6 (M6)
+    ch6 = new DriverChannel
+    vm ~ ch6.vm
+    gnd ~ ch6.gnd
+    pwm10 ~ ch6.in1
+    pwm11 ~ ch6.in2
+
+    # Channel 7 (M7)
+    ch7 = new DriverChannel
+    vm ~ ch7.vm
+    gnd ~ ch7.gnd
+    pwm12 ~ ch7.in1
+    pwm13 ~ ch7.in2
+
+    # Channel 8 (M8)
+    ch8 = new DriverChannel
+    vm ~ ch8.vm
+    gnd ~ ch8.gnd
+    pwm14 ~ ch8.in1
+    pwm15 ~ ch8.in2

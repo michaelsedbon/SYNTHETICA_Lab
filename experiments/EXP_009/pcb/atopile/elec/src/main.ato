@@ -1,0 +1,68 @@
+# ============================================================
+# EXP_009 — 8-Channel Motor/LED Driver Board
+# Top-level board definition
+#
+# Architecture:
+#   12V Barrel Jack → LDO → 3.3V → ESP32-S3
+#                                      │ I2C
+#                                      ▼
+#                                PCA9685 (16-ch PWM)
+#                                   │ 16 PWM outputs
+#                                   ▼
+#                          8× DRV8870 H-bridge → M1–M8
+#
+#   USB-C → ESP32-S3 (programming / serial)
+# ============================================================
+
+from "power.ato" import PowerSupply
+from "mcu.ato" import MCU_Module
+from "pwm.ato" import PWM_Controller
+from "drivers.ato" import Drivers
+from "connectors.ato" import USB_Connector
+
+module DriverBoard:
+    # ── Power supply ──────────────────────────────
+    psu = new PowerSupply
+
+    # ── MCU (ESP32-S3) ────────────────────────────
+    mcu = new MCU_Module
+    psu.v3v3 ~ mcu.dvdd
+    psu.gnd ~ mcu.dgnd
+
+    # ── PWM controller (PCA9685) ──────────────────
+    pwm = new PWM_Controller
+    psu.v3v3 ~ pwm.vdd
+    psu.gnd ~ pwm.gnd
+
+    # I2C bus: MCU ↔ PCA9685
+    mcu.i2c_sda ~ pwm.i2c_sda
+    mcu.i2c_scl ~ pwm.i2c_scl
+
+    # ── H-bridge drivers (8× DRV8870) ────────────
+    drv = new Drivers
+    psu.v12 ~ drv.vm
+    psu.gnd ~ drv.gnd
+
+    # PWM → Driver mapping (16 PWM channels → 8 driver channels)
+    pwm.pwm0 ~ drv.pwm0
+    pwm.pwm1 ~ drv.pwm1
+    pwm.pwm2 ~ drv.pwm2
+    pwm.pwm3 ~ drv.pwm3
+    pwm.pwm4 ~ drv.pwm4
+    pwm.pwm5 ~ drv.pwm5
+    pwm.pwm6 ~ drv.pwm6
+    pwm.pwm7 ~ drv.pwm7
+    pwm.pwm8 ~ drv.pwm8
+    pwm.pwm9 ~ drv.pwm9
+    pwm.pwm10 ~ drv.pwm10
+    pwm.pwm11 ~ drv.pwm11
+    pwm.pwm12 ~ drv.pwm12
+    pwm.pwm13 ~ drv.pwm13
+    pwm.pwm14 ~ drv.pwm14
+    pwm.pwm15 ~ drv.pwm15
+
+    # ── USB connector ─────────────────────────────
+    usb = new USB_Connector
+    psu.gnd ~ usb.gnd
+    mcu.usb_dp ~ usb.dp
+    mcu.usb_dm ~ usb.dm

@@ -1,0 +1,92 @@
+# ============================================================
+# MCU Module — ESP32-S3-WROOM-1
+# WiFi/BLE controller with I2C to PCA9685, USB-C, boot/reset
+# ============================================================
+
+from "generics/capacitors.ato" import Capacitor
+from "generics/resistors.ato" import Resistor
+
+component ESP32S3:
+    lcsc_id = "C2913202"
+    footprint = "WIFI-SMD_ESP32-S3-WROOM-1"
+    signal VDD3V3 ~ pin 2
+    signal GND ~ pin 41
+    # I2C for PCA9685 (verified by GPIO pin scanner)
+    signal GPIO6 ~ pin 10    # I2C SDA (actual)
+    signal GPIO1 ~ pin 5     # I2C SCL (actual)
+    # USB
+    signal GPIO19 ~ pin 38   # USB D-
+    signal GPIO20 ~ pin 39   # USB D+
+    # Boot / Reset
+    signal GPIO0 ~ pin 4     # BOOT (strapping pin)
+    signal EN ~ pin 3        # RESET (active-high enable)
+
+component TactileSwitch:
+    lcsc_id = "C318884"
+    footprint = "SW-SMD-4P"
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2
+    signal p3 ~ pin 3
+    signal p4 ~ pin 4
+
+module MCU_Module:
+    signal dvdd
+    signal dgnd
+    signal i2c_sda
+    signal i2c_scl
+    signal usb_dp
+    signal usb_dm
+
+    # ── ESP32-S3 ──────────────────────────────────
+    mcu = new ESP32S3
+    dvdd ~ mcu.VDD3V3
+    dgnd ~ mcu.GND
+
+    # Enable pull-up + filter cap
+    r_en = new Resistor
+    c_en = new Capacitor
+    r_en.value = 10kohm +/- 1%
+    r_en.package = "0402"
+    c_en.value = 1uF +/- 20%
+    c_en.package = "0402"
+    dvdd ~ r_en.p1
+    r_en.p2 ~ mcu.EN
+    mcu.EN ~ c_en.p1
+    dgnd ~ c_en.p2
+
+    # Decoupling
+    c_vdd1 = new Capacitor
+    c_vdd1.value = 100nF +/- 10%
+    c_vdd1.package = "0402"
+    dvdd ~ c_vdd1.p1
+    dgnd ~ c_vdd1.p2
+
+    c_vdd2 = new Capacitor
+    c_vdd2.value = 10uF +/- 20%
+    c_vdd2.package = "0805"
+    dvdd ~ c_vdd2.p1
+    dgnd ~ c_vdd2.p2
+
+    # I2C bus (verified: SDA=GPIO6, SCL=GPIO1)
+    i2c_sda ~ mcu.GPIO6
+    i2c_scl ~ mcu.GPIO1
+
+    # USB
+    usb_dp ~ mcu.GPIO20
+    usb_dm ~ mcu.GPIO19
+
+    # ── BOOT button (pull GPIO0 low to enter boot) ─
+    sw_boot = new TactileSwitch
+    mcu.GPIO0 ~ sw_boot.p1
+    dgnd ~ sw_boot.p2
+    # Pull-up on GPIO0 (default HIGH)
+    r_boot = new Resistor
+    r_boot.value = 10kohm +/- 5%
+    r_boot.package = "0402"
+    dvdd ~ r_boot.p1
+    r_boot.p2 ~ mcu.GPIO0
+
+    # ── RESET button (pull EN low) ─────────────────
+    sw_reset = new TactileSwitch
+    mcu.EN ~ sw_reset.p1
+    dgnd ~ sw_reset.p2

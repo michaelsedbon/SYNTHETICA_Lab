@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LED Driver — EXP_009</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --bg: #0a0a0f;
+            --surface: #12121a;
+            --surface2: #1a1a26;
+            --border: #2a2a3a;
+            --text: #e4e4ef;
+            --text-dim: #8888a0;
+            --accent: #6366f1;
+            --accent-glow: rgba(99, 102, 241, 0.3);
+            --green: #22c55e;
+            --amber: #f59e0b;
+            --red: #ef4444;
+            --radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ── Header ─────────────────────── */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            background: linear-gradient(180deg, rgba(99, 102, 241, 0.08) 0%, transparent 100%);
+        }
+
+        header .title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        header h1 {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        header .badge {
+            font-size: 11px;
+            font-weight: 500;
+            padding: 3px 8px;
+            border-radius: 20px;
+            background: var(--accent);
+            color: white;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 8px var(--green);
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        .status-dot.offline {
+            background: var(--red);
+            box-shadow: 0 0 8px var(--red);
+        }
+
+        @keyframes pulse-dot {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .wifi-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-dim);
+        }
+
+        /* ── Layout ─────────────────────── */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* ── Cards ──────────────────────── */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            transition: border-color 0.2s;
+        }
+
+        .card:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .card-title {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-dim);
+            margin-bottom: 16px;
+        }
+
+        /* ── Master Slider ──────────────── */
+        .master-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .master-row label {
+            font-size: 14px;
+            font-weight: 500;
+            min-width: 60px;
+        }
+
+        .master-row .value {
+            font-size: 18px;
+            font-weight: 700;
+            min-width: 50px;
+            text-align: right;
+            color: var(--accent);
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* ── Channel Grid ───────────────── */
+        .channels {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 12px;
+        }
+
+        .channel-card {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .channel-card::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 0%;
+            background: linear-gradient(0deg, rgba(99, 102, 241, 0.15) 0%, transparent 100%);
+            transition: height 0.3s ease;
+            pointer-events: none;
+        }
+
+        .channel-card.active::before {
+            height: 100%;
+        }
+
+        .channel-card.active {
+            border-color: var(--accent);
+        }
+
+        .ch-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .ch-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dim);
+        }
+
+        .ch-value {
+            font-size: 22px;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            color: var(--text);
+            transition: color 0.2s;
+        }
+
+        .channel-card.active .ch-value {
+            color: var(--accent);
+        }
+
+        .ch-percent {
+            font-size: 12px;
+            color: var(--text-dim);
+        }
+
+        /* ── Sliders ────────────────────── */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--border);
+            outline: none;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent-glow);
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        input[type="range"]:active::-webkit-slider-thumb {
+            transform: scale(1.3);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        /* ── Pattern Controls ───────────── */
+        .pattern-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .pat-btn {
+            padding: 10px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--surface2);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            text-align: center;
+        }
+
+        .pat-btn:hover {
+            border-color: var(--accent);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .pat-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+            box-shadow: 0 4px 12px var(--accent-glow);
+        }
+
+        .pat-btn.stop {
+            border-color: var(--red);
+            color: var(--red);
+        }
+
+        .pat-btn.stop:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .pat-btn.stop.active {
+            background: var(--red);
+            color: white;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .pat-sliders {
+            display: flex;
+            gap: 24px;
+        }
+
+        .pat-slider-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .pat-slider-group label {
+            font-size: 12px;
+            color: var(--text-dim);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .pat-slider-group label span {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        /* ── Quick Actions ──────────────── */
+        .quick-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--surface2);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .action-btn:hover {
+            border-color: var(--accent);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .action-btn.danger {
+            border-color: var(--red);
+            color: var(--red);
+        }
+
+        .action-btn.danger:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        /* ── Toast ──────────────────────── */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 12px 20px;
+            border-radius: 10px;
+            background: var(--surface2);
+            border: 1px solid var(--accent);
+            color: var(--text);
+            font-size: 13px;
+            transform: translateY(80px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 100;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.error {
+            border-color: var(--red);
+        }
+
+        /* ── Responsive ─────────────────── */
+        @media (max-width: 600px) {
+            .container {
+                padding: 12px;
+            }
+
+            .channels {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .pat-sliders {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            header {
+                padding: 14px 16px;
+            }
+
+            header h1 {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="title">
+            <div class="status-dot" id="statusDot"></div>
+            <h1>LED Driver</h1>
+            <span class="badge">EXP_009</span>
+        </div>
+        <div class="wifi-info">
+            <span id="wifiIP">--</span>
+            <span id="wifiRSSI">--</span>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- Master Brightness -->
+        <div class="card">
+            <div class="card-title">Master Brightness</div>
+            <div class="master-row">
+                <label>☀️ Master</label>
+                <input type="range" id="masterSlider" min="0" max="100" value="100">
+                <div class="value" id="masterValue">100%</div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card">
+            <div class="card-title">Quick Actions</div>
+            <div class="quick-actions">
+                <button class="action-btn" onclick="setAll(4095)">All ON</button>
+                <button class="action-btn" onclick="setAll(2048)">50%</button>
+                <button class="action-btn" onclick="setAll(1024)">25%</button>
+                <button class="action-btn" onclick="setAll(512)">12%</button>
+                <button class="action-btn danger" onclick="setAll(0)">All OFF</button>
+            </div>
+        </div>
+
+        <!-- Channel Sliders -->
+        <div class="card">
+            <div class="card-title">Channel Control</div>
+            <div class="channels" id="channelGrid"></div>
+        </div>
+
+        <!-- Pattern Engine -->
+        <div class="card">
+            <div class="card-title">Patterns</div>
+            <div class="pattern-grid">
+                <button class="pat-btn" data-pat="pulse" onclick="setPattern('pulse')">🌊 Pulse</button>
+                <button class="pat-btn" data-pat="blink" onclick="setPattern('blink')">💡 Blink</button>
+                <button class="pat-btn" data-pat="fade" onclick="setPattern('fade')">🌅 Fade</button>
+                <button class="pat-btn" data-pat="sweep" onclick="setPattern('sweep')">🔄 Sweep</button>
+                <button class="pat-btn stop" data-pat="none" onclick="stopPattern()">⏹ Stop</button>
+            </div>
+            <div class="pat-sliders">
+                <div class="pat-slider-group">
+                    <label>Speed <span id="speedVal">50</span></label>
+                    <input type="range" id="speedSlider" min="0" max="100" value="50">
+                </div>
+                <div class="pat-slider-group">
+                    <label>Intensity <span id="intensityVal">100</span></label>
+                    <input type="range" id="intensitySlider" min="0" max="100" value="100">
+                </div>
+            </div>
+        </div>
+
+        <!-- Debug Panel -->
+        <div class="card" id="debugCard">
+            <div class="card-title"
+                style="cursor:pointer; display:flex; align-items:center; justify-content:space-between;"
+                onclick="toggleDebug()">
+                🔧 Debug
+                <span id="debugArrow" style="transition:transform 0.2s">▶</span>
+            </div>
+            <div id="debugContent" style="display:none;">
+                <!-- I2C Scanner -->
+                <div style="margin-bottom:16px">
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                        <button class="action-btn" onclick="scanI2C()">Scan I2C Bus</button>
+                        <span id="i2cStatus" style="font-size:13px; color:var(--text-dim)"></span>
+                    </div>
+                    <div id="i2cResult"
+                        style="display:none; background:var(--surface2); border-radius:8px; padding:12px; font-family:monospace; font-size:13px;">
+                    </div>
+                </div>
+                <!-- GPIO Pin Scanner -->
+                <div style="margin-bottom:16px">
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                        <button class="action-btn" onclick="scanPins()"
+                            style="border-color:var(--amber); color:var(--amber);">🔍 Scan GPIO Pins</button>
+                        <span id="pinStatus" style="font-size:13px; color:var(--text-dim)"></span>
+                    </div>
+                    <div style="font-size:11px; color:var(--text-dim); margin-bottom:6px;">Tries all ESP32-S3 GPIO pairs
+                        as SDA/SCL to find PCA9685. Takes ~30-60s.</div>
+                    <div id="pinResult"
+                        style="display:none; background:var(--surface2); border-radius:8px; padding:12px; font-family:monospace; font-size:13px;">
+                    </div>
+                </div>
+                <!-- PCA9685 Registers -->
+                <div style="margin-bottom:16px">
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                        <button class="action-btn" onclick="readPCA()">Read PCA9685</button>
+                        <span id="pcaStatus" style="font-size:13px; color:var(--text-dim)"></span>
+                    </div>
+                    <div id="pcaResult"
+                        style="display:none; background:var(--surface2); border-radius:8px; padding:12px; font-size:13px; overflow-x:auto;">
+                    </div>
+                </div>
+                <!-- Channel Test -->
+                <div style="margin-bottom:16px">
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px; flex-wrap:wrap;">
+                        <select id="testCh"
+                            style="background:var(--surface2); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:6px 10px; font-family:inherit; font-size:13px;">
+                            <option value="all">All Channels</option>
+                            <option value="0">CH 0 (M1)</option>
+                            <option value="1">CH 1 (M2)</option>
+                            <option value="2">CH 2 (M3)</option>
+                            <option value="3">CH 3 (M4)</option>
+                            <option value="4">CH 4 (M5)</option>
+                            <option value="5">CH 5 (M6)</option>
+                            <option value="6">CH 6 (M7)</option>
+                            <option value="7">CH 7 (M8)</option>
+                        </select>
+                        <button class="action-btn" onclick="testChannel(4095)"
+                            style="border-color:var(--green); color:var(--green);">Test ON (max)</button>
+                        <button class="action-btn" onclick="testChannel(2048)">Test 50%</button>
+                        <button class="action-btn danger" onclick="testChannel(0)">Test OFF</button>
+                    </div>
+                    <div id="testResult"
+                        style="display:none; background:var(--surface2); border-radius:8px; padding:12px; font-family:monospace; font-size:13px;">
+                    </div>
+                </div>
+                <!-- Live Log -->
+                <div>
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                        <span
+                            style="font-size:13px; font-weight:600; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.08em;">Live
+                            Log</span>
+                        <label
+                            style="font-size:12px; color:var(--text-dim); display:flex; align-items:center; gap:4px; cursor:pointer;">
+                            <input type="checkbox" id="logAutoRefresh" checked onchange="toggleLogRefresh()">
+                            Auto-refresh
+                        </label>
+                        <button class="action-btn" onclick="fetchLog()"
+                            style="padding:4px 10px; font-size:12px;">Refresh</button>
+                    </div>
+                    <div id="logArea"
+                        style="background:#08080d; border:1px solid var(--border); border-radius:8px; padding:12px; font-family:'SF Mono',Menlo,Consolas,monospace; font-size:12px; line-height:1.6; max-height:300px; overflow-y:auto; color:var(--green); white-space:pre-wrap;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const NUM_CH = 8;
+        const PWM_MAX = 4095;
+        let channels = new Array(NUM_CH).fill(0);
+        let activePattern = 'none';
+        let pollTimer = null;
+
+        // ── Build channel cards ──────────────
+        function buildChannels() {
+            const grid = document.getElementById('channelGrid');
+            for (let i = 0; i < NUM_CH; i++) {
+                const card = document.createElement('div');
+                card.className = 'channel-card';
+                card.id = `ch${i}`;
+                card.innerHTML = `
+      <div class="ch-header">
+        <span class="ch-label">M${i + 1}</span>
+        <span class="ch-percent" id="chPct${i}">0%</span>
+      </div>
+      <div class="ch-value" id="chVal${i}">0</div>
+      <input type="range" min="0" max="${PWM_MAX}" value="0"
+             id="chSlider${i}" oninput="onChannelSlide(${i}, this.value)">
+    `;
+                grid.appendChild(card);
+            }
+        }
+
+        // ── API Calls ────────────────────────
+        async function api(path, body = null) {
+            try {
+                const opts = body
+                    ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }
+                    : { method: 'GET' };
+                const r = await fetch(path, opts);
+                return await r.json();
+            } catch (e) {
+                showToast('Connection error', true);
+                document.getElementById('statusDot').classList.add('offline');
+                return null;
+            }
+        }
+
+        // Debounced channel setter
+        let chTimers = {};
+        function onChannelSlide(ch, val) {
+            val = parseInt(val);
+            channels[ch] = val;
+            updateChannelUI(ch, val);
+            clearTimeout(chTimers[ch]);
+            chTimers[ch] = setTimeout(() => {
+                api('/api/channel', { channel: ch, pwm: val });
+            }, 50);
+        }
+
+        function updateChannelUI(ch, val) {
+            document.getElementById(`chVal${ch}`).textContent = val;
+            const pct = Math.round((val / PWM_MAX) * 100);
+            document.getElementById(`chPct${ch}`).textContent = pct + '%';
+            const card = document.getElementById(`ch${ch}`);
+            if (val > 0) card.classList.add('active');
+            else card.classList.remove('active');
+        }
+
+        async function setAll(val) {
+            const data = await api('/api/all', { pwm: val });
+            if (data && data.ok) {
+                for (let i = 0; i < NUM_CH; i++) {
+                    channels[i] = val;
+                    document.getElementById(`chSlider${i}`).value = val;
+                    updateChannelUI(i, val);
+                }
+                setPatternUI('none');
+                showToast(val > 0 ? `All → ${Math.round(val / PWM_MAX * 100)}%` : 'All OFF');
+            }
+        }
+
+        // ── Master brightness ────────────────
+        const masterSlider = document.getElementById('masterSlider');
+        let masterTimer;
+        masterSlider.addEventListener('input', () => {
+            const val = parseInt(masterSlider.value);
+            document.getElementById('masterValue').textContent = val + '%';
+            clearTimeout(masterTimer);
+            masterTimer = setTimeout(() => {
+                api('/api/master', { brightness: val });
+            }, 80);
+        });
+
+        // ── Patterns ─────────────────────────
+        async function setPattern(name) {
+            const speed = parseInt(document.getElementById('speedSlider').value);
+            const brightness = parseInt(document.getElementById('intensitySlider').value);
+            const data = await api('/api/pattern', { name, speed, brightness });
+            if (data && data.ok) {
+                setPatternUI(name);
+                showToast(`Pattern: ${name}`);
+            }
+        }
+
+        async function stopPattern() {
+            const data = await api('/api/stop');
+            if (data && data.ok) {
+                setPatternUI('none');
+                for (let i = 0; i < NUM_CH; i++) {
+                    channels[i] = 0;
+                    document.getElementById(`chSlider${i}`).value = 0;
+                    updateChannelUI(i, 0);
+                }
+                showToast('Stopped');
+            }
+        }
+
+        function setPatternUI(name) {
+            activePattern = name;
+            document.querySelectorAll('.pat-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.pat === name);
+            });
+        }
+
+        // Pattern slider updates
+        document.getElementById('speedSlider').addEventListener('input', function () {
+            document.getElementById('speedVal').textContent = this.value;
+            if (activePattern !== 'none') {
+                setPattern(activePattern);
+            }
+        });
+        document.getElementById('intensitySlider').addEventListener('input', function () {
+            document.getElementById('intensityVal').textContent = this.value;
+            if (activePattern !== 'none') {
+                setPattern(activePattern);
+            }
+        });
+
+        // ── Status polling ───────────────────
+        async function pollStatus() {
+            const data = await api('/api/status');
+            if (!data) return;
+
+            document.getElementById('statusDot').classList.remove('offline');
+            document.getElementById('wifiIP').textContent = data.wifi?.ip || '--';
+            const rssi = data.wifi?.rssi || 0;
+            document.getElementById('wifiRSSI').textContent = rssi + ' dBm';
+
+            // Sync channel values (from pattern engine)
+            if (data.channels) {
+                for (let i = 0; i < NUM_CH; i++) {
+                    channels[i] = data.channels[i];
+                    document.getElementById(`chSlider${i}`).value = data.channels[i];
+                    updateChannelUI(i, data.channels[i]);
+                }
+            }
+            if (data.master !== undefined) {
+                masterSlider.value = data.master;
+                document.getElementById('masterValue').textContent = data.master + '%';
+            }
+            if (data.pattern) {
+                setPatternUI(data.pattern);
+            }
+            if (data.speed !== undefined) {
+                document.getElementById('speedSlider').value = data.speed;
+                document.getElementById('speedVal').textContent = data.speed;
+            }
+            if (data.brightness !== undefined) {
+                document.getElementById('intensitySlider').value = data.brightness;
+                document.getElementById('intensityVal').textContent = data.brightness;
+            }
+        }
+
+        // ── Toast ────────────────────────────
+        function showToast(msg, isError = false) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.className = 'toast show' + (isError ? ' error' : '');
+            setTimeout(() => t.classList.remove('show'), 2000);
+        }
+
+        // ── Init ─────────────────────────────
+        buildChannels();
+        pollStatus();
+        pollTimer = setInterval(pollStatus, 2000);
+
+        // ── Debug Panel ─────────────────────────
+        let debugOpen = false;
+        let logTimer = null;
+
+        function toggleDebug() {
+            debugOpen = !debugOpen;
+            document.getElementById('debugContent').style.display = debugOpen ? 'block' : 'none';
+            document.getElementById('debugArrow').style.transform = debugOpen ? 'rotate(90deg)' : '';
+            if (debugOpen && document.getElementById('logAutoRefresh').checked) {
+                fetchLog();
+                logTimer = setInterval(fetchLog, 2000);
+            } else if (!debugOpen && logTimer) {
+                clearInterval(logTimer);
+                logTimer = null;
+            }
+        }
+
+        function toggleLogRefresh() {
+            if (document.getElementById('logAutoRefresh').checked) {
+                fetchLog();
+                logTimer = setInterval(fetchLog, 2000);
+            } else if (logTimer) {
+                clearInterval(logTimer);
+                logTimer = null;
+            }
+        }
+
+        async function scanPins() {
+            document.getElementById('pinStatus').textContent = 'Scanning all GPIO pairs... (30-60s)';
+            const el = document.getElementById('pinResult');
+            el.style.display = 'block';
+            el.innerHTML = '<span style="color:var(--amber)">⏳ Scanning ~1000 GPIO pairs for PCA9685... please wait.</span>';
+            try {
+                const r = await fetch('/api/debug/scanpins', { signal: AbortSignal.timeout(90000) });
+                const data = await r.json();
+                if (data.status === 'found') {
+                    let html = `<span style="color:var(--green)">✓ PCA9685 FOUND! (${data.attempts} pairs tested)</span><br><br>`;
+                    data.found.forEach(f => {
+                        html += `<span style="color:var(--green); font-size:16px; font-weight:bold">SDA = GPIO${f.sda}, SCL = GPIO${f.scl}</span><br>`;
+                        if (f.other_devices && f.other_devices.length > 0) {
+                            html += `<span style="color:var(--text-dim)">Other devices on bus: ${f.other_devices.join(', ')}</span><br>`;
+                        }
+                    });
+                    html += `<br><span style="color:var(--amber)">→ Update I2C_SDA and I2C_SCL in firmware, then re-flash via OTA.</span>`;
+                    el.innerHTML = html;
+                    document.getElementById('pinStatus').textContent = 'FOUND!';
+                } else {
+                    el.innerHTML = `<span style="color:var(--red)">⚠ PCA9685 not found on any GPIO pair (${data.attempts} tested).<br>Possible hardware issue: check PCA9685 power, solder joints, or chip damage.</span>`;
+                    document.getElementById('pinStatus').textContent = 'Not found';
+                }
+            } catch (e) {
+                el.innerHTML = '<span style="color:var(--red)">⚠ Scan timed out or failed. The board may have crashed — try refreshing.</span>';
+                document.getElementById('pinStatus').textContent = 'Error';
+            }
+        }
+
+        async function scanI2C() {
+            document.getElementById('i2cStatus').textContent = 'Scanning...';
+            const data = await api('/api/debug/i2c');
+            const el = document.getElementById('i2cResult');
+            if (!data) { document.getElementById('i2cStatus').textContent = 'Error'; return; }
+            el.style.display = 'block';
+            if (data.count === 0) {
+                el.innerHTML = '<span style="color:var(--red)">⚠ No I2C devices found! Check SDA/SCL wiring (GPIO8/9).</span>';
+                document.getElementById('i2cStatus').textContent = '0 devices';
+            } else {
+                let html = `<span style="color:var(--green)">✓ ${data.count} device(s) found:</span><br>`;
+                data.devices.forEach(d => {
+                    const color = d.address === '0x40' ? 'var(--green)' : 'var(--amber)';
+                    html += `<span style="color:${color}">  ${d.address} — ${d.name}</span><br>`;
+                });
+                el.innerHTML = html;
+                document.getElementById('i2cStatus').textContent = `${data.count} device(s)`;
+            }
+        }
+
+        async function readPCA() {
+            document.getElementById('pcaStatus').textContent = 'Reading...';
+            const data = await api('/api/debug/pca9685');
+            const el = document.getElementById('pcaResult');
+            if (!data) { document.getElementById('pcaStatus').textContent = 'Error'; return; }
+            el.style.display = 'block';
+
+            if (!data.i2c_present) {
+                el.innerHTML = '<span style="color:var(--red)">⚠ PCA9685 not found on I2C bus!</span>';
+                document.getElementById('pcaStatus').textContent = 'NOT FOUND';
+                return;
+            }
+
+            const c = data.control;
+            const sleepColor = c.MODE1_sleep ? 'var(--red)' : 'var(--green)';
+            const sleepText = c.MODE1_sleep ? '⚠ SLEEP MODE (chip disabled!)' : '✓ Active';
+            let html = `<div style="margin-bottom:10px">
+                <strong>Control Registers</strong><br>
+                <span style="font-family:monospace">MODE1: ${c.MODE1_hex} → <span style="color:${sleepColor}">${sleepText}</span>, AutoIncr: ${c.MODE1_autoincr ? 'ON' : 'OFF'}</span><br>
+                <span style="font-family:monospace">MODE2: ${c.MODE2_hex} → Output: ${c.MODE2_outdrv}</span><br>
+                <span style="font-family:monospace">PRESCALE: ${c.PRESCALE} → PWM freq: ${c.PWM_freq_hz} Hz</span>
+            </div>`;
+
+            html += '<strong>Channel Registers</strong> <span style="color:var(--text-dim)">(16 PCA9685 outputs → 8 motor channels)</span><br>';
+            html += '<table style="width:100%; margin-top:6px; border-collapse:collapse; font-family:monospace; font-size:12px;">';
+            html += '<tr style="color:var(--text-dim)"><th style="text-align:left;padding:2px 6px">LED</th><th>ON</th><th>OFF</th><th>State</th></tr>';
+            data.channels.forEach(ch => {
+                const stateColor = ch.state === 'OFF' ? 'var(--text-dim)' : ch.state === 'FULL_ON' ? 'var(--green)' : 'var(--accent)';
+                const motor = ch.led % 2 === 0 ? `M${Math.floor(ch.led / 2) + 1} IN1` : `M${Math.floor(ch.led / 2) + 1} IN2`;
+                html += `<tr style="border-top:1px solid var(--border)">
+                    <td style="padding:2px 6px">LED${ch.led} <span style="color:var(--text-dim)">(${motor})</span></td>
+                    <td style="text-align:center;padding:2px 6px">${ch.on_reg}</td>
+                    <td style="text-align:center;padding:2px 6px">${ch.off_reg}</td>
+                    <td style="text-align:center;padding:2px 6px;color:${stateColor}">${ch.state}</td>
+                </tr>`;
+            });
+            html += '</table>';
+            el.innerHTML = html;
+            document.getElementById('pcaStatus').textContent = `${c.PWM_freq_hz}Hz, ${c.MODE1_sleep ? 'SLEEPING!' : 'active'}`;
+        }
+
+        async function testChannel(pwm) {
+            const sel = document.getElementById('testCh').value;
+            const body = sel === 'all' ? { all: true, pwm } : { channel: parseInt(sel), pwm };
+            const data = await api('/api/debug/test', body);
+            const el = document.getElementById('testResult');
+            if (!data) return;
+            el.style.display = 'block';
+
+            if (data.readback !== undefined) {
+                // Single channel result
+                const matchColor = data.match ? 'var(--green)' : 'var(--red)';
+                const matchIcon = data.match ? '✓' : '⚠';
+                el.innerHTML = `CH${data.channel}: cmd=${data.commanded_pwm} → readback=${data.readback} fullOn=${data.full_on} fullOff=${data.full_off} <span style="color:${matchColor}">${matchIcon} ${data.match ? 'MATCH' : 'MISMATCH!'}</span>`;
+            } else if (data.readback_results || data.readback) {
+                // All channels result
+                const results = data.readback || [];
+                let html = `Test ALL → PWM ${data.commanded_pwm}:<br>`;
+                results.forEach(r => {
+                    const matchColor = r.match ? 'var(--green)' : 'var(--red)';
+                    const matchIcon = r.match ? '✓' : '⚠';
+                    html += `  CH${r.channel}: read=${r.readback} fullOn=${r.full_on} fullOff=${r.full_off} <span style="color:${matchColor}">${matchIcon}</span><br>`;
+                });
+                el.innerHTML = html;
+            }
+            showToast(`Test: PWM ${pwm}`);
+        }
+
+        async function fetchLog() {
+            const data = await api('/api/debug/log');
+            if (!data) return;
+            const el = document.getElementById('logArea');
+            el.textContent = data.entries.join('\n') || '(no log entries yet)';
+            el.scrollTop = el.scrollHeight;
+        }
+    </script>
+</body>
+
+</html>

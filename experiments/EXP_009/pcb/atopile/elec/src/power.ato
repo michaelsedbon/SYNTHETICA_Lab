@@ -1,0 +1,48 @@
+# ============================================================
+# Power Supply Module
+# 12V barrel jack → 3.3V LDO for ESP32 + logic ICs
+# ============================================================
+
+from "generics/capacitors.ato" import Capacitor
+
+component AMS1117_3V3:
+    lcsc_id = "C6186"
+    footprint = "SOT-223-3_L6.5-W3.4-H1.6-LS7.0-BR"
+    signal vin ~ pin 3
+    signal vout ~ pin 2
+    signal gnd ~ pin 1
+
+component BarrelJack:
+    lcsc_id = "C381116"
+    footprint = "DC-005_L14.0-W9.0"
+    signal tip ~ pin 1    # center positive = +12V
+    signal ring ~ pin 2   # sleeve = GND
+    signal switch ~ pin 3 # normally closed to ring
+
+module PowerSupply:
+    signal v12
+    signal v3v3
+    signal gnd
+
+    # ── 12V input (barrel jack 5.5×2.1mm) ─────────
+    jack = new BarrelJack
+    v12 ~ jack.tip
+    gnd ~ jack.ring
+    gnd ~ jack.switch
+
+    # ── 3.3V LDO (AMS1117-3.3) ────────────────────
+    ldo = new AMS1117_3V3
+    c_in = new Capacitor
+    c_out = new Capacitor
+    c_in.value = 10uF +/- 20%
+    c_in.package = "0805"
+    c_out.value = 10uF +/- 20%
+    c_out.package = "0805"
+
+    v12 ~ ldo.vin
+    v12 ~ c_in.p1
+    gnd ~ ldo.gnd
+    gnd ~ c_in.p2
+    gnd ~ c_out.p2
+    v3v3 ~ ldo.vout
+    v3v3 ~ c_out.p1

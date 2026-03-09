@@ -1,0 +1,72 @@
+# ============================================================
+# LED Array Board — Circular passive LED array
+# ~70 SMD LEDs in radial pattern, current-limiting resistors
+# 12V+ / GND input pads
+# Board ID: 6423323A_Y55_240913
+#
+# This is a SEPARATE board from the driver board.
+# It has no active control — just LEDs + resistors.
+# Power is supplied externally (from driver board M* outputs).
+# ============================================================
+
+from "generics/resistors.ato" import Resistor
+
+component LED_SMD:
+    # Generic 2835 white LED (placeholder — exact part TBD from measurement)
+    lcsc_id = "C2890035"
+    footprint = "LED-SMD_L2.8-W3.5"
+    signal anode ~ pin 2
+    signal cathode ~ pin 1
+
+# A single LED + resistor unit
+module LED_Unit:
+    signal vplus
+    signal gnd
+
+    led = new LED_SMD
+    r_limit = new Resistor
+    # Value TBD — depends on LED Vf and desired current
+    # Assuming white LED Vf ≈ 3.0V, target 20mA:
+    # R = (12V - 3×3.0V) / 20mA = 150Ω (if 3 LEDs in series)
+    # Or R = (12V - 3.0V) / 20mA = 450Ω (if 1 LED per resistor)
+    r_limit.value = 150ohm +/- 5%
+    r_limit.package = "0805"
+
+    vplus ~ r_limit.p1
+    r_limit.p2 ~ led.anode
+    gnd ~ led.cathode
+
+# Full LED array — simplified representation
+# (actual board has ~70 LEDs; we model a representative subset)
+module LED_Array:
+    signal v12_plus
+    signal gnd
+
+    # Representative group of 8 LED units
+    # (actual board has more; this captures the architecture)
+    led1 = new LED_Unit
+    led2 = new LED_Unit
+    led3 = new LED_Unit
+    led4 = new LED_Unit
+    led5 = new LED_Unit
+    led6 = new LED_Unit
+    led7 = new LED_Unit
+    led8 = new LED_Unit
+
+    v12_plus ~ led1.vplus
+    v12_plus ~ led2.vplus
+    v12_plus ~ led3.vplus
+    v12_plus ~ led4.vplus
+    v12_plus ~ led5.vplus
+    v12_plus ~ led6.vplus
+    v12_plus ~ led7.vplus
+    v12_plus ~ led8.vplus
+
+    gnd ~ led1.gnd
+    gnd ~ led2.gnd
+    gnd ~ led3.gnd
+    gnd ~ led4.gnd
+    gnd ~ led5.gnd
+    gnd ~ led6.gnd
+    gnd ~ led7.gnd
+    gnd ~ led8.gnd

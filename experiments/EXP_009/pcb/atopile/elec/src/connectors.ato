@@ -1,0 +1,54 @@
+# ============================================================
+# Connectors Module — USB-C
+# ============================================================
+
+from "generics/resistors.ato" import Resistor
+
+component USB_C_Receptacle:
+    lcsc_id = "C2765186"
+    footprint = "USB-C-SMD-16P"
+    signal VBUS ~ pin 1
+    signal GND ~ pin 4
+    signal CC1 ~ pin 5
+    signal CC2 ~ pin 8
+    signal DN1 ~ pin 6    # USB D-
+    signal DP1 ~ pin 7    # USB D+
+    signal DN2 ~ pin 10   # USB D- (redundant for type-C)
+    signal DP2 ~ pin 11   # USB D+ (redundant for type-C)
+    signal SBU1 ~ pin 9
+    signal SBU2 ~ pin 12
+    signal SHIELD ~ pin 13
+
+module USB_Connector:
+    signal vbus
+    signal gnd
+    signal dp
+    signal dm
+
+    usb = new USB_C_Receptacle
+    vbus ~ usb.VBUS
+    gnd ~ usb.GND
+    gnd ~ usb.SHIELD
+
+    # USB D+/D- (tie redundant pairs together)
+    dp ~ usb.DP1
+    dp ~ usb.DP2
+    dm ~ usb.DN1
+    dm ~ usb.DN2
+
+    # CC pull-downs for device mode (5.1kΩ to GND)
+    r_cc1 = new Resistor
+    r_cc1.value = 5.1kohm +/- 1%
+    r_cc1.package = "0402"
+    usb.CC1 ~ r_cc1.p1
+    gnd ~ r_cc1.p2
+
+    r_cc2 = new Resistor
+    r_cc2.value = 5.1kohm +/- 1%
+    r_cc2.package = "0402"
+    usb.CC2 ~ r_cc2.p1
+    gnd ~ r_cc2.p2
+
+    # SBU pins unused
+    gnd ~ usb.SBU1
+    gnd ~ usb.SBU2

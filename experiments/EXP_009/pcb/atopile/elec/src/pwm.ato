@@ -1,0 +1,135 @@
+# ============================================================
+# PWM Controller — PCA9685PW
+# 16-ch 12-bit I2C PWM driver for DRV8870 H-bridge inputs
+# Reference: NXP PCA9685 datasheet, TSSOP-28
+# ============================================================
+
+from "generics/capacitors.ato" import Capacitor
+from "generics/resistors.ato" import Resistor
+
+component PCA9685PW:
+    lcsc_id = "C150292"
+    footprint = "TSSOP-28_L9.7-W4.4-P0.65-LS6.4-BL"
+    # Address pins
+    signal A0 ~ pin 1
+    signal A1 ~ pin 2
+    signal A2 ~ pin 3
+    signal A3 ~ pin 4
+    signal A4 ~ pin 5
+    # LED outputs
+    signal LED0 ~ pin 6
+    signal LED1 ~ pin 7
+    signal LED2 ~ pin 8
+    signal LED3 ~ pin 9
+    signal LED4 ~ pin 10
+    signal LED5 ~ pin 11
+    signal LED6 ~ pin 12
+    signal LED7 ~ pin 13
+    # Ground
+    signal VSS ~ pin 14
+    # More LED outputs
+    signal LED8 ~ pin 15
+    signal LED9 ~ pin 16
+    signal LED10 ~ pin 17
+    signal LED11 ~ pin 18
+    signal LED12 ~ pin 19
+    signal LED13 ~ pin 20
+    signal LED14 ~ pin 21
+    signal LED15 ~ pin 22
+    # Control pins
+    signal OE ~ pin 23     # Output Enable (active LOW)
+    signal A5 ~ pin 24
+    signal EXTCLK ~ pin 25
+    signal SCL ~ pin 26
+    signal SDA ~ pin 27
+    signal VDD ~ pin 28
+
+module PWM_Controller:
+    signal vdd
+    signal gnd
+    signal i2c_sda
+    signal i2c_scl
+    # 16 PWM outputs — grouped as pairs for 8 DRV8870 channels
+    signal pwm0
+    signal pwm1
+    signal pwm2
+    signal pwm3
+    signal pwm4
+    signal pwm5
+    signal pwm6
+    signal pwm7
+    signal pwm8
+    signal pwm9
+    signal pwm10
+    signal pwm11
+    signal pwm12
+    signal pwm13
+    signal pwm14
+    signal pwm15
+
+    # ── PCA9685 IC ─────────────────────────────────
+    ic = new PCA9685PW
+    vdd ~ ic.VDD
+    gnd ~ ic.VSS
+
+    # Decoupling
+    c_vdd = new Capacitor
+    c_vdd.value = 100nF +/- 10%
+    c_vdd.package = "0402"
+    vdd ~ c_vdd.p1
+    gnd ~ c_vdd.p2
+
+    c_bulk = new Capacitor
+    c_bulk.value = 10uF +/- 20%
+    c_bulk.package = "0805"
+    vdd ~ c_bulk.p1
+    gnd ~ c_bulk.p2
+
+    # I2C bus
+    i2c_sda ~ ic.SDA
+    i2c_scl ~ ic.SCL
+
+    # I2C pull-ups (4.7kΩ to VDD)
+    r_sda = new Resistor
+    r_sda.value = 4.7kohm +/- 5%
+    r_sda.package = "0402"
+    vdd ~ r_sda.p1
+    r_sda.p2 ~ i2c_sda
+
+    r_scl = new Resistor
+    r_scl.value = 4.7kohm +/- 5%
+    r_scl.package = "0402"
+    vdd ~ r_scl.p1
+    r_scl.p2 ~ i2c_scl
+
+    # OE tied LOW (outputs always enabled)
+    gnd ~ ic.OE
+
+    # Address = 0x40 (default, all address pins LOW)
+    gnd ~ ic.A0
+    gnd ~ ic.A1
+    gnd ~ ic.A2
+    gnd ~ ic.A3
+    gnd ~ ic.A4
+    gnd ~ ic.A5
+
+    # EXTCLK unused — use internal oscillator
+    gnd ~ ic.EXTCLK
+
+    # LED outputs → PWM signals
+    pwm0 ~ ic.LED0
+    pwm1 ~ ic.LED1
+    pwm2 ~ ic.LED2
+    pwm3 ~ ic.LED3
+    pwm4 ~ ic.LED4
+    pwm5 ~ ic.LED5
+    pwm6 ~ ic.LED6
+    pwm7 ~ ic.LED7
+    pwm8 ~ ic.LED8
+    pwm9 ~ ic.LED9
+    pwm10 ~ ic.LED10
+    pwm11 ~ ic.LED11
+    pwm12 ~ ic.LED12
+    pwm13 ~ ic.LED13
+    pwm14 ~ ic.LED14
+    pwm15 ~ ic.LED15
