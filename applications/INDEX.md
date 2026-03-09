@@ -26,6 +26,7 @@ All lab applications live under `applications/`. Each app has a `DOCS.md` with f
 | 9 | [👁 Agent Presence](#-agent-presence) | `agent-presence` | 3005 | Vanilla HTML/JS · Canvas · Python | ✅ Working |
 | 10 | [🍄 Mycelium Sim](#-mycelium-sim) | `mycelium-sim` | 8765 (WS) | P5.js · Python · WebSocket | ✅ Working |
 | 11 | [⚡ Skill Manager](#-skill-manager) | `skill-manager` | 8004 | FastAPI · Vanilla JS | ✅ Working |
+| 12 | [🔬 Experiment Designer](#-experiment-designer) | `experiment-designer` | 8005 · 3006 | FastAPI · Next.js | ✅ Working |
 
 ---
 

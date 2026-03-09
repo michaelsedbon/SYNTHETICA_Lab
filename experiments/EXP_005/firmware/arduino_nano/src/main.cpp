@@ -142,10 +142,15 @@ void processCommand(String cmd) {
 
     if (cmd == "STATUS") {
         Serial.print("POS:"); Serial.println(stepper.currentPosition());
+        stepper.run();
         Serial.print("HALL:"); Serial.println(digitalRead(PIN_HALL) == LOW ? 1 : 0);
+        stepper.run();
         Serial.print("SPEED:"); Serial.println((int)stepper.maxSpeed());
+        stepper.run();
         Serial.print("MOVING:"); Serial.println(stepper.isRunning() ? 1 : 0);
+        stepper.run();
         Serial.print("SPR:"); Serial.println(stepsPerRev);
+        stepper.run();
         Serial.print("CAL:"); Serial.println(calibrated ? 1 : 0);
         return;
     }
@@ -208,8 +213,11 @@ void processCommand(String cmd) {
 
     if (cmd.startsWith("MOVE ")) {
         long steps = cmd.substring(5).toInt();
+        long before = stepper.currentPosition();
         stepper.move(steps);
-        Serial.print("OK MOVE "); Serial.println(steps);
+        Serial.print("OK MOVE "); Serial.print(steps);
+        Serial.print(" POS:"); Serial.print(before);
+        Serial.print(" TGT:"); Serial.println(stepper.targetPosition());
         return;
     }
 
@@ -236,6 +244,20 @@ void processCommand(String cmd) {
         return;
     }
 
+    // ── Raw GPIO step test — bypasses AccelStepper entirely ──
+    if (cmd == "RAWTEST") {
+        Serial.println("RAWTEST_START");
+        digitalWrite(PIN_DIR, LOW);  // set direction
+        for (int i = 0; i < 200; i++) {
+            digitalWrite(PIN_STEP, HIGH);
+            delayMicroseconds(500);
+            digitalWrite(PIN_STEP, LOW);
+            delayMicroseconds(500);
+        }
+        Serial.println("OK RAWTEST 200 pulses");
+        return;
+    }
+
     Serial.print("ERROR:UNKNOWN:"); Serial.println(cmd);
 }
 
@@ -243,6 +265,7 @@ void setup() {
     Serial.begin(115200);
     stepper.setMaxSpeed(DEFAULT_SPEED);
     stepper.setAcceleration(DEFAULT_ACCEL);
+    stepper.setMinPulseWidth(20);  // 20µs min pulse — DM542T needs ≥2.5µs
     stepper.enableOutputs();  // CRITICAL: sets PIN_STEP and PIN_DIR to OUTPUT mode
     pinMode(PIN_STEP, OUTPUT);  // Belt-and-suspenders: ensure step pin is OUTPUT
     pinMode(PIN_DIR, OUTPUT);   // Belt-and-suspenders: ensure dir pin is OUTPUT
@@ -298,5 +321,6 @@ void loop() {
         } else if (c != '\r') {
             inputBuffer += c;
         }
+        stepper.run();  // keep stepping while processing serial
     }
 }

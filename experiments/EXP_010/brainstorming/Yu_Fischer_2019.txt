@@ -1,0 +1,1893 @@
+Most animals use light to obtain crucial information 
+about their environment, including information about 
+their orientation as well as visual information obtained 
+through highly sophisticated sensory organs. Plants use 
+light to optimize the exposure of their leaves for pho-
+tosynthesis and to control the flowering period or seed 
+formation. Many microorganisms, such as filamentous 
+fungi, use light as a source of information. They are 
+equipped with several photosensory systems and can 
+respond to different light intensities and wavelengths 
+(colours)1–5 (Fig. 1).
+Fungi have a crucial role in the remineralization 
+of organic matter, are important plant and animal path-
+ogens and are frequently used in industry, for instance, 
+in the production of secondary metabolites or cata-
+lytic enzymes. Hence, advances in the study of fun-
+gal biology should help to further our understanding 
+of their pathogenicity and improve their application 
+to biotechnology6.
+Although fungal light responses have been studied for 
+more than 50 years, the availability of hundreds of fungal 
+genome sequences and the recent developments of novel 
+experimental approaches, such as genome-wide expres-
+sion analyses or whole-genome sequencing to identify 
+mutations, have provided novel insights into fungal light 
+sensing and signalling pathways. It was shown that in 
+several fungi the expression of a large proportion of the 
+genome is regulated by light and that, thus, light affects 
+many aspects of fungal life. Furthermore, light signalling 
+may be tightly linked with other pathways such as sporu-
+lation, primary metabolic pathways or the production of 
+secondary metabolites or hydrolytic enzymes7–15.
+Only a few different photoreceptors developed during 
+evolution. Such photoreceptor proteins always contain 
+an organic molecule as the chromophore, which absorbs 
+visual light. There are flavin-binding blue-light receptors, 
+retinal-containing green-light sensors and proteins with 
+a linear tetrapyrrole as the chromophore that function as 
+red-light sensors. Most fungi contain at least two types of 
+photoreceptors, and some even contain all three. Some 
+blue-light photoreceptors reside in the nucleus and can 
+directly control gene expression, whereas the red-light 
+receptor phytochrome has nuclear and cytoplasmic 
+functions and is linked to the transcriptional machin-
+ery through other signalling modules. Both blue-light 
+and red-light receptors also control the DNA structure 
+of certain target genes and thereby their transcription. 
+The green-light photoreceptor is a transmembrane pro-
+tein, and it is still unclear how signalling occurs. There 
+is also evidence that a particular blue-light receptor (an 
+orthologue of white collar 1 (WC-1)) can sense green 
+light16. In all cases, light causes primary changes of the 
+attached chromophore, which in turn lead to confor-
+mational changes of the proteins and changes in their 
+activities. Thereby, light controls the activity of many 
+genes and metabolic and morphogenetic pathways. 
+One question that arises is why fungi use such complex 
+photosensory systems.
+Fungi live in many different habitats, ranging from 
+the desert to the tropics, and their environment changes 
+frequently and often drastically. Even in moderate zones, 
+the soil conditions may change dramatically over the 
+course of a day. There are two strategies to cope with 
+this challenge: adapt physiologically or escape and 
+conquer new habitats. Many fungi produce spores for 
+dispersal, and light is a reliable informational source to 
+indicate air exposure, which in some fungi is required 
+to induce sporulation and/or the formation of a fruit-
+ing body17,18 (Fig. 2). Spores have a thick, pigmented cell 
+wall for protection and may be covered with very resist-
+ant hydrophobins19. Once spores germinate, hyphae 
+may be fully exposed to harmful ultraviolet light, and 
+Chromophore
+An organic molecule that 
+absorbs light in the visible 
+spectrum. Photoreceptors are 
+proteins containing a 
+chromophore, which upon  
+light absorption cause 
+structural changes of the 
+attached protein.
+Flavin
+An organic molecule with a 
+characteristic tricyclic 
+heterocycle (isoalloxazine).
+Linear tetrapyrrole
+An organic molecule  
+composed of four five-atom 
+rings. They can be cyclic, as in 
+haemoglobin, or linear, like  
+in biliverdin.
+Phytochrome
+A protein that contains a linear 
+tetrapyrrole as a chromophore 
+and absorbs red and far-red 
+light. It is the main photosensor 
+of plants and controls 
+morphogenesis.
+Light sensing and responses in fungi
+Zhenzhong Yu and Reinhard Fischer   *
+Abstract | Light controls important physiological and morphological responses in fungi.  
+Fungi can sense near-ultraviolet, blue, green, red and far-red light using up to 11 photoreceptors  
+and signalling cascades to control a large proportion of the genome and thereby adapt to 
+environmental conditions. The blue-light photoreceptor functions directly as a transcriptional 
+regulator in the nucleus, whereas the red-light-sensing and far-red-light-sensing phytochrome 
+induces a signalling pathway to transduce the signal from the cytoplasm to the nucleus. Green 
+light can be sensed by retinal-binding proteins, known as opsins, but the signalling mechanisms 
+are not well understood. In this Review , we discuss light signalling processes in fungi, their 
+signalling cascades and recent insights into the integration of light signalling pathways with 
+other regulatory circuits in fungal cells.
+Karlsruhe Institute of 
+Technology (KIT) — South 
+Campus, Institute for Applied 
+Biosciences, Department of 
+Microbiology, Karlsruhe, 
+Germany.
+*e-mail: reinhard.fischer@
+KIT.edu
+https://doi.org/10.1038/ 
+s41579-018-0109-x
+REVIEWS
+Nature Reviews | Microbiology
+
+germination after sunset would be advantageous. 
+Indeed, in Aspergillus nidulans, Aspergillus fumigatus 
+and Fusarium oxysporum, light delays germination13,20. 
+However, spore formation and germination may be the 
+result of the integration of many internal and external 
+cues, such as light, air exposure or the nutritional stage 
+of the mycelium. Hence, light signalling must be tightly 
+connected to other signalling cascades, developmental 
+pathways and metabolic networks.
+Fungi may also adapt their physiology in addition 
+to developmental programmes. If their habitat dries 
+out, fungi respond by producing compatible solutes 
+to prevent water loss21. This occurs frequently if fungi 
+approach the surface of organic substrates and are 
+exposed to light. Therefore, light can be regarded as an 
+alerting system to prepare fungi for stressful conditions 
+before they arise. Such changes in the environment also 
+occur during the day–night cycle, and many fungi use 
+a circadian clock system to foresee regularly changing 
+environments and be prepared for the upcoming day 
+or night22,23. Among other factors, light is an important 
+input into the clock system, and in Neurospora crassa 
+and other fungi, the light-sensing and circadian clock 
+systems share the blue-light photoreceptor WC-1 (ref.24). 
+Nevertheless, genes can be independently regulated by 
+light, by the clock or by both25.
+Finally, some fungi can not only detect differences in 
+the colour (wavelength) and intensity of light but also 
+sense the direction of illumination, as exemplified by 
+the phototropism of the sporangiophore of Phycomyces 
+blakesleeanus26,27 (Fig. 2).
+The numerous examples of light responses in fungi 
+indicate the complexity of light sensing and signal 
+transduction and a crucial role in regulating fungal life 
+(Figs 1,2). Because fungi are amenable to most molecular, 
+genetic, cell-biological, physiological and biochemical 
+methods, they serve as model systems to understand 
+regulatory networks in eukaryotic cells.
+In this Review, we summarize the structural basis 
+for light sensing in filamentous fungi and explore the 
+light signalling mechanisms for blue-light, green-light 
+and red-light photoreceptors. Finally, we review our cur-
+rent understanding of crosstalk of the light signalling 
+pathways with other cellular pathways.
+The structural basis for light sensing
+Most cellular pathways are driven by proteins, and thus 
+physical signals need to be transmitted to the protein 
+level. In the case of light sensing, signal amplification 
+and decoding of small conformational changes in the 
+chromophore (which sometimes occurs in the range of 
+picoseconds) into a code that cells can understand are 
+required. Proteins without chromophores absorb ultra-
+violet light through aromatic amino acids. Likewise, 
+the photoreceptor UVR8 in Arabidopsis thaliana con-
+tains specific tryptophan residues, and ultraviolet-light 
+absorption by those residues leads to the conversion of a 
+UVR8 dimer into monomers that shuttle into nuclei28. In 
+comparison, visible-light sensing depends on a chromo-
+phore with aromatic residues or other systems with con-
+jugated π-electrons. Such chromophores include the 
+isoalloxazin ring systems in flavins, the retinal molecule 
+or linear tetrapyrroles such as biliverdin (Fig. 3).
+Blue-light photoreceptors. Flavin chromophores can 
+be bound to different domains in a photoreceptor 
+protein, and three major classes of blue-light receptors 
+are distinguished: the light, oxygen and voltage (LOV) 
+domain-containing proteins, the blue-light sensor 
+Phytochrome
+Processes controlled by light 
+and photoreceptors:
+• Spore germination 
+• Vegetative growth
+• Asexual and sexual development
+• Circadian clock 
+• Phototropism 
+• Stress response 
+• Secondary metabolism
+• Pathogenicity
+• Nutrient uptake
+WCC
+?
+?
+?
+VVD
+HOG 
+pathway
+Opsin
+Cryptochrome
+Photolyase
+BLUF?
+DNA
+AtfA
+Fig. 1 | Photoreceptors in filamentous fungi and overview of light-controlled 
+processes. Fungi contain flavin-binding blue-light receptors, retinal-containing green-light 
+sensors, known as opsins, and proteins with a linear tetrapyrrole as a chromophore that 
+function as red-light sensors (phytochromes). Three major classes of blue-light receptors 
+are distinguished: the light, oxygen and voltage (LOV) domain-containing proteins such as 
+white collar 1 (WC-1) or vivid (VVD), the blue-light sensor using FAD (BLUF) proteins and the 
+cryptochrome and photolyase protein family. Those photoreceptors can be found in both 
+the cytoplasm and the nucleus, and the green-light photoreceptor is a transmembrane 
+protein. One of the main response outputs of light signalling is the control of gene 
+expression, and hence the light signal has to be transmitted into the nuclei. In the case of 
+blue-light signalling through the white collar complex (WCC) (comprising WC-1 and 
+WC-2), the WCC resides in the nucleus and directly regulates gene expression. For clock 
+functioning, shuttling of the WCC between the cytoplasm and the nucleus is important147. 
+By contrast, cytoplasmic phytochromes use the high osmolarity glycerol (HOG) signalling 
+module for signal transduction from the cytoplasm to the nucleus. At the end of the HOG 
+pathway is the AtfA transcription factor, which induces gene expression. However, a 
+fraction of phytochrome is also found in nuclei, where it controls the activity of the 
+chromatin-remodelling machinery (not shown), which also contributes to gene expression. 
+In Aspergillus nidulans, the phytochrome interacts in the nucleus with the WCC, but the 
+functional role of the interaction remains to be determined. Opsin resides in the 
+cytoplasmic membrane, and the signalling mechanism is not yet known (indicated by the 
+question mark). The blue-light receptor VVD interacts with the WCC and functions as a 
+negative regulator of WCC-regulated genes98,148. The signalling pathways for cryptochrome 
+and photolyases are not clear (indicated by the question marks). In Botrytis cinerea, one 
+cryptochrome resides in the cytoplasm and one in the nucleus55. Processes that are 
+controlled by light and photoreceptors include spore germination, vegetative growth, the 
+circadian clock , stress responses, metabolism, nutrient uptake and pathogenicity.
+Circadian clock
+Describes a stable oscillation 
+synchronized by light. The 
+period is approximately (circa) 
+a day (diem).
+www.nature.com/nrmicro
+Reviews
+
+using FAD (BLUF) proteins and the cryptochrome and 
+photolyase protein family. The reaction mechanism for 
+LOV domains, which were first described in plant photo­
+tropins29, is not fully understood. In the dark state, 
+the flavin (flavin mononucleotide (FMN) or FAD) is 
+embedded into a pocket of the photoreceptor protein 
+without further interactions. The chromophore is fully 
+oxidized, and illumination causes a covalent adduct for-
+mation between a carbonyl group of the isoalloxazin ring 
+system in the flavin and the thiol group of a cysteinyl 
+residue of the photoreceptor protein. Although not 
+completely resolved, evidence suggests that electron 
+transfer occurs between the cysteine residue and the 
+flavin, which results in the formation of a thioether30,31. 
+Returning the protein to the dark leads to a reversion of 
+all processes, including cleavage of the covalent bond. 
+The series of events is called photocycle. Further insights 
+into the mechanism of blue-light perception and dark 
+reversion came from the study of the fungal small LOV 
+domain-containing protein vivid (VVD)32,33. In addi-
+tion to the critical cysteine residue, several amino acids 
+in the protein are important for function. Those resi-
+dues determine the lifetime of the photoadduct, which 
+is important for the biological function of VVD34,35. 
+The crystal structures of VVD were obtained in both 
+the dark and the light states. Surprisingly, illumination 
+of the protein caused dimerization of two subunits into 
+a homodimer36. VVD can also interact with the white 
+collar complex (WCC) (see below)37,38. A prerequisite 
+for VVD dimerization is a glutamine residue, which 
+flips its amide side chain owing to altered hydrogen 
+a
+b
+c
+d
+e
+1 cm
+1 cm
+100 μm
+200 μm
+1 cm
+1 cm
+1 mm
+1 mm
+Wild type
+Dark
+Dark
+Light
+∆wc-1
+∆vvd
+∆fphA
+WT
+Red light
+∆fphA
+WT
+Fig. 2 | light responses in model fungi. a | Neurospora 
+crassa strains were grown in test tubes on an agar surface 
+in light at 25 °C for 5 days. The orange colour indicates  
+the production of carotenoid. Mutant cells lacking the 
+blue-light photoreceptor white collar 1 (WC-1) (Δwc-1 
+mutant) produce less carotenoid than the wild type (WT).  
+By contrast, cells that lack the small light, oxygen and 
+voltage (LOV) domain-containing photoreceptor protein 
+vivid (VVD) (denoted ∆vvd) produce more carotenoid than 
+the WT, which is indicative of the loss of photoadaptation.  
+b | Aspergillus nidulans strains were grown on agar plates in 
+the dark or under red-light illumination at 37 °C for 5 days. 
+The WT forms more cleistothecia (yellow structures) and 
+less green conidia in darkness than in red light. Light 
+represses the formation of cleistothecia. In a strain that 
+lacks the phytochrome FphA (ΔfphA), red light suppresses 
+cleistothecia formation much less than in the WT. The exact 
+mechanisms as to how phytochrome controls genes 
+required for cleistothecia formation are not known.  
+The scanning electron microscopic pictures show a 
+cleistothecium (left; 500 µm diameter) surrounded by Hülle 
+cells and a conidiophore (right; spores are 3 µm in 
+diameter). c | Agar plates grown with Botrytis cinerea in the 
+dark or with a rhythm of 12 h dark and 12 h light are shown. 
+In the dark , sclerotia (hardened fungal hyphae for survival) 
+are formed, whereas in the presence of light, green conidia 
+are produced. d | An agar plate grown with Trichoderma 
+atroviride and illuminated for 5 min with blue light and 
+further grown in the dark is shown. Green conidia formed 
+at only the growth front at the time of illumination.  
+e | Sporangiophores of Phycomyces blakesleeanus (left)  
+and illuminated with light from the left (right picture) are 
+shown. The phototropic response depends on the WC-1 
+photoreceptor MADA51. Part a image courtesy of Z. Yu.  
+Part b adapted with permission from ref.69, Elsevier. Part c 
+images courtesy of J. Schumacher, University of Münster, 
+Germany. Part d adapted with permission from ref.133, 
+Elsevier. Part e adapted with permission from ref.102, Elsevier.
+Sporangiophore
+The morphological structure of 
+fungi that produce (resistant) 
+spores, which are small entities 
+for dispersal or for survival.
+Nature Reviews | Microbiology
+Reviews
+
+bonding interactions after protonation of the flavin 
+chromophore39. VVD is important for photoadaptation 
+and inhibits WCC activity40,41 (Fig. 2).
+The first fungal LOV domain-containing protein 
+identified was the white collar (WC) protein WC-1 in 
+N. crassa, and the discovery of FAD as a chromophore 
+was a true breakthrough in the fungal field42–44. A cru-
+cial cysteine and approximately 11 other amino acids 
+are important for blue-light sensing45. The 127 kDa 
+WC-1 protein contains PAS domains for protein 
+interaction, transcriptional activation domains and a 
+zinc-finger DNA-binding domain (Fig. 3). A putative 
+NH
+O
+N
+N
+N
+SH
+R
+Cys
+Protein
+O
+S
+N
+N
+N
+NH
+H
+R
+Cys
+Protein
+H
+11
+12
+O
+H
+11
+12
+O
+O
+O
+O
+O
+H
+N
+N
+N+
+N
+HN
+HN
+H2N
+OH
+OH
+–OOC
+COO–
+O
+H
+16
+15
+N
+Cys
+S
+O
+NH
+NH+ HN
+–OOC
+COO–
+16
+15
+Cys
+S
+O
+O
+NH
+NH+ HN
+HN
+Light
+Pr
+Phytochrome (Aspergillus nidulans FphA)
+Opsin (Fusarium fujikuroi CarO)
+1,280 amino acids
+307 amino
+acids
+1,167 amino
+acids
+567 amino
+acids
+207 amino 
+acids
+294 amino 
+acids
+WC-1 (Neurospora crassa WC-1)
+Cryptochrome (Aspergillus nidulans CryA)
+Pfr
+Dark
+Light
+Retinal
+Biliverdin
+Flavin
+MTHF
+All-trans-retinal
+11-cis-retinal
+Dark
+Light
+Dark
+PAS
+Retinal
+binding
+GAF
+PHY
+Histidine
+kinase
+ATPase
+Response
+regulator
+LOV
+Photolyase
+FAD
+binding
+VVD (Trichoderma reesei Env1)
+LOV
+BLUF (Ustilago maydis BIf1)
+BLUF
+PAS
+PAS
+Zinc ﬁnger
+Protein
+Protein
+Fig. 3 | Structure of fungal photoreceptors and their chromophores. For each photoreceptor type, one representative 
+is shown. Phytochrome consists of a photosensory domain composed of a PAS, a GAF and a PHY domain. In fungi, the 
+chromophore, a linear tetrapyrrole, is bound to a cysteine in the PAS domain. The second half of the protein consists of a 
+signal output domain composed of a histidine kinase and a response regulator domain. The chromophore absorbs red 
+light and undergoes isomerization and a conformational change. The nature of the chromophore is not known yet, but 
+Aspergillus nidulans phytochrome assembles in vitro with biliverdin. Opsin is a transmembrane protein with retinal as 
+chromophore. Upon absorption of green light, the retinal undergoes a cis–trans isomerization. The white collar 1 (WC-1) 
+protein and vivid (VVD) contain light, oxygen and voltage (LOV) domains where an FAD is covalently bound to a cysteine 
+upon illumination. The WC-1 protein also contains two PAS domains for protein–protein interaction and a zinc-finger 
+domain for DNA binding. The blue-light sensor using FAD (BLUF) protein contains flavin, and cryptochrome additionally 
+contains a methyltetrahydrofolate (MTHF) molecule. FAD is bound differently from LOV domains. The size of the 
+photoreceptors is indicated in amino acids. VVD, vivid.
+Cryptochrome
+A flavin-binding protein that 
+senses blue light and is 
+involved in circadian rhythms 
+in higher eukaryotes.
+Photolyase
+An enzyme that repairs DNA 
+damage caused by ultraviolet 
+light. The enzyme contains 
+flavin as cofactor and itself 
+requires blue light for activity.
+Photoadduct
+A chromophore that attaches 
+covalently to a protein.
+Photoadaptation
+The phenomenon in which 
+after light signalling the system 
+becomes insensitive for a 
+certain time.
+www.nature.com/nrmicro
+Reviews
+
+nuclear localization domain was later shown to be 
+involved in DNA binding, but this domain is not 
+required for nuclear import46. A second protein essen-
+tial for blue-light sensing was cloned shortly after 
+WC-1 and named WC-2. WC-2 is a 57 kDa protein 
+that lacks a LOV domain47 and can localize in nuclei 
+despite the lack of a functional nuclear localization 
+signal48,49. WC-1 and WC-2 form the heterodimeric 
+WCC, which can induce transcription, but the nuclear 
+import mechanisms for both proteins remain elusive. 
+The fact that WC-1 is a transcription factor and con-
+tains a flavin for light perception suggests that the light 
+signal transduction cascade is minimalistic. The WCC 
+functions as a transcriptional regulator and a photo-
+sensor at the same time. If WC-1 or WC-2 are lacking, 
+N. crassa cannot sense blue light, and light-dependent 
+pigment formation is inhibited (Fig. 2). The two zygo-
+mycetes Mucor circinelloides and P. blakesleeanus dis-
+play a much larger variety of WC orthologues than 
+N. crassa. P. blakesleeanus contains three WC-1 
+proteins along with four WC-2 orthologues, and 
+M. circinelloides contains three WC-1 and two WC-2 
+proteins16,50. They are structurally similar but have 
+distinct functions. In M. circinelloides, one WC-1 pro-
+tein controls blue-light-dependent carotenogenesis in 
+hyphae, whereas a second one is involved in the photo­
+tropic response. Interestingly, phototropism is con-
+trolled by blue and by green light, and both responses 
+require the blue-light receptor WC-1 (ref.16). In 
+P. blakesleeanus, the WC-1 orthologue MADA as well 
+as the WC-2 orthologue MADB are involved in both 
+carotenogenesis and phototropism50,51.
+Another blue-light-perceiving protein family is 
+composed of photolyases and cryptochromes52. They 
+typically bind FAD with an additional folate or a ribo-
+flavin derivative. The chromophores are non-covalently 
+bound. Both photolyases and cryptochromes are found 
+in fungi, and evidence suggests that they may have a role 
+in DNA repair and sexual development53–55; however, the 
+signalling mechanisms are still poorly understood.
+BLUF proteins were described in bacteria and exist 
+in several fungi56. However, mechanistic studies of those 
+photoreceptors are still lacking.
+Green-light photoreceptors. Green light can be sensed 
+by retinal-binding proteins, known as opsins, which are 
+found in the retinal rod cells of vertebrates57. Archaea 
+and bacteria harbour channel rhodopsins, which are 
+seven-transmembrane proteins, and the all-trans-retinal 
+form is covalently linked to a lysine residue in the sev-
+enth helix of the proteins. The activated protein trans-
+locates protons or chloride ions across a membrane58. 
+Several amino acids, which can be reversibly proto-
+nated, are important for activity. Originally discovered 
+in archaea, proton-pumping channel rhodopsins were 
+also found in fungi59–62. Three different classes are dis-
+tinguished: the first class has a slow photocycle with 
+low proton-pumping activity. An example is N. crassa 
+NOP-1 (refs60,63,64). The second class is characterized 
+by strong green-light-dependent proton-pumping 
+activity62. The genomes of many fungi encode further 
+opsin-related proteins lacking the lysine residue for 
+chromophore binding. The function of this third class 
+is still enigmatic65.
+Evidence suggests that one of the WC-1 orthologues 
+in M. circinelloides is involved in green-light-mediated 
+phototropism16. Deletion of the gene encoding WC-1a 
+also affected blue-light phototropism, suggesting that 
+this WC-1 orthologue may have a role in phototropism 
+rather than green-light perception per se.
+Red-light and far-red-light photoreceptors. Red-light 
+and far-red-light sensing in phytochromes depends on 
+a linear tetrapyrrole (bilin), autocatalytically bound 
+to the apoprotein via a conserved cysteine residue. 
+Phytochromes were discovered in plants, where they are 
+well studied66–68. In fungi, this photoreceptor type was 
+first discovered in the two model fungi A. nidulans and 
+N. crassa69,70. The nature of the bilin chromophore deriv-
+ative in fungal phytochromes has yet to be determined, 
+although it was shown that A. nidulans FphA is able to 
+use biliverdin69,70 (Fig. 3). The chromophores exist in 
+two interchangeable conformations that are well distin-
+guished by their spectral properties. The Pr form absorbs 
+red light, thereby changing the conformation and shift-
+ing the absorption maximum into the far-red spectrum; 
+this new form is called Pfr. On absorbing far-red light, the 
+chromophore reverts to the Pr form. Phytochromes are 
+large proteins that consist of a photosensory region with 
+a bound chromophore and a signal output domain. The 
+sensory region is composed of three domains: the PAS 
+domain, the GAF domain and the PHY domain, whereas 
+the signal output domain has similarity to prokaryotic 
+histidine kinases. It has been speculated that plant phyto­­
+chromes have a prokaryotic origin, with an amino termi-
+nus from cyanobacteria and a carboxyl terminus from 
+proteobacteria71,72. The chromophore is bound to the 
+PAS or the GAF domain (Fig. 3).
+The crystal structure of the photosensory domain in 
+the bacterium Deinococcus radiodurans revealed a very 
+unusual deep trefoil knot between the GAF and the PAS 
+domains73. As of yet, no structure of any fungal phyto­
+chrome has been determined. The signal output region 
+is characterized by an ATPase and a histidine kinase 
+domain. The histidine in the histidine kinase domain 
+can be phosphorylated in bacteria and fungi; the kinase 
+activity was lost during evolution in plants, and the histi-
+dine was replaced by an arginine or a glutamate. In some 
+bacteria and in fungi, another domain is attached to the 
+histidine kinase72, which shows similarity to prokaryotic 
+response regulator domains and contains an aspartate for 
+phosphorylation. As in prokaryotic two-component sys-
+tems, a phosphate can be transferred from the histidine 
+of the histidine kinase domain to the aspartate of the 
+response regulator domain. However, the phosphotrans-
+fer has been observed between different phytochrome 
+molecules only in vitro74.
+Light signalling mechanisms
+Different photoreceptors vary considerably in structure 
+and locate either to the cytoplasmic membrane (opsins) 
+or to the cytoplasm and to nuclei (phytochrome and 
+WC proteins). In all photoreceptors, light causes pri-
+mary conformational changes of the protein, followed 
+Rhodopsins
+The photosensors of the retina. 
+Rhodopsins contain retinal as a 
+chromophore. Rhodopsins are 
+also found in lower eukaryotes 
+and in archaea.
+Nature Reviews | Microbiology
+Reviews
+
+by different output mechanisms, such as control of 
+protein–protein interactions or control of phospho-
+rylation events leading to different signalling mecha-
+nisms. Most light responses ultimately depend on gene 
+regulation. For instance, the production of reproduc-
+tive, spore-producing structures from simple hyphae 
+requires the control of hundreds, or even thousands, 
+of genes at specific points in time. This is achieved by 
+transcription factors that control certain steps in devel-
+opment75. Linking their expression to light control thus 
+enables coupling of the entire morphogenetic pathway to 
+light7. Likewise, metabolic processes may be controlled 
+in a similar manner. Depending on the location of the 
+photoreceptor, different signalling cascades are required 
+(see below). In addition to their photosensory function, 
+it seems that some of the receptors also have a role in 
+the dark (Box 1).
+Blue-light signalling mechanisms. The mechanism 
+of gene activation upon blue-light exposure has been 
+studied in great detail. Blue light controls all photo-
+responses in N. crassa and also has a role in other fungi 
+with a pronounced red-light response8. WC-1 and WC-2 
+form a heterodimer (the WCC), bind to the promoters 
+of light-activated genes and after illumination activate 
+gene expression8. Approximately 400 direct target genes 
+of the WCC were identified after 15 minutes of illumina-
+tion, many of which encode transcription factors such as 
+SUB-1. After this first wave of gene activation, SUB-1 
+together with the transcription factor FF-7 (which 
+contains a putative O-acetyl transferase domain) and 
+the WCC activate downstream genes. Hence, a tran-
+scriptional hierarchy controls a large proportion of 
+the genome8,76–78 (Fig. 4). The activity of WC-1 and 
+WC-2 seems to be regulated through multiple com-
+plicated post-translational phosphorylation events79–82. 
+In the case of circadian clock regulation, the WCC 
+induces the production of the clock protein FRQ, which 
+subsequently inhibits the activity of the WCC by recruit-
+ing kinases CKI and CKII to phosphorylate and inacti-
+vate the WCC, thus providing a negative feedback loop83. 
+Protein kinase A (PKA) and protein kinase C (PKC) 
+also inhibit the activity of the WCC, whereas PP2A 
+and PP4 dephosphorylate and activate the WCC81,84,85. 
+Recent studies have revealed that light-regulated genes 
+are induced in bursts, followed by a period in which the 
+promoters are refractory to stimulation86,87.
+The WCC also controls gene expression through 
+chromatin remodelling. In N. crassa, the WCC binds to 
+the promoters of light-regulated genes in the dark and 
+interacts with a histone acetyl transferase, NGF-1, which 
+is stimulated by the WCC upon illumination. NGF-1 
+mediates the acetylation of lysine residue 14 of histone 
+H3, which increases the accessibility of genes to RNA 
+polymerase II and leads to gene activation88,89. By con-
+trast, methylation of lysine 9 and lysine 4 by the methyl-
+transferases DIM-5 and SET-1 represses gene expression 
+expression. Methylation requires the function of the hetero­
+chromatin protein HP-1 (REFS 90,91). In addition to the nuclear 
+functions (that is, transcriptional activation and chro-
+matin remodelling), evidence suggests that the WCC has 
+cytoplasmic functions during circadian clock regulation81. 
+Moreover, the regulatory role of the WCC in the circadian 
+clock in the absence of light indicates that this complex 
+also has a function in the dark92. Similarly, in A. nidulans, 
+LreA (the orthologue of WC-1) is required for full 
+induction of cleistothecia production in the dark93. 
+Finally, in Trichoderma atroviride, the WC-1 orthologue 
+Blr-1 seems to control the growth rate of hyphae in the 
+dark and seems to be required for starvation-induced 
+conidiation94–96.
+An important negative regulator of the WC light- 
+regulatory system is the VVD protein of N. crassa32,41,97 
+(Fig. 2). VVD is a repressor of light-­controlled and 
+clock-controlled genes and interacts directly with the 
+WCC98. Activated WCC induces the expression of 
+vivid, and VVD then inhibits WCC activity by binding 
+to the WCC99. Hence, VVD is important for photo-
+adaptation34. In addition to WC-1, RCO1 and RCM1, 
+the homologues of the co-repressor complex Tup1–
+Ssn6 in yeast, are required for the proper induction 
+of vivid in response to light and thus indirectly for 
+photoadaptation100.
+After the discovery of the blue-light-sensing genes 
+in N. crassa, these were partially characterized in many 
+different fungi51,93,94,101–104. The VVD protein has been 
+well studied in Trichoderma reesei (termed ENVOY, 
+Env1), but it is not found in all fungi, and the mech-
+anisms of photoadaptation in those fungi remain elu-
+sive5,65. Although the WC proteins are well conserved, 
+studies in A. nidulans point to different regulatory 
+cues. Whereas the WCC is bound to the promoter and 
+activates gene expression in N. crassa, this complex 
+dissociates from the promoter upon illumination in 
+A. nidulans105. This could be related to the fact that gene 
+activation in A. nidulans primarily depends on phyto­
+chrome. The exact mechanism by which the WCC is 
+released from the promoters is not clear yet, and it would 
+be interesting to determine whether WCC dissocia-
+tion from light-activated promoters after illumination 
+Box 1 | light sensing as a novel function for old proteins?
+evidence suggests that photoreceptor proteins also fulfil functions in the dark and that 
+some photoreceptors may also have roles in signalling pathways other than light 
+signalling. those non-canonical functions of photoreceptors may shed light on the 
+evolution of the sophisticated photoreceptors that exist today. in the case of 
+phytochromes, evidence suggests that they developed from histidine hybrid kinases, 
+which are typical sensors that respond to specific signals. Hence, light perception could 
+have developed as a secondary feature of such a histidine hybrid kinase, and the 
+question is what the primary function could have been. it has been suggested that plant 
+and bacterial phytochromes are involved in temperature sensing140–143. this mechanism is 
+not yet entirely clear, but it is likely that changes in temperature cause conformational 
+changes in the phytochrome and thereby initiate a signalling cascade. introduction of 
+the bilin chromophore into the protein and a reaction with light could induce the same 
+conformational changes as in the case of temperature. similarly, rhodopsin may function 
+as a temperature sensor in Drosophila melanogaster144. Hence, temperature sensing 
+could be the original function of phytochromes. in agreement with that, it was 
+speculated that a bacterial blue-light sensor using FaD (BLuF) protein functions as a 
+temperature sensor, and for a plant phototropin, such a function was shown145,146. this 
+could point to the possibility that light responses could be properties acquired during 
+evolution. it is also well known that the wC proteins have functions in the dark, for 
+example, for clock functioning in Neurospora crassa93,96. the clock can be entrained by 
+light but also by temperature cycles, and one may speculate that temperature sensing 
+was also the ancient function in this case.
+FRQ
+A negative regulator of the 
+circadian clock in fungi. 
+Oscillation of transcription of 
+clock-controlled genes requires 
+the positive element, white 
+collar 1 (WC-1), and the 
+negative FRQ protein.
+Cleistothecia
+The fruiting body of 
+ascomycetes. Spores are 
+produced after meiosis.
+Conidiation
+The process of the formation of 
+vegetative (asexual) spores. 
+Usually special morphological 
+structures, the conidiophores, 
+are produced, which generate 
+the conidia.
+www.nature.com/nrmicro
+Reviews
+
+is conserved in other fungi in which phytochromes 
+seem to have an important role in light signalling, 
+such as Botrytis cinerea or Alternaria alternata.
+In comparison, there is very limited evidence for 
+signalling related to blue-light perception through the 
+photolyase or cryptochrome blue-light receptors53,106. 
+The best evidence for a regulatory role comes from work in 
+B. cinerea, which develops asexual sclerotia in the dark and 
+asexual conidia after illumination with near-ultraviolet 
+light (Fig. 2). Blue light inhibits both processes, and one 
+cryptochrome (BcCRY2) is required for the blue-light 
+repression of conidiation55, whereas it is not required for 
+the induction of conidiation with near-ultraviolet light.
+Green-light signalling mechanisms. Green-light 
+sensing and signalling are much less understood than 
+blue-light sensing. There is good evidence that the 
+green-light photoreceptor NOP-1 in N. crassa is involved 
+in the regulation of developmental processes, possibly 
+through the control of the oxidative state of the cell107,108. 
+WCC
+Acetylated histone
+VVD
+FRQ
+VVD
+FRQ
+SUB-1
+SUB-1
+PHY-2
+FphA
+FphA
+?
+YpdA
+SskA
+SskB
+PbsB
+SakA
+SakA
+AtfA
+GcnE AdaB
+H3K9Ac
+Nucleus
+H3K9
+HdaA
+CRY
+Other
+transcription
+factors
+Other transcription
+factors
+mRNA
+DIM-5
+HP-1
+Chromatin remodelling
+a
+Late light response
+Gene expression
+SET-1
+NGF-1
+FF-7
+b
+P
+P
+P
+P
+P
+P
+LreB LreA
+LreB LreA
+WCC
+Early light response
+VeA
+Fig. 4 | current model of light responses in fungi. a | In Neurospora crassa — and probably in other fungi as well — the 
+blue-light response involves a hierarchical expression of light-responsive genes. As a first response, light-activated white 
+collar complex (WCC) binds to the promoters of early light-responsive genes and transiently induces their expression. 
+WCC interacts with and stimulates the histone acetyl transferase NGF-1; histone acetylation promotes gene expression. 
+By contrast, histone methylation by DIM-5, SET-1 and HP-1 represses gene expression. Among the early induced genes are 
+frq, vivid and six transcription factor-encoding genes such as sub-1. After the first wave of gene induction, SUB-1 together 
+with the transcription factor FF-7 , the WCC and other transcription factors activate the expression of late light-responsive 
+genes. Cryptochrome CRY and phytochrome PHY-2 were shown to regulate a small subset of genes. Vivid (VVD) (which is 
+encoded by vivid) interacts with the WCC and inactivates it. Therefore, the light-induction does not persist. The 
+phenomenon is called photoadaptation. FRQ protein accumulates in a circadian manner and inhibits the activity of the 
+WCC rhythmically. Both WCC and FRQ are central elements of the circadian clock. b | In Aspergillus nidulans, red light is 
+perceived by the phytochrome FphA. In the cytoplasm, light-dependent activation of FphA probably leads to 
+dephosphorylation of the phosphotransferase protein YpdA , causing activation of the high osmolarity glycerol (HOG) 
+pathway and, via phosphorelay , activation of the MAP kinase stress-activated kinase (SakA). Phosphorylated SakA shuttles 
+into the nucleus to phosphorylate the transcription factor AtfA , which activates gene expression. Chromatin remodelling 
+through acetylation of lysine 9 in histone H3 (H3K9Ac) is also involved in light signalling. LreA (the orthologue of WC-1) 
+interacts with the histone acetyltransferases GcnE and AdaB and the histone deacetylase HdaA. In the dark , LreA and VeA 
+(which is an NF-κB-related master regulator of development and secondary metabolism) are bound to the promoters of 
+light-inducible genes. LreA is released from the promoter in light. LreA inhibits GcnE activity and promotes HdaA activity , 
+and gene repression is promoted by LreA–LreB–VeA. Following illumination, FphA stimulates GcnE activity , which leads to 
+the acetylation of H3K9 and gene expression. However, the interaction between FphA and GcnE and an effect of light on 
+GcnE activity have not been verified.
+Sclerotia
+A multicellular structure used 
+for survival of some fungi.  
+In Botrytis cinerea, it is the 
+prerequisite for sexual fruiting 
+body (apothecia) formation.
+Nature Reviews | Microbiology
+Reviews
+
+These findings suggest a signalling cascade from the 
+membrane-bound protein to the nucleus. However, 
+how this is achieved remains unknown. Currently, it is 
+difficult to speculate about a signalling cascade because 
+the primary action of NOP-1 is not well understood, 
+owing to its low proton-pumping activity and because 
+it is not coupled to a G protein64. In F. oxysporum, the 
+proton-pumping channel rhodopsin, CarO, local-
+izes to the plasma and internal membranes, and the 
+light-activated protein contributes to the generation 
+of a membrane potential or controls the ionic balance 
+of the cell109. There is evidence that CarO retards spore 
+germination in light. This effect resembles the role 
+of phytochrome in A. nidulans and A. fumigatus13,20. 
+It is probably advantageous that spores germinate after 
+sunset when humidity increases at night.
+It has been hypothesized that changes in the pH gradi-
+ent trigger a signalling cascade through the well-studied 
+pH signalling pathway110. Interestingly, these opsins, 
+like CarO, seem to be present in only plant-interacting 
+fungi109. In the pathogenic fungus Colletotrichum 
+gloeosporioides, it was shown that pH-controlled genes 
+are required for colonization111. Such genes are under the 
+control of the PacC transcription factor and were acti-
+vated under alkaline conditions. The light-dependent 
+activation of opsin should lead to an acidification of 
+the microenvironment at the cytoplasmic membrane. 
+Hence, during the day, when the opsin is activated, col-
+onization of the host could be reduced. Another effect of 
+proton pumping by opsins is the generation of a mem-
+brane potential, which could be important for uptake 
+processes, and thus the nutritional status may change in 
+the dark or upon mutation of the opsin function.
+An interesting case of green-light signalling was 
+observed in Blastocladiella emersonii. This chytrid fun-
+gus is characterized by motile zoospores that exhibit a 
+phototactic swimming behaviour. In this case, rhodopsin 
+is fused with a guanylyl-cyclase catalytic domain. Upon 
+light stimulation, the enzyme is activated and produces 
+cGMP as a second messenger. cGMP levels control ion 
+channels and thereby membrane polarization112,113. This, 
+in turn, modulates Ca2+ homeostasis and most likely 
+controls the behaviour of the flagellum.
+Red-light signalling mechanisms. Red-light and 
+phytochrome signalling have been mainly studied in 
+A. nidulans, A. fumigatus and B. cinerea3,4. Some major 
+phenomena controlled by red light in A. nidulans are the 
+balance between asexual and sexual development and 
+the germination process20,69. Phytochromes were charac-
+terized by reverse genetics after their discovery in bacte-
+ria and the identification of partial sequences in fungal 
+genome projects69,70,114. Similar to blue-light signalling via 
+the WC proteins, a phytochrome-dependent signalling 
+cascade could be very short because red light also pene-
+trates the cytoplasm and reaches the nucleus. However, 
+phytochrome does not contain features of a transcrip-
+tional regulator69, but although the protein was found 
+in the cytoplasm, interaction studies clearly showed the 
+occurrence of a nuclear fraction. The A. nidulans phyto­
+chrome contains two nuclear localization signals93, but 
+there is no evidence yet for light-dependent shuttling 
+of the protein as described for plant phytochromes115. 
+In A. nidulans, the phytochrome FphA interacts in the 
+nucleus with both the WCC and an NF-κB-related mas-
+ter regulator of development and secondary metabo-
+lism, VeA93,116,117. In addition, it was reported that FphA 
+interacts with chromatin-remodelling enzymes, such as 
+histone deacetylases and histone acetyltransferases105 
+(Fig. 4b). The role of the protein interactions and whether 
+light induces those interactions remain elusive. In addi-
+tion to those interactions in the nucleus, there is recent 
+evidence that the cytoplasmic fraction of phytochrome 
+is crucial for red-light signalling. In a mutant screen-
+ing for mutants that do not respond to red light (blind 
+mutant), the MAP kinase stress-activated kinase(SakA; 
+also known as HogA) was identified as a possible signal-
+ling factor downstream of red-light sensing11 (Figs 4b,5). 
+The high osmolarity glycerol pathway (HOG pathway) 
+(which regulates the hyperosmotic stress response) 
+consists of a two-component signalling module and 
+a MAP kinase module. It was shown that the cascade 
+was activated at the level of the phosphotransfer pro-
+tein YpdA. The phosphorylation status of YpdA triggers 
+downstream signalling, but it is not entirely clear how 
+YpdA is controlled by FphA. FphA harbours an active 
+histidine kinase, the activity of which is stimulated by 
+light, suggesting that the protein could phosphorylate 
+target proteins74. By contrast, it was shown that purified 
+FphA can accept a phosphate from YpdA118. The aspar-
+tate residue in the response regulator domain of FphA 
+was crucial for the reaction, whereas the histidine resi-
+due was not required. In vivo, it was shown that both the 
+histidine residue of the histidine kinase domain and the 
+aspartate residue of the response regulator domain were 
+essential for phytochrome activity105. One possibility is 
+that histidine phosphorylation is required to expose the 
+response regulator in a way that it can be phosphoryl-
+ated by YpdA. Histidine phosphorylation of FphA may 
+also enable other proteins to interact with FphA and, for 
+example, dephosphorylate the aspartate in the response 
+regulator domain.
+N. crassa harbours two phytochromes (PHY-1 and 
+PHY-2), and PHY-2 may modulate the activity of the 
+WCC, is upregulated during sexual development and is 
+involved in the control of the expression of early sexual 
+developmental genes70,107,119. This points to a complex 
+regulatory network in N. crassa, as found in A. nidu-
+lans. A. fumigatus also contains two phytochromes13, and 
+similarly to A. nidulans, one of them seems to control 
+germination, surprisingly, in the dark. In contrast to 
+A. nidulans, asexual sporulation in A. fumigatus does 
+not require red light and thus does not necessitate a 
+phytochrome13,120.
+The two fungi B. cinerea and A. alternata also 
+react to red light, suggesting that they harbour func-
+tional phytochromes4,121,122. Interestingly, whereas the 
+genome of A. alternata encodes one phytochrome, 
+the genome of B. cinerea was found to encode three 
+phytochromes. However, the exact functions of the phyto­
+chromes and the interplay with other light-sensing 
+systems need to be further investigated. B. cinerea con-
+tains 11 putative photoreceptor proteins for different 
+wavelengths4.
+High osmolarity glycerol 
+pathway
+(HOG pathway). A signalling 
+pathway that is required for 
+the adaptation of yeast and 
+other organisms to high 
+osmolarity conditions.
+www.nature.com/nrmicro
+Reviews
+
+Light, stress and development
+Fungi may use light – perhaps in combination with a 
+circadian clock – to adapt to stressful conditions and for 
+orientation in the environment to produce reproductive 
+structures at the right place and the right time1 (Fig. 2). 
+As, for example, the production of spore-producing 
+structures may depend on many internal and external 
+factors, such as the nutritional status of the fungus, salt 
+concentration in the environment or the availability of 
+a mating partner, it is clear that light is only one of the 
+parameters that need to be integrated to regulate biologi­
+cal processes under distinct conditions. This raises the 
+question of how the light-sensing pathways or molecules 
+are interlinked with stress signalling or developmental 
+pathways. Such a link seems apparent for ultraviolet 
+light stress, which causes DNA damage. The damage 
+is repaired by photolyases, which are activated by blue 
+light56,123. The WCC may also be connected to DNA 
+damage repair through an endonuclease; for example, 
+in Cryptococcus neoformans, it was shown that the WCC 
+controls the expression of the Uve1 endonuclease124. 
+Spores of the insect pathogenic fungus Metarhizium 
+robertsii were less sensitive to ultraviolet-B light when 
+grown under continuous visible light125, further provid-
+ing evidence that light signalling and the DNA damage 
+repair pathways are coordinated.
+A link between light and stress signalling was dis-
+covered in B. cinerea and A. nidulans11 (Figs 4,5). In 
+B. cinerea, deletion of one of the three phytochromes 
+led to increased sensitivity to cell wall stress126. In 
+A. nidulans, it was found that the red-light signal ini-
+tiates the HOG pathway via the phosphotransfer pro-
+tein YpdA. However, it remains to be shown whether 
+phytochrome signalling occurs exclusively via the 
+HOG pathway or whether phytochromes control gene 
+expression independent of the MAP kinase SakA and 
+vice versa. Furthermore, in Beauveria bassiana, it was 
+found that phytochrome regulates multi-stress responses 
+in the fungus and that key proteins in the HOG path-
+way are transcriptionally modulated by activated phyto­
+chrome. Interestingly, resistance against osmotic stress 
+was shown to be decreased in a phytochrome mutant, 
+whereas the mutant strain was more tolerant towards 
+oxidative stress127. In addition to phytochromes, 
+A. nidulans and other filamentous fungi contain almost 
+20 putative sensory histidine kinases but only one more 
+phosphotransfer protein besides YpdA118,128. What the 
+other input signals are and how they are integrated 
+are largely unknown, but the existence of other sen-
+sors suggests a much more complex situation than the 
+one in Saccharomyces cerevisiae, which has only one 
+osmosensor kinase.
+Similarly, WC-dependent blue-light signalling is con-
+nected to stress signalling10. In T. atroviride, light upreg-
+ulates the expression of at least two genes of the HOG 
+pathway, and light induces phosphorylation of the 
+HOG MAP kinase Tmk3. Phosphorylation of the MAP 
+kinase did not occur in a wc-1 (blr-1) mutant. This example 
+suggests two layers of regulation: a fast one involving 
+post-translational modification of the MAP kinase and 
+a slower regulatory pathway through the transcriptional 
+upregulation of components of the HOG pathway. 
+However, not all light-responsive genes required Tmk3 
+for their expression10.
+The coupling of light with stress responses was found 
+for Env1, the VVD orthologue in T. reesei5. In this case, 
+one cysteine residue in the LOV domain of VVD is 
+required for flavin binding, and a second one responds 
+to oxidative stress97.
+The HOG pathway is also linked to the Ca2+ signal-
+ling pathway, which is a second stress-activated sig-
+nalling module. In A. fumigatus, some genes encoding 
+proteins of the HOG pathway are direct targets for the 
+central transcription factor of this pathway, CrzA129. 
+In addition, it could be that the HOG pathway sig-
+nals into the Ca2+ signalling pathway, which could link 
+light sensing to polar growth. It was shown that light 
+delays germination and reduces the growth rate of 
+WCC
+Aspergillus nidulans
+Aspergillus
+nidulans
+Trichoderma
+reesei
+Aspergillus
+fumigatus
+Neurospora
+crassa
+Saccharomyces cerevisiae
+• Circadian clock
+   (Neurospora crassa)
+• Blue-light signal
+   (Trichoderma atroviride)
+Blue light
+Blue light
+Red light
+H2O2
+Ca2+
+Circadian clock
+Light-
+regulated
+proteins
+• G protein signalling
+• Pheromone response
+• PKA activity
+• cAMP pathway
+ROS
+FphA
+Other histidine
+kinases
+CrzA
+Msn2
+Crz1
+Other environmental cues
+YpdA
+SskA
+Env1
+HOG and
+MAP kinase
+pathway
+Ca2+
+AtfA
+FRQ
+Fig. 5 | links between light signalling pathways and other cellular pathways.  
+In Aspergillus nidulans, red-light signalling via the phytochrome FphA requires the high 
+osmolarity glycerol (HOG) MAP kinase pathway to transmit the light signal into the 
+nucleus, where the AtfA transcription factor activates light-inducible genes. The HOG 
+pathway is the central stress signalling module and is required for sensing of oxidative 
+(reactive oxygen species (ROS)) or osmotic stress. In addition to FphA , different hybrid 
+histidine kinases control the phosphorylation status of YpdA and thus signalling via the 
+HOG pathway. In Aspergillus fumigatus, it was shown that the Ca2+ concentration affects 
+the expression level of SskB (not shown). CrzA is the orthologue of the Crz1 transcription 
+factor of Saccharomyces cerevisiae. Thus, Ca2+ signalling seems to be interlinked with 
+light and stress signalling. In S. cerevisiae, which lacks photoreceptor proteins, blue light 
+can cause an increase of hydrogen peroxide (H2O2), which in turn induces downstream 
+signalling processes through the transcription factor Msn2. Blue light also activates 
+the Crz1 transcription factor in a Ca2+–calcineurin-dependent, but protein kinase A 
+(PKA)-independent, manner. Thus, light leads to gene induction even in the absence  
+of photoreceptors. This mechanism could also be active in other fungi that contain 
+photoreceptors. Blue-light signalling has been studied best in Neurospora crassa but also 
+in Trichoderma atroviride and Trichoderma reesei. The white collar complex (WCC) 
+induces light-regulated genes, including the frq gene. The FRQ protein is the negative 
+element and the WCC the positive element in the N. crassa circadian clock system. 
+The clock system and blue-light signalling are also interlinked with the HOG pathway. 
+In T. reesei, a role of the blue-light receptor Env1 (the VVD orthologue) in controlling 
+metabolic pathways through different signalling pathways has been unravelled.
+Nature Reviews | Microbiology
+Reviews
+
+hyphae and that Ca2+ is important for the coordination 
+of actin polymerization and vesicle secretion13,20,130,131. 
+Furthermore, in T. reesei, Env1 controls cAMP levels, 
+which could provide another link between blue light 
+and polar growth132,133.
+It seems that fungi can also perceive light and adapt 
+to stressful conditions without the described photo-
+receptors134,135. In S. cerevisiae, a peroxisomal oxidase 
+converts blue light into hydrogen peroxide, which 
+is transduced by the peroxiredoxin Tsa1 to cyto-
+solic thioredoxin. Oxidized thioredoxin represses the 
+PKA-dependent phosphorylation of Msn2, enabling 
+nuclear accumulation of the general stress response 
+transcription factor Msn2, which affects gene expres-
+sion136. In addition, blue light can activate the tran-
+scription factor Crz1 in a Ca2+–calcineurin-dependent, 
+but PKA-independent, manner. It is likely that similar 
+mechanisms exist in filamentous fungi as well.
+Light also controls developmental decisions of 
+the mycelium. Two examples are A. nidulans and 
+T. atroviride7,94 (Fig. 2).The formation of reproductive struc-
+tures in response to light requires reprogramming of the 
+cells and is another example of how light can be transmit-
+ted into differential gene expression17,75. It was shown that 
+central regulators of asexual development of A. nidulans 
+are controlled by light7. One of the regulators is VeA116,117. 
+VeA interacts with FphA, and the activity of VeA is con-
+trolled through multiple phosphorylation events93,137,138. 
+However, there is currently no evidence that those phos-
+phorylation events are mediated by FphA, and it remains 
+to be elucidated how the light-sensing machinery and 
+transcription of developmental genes by VeA are linked.
+Future perspectives and conclusions
+Fungal photoreceptors and connected signalling cas-
+cades have been described in recent years, and an unex-
+pected complexity has emerged. However, our current 
+knowledge does not yet allow us to present a unified 
+picture of light signalling in fungi. One major disad-
+vantage may be our limited knowledge of the biology 
+of fungi, as most molecular analyses are restricted to 
+laboratory conditions. Therefore, the role of photo­
+receptors may be overlooked or misinterpreted, as in the 
+case of the two phytochromes in N. crassa or the role of 
+opsin-related proteins. For opsins with proton-pumping 
+activity, it remains unknown how they might control 
+developmental or other morphogenetic pathways.
+One question that arises is relevance of the number 
+of photoreceptors present in one fungus. All the light 
+effects described thus far could be fulfilled with just one 
+photoreceptor to perceive the light signal. Why then 
+would fungi need to see different colours or have up 
+to 11 photoreceptors, as does, for example, B. cinerea, 
+which contains 6 blue-light receptors, 2 opsins and 3 
+phytochromes2? As stress adaptation and reproduction 
+are such important processes, one possibility is that 
+the use of different photosystems is advantageous in 
+evolution and provides backup systems. However, it is 
+possible that the lack of our understanding of this com-
+plexity may again be due to our limited knowledge of 
+the biology of fungi. For instance, phytochrome signals 
+not only indicate a ‘yes’ or ‘no’ in regard to inducing 
+a certain biological programme; the ratio between the 
+Pr and the Pfr forms of phytochrome provides informa-
+tion about the time of the day, as the spectral properties 
+change throughout the day. Perhaps that is important 
+for competing in nature. The use of different photo­
+receptors is also useful in different habitats. For example, 
+in forest canopy environments, green light dominates, 
+and hence, many plant pathogenic fungi seem to have 
+functional opsin proteins108. Likewise, it has been 
+shown that red light penetrates soil deeper than blue 
+light139. Moreover, it seems that photoreceptors are 
+under constant pressure to evolve. For example, all 
+photoreceptors seem to have undergone gene duplica-
+tions in certain fungi, enabling them to fulfil slightly 
+different functions, such as the two phytochromes in 
+N. crassa or the WC orthologues in P. blakesleeanus and 
+M. circinelloides. Furthermore, Sclerotinia sclerotiorum 
+was shown to have three phytochromes, although one 
+of those lacks the crucial histidine residue and thus may 
+not exhibit kinase activity.
+Fungi such as B. cinerea, A. alternata and A. nidulans, 
+in which all photoreceptors seem to fulfil some functions 
+under laboratory conditions, seem to be appropriate 
+models for future analyses.
+Published online xx xx xxxx
+1.	
+Fuller, K. K., Loros, J. J. & Dunlap, J. C. Fungal 
+photobiology: visible light as a signal for stress, space 
+and time. Curr. Genet. 61, 275–288 (2015).
+2.	
+Dasgupta, A., Fuller, K. K., Dunlap, J. C. & Loros, J. J. 
+Seeing the world differently: variability in the 
+photosensory mechanisms of two model fungi. 
+Environ. Microbiol. 18, 5–20 (2015).
+3.	
+Fischer, R., Aguirre, J., Herrera-Estrella, A. & 
+Corrochano, L. M. The complexity of fungal vision. 
+Microbiol. Spectr. https://doi.org/10.1128/
+microbiolspec.FUNK-0020-2016 (2016).
+4.	
+Schumacher, J. How light affects the life of Botrytis. 
+Fungal Genet. Biol. 106, 26–41 (2017).
+5.	
+Schmoll, M. Light, stress, sex and carbon – the 
+photoreceptor ENVOY as a central checkpoint in the 
+physiology of Trichoderma reesei. Fungal Biol. 122, 
+479–486 (2018).
+6.	
+Riquelme, M. et al. Fungal morphogenesis: from the 
+polarized growth of hyphae to complex reproduction 
+and infection structures. Microbiol. Mol. Biol. Rev. 82, 
+e00068–17 (2018).
+7.	
+Ruger-Herreros, C. et al. Regulation of conidiation by 
+light in Aspergillus nidulans. Genetics 188, 809–822 
+(2011).
+8.	
+Chen, C. H., Ringelberg, C. S., Gross, R. H., Dunlap, J. C. 
+& Loros, J. J. Genome-wide analysis of light-inducible 
+responses reveals hierarchical light signalling in 
+Neurospora. EMBO J. 28, 1029–1042 (2009).
+9.	
+Rosales-Saavedra, T. et al. Novel light-regulated  
+genes in Trichoderma atroviride: a dissection by  
+cDNA microarrays. Microbiology 152, 3305–3317 
+(2006).
+10.	 Esquivel-Naranjo, E. U. et al. A Trichoderma atroviride 
+stress-activated MAPK pathway integrates stress and 
+light signals. Mol. Microbiol. 100, 860–876 (2016).
+11.	 Yu, Z., Armant, O. & Fischer, R. Fungi use the SakA 
+(HogA) pathway for phytochrome-dependent light 
+signaling. Nat. Microbiol. 1, 16019 (2016).  
+This paper presents the discovery of the link 
+between red-light signalling and the HOG pathway.
+12.	 Atoui, A. et al. Cross-talk between light and glucose 
+regulation controls toxin production and morphogenesis 
+in Aspergillus nidulans. Fungal Genet. Biol. 47,  
+962–972 (2010).
+13.	 Fuller, K. K., Ringelberg, C. S., Loros, J. J. & Dunlap, J. C. 
+The fungal pathogen Aspergillus fumigatus regulates 
+growth, metabolism, and stress resistance in response 
+to light. mBio 4, e00142–13 (2013).
+14.	 Schmoll, M., Schuster, A., Silva Rdo, N. & Kubicek, C. P. 
+The G-alpha protein GNA3 of Hypocrea jecorina 
+(Anamorph Trichoderma reesei) regulates cellulase 
+gene expression in the presence of light. Eukaryot. 
+Cell 8, 410–420 (2009).
+15.	 Bayram, O. et al. Changes of global gene expression 
+and secondary metabolite accumulation during 
+light-dependent Aspergillus nidulans development. 
+Fungal Genet. Biol. 87, 30–53 (2016).
+16.	 Silva, F., Torres-Martinez, S. & Garre, V. Distinct 
+white collar-1 genes control specific light responses in 
+Mucor circinelloides. Mol. Microbiol. 61, 1023–1037 
+(2006).
+17.	 Mooney, J. L. & Yager, L. N. Light is required for 
+conidiation in Aspergillus nidulans. Genes Dev. 4, 
+1473–1482 (1990).
+18.	 Kües, U. et al. The A mating type and blue light 
+regulate all known differentiation processes in the 
+basidiomycete Coprinus cinereus. Mol. Gen. Genet. 
+260, 81–91 (1998).
+19.	 Grünbacher, A. et al. Six hydrophobins are involved in 
+hydrophobin rodlet formation in Aspergillus nidulans 
+and contribute to hydrophobicity of the spore surface. 
+PLOS ONE 9, e94546 (2014).
+www.nature.com/nrmicro
+Reviews
+
+20.	 Röhrig, J., Kastner, C. & Fischer, R. Light inhibits spore 
+germination through phytochrome in Aspergillus 
+nidulans. Curr. Genet. 59, 55–62 (2013).
+21.	 Duran, R., Cary, J. W. & Calvo, A. M. Role of the 
+osmotic stress regulatory pathway in morphogenesis 
+and secondary metabolism in fialmentous fungi. Toxins 
+2, 367–381 (2010).
+22.	 Dunlap, J. C. & Loros, J. J. Making time: conservation 
+of biological clocks from fungi to animals. Microbiol. 
+Spectr. https://doi.org/10.1128/microbiolspec.FUNK-
+0039-2016 (2017).
+23.	 Montenegro-Montero, A., Canessa, P. & Larrondo, L. F. 
+Around the fungal clock: recent advances in the 
+molecular study of circadian clocks in Neurospora and 
+other fungi. Adv. Genet. 92, 107–184 (2015).
+24.	 Lee, K., Loros, J. J. & Dunlap, J. C. Interconnected 
+feedback loops in the Neurospora circadian system. 
+Science 290, 277 (2000).
+25.	 Arpaia, G., Loros, J. J., Dunlap, J. C., Morelli, G. & 
+Macino, G. The interplay of light and the circadian 
+clock. Independent dual regulation of clock-controlled 
+gene ccg-2 (eas). Plant Physiol. 102, 1299–1305 
+(1993).
+26.	 Cohen, R. & Delbrück, M. Photo-reactions in 
+Phycomyces; growth and tropic responses to the 
+stimulation of narrow test areas. J. Gen. Physiol. 42, 
+677–695 (1959).
+27.	 Corrochano, L. M. & Galland, P. in The Mycota: Growth, 
+differentiation and sexuality (ed. Wendland, J.)  
+235–256 (Springer, 2016).
+28.	 O’Hara, A. & Jenkins, J. I. In vivo function of 
+tryptophans in the Arabidopsis UV-B photoreceptor 
+UVR8. Plant Cell 24, 3755–3766 (2012).
+29.	 Losi, A. & Gärtner, W. The evolution of flavin-binding 
+photoreceptors: an ancient chromophore serving 
+trendy blue-light sensors. Annu. Rev. Plant Biol. 63, 
+49–72 (2012).
+30.	 Pfeifer, A. et al. Time-resolved Fourier transform 
+infrared study on photoadduct formation and 
+secondary structural changes within the phototropin 
+LOV domain. Biophys. J. 96, 1462–1470 (2009).
+31.	 Crosson, S. & Moffat, K. Photoexcited structure of a 
+plant photoreceptor domain reveals a light-driven 
+molecular switch. Plant Cell 14, 1067–1075 (2002).
+32.	 Heintzen, C., Loros, J. J. & Dunlap, J. C. The PAS 
+protein VIVID defines a clock-associated feedback loop 
+that represses light input, modulates gating, and 
+regulates clock resetting. Cell 104, 453–464 (2001).
+33.	 Zoltowski, B. D. et al. Conformational switching in the 
+fungal light sensor Vivid. Science 316, 1054–1057 
+(2007).  
+This is the first study to report the crystal structure 
+of the LOV domain-containing protein VVD.
+34.	 Dasgupta, A. et al. Biological significance of 
+photoreceptor photocycle length: VIVID photocycle 
+governs the dynamic VIVID-White Collar Complex pool 
+mediating photo-adaptation and response to changes 
+in light intensity. PLOS Genet. 11, e1005215 (2015).
+35.	 Zoltowski, B. D., Vaccaro, B. & Crane, B. R. 
+Mechanism-based tuning of a LOV domain 
+photoreceptor. Nat. Chem. Biol. 5, 827–834 (2009).
+36.	 Zoltowski, B. D. & Crane, B. R. Light activation of the 
+LOV protein vivid generates a rapidly exchanging 
+dimer. Biochemistry 47, 7012–7019 (2008).
+37.	 Vaidya, A. T., Chen, C. H., Dunlap, J. C., Loros, J. J.  
+& Crane, B. R. Structure of a light-activated LOV 
+protein dimer that regulates transcription. Sci. Signal. 
+4, ra50 (2011).
+38.	 Lee, C. T., Malzahn, E., Brunner, M. & Mayer, M. P. 
+Light-induced differences in conformational dynamics 
+of the circadian clock regulator VIVID. J. Mol. Biol. 
+426, 601–610 (2014).
+39.	 Ganguly, A., Thiel, W. & Crane, B. R. Glutamine amide 
+flip elicits long distance allosteric responses in the lov 
+protein VIVID. J. Am. Chem. Soc. 139, 2972–2980 
+(2017).
+40.	 Schwerdtfeger, C. & Linden, H. Blue light adaptation 
+and desensitization of light signal transduction in 
+Neurospora crassa. Mol. Microbiol. 39, 1080–1087 
+(2001).
+41.	 Schwerdtfeger, C. & Linden, H. VIVID is a flavoprotein 
+and serves as a fungal blue light photoreceptor for 
+photoadaptation. EMBO J. 22, 4846–4855 (2003).
+42.	 Ballario, P. et al. White collar-1, a central regulator of 
+blue light responses in Neurospora crassa, is a zinc 
+finger protein. EMBO J. 15, 1650–1657 (1996).  
+This is the first study first to clone the 
+photoreceptor gene.
+43.	 Froehlich, A. C., Liu, Y., Loros, J. J. & Dunlap, J. C. 
+White collar-1, a circadian blue light photoreceptor, 
+binding to the frequency promoter. Science 297, 
+815–819 (2002).
+44.	 He, Q. et al. White collar-1, a DNA binding 
+transcription factor and a light sensor. Science 297, 
+840–843 (2002).  
+References 43 and 44 show the breakthrough 
+discovery of the chromophore attached to the 
+photoreceptor, which is a transcription factor.
+45.	 Cheng, P., He, Q., Yang, Y., Wang, L. & Liu, Y. 
+Functional conservation of light, oxygen, or voltage 
+domains in light sensing. Proc. Natl Acad. Sci. USA 
+100, 5938–5943 (2003).
+46.	 Wang, B., Zhou, X., Loros, J. J. & Dunlap, J. C. 
+Alternative use of DNA binding domains by the 
+Neurospora white collar complex dictates circadian 
+regulation and light responses. Mol. Cell. Biol. 36, 
+781–793 (2016).
+47.	 Linden, H. & Macino, G. White collar 2, a partner in 
+blue-light signal transduction, controlling expression 
+of light-regulated genes in Neurospora crassa. EMBO J. 
+16, 98–109 (1997).
+48.	 Schwerdtfeger, C. & Linden, H. Localization and 
+light-dependent phosphorylation of white collar 1  
+and 2, the two central components of blue light 
+signaling in Neurospora crassa. Eur. J. Biochem. 267, 
+414–421 (2000).
+49.	 Cheng, P., Yang, Y., Wang, L., He, Q. & Liu, Y.  
+WHITE COLLAR-1, a multifunctional Neurospora 
+protein involved in the circadian feedback loops, light 
+sensing, and transcription repression of wc-2. J. Biol. 
+Chem. 278, 3801–3808 (2003).
+50.	 Sanz, C. et al. Phycomyces MADB interacts with 
+MADA to form the primary photoreceptor complex for 
+fungal phototropism. Proc. Natl Acad. Sci. USA 106, 
+7095–7100 (2009).
+51.	 Idnurm, A. et al. The Phycomyces madA gene encodes 
+a blue-light photoreceptor for phototropism and other 
+light responses. Proc. Natl Acad. Sci. USA 103, 
+4546–4551 (2006).
+52.	 Sancar, A. Structure and function of DNA photolyase 
+and cryptochrome blue light-photoreceptors. Chem. 
+Rev. 103, 2203–2237 (2003).
+53.	 Bayram, Ö., Biesemann, C., Krappmann, S., Galland, P. 
+& Braus, G. H. More than a repair enzyme: Aspergillus 
+nidulans photolyase-like CryA is a regulator of sexual 
+development. Mol. Biol. Cell 19, 3254–3262 (2008).
+54.	 Berrocal-Tito, G. M., Esquivel-Naranjo, E. U.,  
+Horwitz, B. A. & Herrera-Estrella, A. Trichoderma 
+atroviride PHR1, a fungal photolyase responsible for 
+DNA repair, autoregulates its own photoinduction. 
+Eukaryot. Cell 6, 1682–1692 (2007).
+55.	 Cohrs, K. C. & Schumacher, J. The two cryptochrome/
+photolyase family proteins fulfill distinct roles in DNA 
+photorepair and regulation of conidiation in the gray 
+mold fungus Botrytis cinerea. Appl. Environ. 
+Microbiol. 83, e00812–17 (2017).
+56.	 Brych, A. et al. White collar 1-induced photolyase 
+expression contributes to UV-tolerance of Ustilago 
+maydis. MicrobiologyOpen 5, 224–243 (2016).
+57.	 Scheerer, P. et al. Crystal structure of opsin in its 
+G-protein-interacting conformation. Nature 455, 
+497–502 (2008).
+58.	 Spudich, J. L. The multitalented microbial sensory 
+rhodopsins. Trends Microbiol. 14, 480–487 (2006).
+59.	 Bieszke, J. A. et al. The nop-1 gene of Neurospora 
+crassa encodes a seven transmembrane helix retinal- 
+binding protein homologous to archaeal rhodopsins. 
+Proc. Natl Acad. Sci. USA 96, 8034–8039 (1999).
+60.	 Bieszke, J. A., Spudich, E. N., Scott, K. L.,  
+Borkovich, K. A. & Spudich, J. L. A eukaryotic  
+protein, NOP-1, binds retinal to form an archaeal 
+rhodopsin-like photochemically reactive pigment. 
+Biochemistry 38, 14138–14145 (1999).
+61.	 Ernst, O. P. et al. Microbial and animal rhodopsins: 
+structures, functions and molecular mechanisms. 
+Chem. Rev. 114, 126–163 (2014).
+62.	 Waschuk, S. A., Bezerra, A. G. J., Shi, L. & Brown, L. S. 
+Leptosphaeria rhodopsin: bacteriorhodopsin-like 
+proton pump from a eukaryote. Proc. Natl Acad. Sci. 
+USA 102, 6879–6883 (2005).
+63.	 Brown, L. S., Dioumaev, A. K., Lanyi, J. K., Spudich, E. N. 
+& Spudich, J. L. Photochemical reaction cycle and 
+proton transfer in Neurospora rhodopsin. J. Biol. 
+Chem. 276, 32495–32505 (2001).
+64.	 Chow, B. Y. et al. High-performance genetically 
+targetable optical neural silencing by light-driven 
+proton pumps. Nature 463, 98–102 (2010).
+65.	 Rodriguez-Romero, J., Hedtke, M., Kastner, C., Müller, S. 
+& Fischer, R. Fungi, hidden in soil or up in the air: light 
+makes a difference. Annu. Rev. Microbiol. 64, 585–510 
+(2010).
+66.	 Smith, H. Phytochromes and light signal perception  
+by plants — an emerging synthesis. Nature 407, 
+585–591 (2000).
+67.	 Inoue, K., Nishihama, R. & Kohchi, T. Evolutionary 
+origin of phytochrome responses and signaling in land 
+plants. Plant Cell Environ. 40, 2502–2508 (2017).
+68.	 Rockwell, N. C., Su, Y. S. & Lagarias, J. C. 
+Phytochrome structure and signaling mechanisms. 
+Annu. Rev. Plant Biol. 57, 837–858 (2006).
+69.	 Blumenstein, A. et al. The Aspergillus nidulans 
+phytochrome FphA represses sexual development in 
+red light. Curr. Biol. 15, 1833–1838 (2005).
+70.	 Froehlich, A. C., Noh, B., Vierstra, R. D., Loros, J.  
+& Dunlap, J. C. Genetic and molecular analysis of 
+phytochromes from the filamentous fungus 
+Neurospora crassa. Eukaryot. Cell 4, 2140–2152 
+(2005).  
+References 69 and 70 are the first to characterize 
+the fungal phytochromes.
+71.	 Buchberger, T. & Lamparter, T. Streptophyte 
+phytochromes exhibit an N-terminus of cyanobacterial 
+origin and a C-terminus of proteobacterial origin.  
+BMC Res. Notes 8, 1–13 (2015).
+72.	 Li, F. W. et al. Phytochrome diversity in green plants 
+and the origin of canonical plant phytochromes.  
+Nat. Commun. 6, 7852 (2015).
+73.	 Wagner, J. R., Brunzelle, J. S., Forest, K. T. &  
+Vierstra, R. D. A light-sensing knot revealed by the 
+structure of the chromophore-binding domain of 
+phytochrome. Nature 438, 325–331 (2005).  
+This is the first study to report the crystal structure 
+of the photosensory domain of a phytochrome.
+74.	 Brandt, S., von Stetten, D., Günther, M., Hildebrandt, P. 
+& Frankenberg-Dinkel, N. The fungal phytochrome 
+FphA from Aspergillus nidulans. J. Biol. Chem. 283, 
+34605–34614 (2008).
+75.	 Adams, T. H., Wieser, J. K. & Yu, J.-H. Asexual 
+sporulation in Aspergillus nidulans. Microbiol. Mol. 
+Biol. Rev. 62, 35–54 (1998).
+76.	 Smith, K. M. et al. Transcription factors in light and 
+circadian clock signaling networks revealed by 
+genomewide mapping of direct targets for Neurospora 
+white collar complex. Eukaryot. Cell 9, 1549–1556 
+(2010).
+77.	 Wu, C. et al. Genome-wide characterization of 
+light-regulated genes in Neurospora crassa. 
+G3 (Bethesda) 4, 1731–1745 (2014).
+78.	 Sancar, C. et al. Combinatorial control of light induced 
+chromatin remodeling and gene activation in 
+Neurospora. PLOS Genet. 11, e1005105 (2015).
+79.	 He, Q. & Liu, Y. Molecular mechanism of light 
+responses in Neurospora: from light-induced 
+transcription to photoadaptation. Genes Dev. 19, 
+2888–2899 (2005).
+80.	 Schafmeier, T., Kaldi, K., Diernfellner, A., Mohr, C.  
+& Brunner, M. Phosphorylation-dependent maturation 
+of Neurospora circadian clock protein from a nuclear 
+repressor toword a cytoplasmic activator. Genes Dev. 
+20, 297–306 (2005).
+81.	 Cha, J., Chang, S. S., Huang, G., Cheng, P. & Liu, Y. 
+Control of WHITE COLLAR localization by 
+phosphorylation is a critical step in the circadian 
+negative feedback process. EMBO J. 27, 3246–3255 
+(2008).  
+This study reports the detailed mechanism of light 
+activation through the WCC.
+82.	 Talora, C., Franchi, L., Linden, H., Ballario, P.  
+& Macino, G. Role of a white collar-1-white collar-2 
+complex in blue-light signal transduction. EMBO J. 
+18, 4961–4968 (1999).
+83.	 He, Q. et al. CKI and CKII mediate the frequency- 
+dependent phosphorylation of the WHITE COLLAR 
+complex to close the Neurospora circadian negative 
+feedback loop. Genes Dev. 20, 2552–2565 (2006).
+84.	 Huang, G. et al. Protein kinase A and casein kinases 
+mediate sequential phosphorylation events in the 
+circadian negative feedback loop. Genes Dev. 21, 
+3283–3295 (2007).
+85.	 Schafmeier, T. et al. Transcriptional feedback of 
+Neurospora circadian clock gene by phosphorylation- 
+dependent inactivation of its transcription factor. Cell 
+122, 235–246 (2005).
+86.	 Cesbron, F., Oehler, M., Ha, N., Sancar, G. & Brunner, M. 
+Transcriptional refractoriness is dependent on core 
+promoter architecture. Nat. Commun. 6, 6753 
+(2015).
+87.	 Li, C., Cesbron, F., Oehler, M., Brunner, M. & Höfer, T. 
+Frequency modulation of transcriptional bursting 
+enables sensitive and rapid gene regulation. Cell Syst. 
+25, 409–423.e11 (2018).
+88.	 Brenna, A., Grimaldi, B., Filetici, P. & Ballario, P. 
+Physical association of the WC-1 photoreceptor and 
+the histone acetyltransferase NGF-1 is required for 
+blue light signal transduction in Neurospora crassa. 
+Mol. Biol. Cell 23, 3863–3872 (2012).
+Nature Reviews | Microbiology
+Reviews
+
+89.	 Grimaldi, B. et al. The Neurospora crassa White 
+Collar-1 dependent bluit light response requires 
+acetylation of histone H3 lysine 14 by NGF-1.  
+Mol. Biol. Cell 17, 4576–4583 (2006).
+90.	 Ruesch, C. E. et al. The histone H3 lysine 9 
+methyltransferase DIM-5 modifies chromatin at 
+frequency and represses light-activated gene 
+expression. G3 (Bethesda) 5, 93–101 (2014).
+91.	 Raduwan, H., Isola, A. L. & Belden, W. J.  
+Methylation of histone H3 on lysine 4 by the  
+lysine methyltransferase SET1 protein is needed for 
+normal clock gene expression. J. Biol. Chem. 288, 
+8380–8390 (2013).
+92.	 Hurley, J. M. et al. Analysis of clock-regulated genes in 
+Neurospora reveals widespread posttranscriptional 
+control of metabolic potential. Proc. Natl Acad. 
+Sci. USA 111, 16995–17002 (2014).
+93.	 Purschwitz, J. et al. Functional and physical interaction 
+of blue and red-light sensors in Aspergillus nidulans. 
+Curr. Biol. 18, 255–259 (2008).
+94.	 Casas-Flores, S., Rios-Momberg, M., Bibbins, M., 
+Ponce-Noyola, P. & Herrera-Estrella, A. BLR-1 and 
+BLR-2, key regulatory elements of photoconidiation 
+and mycelial growth in Trichoderma atroviride. 
+Microbiology 150, 3561–3569 (2004).
+95.	 Casas-Flores, S. et al. Cross talk between a fungal 
+blue-light perception system and the cyclic AMP 
+signaling pathway. Eukaryot. Cell 5, 499–506  
+(2006).
+96.	 Sánchez-Arrguín, A., Pérez-Martínez, A. S. & 
+Herrera-Estrella, A. Proteomic analysis of Trichoderma 
+atroviride reveals independent roles for transcription 
+factors BLR-1 and BLR-2 in light and darkness. 
+Eukaryot. Cell 11, 30–41 (2012).
+97.	 Lokhandwala, J. et al. Structural biochemistry of a 
+fungal LOV domain photoreceptor reveals an 
+evolutionarily conserved pathway integrating light and 
+oxidative stress. Structure 23, 116–125 (2015).  
+This study reports the link between light and stress.
+98.	 Chen, C. H., DeMay, B. S., Gladfelter, A. S., Dunlap, J. C. 
+& Loros, J. J. Physical interraction between VIVID  
+and white collar complex regulates photoadaptation  
+in Neurospora. Proc. Natl Acad. Sci. USA 107, 
+16715–16720 (2010).
+99.	 Malzahn, E., Ciprianidis, S., Káldi, K., Schafmeier, T.  
+& Brunner, M. Photoadaptation in Neurospora by 
+competitive interaction of activating and inhibitory 
+LOV domains. Cell 142, 762–772 (2010).
+100.	Ruger-Herreros, C., Gil-Sanchez Mdel, M., Sancar, G., 
+Brunner, M. & Corrochano, L. M. Alteration of 
+light-dependent gene regulation by the absence of the 
+RCO-1/RCM-1 repressor complex in the fungus 
+Neurospora crassa. PLOS ONE 9, e95069 (2014).
+101.	Schumacher, J., Simon, A., Cohrs, K. C., Viaud, M. & 
+Tudzynski, P. The transcription factor BcLTF1 regulates 
+virulence and light responses in the necrotrophic  
+plant pathogen Botrytis cinerea. PLOS Genet. 10, 
+e1004040 (2014).
+102.	Corrochano, L. M. et al. Expansion of signal 
+transduction pathways in fungi by extensive genome 
+duplication. Curr. Biol. 26, 1577–1584 (2016).
+103.	Idnurm, A. & Heitman, J. Light controls growth and 
+development via a conserved pathway in the fungal 
+kingdom. PLOS Biol. 3, 615–626 (2005).  
+This study clones the blue-light photoreceptor in 
+Phycomyces blakesleeanus more than 30 years 
+after the isolation of the corresponding mutant.
+104.	Schmoll, M., Franchi, L. & Kubicek, C. P. Envoy, a  
+PAS/LOV domain protein of Hypocrea jecorina 
+(anamorph Trichoderma reesei), modulates cellulase 
+gene transcription in reponse to light. Eukaryot. Cell 
+4, 1998–2007 (2005).
+105.	Hedtke, M. et al. Light-dependent gene activation  
+in Aspergillus nidulans is strictly dependent on 
+phytochrome and involves the interplay of phytochrome 
+and white collar-regulated histone H3 acetylation.  
+Mol. Microbiol. 97, 733–745 (2015).
+106.	Cervantes-Badillo, M. G., Muñoz-Centeno, T., 
+Uresti-Rivera, E. E., Argüello-Astorga, G. R. & 
+Casas-Flores, S. The Trichoderma atroviride 
+photolyase-encoding gene is transcriptionally 
+regulated by non-canonical light response elements. 
+FEBS J. 280, 3697–3708 (2013).
+107.	Olmedo, M., Ruger-Herreros, C., Luque, E. M. & 
+Corrochano, L. M. A complex photoreceptor system 
+mediates the regulation by light of the conidiation 
+genes con-10 and con-6 in Neurospora crassa. Fungal 
+Genet. Biol. 47, 352–363 (2010).
+108.	Wang, Z. et al. Light sensing by opsins and fungal 
+ecology: NOP-1 modulates entry into sexual 
+reproduction in response to environmental cues.  
+Mol. Ecol. 27, 216–232 (2017).
+109.	García-Martínez, J., B., M., Avalos, J. & Termpitz, U. 
+The CarO rhodopsin of the fungus Fusarium fujikuroi 
+is a light-driven protein pump that retards spore 
+germination. Sci. Rep. 5, 7798 (2015).  
+This paper provides the first demonstration of fast 
+proton-pumping activity of a fungal opsin.
+110.	 Peñalva, M. A., Tilburn, J., Bignell, E. & Arst, H. N. J. 
+Ambient pH gene regulation in fungi: making 
+connections. Trends Microbiol. 16, 291–300 (2008).
+111.	 Alkan, N. et al. Global aspects of pacC regulation of 
+pathogenicity genes in Colletotrichum gloeosporioides 
+as revealed by transcriptome analysis. Mol. Plant 
+Microbe Interact. 26, 1345–1358 (2013).
+112.	Avelar, G. M. et al. A rhodopsin-guanylyl cyclase gene 
+fusion functions in visual perception in a fungus.  
+Curr. Biol. 24, 1234–1240 (2014).
+113.	Avelar, G. M. et al. A cyclic GMP-dependent K+ channel 
+in the blastocladiomycete fungus Blastocladiella 
+emersonii. Eukaryot. Cell 14, 958–963 (2015).
+114.	Bhoo, S.-H., Davis, S. J., Walker, J., Karniol, B.  
+& Vierstra, R. D. Bacteriophytochromes are 
+photochromic histidine kinases using a biliverdin 
+chromophore. Nature 414, 776–779 (2001).
+115.	Nagatani, K. Plant biology. Lighting up the nucleus. 
+Science 288, 821–822 (2000).
+116.	Bayram, O. et al. VelB/VeA/LaeA complex coordinates 
+light signal with fungal development and secondary 
+metabolism. Science 320, 1504–1506 (2008).
+117.	Bayram, Ö. & Braus, G. H. Coordination of secondary 
+metabolism and development in fungi: the velvet 
+family of regulatory proteins. FEMS Microbiol. Rev. 
+36, 1–24 (2012).
+118.	Azuma, N. et al. In vitro analysis of His-Asp 
+phosphorelays in Aspergillus nidulans: the first direct 
+biochemical evidence for the existence of His-Asp 
+phosphotransfer system in filamentous fungi. Biosci. 
+Biotechnol. Biochem. 71, 2493–2502 (2007).
+119.	Wang, Z. et al. The fast-evolving phy-2 gene modulates 
+sexual development in response to light in the model 
+fungus Neurospora crassa. mBio https://doi.org/ 
+10.1128/mBio.02148-15 (2016).
+120.	Fuller, K. K., Cramer, R. A., Zegans, M. E., Dunlap, J. C. 
+& Loros, J. J. Aspergillus fumigatus photobiology 
+illuminates the marked heterogeneity between 
+isolates. mBio 7, e01517-16 (2016).
+121.	Lukens, R. J. Reversal by red light of blue light inhibition 
+of sporulation in Alternaria solani. Phytophathology 55, 
+1032 (1965).
+122.	Pruß, S. et al. Role of the Alternaria alternata 
+blue-light receptor WC-1 (LreA) in spore formation and 
+secondary metabolism. Appl. Environ. Microbiol. 80, 
+2582–2591 (2014).
+123.	García-Esquivel, M., Esquivel-Naranjo, E. U., 
+Hernández-Oñate, M. A., Ibarra-Laclette, E. & 
+Herrera-Estrella, A. The Trichoderma atroviride 
+cryptochrome/photolyase genes regulate the 
+expression of blr1-independent genes both in red  
+and blue light. Fungal Biol. 120, 500–512 (2016).
+124.	Verma, S. & Idnurm, A. The Uve1 endonuclease is 
+regulated by the White Collar Complex to protect 
+Cryptococcus neoformans from UV damage. 
+PLOS Genet. 9, e1003769 (2013).
+125.	Rangel, D. E. N., Fernandes, E. K. K., Braga, G. U. L. & 
+Roberts, D. W. Visible light during mycelial growth and 
+conidiation of Metarhizium robertsii produces conidia 
+with increased stress tolerance. FEMS Microbiol. Lett. 
+315, 81–86 (2011).
+126.	Hu, Y. et al. Disruption of a phytochrome-like  
+histidine kinase gene by homologous recombination 
+leads to a significant reduction in vegetative growth, 
+sclerotia production, and the pathogenicity of Botrytis 
+cinerea. Physiol. Mol. Plant Pathol. 85, 25–33 
+(2014).
+127.	Qiu, L., Wang, J. J., Chu, Z. J., Ying, S. H. & Feng, M. G. 
+Phytochrome controls conidiation in response to  
+red/far-red light and daylight length and regulates 
+multistress tolerance in Beauveria bassiana. Environ. 
+Microbiol. 16, 2316–2328 (2014).
+128.	Hérivaux, A. et al. Major sensing proteins in 
+pathogenic fungi: the hybrid histidine kinase family. 
+PLOS Genet. 12, e1005683 (2016).
+129.	de Castro, P. A. et al. ChIP-seq reveals a role for CrzA 
+in the Aspergillus fumigatus high-osmolarity glycerol 
+response (HOG) signalling pathway. Mol. Microbiol. 
+94, 655–674 (2014).
+130.	Takeshita, N. et al. Pulses of Ca2+ coordinate actin 
+assembly and exocytosis for stepwise cell extension. 
+Proc. Natl Acad. Sci. USA 114, 5701–5706 (2017).
+131.	Zhou, L. et al. Superresolution and pulse-chase 
+imaging reveal the role of vesicle transport in  
+polar growth of fungal cells. Sci. Adv. 4, e1701798 
+(2018).
+132.	Tisch, D., Kubicek, C. P. & Schmoll, M. New insights 
+into the mechanism of light modulated signaling by 
+heterotrimeric G-proteins: ENVOY acts on gna1 and 
+gna3 and adjusts cAMP levels in Trichoderma reesei 
+(Hypocrea jecorina). Fungal Genet. Biol. 48, 631–640 
+(2011).
+133.	Schmoll, M., Esquivel-Naranjo, E. U. & 
+Herrera-Estrella, A. Trichoderma in the light of day — 
+physiology and development. Fungal Genet. Biol. 47, 
+909–916 (2010).
+134.	Bodvard, K., Jörhov, A., Blomberg, A., Molin, M.  
+& Käll, M. The yeast transcription factor Crz1 is 
+activated by light in a Ca2+/calcineurin-dependent  
+and PKA-independent manner. PLOS ONE 8, e53404 
+(2013).
+135.	Bodvard, K. et al. Light-sensing via hydrogen  
+peroxide and a peroxiredoxin. Nat. Commun. 8, 
+14791 (2017).
+136.	Hao, N. & O’Shea, E. K. Signal-dependent dynamics  
+of transcription factor translocation controls  
+gene expression. Nat. Struct. Mol. Biol. 19, 31–39 
+(2011).
+137.	Purschwitz, J., Müller, S. & Fischer, R. Mapping the 
+interaction sites of Aspergillus nidulans phytochrome 
+FphA with the global regulator VeA and the white 
+collar protein LreB. Mol. Genet. Genomics. 281, 
+35–42 (2009).
+138.	Rauscher, S., Pacher, S., Hedtke, M., Kniemeyer, O. & 
+Fischer, R. A phosphorylation code of the Aspergillus 
+nidulans global regulator VelvetA (VeA) determines 
+specific functions. Mol. Microbiol. 99, 909–924 
+(2016).
+139.	Smith, H. Light quality, photoperception, and plant 
+strategy. Annu. Rev. Plant Physiol. 33, 481–518 
+(1982).
+140.	Njimona, I., Yang, R. & Lamparter, T. Temperature 
+effects on bacterial phytochrome. PLOS ONE 9, 
+e109794 (2014).
+141.	Legris, M. et al. Phytochrome B integrates light and 
+temperature signals in Arabidopsis. Science 354, 
+897–900 (2016).
+142.	Jung, J. H. et al. Phytochromes function as 
+thermosensors in Arabidopsis. Science 354,  
+886–889 (2016).
+143.	Casal, J. J. & Qüesta, J. I. Light and temperature cues: 
+multitasking receptors and transcriptional integrators. 
+New Phytol. 217, 1029–1034 (2018).
+144.	Shen, W. L. et al. Function of rhodopsin in temperature 
+discrimination in Drosophila. Science 331, 1333–1336 
+(2011).
+145.	Nakasone, Y., Ono, T.-A., Ishii, A., Masuda, S. & 
+Terazima, M. Temperature-sensitive reaction of a 
+photosensor protein YcgF: possibility of a role of 
+temperature sensor. Biochemistry 49, 2288–2296 
+(2010).
+146.	Fujii, Y. et al. Phototropin perceives temperature 
+based on the lifetime of its photoactivated state. 
+Proc. Natl Acad. Sci. USA 114, 9206–9211 (2017).
+147.	Schafmeier, T. et al. Circadian activity and abundance 
+rhythms of the Neurospora clock tanscription factor 
+WCC associated with rapid nucleo-cytoplamic 
+shuttling. Genes Dev. 22, 3397–3402 (2008).
+148.	Hunt, S. M., Thompson, S., Elvin, M. & Heintzen, C. 
+VIVID interacts with the WHITE COLLAR complex and 
+FREQUENCY-interacting RNA helicase to alter light 
+and clock responses in Neurospora. Proc. Natl Acad. 
+Sci. USA 107, 16709–16714 (2010).
+Acknowledgements
+The work of the authors’ laboratory was supported by the 
+German Science Foundation (DFG Fi 459/19-1) and the China 
+Scholar Council (CSC). The authors thank A. Diernfellner 
+(Heidelberg) and J. Schumacher (Münster) for Neurospora 
+crassa strains and providing some images for Fig. 2.
+Author contributions
+Z.Y. and R.F. researched data for the article, made substantial 
+contributions to discussions of the content, wrote the article 
+and reviewed and/or edited the manuscript before 
+submission.
+Competing interests
+The authors declare no competing interests.
+Publisher’s note
+Springer Nature remains neutral with regard to jurisdictional 
+claims in published maps and institutional affiliations.
+Reviewer information
+Nature Reviews Microbiology thanks A. Herrera-Estrella, 
+J. Loros and the other anonymous reviewer(s) for their 
+contribution to the peer review of this work.
+www.nature.com/nrmicro
+Reviews

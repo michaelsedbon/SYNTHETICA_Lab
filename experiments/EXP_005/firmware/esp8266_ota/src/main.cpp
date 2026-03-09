@@ -356,7 +356,8 @@ input[type=range]{width:100%;accent-color:#00e5ff}
 function api(url){
  fetch(url).then(r=>r.json()).then(d=>{
   appendLog(JSON.stringify(d));
-  if(url.indexOf('/api/send')<0)pollStatus();
+  if(url.indexOf('/api/move')<0 && url.indexOf('/api/send')<0)pollStatus();
+  else setTimeout(pollStatus,1500);
  }).catch(e=>appendLog('ERR: '+e));
 }
 function appendLog(msg){
@@ -388,7 +389,7 @@ function pollStatus(){
  }).catch(()=>{ setConn(false,'No response from Nano'); });
 }
 pollStatus();
-setInterval(pollStatus,3000);
+setInterval(pollStatus,5000);
 </script>
 </body></html>)rawhtml";
     server.send(200, "text/html", h);

@@ -102,3 +102,14 @@ Custom PCB design for recording extracellular action potentials (8ch) and delive
 Using existing lab PCBs to control LEDs and deliver optical stimulation to *P. eryngii* mycelium, aiming to elicit electrical spiking responses.
 
 ---
+
+## EXP_010
+**Title:** Light-Evoked Electrophysiology of P. eryngii
+**Start Date:** 2026-03-09
+**Airtable Links:** None
+**Folder:** `experiments/EXP_010/`
+**Project:** Bio Electronic Music
+
+Systematic characterisation of light-evoked electrical responses in *P. eryngii* mycelium using ADC-24 + LED-DRV8. Includes companion Experiment Designer app for protocol design and integrated stimulus-recording in the ADC-24 dashboard.
+
+---
