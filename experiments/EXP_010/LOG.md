@@ -22,3 +22,29 @@ Chronological record of all actions, changes, and observations.
 - Updated protocol for below-dish LED geometry
 - Added adaptation characterisation as explicit research objective
 - Proposed Faraday cage setup and ADC-24 dashboard redesign scope
+
+## 2026-03-09 — Brainstorming Round 3 + Implementation Plan
+
+- Downloaded and read Yu & Fischer 2019 for WC-1 verification
+- Finalised protocol JSON schema (blocks, stimuli, baselines, randomisation)
+- Wrote implementation plan: 3-phase approach (companion app → dashboard extensions → analysis)
+
+## 2026-03-09 — Phase 1: Experiment Designer App
+
+- Scaffolded `applications/experiment-designer/` (Next.js + FastAPI)
+- Built protocol builder with block/stimulus editors, timeline preview, JSON import/export
+- Added dose-response preset (3×5 intensity matrix, 15 blocks, 105 stimuli, 49m 40s)
+- Added adaptation preset (single-intensity, 50 reps)
+- Skill Manager dark theme (#1e1e1e base, #569cd6 accent)
+- FastAPI backend with CRUD + validation endpoints
+- Browser-tested and verified build (0 errors)
+- Registered in App Launcher as app #12 (ports 8005/3006)
+
+## 2026-03-09 — Phase 2: ADC-24 Dashboard Extensions
+
+- Created `led_client.py` — async HTTP client for LED-DRV8
+- Created `stimulus_scheduler.py` — background scheduler with precise timing
+- Extended `main.py` — 4 protocol endpoints, stimulus-annotated CSV (7 columns)
+- Created `ProtocolControls` sidebar component (JSON loader, start/stop, progress bar)
+- Added httpx to server requirements
+- Deployed to local and production server (172.16.1.80)

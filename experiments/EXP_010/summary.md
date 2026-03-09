@@ -28,7 +28,31 @@ Systematic characterisation of light-evoked electrical responses in *Pleurotus e
 
 ## Progress
 
-_See brainstorming/ folder for Phase 0 collaborative scoping._
+### Phase 0 — Brainstorming & Scoping (Complete)
+- 3 brainstorming rounds: hypotheses, protocol design, JSON schema
+- Verified WC-1 photoreceptor claims against Mishra et al. 2024 + Yu & Fischer 2019
+- Co-designed companion app scope and ADC-24 dashboard extensions
+
+### Phase 1 — Experiment Designer Companion App (Complete)
+- Standalone protocol designer: `applications/experiment-designer/`
+- Next.js 16 + Tailwind 4 + shadcn, Skill Manager dark theme
+- Block/stimulus editors, interactive timeline preview, JSON import/export
+- Literature presets: dose-response (15 blocks, 105 stimuli) and adaptation (50 reps)
+- FastAPI backend with CRUD + validation
+- Registered in App Launcher at ports 8005 (backend) / 3006 (frontend)
+
+### Phase 2 — ADC-24 Dashboard Extensions (Complete)
+- `led_client.py` — async HTTP client for LED-DRV8 REST API
+- `stimulus_scheduler.py` — background thread executing protocols with precise timing
+- Extended CSV: 7 columns (`timestamp_s, channel, raw_adc, voltage_uv, stim_ch, stim_pwm, stim_event`)
+- 4 new endpoints: `/api/protocol/load`, `/start`, `/stop`, `/status`
+- `ProtocolControls` sidebar component (JSON loader, start/stop, progress bar)
+- Deployed to production server (172.16.1.80)
+
+### Phase 3 — Analysis (Pending)
+- Stimulus-triggered averaging
+- Dose-response curves
+- Evoked vs spontaneous amplitude comparison
 
 ## References
 
