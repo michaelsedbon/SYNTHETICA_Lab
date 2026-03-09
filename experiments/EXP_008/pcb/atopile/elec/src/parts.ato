@@ -1,0 +1,65 @@
+# ============================================================
+# Generic component definitions with explicit LCSC parts
+# Replaces "generics/resistors.ato" and "generics/capacitors.ato"
+# to avoid database lookups
+#
+# NOTE: mpn MUST be the LCSC part number (e.g. C25744), NOT the
+# manufacturer part number. Atopile maps mpn → BOM "LCSC" column
+# which JLCPCB uses for pricing and 3D model lookup.
+# ============================================================
+
+component Resistor_10k:
+    lcsc_id = "C25744"
+    footprint = "R0402"
+    mpn = "C25744"
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2
+
+component Resistor_1k:
+    lcsc_id = "C106235"
+    footprint = "R0402"
+    mpn = "C106235"
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2
+
+component Resistor_5k1:
+    lcsc_id = "C105873"
+    footprint = "R0402"
+    mpn = "C105873"
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2
+
+component Cap_100nF:
+    lcsc_id = "C1525"
+    footprint = "C0402"
+    mpn = "C1525"
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2
+
+component Cap_1uF:
+    lcsc_id = "C15849"
+    footprint = "C0402"
+    mpn = "C15849"
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2
+
+component Cap_4u7:
+    lcsc_id = "C19666"
+    footprint = "C0603"
+    mpn = "C19666"
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2
+
+component Cap_10uF:
+    lcsc_id = "C83061"
+    footprint = "C0805"
+    mpn = "C83061"
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2
+
+component Cap_22pF:
+    lcsc_id = "C1555"
+    footprint = "C0402"
+    mpn = "C1555"
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2

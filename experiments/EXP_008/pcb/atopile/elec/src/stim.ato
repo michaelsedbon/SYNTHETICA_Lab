@@ -1,0 +1,138 @@
+# ============================================================
+# Stimulation Circuit — 4ch DAC + Howland Current Pump
+# 0–200 µA programmable constant-current source
+# ============================================================
+
+from "parts.ato" import Cap_100nF, Cap_10uF, Resistor_10k, Resistor_1k
+
+component DAC8564:
+    lcsc_id = "C129428"
+    footprint = "TSSOP-16_L5.0-W4.4-P0.65-LS6.4-BL"
+    mpn = "C129428"
+    signal VOUTA ~ pin 1
+    signal VOUTB ~ pin 2
+    signal VOUTC ~ pin 15
+    signal VOUTD ~ pin 16
+    signal AVDD ~ pin 13
+    signal GND ~ pin 7
+    signal VREFH ~ pin 14
+    signal VREFL ~ pin 3
+    signal SCLK ~ pin 5
+    signal DIN ~ pin 4
+    signal SYNC ~ pin 6
+    signal LDAC ~ pin 8
+    signal RSTSEL ~ pin 9
+    signal CLR ~ pin 10
+
+component OPA4188:
+    lcsc_id = "C131418"
+    footprint = "TSSOP-14_L5.0-W4.4-P0.65-LS6.4-BL"
+    mpn = "C131418"
+    signal OUTA ~ pin 1
+    signal INA_N ~ pin 2
+    signal INA_P ~ pin 3
+    signal VCC ~ pin 4
+    signal INB_P ~ pin 5
+    signal INB_N ~ pin 6
+    signal OUTB ~ pin 7
+    signal OUTC ~ pin 8
+    signal INC_N ~ pin 9
+    signal INC_P ~ pin 10
+    signal VEE ~ pin 11
+    signal IND_P ~ pin 12
+    signal IND_N ~ pin 13
+    signal OUTD ~ pin 14
+
+module StimulationCircuit:
+    signal vpos
+    signal vneg
+    signal gnd
+    signal sclk
+    signal din
+    signal sync
+    signal out1
+    signal out2
+    signal out3
+    signal out4
+
+    # ── DAC8564 ───────────────────────────────────
+    dac = new DAC8564
+    vpos ~ dac.AVDD
+    vpos ~ dac.VREFH
+    gnd ~ dac.GND
+    gnd ~ dac.VREFL
+    gnd ~ dac.RSTSEL
+    gnd ~ dac.CLR
+    gnd ~ dac.LDAC
+    sclk ~ dac.SCLK
+    din ~ dac.DIN
+    sync ~ dac.SYNC
+
+    c_dac = new Cap_100nF
+    vpos ~ c_dac.p1
+    gnd ~ c_dac.p2
+
+    c_dac_bulk = new Cap_10uF
+    vpos ~ c_dac_bulk.p1
+    gnd ~ c_dac_bulk.p2
+
+    # ── OPA4188 ───────────────────────────────────
+    opamp = new OPA4188
+    vpos ~ opamp.VCC
+    vneg ~ opamp.VEE
+
+    c_op_vcc = new Cap_100nF
+    vpos ~ c_op_vcc.p1
+    gnd ~ c_op_vcc.p2
+
+    c_op_vee = new Cap_100nF
+    vneg ~ c_op_vee.p1
+    gnd ~ c_op_vee.p2
+
+    # ── Howland Pump Ch1 ──────────────────────────
+    rf1 = new Resistor_10k
+    ri1 = new Resistor_10k
+    rs1 = new Resistor_1k
+
+    dac.VOUTA ~ ri1.p1
+    ri1.p2 ~ opamp.INA_P
+    opamp.INA_N ~ rf1.p1
+    opamp.OUTA ~ rf1.p2
+    opamp.OUTA ~ rs1.p1
+    rs1.p2 ~ out1
+
+    # ── Howland Pump Ch2 ──────────────────────────
+    rf2 = new Resistor_10k
+    ri2 = new Resistor_10k
+    rs2 = new Resistor_1k
+
+    dac.VOUTB ~ ri2.p1
+    ri2.p2 ~ opamp.INB_P
+    opamp.INB_N ~ rf2.p1
+    opamp.OUTB ~ rf2.p2
+    opamp.OUTB ~ rs2.p1
+    rs2.p2 ~ out2
+
+    # ── Howland Pump Ch3 ──────────────────────────
+    rf3 = new Resistor_10k
+    ri3 = new Resistor_10k
+    rs3 = new Resistor_1k
+
+    dac.VOUTC ~ ri3.p1
+    ri3.p2 ~ opamp.INC_P
+    opamp.INC_N ~ rf3.p1
+    opamp.OUTC ~ rf3.p2
+    opamp.OUTC ~ rs3.p1
+    rs3.p2 ~ out3
+
+    # ── Howland Pump Ch4 ──────────────────────────
+    rf4 = new Resistor_10k
+    ri4 = new Resistor_10k
+    rs4 = new Resistor_1k
+
+    dac.VOUTD ~ ri4.p1
+    ri4.p2 ~ opamp.IND_P
+    opamp.IND_N ~ rf4.p1
+    opamp.OUTD ~ rf4.p2
+    opamp.OUTD ~ rs4.p1
+    rs4.p2 ~ out4

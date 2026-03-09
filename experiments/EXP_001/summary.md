@@ -104,3 +104,38 @@ PicoLog exports HDF5 in **volts** (float32), converted to µV via `× 1e6`.
 - Before attributing this to software quality, the **PicoLog settings must be verified** (voltage range and channel mode).
 - If both are confirmed to use ±39 mV differential, the custom software is the better acquisition path.
 - **Next step:** Record simultaneously with both software from the same ADC to isolate the variable. Then begin biological recordings once mycelium bridges the electrodes.
+
+---
+
+## Long-Term Recording Analysis — Signal Onset (2026-03-09)
+
+**Goal:** Analyse the full-duration ADC-24 recording (`session_20260219_184841(2)test.csv`, 330 MB, ~430 hours) to check whether mycelium has bridged the electrodes.
+
+### Data Processing
+
+- Applied **multi-pass spike rejection** (rolling median + 2σ clipping, 2 passes) to remove electrical artefacts.
+- Removed 274,648 artifact points across 2 passes.
+- Script: `generate_trace.py`
+
+### Results
+
+The recording shows a clear **voltage ramp beginning around hour 330**, rising from the ~0 µV baseline to ~150 µV, indicating the mycelium has grown across the electrodes.
+
+#### Full Recording (cleaned)
+
+![Full ADC-24 recording with spike filtering — signal onset visible around hour 330](trace_clean.png)
+
+#### Signal Onset Zoom (hours 320–430)
+
+![Zoomed view of signal onset as mycelium reaches electrodes](trace_signal_onset.png)
+
+### Observations
+
+- **Hours 0–330:** Flat baseline (~0–5 µV), consistent with the noise characterisation from 2026-02-19.
+- **Hours 330–400:** Gradual voltage ramp, likely corresponding to progressive hyphal contact with electrode surfaces.
+- **Hours 380–420:** Sustained elevated signal (~120–150 µV) with visible fluctuations — consistent with expected extracellular mycelium potentials (cf. Mishra et al. 2024: mean amplitude ~135 µV).
+- **Hour ~420:** Signal begins to decrease, possibly due to medium drying or metabolic changes.
+
+### Next Steps
+
+- Start a new experiment with **light stimulation** (blue/UV) to attempt evoking spiking responses.

@@ -28,6 +28,8 @@ app.add_middleware(
 HOME = Path.home()
 SKILLS_HOME = HOME / "antigravity-skills" / "skills"
 INSTALL_SCRIPT = HOME / "antigravity-skills" / "install.sh"
+WORKFLOWS_HOME = HOME / "antigravity-workflows"
+WORKFLOWS_INSTALL_SCRIPT = WORKFLOWS_HOME / "install.sh"
 
 # Known workspace search roots
 WORKSPACE_SEARCH_ROOTS = [
@@ -139,21 +141,44 @@ SKILL_SUBCATEGORIES = {
 }
 
 
+def _parse_frontmatter(text: str) -> dict:
+    """Parse YAML frontmatter from markdown text. Returns dict of key -> value."""
+    fm_data = {}
+    fm = re.match(r"^---\s*\n(.*?)\n---", text, re.DOTALL)
+    if fm:
+        current_key = None
+        for line in fm.group(1).split("\n"):
+            stripped = line.strip()
+            # List item (part of a requires: or similar list)
+            if stripped.startswith("- ") and current_key:
+                if current_key not in fm_data or not isinstance(fm_data[current_key], list):
+                    fm_data[current_key] = []
+                fm_data[current_key].append(stripped[2:].strip())
+            elif ":" in stripped and not stripped.startswith("#"):
+                key, val = stripped.split(":", 1)
+                key = key.strip()
+                val = val.strip().strip("'\"")
+                current_key = key
+                if val:  # scalar value
+                    fm_data[key] = val
+                # else: could be a list header like 'requires:'
+    return fm_data
+
+
 def _parse_skill_md(skill_dir: Path) -> dict:
-    """Parse SKILL.md frontmatter for name and description."""
+    """Parse SKILL.md frontmatter for name, description, and requires."""
     skill_md = skill_dir / "SKILL.md"
     name = skill_dir.name
     description = ""
+    requires = []
     if skill_md.exists():
         text = skill_md.read_text(errors="ignore")
-        fm = re.match(r"^---\s*\n(.*?)\n---", text, re.DOTALL)
-        if fm:
-            for line in fm.group(1).split("\n"):
-                if line.strip().startswith("description:"):
-                    description = line.split(":", 1)[1].strip().strip("'\"")
-                    break
+        fm = _parse_frontmatter(text)
+        description = fm.get("description", "")
+        requires = fm.get("requires", [])
     subcategory = SKILL_SUBCATEGORIES.get(name, "")
-    return {"name": name, "description": description, "subcategory": subcategory, "path": str(skill_dir)}
+    return {"name": name, "description": description, "subcategory": subcategory,
+            "path": str(skill_dir), "requires": requires}
 
 
 def _discover_skills() -> dict:
@@ -239,12 +264,19 @@ def _discover_workspaces() -> list:
                     skill_count = sum(1 for d in skills_dir.iterdir()
                                      if d.is_dir() or d.is_symlink())
 
+                wf_dir = agent_dir / "workflows"
+                workflow_count = 0
+                if wf_dir.exists():
+                    workflow_count = sum(1 for f in wf_dir.iterdir()
+                                       if f.name.endswith(".md"))
+
                 workspaces.append({
                     "id": str(ws_path),
                     "name": name,
                     "path": str(ws_path),
                     "short_path": str(ws_path).replace(str(HOME), "~"),
                     "skill_count": skill_count,
+                    "workflow_count": workflow_count,
                 })
 
     return sorted(workspaces, key=lambda w: w["name"])
@@ -298,6 +330,79 @@ def _get_installed_skills(workspace_path: str) -> list:
     return installed
 
 
+# --- Workflow Discovery ---
+
+def _parse_workflow_md(wf_path: Path) -> dict:
+    """Parse a workflow .md file for name, description, and requires."""
+    name = wf_path.stem  # filename without .md
+    text = wf_path.read_text(errors="ignore")
+    fm = _parse_frontmatter(text)
+    return {
+        "name": name,
+        "description": fm.get("description", ""),
+        "requires": fm.get("requires", []),
+        "path": str(wf_path),
+    }
+
+
+def _discover_workflows() -> dict:
+    """Scan ~/antigravity-workflows/ for all available workflows."""
+    sections = {}
+    for category in ["built-in", "custom", "third-party"]:
+        cat_dir = WORKFLOWS_HOME / category
+        if not cat_dir.exists():
+            continue
+        workflows = []
+        for f in sorted(cat_dir.iterdir()):
+            if f.suffix == ".md" and f.is_file():
+                info = _parse_workflow_md(f)
+                info["section"] = category
+                workflows.append(info)
+        if workflows:
+            sections[category] = workflows
+    return sections
+
+
+def _get_installed_workflows(workspace_path: str) -> list:
+    """List workflows installed in a workspace."""
+    wf_dir = Path(workspace_path) / ".agent" / "workflows"
+    if not wf_dir.exists():
+        return []
+
+    installed = []
+    for f in sorted(wf_dir.iterdir()):
+        if f.suffix != ".md":
+            continue
+        info = {
+            "name": f.stem,
+            "is_symlink": f.is_symlink(),
+        }
+        if f.is_symlink():
+            target = os.readlink(str(f))
+            info["target"] = target
+            info["real_path"] = str(f.resolve()) if f.exists() else target
+            if "/built-in/" in target:
+                info["source"] = "built-in"
+            elif "/custom/" in target:
+                info["source"] = "custom"
+            elif "/third-party/" in target:
+                info["source"] = "third-party"
+            else:
+                info["source"] = "external"
+        else:
+            info["source"] = "local"
+            info["real_path"] = str(f)
+
+        # Parse frontmatter
+        text = f.read_text(errors="ignore") if f.exists() else ""
+        fm = _parse_frontmatter(text)
+        info["description"] = fm.get("description", "")
+        info["requires"] = fm.get("requires", [])
+
+        installed.append(info)
+    return installed
+
+
 # --- API Routes ---
 
 @app.get("/api/workspaces")
@@ -310,11 +415,23 @@ def list_all_skills():
     return _discover_skills()
 
 
+@app.get("/api/workflows")
+def list_all_workflows():
+    return _discover_workflows()
+
+
 @app.get("/api/workspace/skills")
 def get_workspace_skills(path: str):
     if not Path(path).exists():
         raise HTTPException(404, f"Workspace not found: {path}")
     return _get_installed_skills(path)
+
+
+@app.get("/api/workspace/workflows")
+def get_workspace_workflows(path: str):
+    if not Path(path).exists():
+        raise HTTPException(404, f"Workspace not found: {path}")
+    return _get_installed_workflows(path)
 
 
 @app.get("/api/skill/preview")
@@ -327,9 +444,23 @@ def preview_skill(path: str):
     return {"content": skill_md.read_text(errors="ignore"), "path": str(skill_md)}
 
 
+@app.get("/api/workflow/preview")
+def preview_workflow(path: str):
+    """Return raw workflow .md content for preview."""
+    wf_path = Path(path)
+    if not wf_path.exists():
+        raise HTTPException(404, f"Workflow not found: {path}")
+    return {"content": wf_path.read_text(errors="ignore"), "path": str(wf_path)}
+
+
 class SkillAction(BaseModel):
     workspace_path: str
     skill_name: str
+
+
+class WorkflowAction(BaseModel):
+    workspace_path: str
+    workflow_name: str
 
 
 @app.post("/api/install")
@@ -363,6 +494,34 @@ def uninstall_skill(action: SkillAction):
             400,
             f"{action.skill_name} is a local directory, not a symlink. Remove manually.",
         )
+
+
+@app.post("/api/workflow/install")
+def install_workflow(action: WorkflowAction):
+    ws = Path(action.workspace_path)
+    if not ws.exists():
+        raise HTTPException(404, f"Workspace not found: {ws}")
+    result = subprocess.run(
+        [str(WORKFLOWS_INSTALL_SCRIPT), "install", str(ws), action.workflow_name],
+        capture_output=True, text=True,
+    )
+    if result.returncode != 0:
+        raise HTTPException(400, result.stderr or result.stdout)
+    return {"status": "ok", "message": result.stdout.strip()}
+
+
+@app.post("/api/workflow/uninstall")
+def uninstall_workflow(action: WorkflowAction):
+    ws = Path(action.workspace_path)
+    if not ws.exists():
+        raise HTTPException(404, f"Workspace not found: {ws}")
+    result = subprocess.run(
+        [str(WORKFLOWS_INSTALL_SCRIPT), "uninstall", str(ws), action.workflow_name],
+        capture_output=True, text=True,
+    )
+    if result.returncode != 0:
+        raise HTTPException(400, result.stderr or result.stdout)
+    return {"status": "ok", "message": result.stdout.strip()}
 
 
 class FinderAction(BaseModel):

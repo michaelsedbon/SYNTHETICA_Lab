@@ -1,0 +1,117 @@
+# ============================================================
+# MCU Module — ESP32-S3-WROOM-1-N4
+# ============================================================
+
+from "parts.ato" import Cap_100nF, Cap_10uF, Cap_1uF, Resistor_10k, Resistor_1k
+
+component ESP32S3:
+    lcsc_id = "C2913202"
+    footprint = "WIFI-SMD_ESP32-S3-WROOM-1"
+    mpn = "C2913202"
+    signal VDD3V3 ~ pin 2
+    signal GND ~ pin 41
+    signal GPIO19 ~ pin 38
+    signal GPIO20 ~ pin 39
+    signal GPIO12 ~ pin 18
+    signal GPIO13 ~ pin 19
+    signal GPIO11 ~ pin 17
+    signal GPIO10 ~ pin 16
+    signal GPIO4 ~ pin 7
+    signal GPIO5 ~ pin 8
+    signal GPIO6 ~ pin 9
+    signal GPIO35 ~ pin 28
+    signal GPIO36 ~ pin 29
+    signal GPIO37 ~ pin 30
+    signal GPIO41 ~ pin 34
+    signal GPIO42 ~ pin 35
+    signal GPIO2 ~ pin 5
+    signal GPIO8 ~ pin 14
+    signal EN ~ pin 3
+
+component LED_Green:
+    lcsc_id = "C72043"
+    footprint = "LED0603-RD"
+    mpn = "C72043"
+    signal anode ~ pin 2
+    signal cathode ~ pin 1
+
+component LED_Blue:
+    lcsc_id = "C72041"
+    footprint = "LED0603-RD"
+    mpn = "C72041"
+    signal anode ~ pin 2
+    signal cathode ~ pin 1
+
+module MCU_Module:
+    signal dvdd
+    signal dgnd
+    signal spi1_sclk
+    signal spi1_mosi
+    signal spi1_miso
+    signal spi1_cs0
+    signal gpio_drdy
+    signal gpio_start
+    signal gpio_reset
+    signal spi2_sclk
+    signal spi2_mosi
+    signal spi2_cs0
+    signal usb_dp
+    signal usb_dm
+    signal swdio
+    signal swclk
+
+    mcu = new ESP32S3
+    dvdd ~ mcu.VDD3V3
+    dgnd ~ mcu.GND
+
+    # Enable RC
+    r_en = new Resistor_10k
+    c_en = new Cap_1uF
+    dvdd ~ r_en.p1
+    r_en.p2 ~ mcu.EN
+    mcu.EN ~ c_en.p1
+    dgnd ~ c_en.p2
+
+    # Decoupling
+    c_vdd1 = new Cap_100nF
+    dvdd ~ c_vdd1.p1
+    dgnd ~ c_vdd1.p2
+
+    c_vdd2 = new Cap_10uF
+    dvdd ~ c_vdd2.p1
+    dgnd ~ c_vdd2.p2
+
+    # SPI1 → ADS1299
+    spi1_sclk ~ mcu.GPIO12
+    spi1_mosi ~ mcu.GPIO13
+    spi1_miso ~ mcu.GPIO11
+    spi1_cs0 ~ mcu.GPIO10
+    gpio_drdy ~ mcu.GPIO4
+    gpio_start ~ mcu.GPIO5
+    gpio_reset ~ mcu.GPIO6
+
+    # SPI2 → DAC8564
+    spi2_sclk ~ mcu.GPIO35
+    spi2_mosi ~ mcu.GPIO36
+    spi2_cs0 ~ mcu.GPIO37
+
+    # USB
+    usb_dp ~ mcu.GPIO20
+    usb_dm ~ mcu.GPIO19
+
+    # Debug
+    swdio ~ mcu.GPIO41
+    swclk ~ mcu.GPIO42
+
+    # LEDs
+    led_pwr = new LED_Green
+    r_led_pwr = new Resistor_1k
+    dvdd ~ r_led_pwr.p1
+    r_led_pwr.p2 ~ led_pwr.anode
+    led_pwr.cathode ~ dgnd
+
+    led_act = new LED_Blue
+    r_led_act = new Resistor_1k
+    mcu.GPIO8 ~ r_led_act.p1
+    r_led_act.p2 ~ led_act.anode
+    led_act.cathode ~ dgnd

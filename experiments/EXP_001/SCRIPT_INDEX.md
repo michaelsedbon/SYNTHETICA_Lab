@@ -15,6 +15,15 @@ Index of all scripts, firmware, data files, and generated artifacts.
 | `data/Untitled.hdf5` | Earlier PicoLog test recording |
 | `data/comparison_traces.png` | Raw voltage trace comparison plot |
 | `data/comparison_histograms.png` | Amplitude distribution histograms |
+| `session_20260219_184841(2)test.csv` | Long-term recording (~430 hours, 330 MB) |
+| `trace_clean.png` | Full recording, spike-filtered |
+| `trace_signal_onset.png` | Signal onset zoom (hours 320–430) |
+
+## Scripts
+
+| File | Description |
+|------|-------------|
+| `generate_trace.py` | Generates clean trace PNGs with multi-pass spike rejection |
 
 ## Notebooks
 
@@ -22,4 +31,4 @@ Index of all scripts, firmware, data files, and generated artifacts.
 |------|-------------|
 | `data/plot_recording.ipynb` | Analysis of PicoLog HDF5 recording |
 | `data/plot_csv_recording.ipynb` | Analysis of custom web app CSV recording |
-| `analyze_session.ipynb` | Session analysis notebook |
+| `analyze_session.ipynb` | Interactive session analysis notebook (plotly/matplotlib, windowed views) |

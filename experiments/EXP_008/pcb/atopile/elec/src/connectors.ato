@@ -1,0 +1,137 @@
+# ============================================================
+# Connectors — USB-C, electrode headers, debug
+# ============================================================
+
+from "parts.ato" import Resistor_5k1
+
+component USB_C_16P:
+    lcsc_id = "C2765186"
+    footprint = "USB-C-SMD-16P"
+    mpn = "C2765186"
+    signal VBUS ~ pin 1
+    signal GND ~ pin 5
+    signal DP ~ pin 3
+    signal DM ~ pin 2
+    signal CC1 ~ pin 4
+    signal CC2 ~ pin 6
+
+component PinHeader_2x5:
+    lcsc_id = "C50982"
+    footprint = "HDR-TH_10P-P2.54-V-R2-C5"
+    mpn = "C50982"
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2
+    signal p3 ~ pin 3
+    signal p4 ~ pin 4
+    signal p5 ~ pin 5
+    signal p6 ~ pin 6
+    signal p7 ~ pin 7
+    signal p8 ~ pin 8
+    signal p9 ~ pin 9
+    signal p10 ~ pin 10
+
+component PinHeader_1x5:
+    lcsc_id = "C49257"
+    footprint = "HDR-TH_5P-P2.54-V"
+    mpn = "C49257"
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2
+    signal p3 ~ pin 3
+    signal p4 ~ pin 4
+    signal p5 ~ pin 5
+
+component PinHeader_1x4:
+    lcsc_id = "C49256"
+    footprint = "HDR-TH_4P-P2.54-V"
+    mpn = "C49256"
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2
+    signal p3 ~ pin 3
+    signal p4 ~ pin 4
+
+module USBConnector:
+    signal vbus
+    signal gnd
+    signal dp
+    signal dm
+
+    usb = new USB_C_16P
+
+    r_cc1 = new Resistor_5k1
+    r_cc2 = new Resistor_5k1
+
+    usb.CC1 ~ r_cc1.p1
+    r_cc1.p2 ~ gnd
+    usb.CC2 ~ r_cc2.p1
+    r_cc2.p2 ~ gnd
+
+    vbus ~ usb.VBUS
+    gnd ~ usb.GND
+    dp ~ usb.DP
+    dm ~ usb.DM
+
+module ElectrodeConnectors:
+    signal rec_ch1p
+    signal rec_ch1n
+    signal rec_ch2p
+    signal rec_ch2n
+    signal rec_ch3p
+    signal rec_ch3n
+    signal rec_ch4p
+    signal rec_ch4n
+    signal rec_ch5p
+    signal rec_ch5n
+    signal rec_ch6p
+    signal rec_ch6n
+    signal rec_ch7p
+    signal rec_ch7n
+    signal rec_ch8p
+    signal rec_ch8n
+    signal stim_ch1
+    signal stim_ch2
+    signal stim_ch3
+    signal stim_ch4
+    signal gnd
+
+    hdr_rec1 = new PinHeader_2x5
+    rec_ch1p ~ hdr_rec1.p1
+    rec_ch1n ~ hdr_rec1.p2
+    rec_ch2p ~ hdr_rec1.p3
+    rec_ch2n ~ hdr_rec1.p4
+    rec_ch3p ~ hdr_rec1.p5
+    rec_ch3n ~ hdr_rec1.p6
+    rec_ch4p ~ hdr_rec1.p7
+    rec_ch4n ~ hdr_rec1.p8
+    gnd ~ hdr_rec1.p9
+    gnd ~ hdr_rec1.p10
+
+    hdr_rec2 = new PinHeader_2x5
+    rec_ch5p ~ hdr_rec2.p1
+    rec_ch5n ~ hdr_rec2.p2
+    rec_ch6p ~ hdr_rec2.p3
+    rec_ch6n ~ hdr_rec2.p4
+    rec_ch7p ~ hdr_rec2.p5
+    rec_ch7n ~ hdr_rec2.p6
+    rec_ch8p ~ hdr_rec2.p7
+    rec_ch8n ~ hdr_rec2.p8
+    gnd ~ hdr_rec2.p9
+    gnd ~ hdr_rec2.p10
+
+    hdr_stim = new PinHeader_1x5
+    stim_ch1 ~ hdr_stim.p1
+    stim_ch2 ~ hdr_stim.p2
+    stim_ch3 ~ hdr_stim.p3
+    stim_ch4 ~ hdr_stim.p4
+    gnd ~ hdr_stim.p5
+
+module DebugHeader:
+    signal swdio
+    signal swclk
+    signal vcc
+    signal gnd
+
+    hdr = new PinHeader_1x4
+    vcc ~ hdr.p1
+    swdio ~ hdr.p2
+    swclk ~ hdr.p3
+    gnd ~ hdr.p4

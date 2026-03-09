@@ -8,24 +8,26 @@ const API = '';
 // ─── State ───
 let workspaces = [];
 let allSkills = {};
+let allWorkflows = {};
 let installedSkills = [];
+let installedWorkflows = [];
 let selectedWorkspace = null;
 let currentFilter = 'all';
 let searchQuery = '';
-let selectedSkillPath = null;  // path of skill showing in preview
+let selectedSkillPath = null;
+let viewMode = 'skills';  // 'skills' or 'workflows'
 
 // ─── Init ───
 document.addEventListener('DOMContentLoaded', async () => {
     setupEventListeners();
-    await loadWorkspaces();
-    await loadAllSkills();
+    await Promise.all([loadWorkspaces(), loadAllSkills(), loadAllWorkflows()]);
     lucide.createIcons();
 });
 
 function setupEventListeners() {
     document.getElementById('searchInput').addEventListener('input', (e) => {
         searchQuery = e.target.value.toLowerCase();
-        renderSkillsView();
+        renderMainView();
     });
 
     document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -33,7 +35,18 @@ function setupEventListeners() {
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             currentFilter = btn.dataset.filter;
-            renderSkillsView();
+            renderMainView();
+        });
+    });
+
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            viewMode = btn.dataset.mode;
+            document.getElementById('searchInput').placeholder = viewMode === 'skills' ? 'Search skills...' : 'Search workflows...';
+            closePreview();
+            renderMainView();
         });
     });
 
@@ -75,6 +88,20 @@ async function loadAllSkills() {
     }
 }
 
+async function loadAllWorkflows() {
+    try {
+        const res = await fetch(`${API}/api/workflows`);
+        allWorkflows = await res.json();
+        let total = 0;
+        for (const section of Object.values(allWorkflows)) {
+            total += section.length;
+        }
+        document.getElementById('statWorkflows').textContent = total;
+    } catch (err) {
+        console.error('Failed to load workflows:', err);
+    }
+}
+
 async function loadInstalledSkills(workspacePath) {
     try {
         const res = await fetch(`${API}/api/workspace/skills?path=${encodeURIComponent(workspacePath)}`);
@@ -82,6 +109,16 @@ async function loadInstalledSkills(workspacePath) {
     } catch (err) {
         console.error('Failed to load installed skills:', err);
         installedSkills = [];
+    }
+}
+
+async function loadInstalledWorkflows(workspacePath) {
+    try {
+        const res = await fetch(`${API}/api/workspace/workflows?path=${encodeURIComponent(workspacePath)}`);
+        installedWorkflows = await res.json();
+    } catch (err) {
+        console.error('Failed to load installed workflows:', err);
+        installedWorkflows = [];
     }
 }
 
@@ -106,9 +143,8 @@ async function toggleSkill(skillName, install) {
         showToast(data.message || `${install ? 'Installed' : 'Uninstalled'} ${skillName}`, 'success');
 
         await loadInstalledSkills(selectedWorkspace.path);
-        renderSkillsView();
+        renderMainView();
 
-        // Update workspace badge
         const ws = workspaces.find(w => w.path === selectedWorkspace.path);
         if (ws) {
             ws.skill_count = installedSkills.length;
@@ -116,7 +152,41 @@ async function toggleSkill(skillName, install) {
         }
     } catch (err) {
         showToast(`Error: ${err.message}`, 'error');
-        renderSkillsView();
+        renderMainView();
+    }
+}
+
+async function toggleWorkflow(workflowName, install) {
+    const endpoint = install ? '/api/workflow/install' : '/api/workflow/uninstall';
+    try {
+        const res = await fetch(`${API}${endpoint}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                workspace_path: selectedWorkspace.path,
+                workflow_name: workflowName,
+            }),
+        });
+
+        if (!res.ok) {
+            const data = await res.json();
+            throw new Error(data.detail || 'Unknown error');
+        }
+
+        const data = await res.json();
+        showToast(data.message || `${install ? 'Installed' : 'Uninstalled'} ${workflowName}`, 'success');
+
+        await loadInstalledWorkflows(selectedWorkspace.path);
+        renderMainView();
+
+        const ws = workspaces.find(w => w.path === selectedWorkspace.path);
+        if (ws) {
+            ws.workflow_count = installedWorkflows.length;
+            renderWorkspaces();
+        }
+    } catch (err) {
+        showToast(`Error: ${err.message}`, 'error');
+        renderMainView();
     }
 }
 
@@ -226,7 +296,7 @@ function renderWorkspaces() {
                 <div class="workspace-name">${esc(ws.name)}</div>
                 <div class="workspace-path">${esc(ws.short_path)}</div>
             </div>
-            <span class="workspace-badge">${ws.skill_count}</span>
+            <span class="workspace-badge">${ws.skill_count} / ${ws.workflow_count}</span>
         </div>
     `).join('');
 
@@ -242,9 +312,9 @@ function renderWorkspaces() {
                 </div>`;
 
             closePreview();
-            await loadInstalledSkills(path);
+            await Promise.all([loadInstalledSkills(path), loadInstalledWorkflows(path)]);
             renderWorkspaces();
-            renderSkillsView();
+            renderMainView();
         });
     });
 }
@@ -364,6 +434,163 @@ function renderSkillsView() {
     attachCardListeners();
 }
 
+// ─── Unified render ───
+function renderMainView() {
+    if (viewMode === 'skills') {
+        renderSkillsView();
+    } else {
+        renderWorkflowsView();
+    }
+}
+
+// ─── Workflow Rendering ───
+function renderWorkflowsView() {
+    const main = document.getElementById('mainContent');
+    if (!selectedWorkspace) {
+        main.innerHTML = `
+            <div class="empty-state">
+                <i data-lucide="git-branch" class="empty-icon"></i>
+                <div class="title">Select a workspace</div>
+                <div class="subtitle">Choose a workspace from the sidebar to manage its workflows</div>
+            </div>`;
+        lucide.createIcons();
+        return;
+    }
+
+    const installedNames = new Set(installedWorkflows.map(w => w.name));
+    const installedSkillNames = new Set(installedSkills.map(s => s.name));
+    const libraryNames = new Set();
+    for (const wfs of Object.values(allWorkflows)) {
+        for (const w of wfs) libraryNames.add(w.name);
+    }
+
+    let html = '';
+
+    // Local workflows (installed but not in library)
+    if (currentFilter === 'installed' || currentFilter === 'all') {
+        const localInstalled = installedWorkflows.filter(w => !libraryNames.has(w.name));
+        let localFiltered = localInstalled;
+        if (searchQuery) {
+            localFiltered = localFiltered.filter(w =>
+                w.name.toLowerCase().includes(searchQuery) ||
+                (w.description || '').toLowerCase().includes(searchQuery)
+            );
+        }
+        if (currentFilter === 'installed' || localFiltered.length) {
+            if (localFiltered.length) {
+                html += `
+                    <div class="section-header">
+                        <span class="skill-source local">local</span>
+                        <span class="section-title">Workspace-local</span>
+                        <span class="section-count">${localFiltered.length}</span>
+                        <div class="section-line"></div>
+                    </div>
+                    <div class="skills-grid">`;
+                for (const wf of localFiltered) {
+                    html += renderWorkflowCard(wf, installedNames, installedSkillNames, true);
+                }
+                html += '</div>';
+            }
+        }
+    }
+
+    // Library workflows
+    for (const sectionKey of Object.keys(allWorkflows)) {
+        const workflows = allWorkflows[sectionKey];
+        if (!workflows || !workflows.length) continue;
+
+        if (currentFilter === 'built-in' && sectionKey !== 'built-in') continue;
+        if (currentFilter === 'custom' && sectionKey !== 'custom') continue;
+        if (currentFilter === 'third-party' && sectionKey !== 'third-party') continue;
+
+        let filtered = workflows;
+        if (searchQuery) {
+            filtered = filtered.filter(w =>
+                w.name.toLowerCase().includes(searchQuery) ||
+                w.description.toLowerCase().includes(searchQuery)
+            );
+        }
+        if (currentFilter === 'installed') {
+            filtered = filtered.filter(w => installedNames.has(w.name));
+        }
+        if (!filtered.length) continue;
+
+        const label = sectionKey === 'built-in' ? 'Built-in' : sectionKey === 'custom' ? 'Custom' : 'Third-party';
+
+        html += `
+            <div class="section-header">
+                <span class="skill-source ${sectionKey}">${esc(label)}</span>
+                <span class="section-title">Workflows</span>
+                <span class="section-count">${filtered.length}</span>
+                <div class="section-line"></div>
+            </div>
+            <div class="skills-grid">`;
+
+        for (const wf of filtered) {
+            html += renderWorkflowCard(wf, installedNames, installedSkillNames, false);
+        }
+        html += '</div>';
+    }
+
+    if (!html) {
+        html = `
+            <div class="empty-state">
+                <i data-lucide="search-x" class="empty-icon"></i>
+                <div class="title">No workflows match your search</div>
+                <div class="subtitle">Try a different search term or filter</div>
+            </div>`;
+    }
+
+    main.innerHTML = html;
+    lucide.createIcons();
+    attachCardListeners();
+}
+
+function renderWorkflowCard(wf, installedNames, installedSkillNames, isLocal) {
+    const isInstalled = installedNames.has(wf.name);
+    const isSelected = selectedSkillPath === (wf.path || wf.real_path || '');
+    const cardPath = wf.path || wf.real_path || '';
+    const deps = wf.requires || [];
+
+    // Dep chips
+    let depsHtml = '';
+    if (deps.length > 0) {
+        const MAX_CHIPS = 3;
+        const shown = deps.slice(0, MAX_CHIPS);
+        depsHtml = '<div class="dep-chips">';
+        for (const d of shown) {
+            const cls = installedSkillNames.has(d) ? 'installed' : 'missing';
+            depsHtml += `<span class="dep-chip ${cls}">${esc(d)}</span>`;
+        }
+        if (deps.length > MAX_CHIPS) {
+            depsHtml += `<span class="dep-chip overflow">+${deps.length - MAX_CHIPS}</span>`;
+        }
+        depsHtml += '</div>';
+    }
+
+    return `
+        <div class="skill-card ${isInstalled ? 'installed' : ''} ${isSelected ? 'selected' : ''}"
+             data-skill="${esc(wf.name)}"
+             data-path="${esc(cardPath)}"
+             data-type="workflow">
+            <div class="skill-card-content">
+                <div class="skill-name">${esc(wf.name)}</div>
+                <div class="skill-desc">${esc(wf.description || 'No description')}</div>
+                ${depsHtml}
+            </div>
+            <label class="toggle" title="${isLocal && !wf.is_symlink ? 'Local file' : (isInstalled ? 'Uninstall' : 'Install')}"
+                   onclick="event.stopPropagation()">
+                <input type="checkbox"
+                       ${isInstalled ? 'checked' : ''}
+                       ${isLocal && !wf.is_symlink ? 'disabled' : ''}
+                       data-skill="${esc(wf.name)}"
+                       data-type="workflow"
+                       onchange="handleToggle(this)">
+                <span class="toggle-slider"></span>
+            </label>
+        </div>`;
+}
+
 function renderSkillCard(skill, installedNames) {
     const isInstalled = installedNames.has(skill.name);
     const localInfo = installedSkills.find(s => s.name === skill.name);
@@ -431,22 +658,55 @@ function renderLocalInstalledSection(skills) {
 function attachCardListeners() {
     document.querySelectorAll('.skill-card').forEach(card => {
         card.addEventListener('click', (e) => {
-            // Don't open preview when clicking toggle
             if (e.target.closest('.toggle')) return;
             const skillName = card.dataset.skill;
             const skillPath = card.dataset.path;
-            if (skillPath) openPreview(skillName, skillPath);
+            const type = card.dataset.type || 'skill';
+            if (skillPath) {
+                if (type === 'workflow') {
+                    openWorkflowPreview(skillName, skillPath);
+                } else {
+                    openPreview(skillName, skillPath);
+                }
+            }
         });
     });
 }
 
+async function openWorkflowPreview(name, path) {
+    try {
+        const res = await fetch(`${API}/api/workflow/preview?path=${encodeURIComponent(path)}`);
+        if (!res.ok) throw new Error('Could not load workflow');
+        const data = await res.json();
+
+        selectedSkillPath = path;
+        _rawPreviewContent = data.content;
+        document.getElementById('previewSkillName').textContent = name;
+        document.getElementById('previewContent').innerHTML = renderMarkdownPreview(data.content);
+        document.getElementById('appRoot').classList.add('preview-open');
+
+        document.querySelectorAll('.skill-card.selected').forEach(c => c.classList.remove('selected'));
+        const card = document.querySelector(`.skill-card[data-path="${CSS.escape(path)}"]`);
+        if (card) card.classList.add('selected');
+
+        lucide.createIcons({ attrs: { class: '' }, nameAttr: 'data-lucide' });
+    } catch (err) {
+        showToast(`Preview failed: ${err.message}`, 'error');
+    }
+}
+
 // ─── Event Handlers ───
 async function handleToggle(checkbox) {
-    const skillName = checkbox.dataset.skill;
+    const name = checkbox.dataset.skill;
+    const type = checkbox.dataset.type || 'skill';
     const install = checkbox.checked;
     const toggle = checkbox.closest('.toggle');
     toggle.classList.add('loading');
-    await toggleSkill(skillName, install);
+    if (type === 'workflow') {
+        await toggleWorkflow(name, install);
+    } else {
+        await toggleSkill(name, install);
+    }
     toggle.classList.remove('loading');
 }
 

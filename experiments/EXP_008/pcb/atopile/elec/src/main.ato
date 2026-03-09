@@ -1,0 +1,109 @@
+# ============================================================
+# Mycelium Sensor/Stim Board — Top-Level
+# EXP_008 | Tier 2: 8 recording + 4 stimulation channels
+# ============================================================
+
+import PowerSupply from "power.ato"
+import RecordingFrontEnd from "adc.ato"
+import StimulationCircuit from "stim.ato"
+import MCU_Module from "mcu.ato"
+import ElectrodeConnectors from "connectors.ato"
+import USBConnector from "connectors.ato"
+import DebugHeader from "connectors.ato"
+
+module MyceliumBoard:
+    # ── Instantiate blocks ────────────────────────
+    power = new PowerSupply
+    recording = new RecordingFrontEnd
+    stimulation = new StimulationCircuit
+    mcu = new MCU_Module
+    rec_electrodes = new ElectrodeConnectors
+    usb = new USBConnector
+    debug = new DebugHeader
+
+    # ══════════════════════════════════════════════
+    # POWER CONNECTIONS
+    # ══════════════════════════════════════════════
+
+    # USB 5V → power supply
+    usb.vbus ~ power.vin
+    usb.gnd ~ power.gnd
+
+    # Digital 3.3V
+    power.dvdd ~ mcu.dvdd
+    power.dgnd ~ mcu.dgnd
+
+    # Analog 3.3V
+    power.avdd ~ recording.avdd
+    power.agnd ~ recording.agnd
+
+    # Stimulation bipolar supply
+    power.vpos ~ stimulation.vpos
+    power.vneg ~ stimulation.vneg
+    power.agnd ~ stimulation.gnd
+
+    # ══════════════════════════════════════════════
+    # SPI1 — MCU → ADS1299
+    # ══════════════════════════════════════════════
+
+    mcu.spi1_sclk ~ recording.sclk
+    mcu.spi1_mosi ~ recording.din
+    mcu.spi1_miso ~ recording.dout
+    mcu.spi1_cs0 ~ recording.cs
+    mcu.gpio_drdy ~ recording.drdy
+    mcu.gpio_start ~ recording.start
+    mcu.gpio_reset ~ recording.reset
+
+    # ══════════════════════════════════════════════
+    # SPI2 — MCU → DAC8564
+    # ══════════════════════════════════════════════
+
+    mcu.spi2_sclk ~ stimulation.sclk
+    mcu.spi2_mosi ~ stimulation.din
+    mcu.spi2_cs0 ~ stimulation.sync
+
+    # ══════════════════════════════════════════════
+    # ELECTRODE CONNECTIONS
+    # ══════════════════════════════════════════════
+
+    rec_electrodes.rec_ch1p ~ recording.inp1
+    rec_electrodes.rec_ch1n ~ recording.inn1
+    rec_electrodes.rec_ch2p ~ recording.inp2
+    rec_electrodes.rec_ch2n ~ recording.inn2
+    rec_electrodes.rec_ch3p ~ recording.inp3
+    rec_electrodes.rec_ch3n ~ recording.inn3
+    rec_electrodes.rec_ch4p ~ recording.inp4
+    rec_electrodes.rec_ch4n ~ recording.inn4
+    rec_electrodes.rec_ch5p ~ recording.inp5
+    rec_electrodes.rec_ch5n ~ recording.inn5
+    rec_electrodes.rec_ch6p ~ recording.inp6
+    rec_electrodes.rec_ch6n ~ recording.inn6
+    rec_electrodes.rec_ch7p ~ recording.inp7
+    rec_electrodes.rec_ch7n ~ recording.inn7
+    rec_electrodes.rec_ch8p ~ recording.inp8
+    rec_electrodes.rec_ch8n ~ recording.inn8
+
+    # Stimulation outputs
+    rec_electrodes.stim_ch1 ~ stimulation.out1
+    rec_electrodes.stim_ch2 ~ stimulation.out2
+    rec_electrodes.stim_ch3 ~ stimulation.out3
+    rec_electrodes.stim_ch4 ~ stimulation.out4
+
+    # Ground electrode
+    rec_electrodes.gnd ~ power.agnd
+
+    # ══════════════════════════════════════════════
+    # USB DATA
+    # ══════════════════════════════════════════════
+
+    usb.dp ~ mcu.usb_dp
+    usb.dm ~ mcu.usb_dm
+
+    # ══════════════════════════════════════════════
+    # DEBUG HEADER
+    # ══════════════════════════════════════════════
+
+    debug.swdio ~ mcu.swdio
+    debug.swclk ~ mcu.swclk
+    debug.vcc ~ power.dvdd
+    debug.gnd ~ power.dgnd

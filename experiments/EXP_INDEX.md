@@ -80,3 +80,25 @@ Literature review and quantitative characterization of fungal mycelium electroph
 Feasibility study for reproducing the DishBrain paradigm (in vitro neurons playing Pong) using *P. eryngii* mycelium networks. Comprehensive literature review (16 papers with inline citations), gap analysis, and 4-phase experimental plan. Key precedent: non-living EAP hydrogels showed 8-10% Pong improvement via ion memory (Strong et al. 2024).
 
 ---
+
+## EXP_008
+**Title:** Mycelium Sensor/Stim Board — PCB Design
+**Start Date:** 2026-03-09
+**Airtable Links:** None
+**Folder:** `experiments/EXP_008/`
+**Project:** Bio Electronic Music / MyceliumBrain
+
+Custom PCB design for recording extracellular action potentials (8ch) and delivering stimulation (4ch) to *P. eryngii* mycelium. Uses `/design-pcb` workflow pipeline with JLCPCB assembly.
+
+---
+
+## EXP_009
+**Title:** LED Stimulation of Mycelium via Existing PCBs
+**Start Date:** 2026-03-09
+**Airtable Links:** None
+**Folder:** `experiments/EXP_009/`
+**Project:** Bio Electronic Music
+
+Using existing lab PCBs to control LEDs and deliver optical stimulation to *P. eryngii* mycelium, aiming to elicit electrical spiking responses.
+
+---

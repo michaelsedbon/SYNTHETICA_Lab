@@ -243,6 +243,9 @@ void setup() {
     Serial.begin(115200);
     stepper.setMaxSpeed(DEFAULT_SPEED);
     stepper.setAcceleration(DEFAULT_ACCEL);
+    stepper.enableOutputs();  // CRITICAL: sets PIN_STEP and PIN_DIR to OUTPUT mode
+    pinMode(PIN_STEP, OUTPUT);  // Belt-and-suspenders: ensure step pin is OUTPUT
+    pinMode(PIN_DIR, OUTPUT);   // Belt-and-suspenders: ensure dir pin is OUTPUT
     pinMode(PIN_HALL, INPUT_PULLUP);
 
     // Blink LED to show we're alive
@@ -251,6 +254,16 @@ void setup() {
         digitalWrite(LED_BUILTIN, LOW); delay(100);
         digitalWrite(LED_BUILTIN, HIGH); delay(100);
     }
+
+    // ── BOOT TEST: move 2000 steps to verify AccelStepper works ──
+    Serial.println("BOOT_TEST_START");
+    stepper.setMaxSpeed(200);
+    stepper.setAcceleration(100);
+    stepper.move(2000);
+    while (stepper.run()) {}  // blocking
+    Serial.println("BOOT_TEST_DONE");
+    stepper.setMaxSpeed(DEFAULT_SPEED);
+    stepper.setAcceleration(DEFAULT_ACCEL);
 
     Serial.println("READY");
 }

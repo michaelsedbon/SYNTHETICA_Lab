@@ -1,0 +1,6 @@
+[submodule "applications/adc24-dashboard"]
+	path = applications/adc24-dashboard
+	url = https://github.com/michaelsedbon/adc24-dashboard.git
+[submodule "applications/agent-presence"]
+	path = applications/agent-presence
+	url = https://github.com/michaelsedbon/agent-presence.git

@@ -24,6 +24,14 @@
                 <i data-lucide="zap" class="icon-header"></i>
                 Skill Manager
             </h1>
+            <div class="mode-toggle" id="modeToggle">
+                <button class="mode-btn active" data-mode="skills">
+                    <i data-lucide="cpu" class="icon-btn"></i> Skills
+                </button>
+                <button class="mode-btn" data-mode="workflows">
+                    <i data-lucide="git-branch" class="icon-btn"></i> Workflows
+                </button>
+            </div>
             <div class="search-box">
                 <i data-lucide="search" class="search-icon"></i>
                 <input type="text" id="searchInput" placeholder="Search skills...">
@@ -67,6 +75,11 @@
                     <i data-lucide="layers" class="icon-stat"></i>
                     <span class="stat-value" id="statLibrary">0</span>
                     <span>skills</span>
+                </div>
+                <div class="stat">
+                    <i data-lucide="git-branch" class="icon-stat"></i>
+                    <span class="stat-value" id="statWorkflows">0</span>
+                    <span>workflows</span>
                 </div>
             </div>
         </aside>

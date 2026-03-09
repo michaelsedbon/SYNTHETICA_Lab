@@ -1,0 +1,90 @@
+# ============================================================
+# Power Supply Module
+# USB 5V → DVDD 3.3V + AVDD 3.3V + ±5V for stimulation
+# ============================================================
+
+from "parts.ato" import Cap_10uF, Cap_4u7
+
+component AMS1117_3V3:
+    lcsc_id = "C6186"
+    footprint = "SOT-223-3_L6.5-W3.4-H1.6-LS7.0-BR"
+    mpn = "C6186"
+    signal vin ~ pin 3
+    signal vout ~ pin 2
+    signal gnd ~ pin 1
+
+component TLV75733:
+    lcsc_id = "C485517"
+    footprint = "SOT-23-5_L3.0-W1.7-H1.3-LS2.8-BR"
+    mpn = "C485517"
+    signal vin ~ pin 1
+    signal gnd ~ pin 2
+    signal en ~ pin 3
+    signal vout ~ pin 5
+
+component TPS65131:
+    lcsc_id = "C87663"
+    footprint = "QFN-24_L4.0-W4.0-P0.5-BL-EP2.65"
+    mpn = "C87663"
+    signal vin ~ pin 1
+    signal vpos ~ pin 12
+    signal vneg ~ pin 20
+    signal gnd ~ pin 13
+    signal en ~ pin 9
+
+module PowerSupply:
+    signal vin
+    signal gnd
+    signal dvdd
+    signal dgnd
+    signal avdd
+    signal agnd
+    signal vpos
+    signal vneg
+
+    # ── Digital 3.3V LDO (AMS1117-3.3) ───────────
+    ldo_dig = new AMS1117_3V3
+    c_dig_in = new Cap_10uF
+    c_dig_out = new Cap_10uF
+
+    vin ~ ldo_dig.vin
+    vin ~ c_dig_in.p1
+    gnd ~ ldo_dig.gnd
+    gnd ~ c_dig_in.p2
+    gnd ~ c_dig_out.p2
+    dvdd ~ ldo_dig.vout
+    dvdd ~ c_dig_out.p1
+    dgnd ~ gnd
+
+    # ── Analog 3.3V LDO (TLV75733, low noise) ────
+    ldo_ana = new TLV75733
+    c_ana_in = new Cap_4u7
+    c_ana_out = new Cap_4u7
+
+    vin ~ ldo_ana.vin
+    vin ~ c_ana_in.p1
+    ldo_ana.en ~ vin
+    gnd ~ ldo_ana.gnd
+    gnd ~ c_ana_in.p2
+    gnd ~ c_ana_out.p2
+    avdd ~ ldo_ana.vout
+    avdd ~ c_ana_out.p1
+    agnd ~ gnd
+
+    # ── Bipolar ±5V DC-DC (TPS65131) ─────────────
+    dcdc = new TPS65131
+    c_dcdc_in = new Cap_10uF
+    c_dcdc_pos = new Cap_10uF
+    c_dcdc_neg = new Cap_10uF
+
+    dvdd ~ dcdc.vin
+    dvdd ~ c_dcdc_in.p1
+    dcdc.en ~ dvdd
+    gnd ~ dcdc.gnd
+    gnd ~ c_dcdc_in.p2
+    gnd ~ c_dcdc_pos.p2
+    gnd ~ c_dcdc_neg.p2
+    vpos ~ dcdc.vpos
+    vpos ~ c_dcdc_pos.p1
+    vneg ~ dcdc.vneg
+    vneg ~ c_dcdc_neg.p1
