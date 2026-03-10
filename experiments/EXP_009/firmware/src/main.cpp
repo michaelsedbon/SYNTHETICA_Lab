@@ -59,7 +59,7 @@ const char* HOSTNAME      = "leddriver";
 
 // ── Discovery heartbeat ──────────────────────────
 // Pings dev machine so we can find the board's IP
-const char* HEARTBEAT_URL = "http://172.16.1.118:8888/heartbeat";
+const char* HEARTBEAT_URL = "http://172.16.1.80:8000/api/heartbeat";
 
 // ── Hardware ─────────────────────────────────────
 #define I2C_SDA 6
