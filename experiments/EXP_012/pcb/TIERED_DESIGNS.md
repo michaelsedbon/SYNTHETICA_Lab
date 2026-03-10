@@ -28,9 +28,9 @@ graph TD
     end
 
     subgraph Motor_Output
-        LS["NPN Level Shift 2x S8050"]
-        MT["Screw Terminal PUL+ DIR+ GND"]
-        ESP -->|GPIO16 STEP / GPIO17 DIR| LS
+        LS["NPN Level Shift 3x S8050"]
+        MT["Screw Terminals PUL+- DIR+- ENA+-"]
+        ESP -->|GPIO16 PUL / GPIO17 DIR / GPIO18 ENA| LS
         BUCK -->|5V pull-up| LS
         LS -->|5V logic| MT
         MT --> DRV["DM542T Stepper Driver"]
@@ -80,14 +80,14 @@ This is a single-purpose motor controller board. Unlike multi-channel designs (e
 | MCU + WiFi | ESP32-WROOM-32 | 1 |
 | Power regulation | XL1509-5.0E1 + AMS1117-3.3 | 2 ICs |
 | USB programming | CH340C + USB-C + ESD + auto-reset (2× NPN) | 5 parts |
-| Motor level shift | 2× S8050 NPN + 4× resistors | 6 parts |
+| Motor level shift | 3× S8050 NPN + 6× resistors | 9 parts |
 | Sensor input | Pull-up + Zener + series resistor | 3 parts |
 | Display | 4-pin header (OLED off-board) | 1 part |
 | Debug LEDs | 3× LED + 3× current-limit resistor | 6 parts |
 | User controls | 2× tactile buttons | 2 parts |
 | Passive support | Caps, resistors, inductor, diode | ~15 parts |
-| **Total unique components** | | **~25 types** |
-| **Total placed parts** | | **~45 parts** |
+| **Total unique components** | | **~27 types** |
+| **Total placed parts** | | **~50 parts** |
 
 > **No additional tiers needed.** Adding a second motor channel would require 2 more NPN transistors + 2 more GPIO pins + wider screw terminals — but the user specified 1× DM542T only.
 

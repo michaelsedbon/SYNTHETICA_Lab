@@ -16,9 +16,10 @@ Research for a single-board ESP32 replacement for the dual-chip ESP8266+Nano mot
 │                                                                  │
 │  24V IN ──► XL1509 (→5V) ──► AMS1117-3.3 (→3.3V) ──► ESP32     │
 │                     │                                            │
-│  ESP32 GPIO16 ──► NPN level shift (→5V) ──► STEP ──┐            │
-│  ESP32 GPIO17 ──► NPN level shift (→5V) ──► DIR  ──┤──► DM542T  │
-│                                              GND ──┘            │
+│  ESP32 GPIO16 ──► NPN level shift (→5V) ──► PUL+ ──┐            │
+│  ESP32 GPIO17 ──► NPN level shift (→5V) ──► DIR+ ──┤            │
+│  ESP32 GPIO18 ──► NPN level shift (→5V) ──► ENA+ ──┤──► DM542T  │
+│                                        PUL-/DIR-/ENA- = GND     │
 │                                                                  │
 │  ESP32 GPIO34 ◄── 1kΩ ◄── Screw Terminal ◄── NPN Sensor (24V)  │
 │                    └── 3.3V Zener (fault protection)             │
@@ -60,13 +61,14 @@ Research for a single-board ESP32 replacement for the dual-chip ESP8266+Nano mot
 |----------|------|-----------|
 | **STEP** (PUL+) | **GPIO16** | Safe output, no boot function, no conflict |
 | **DIR** (DIR+) | **GPIO17** | Safe output, adjacent to GPIO16 |
+| **ENA** (ENA+) | **GPIO18** | Safe output, enable/disable driver |
 | **Sensor** input | **GPIO34** | Input-only pin — perfect for sensor, saves a bidirectional GPIO |
 | **OLED SDA** | **GPIO21** | Default I2C SDA on ESP32 |
 | **OLED SCL** | **GPIO22** | Default I2C SCL on ESP32 |
 | **LED WiFi** | **GPIO23** | Safe output, WiFi status indicator |
 | **LED Motor** | **GPIO25** | Safe output, motor activity indicator |
 
-> **Note:** GPIO16/17 are also UART2 TX/RX on ESP32, but we won't use UART2 so no conflict. These pins have no boot-time side effects.
+> **Note:** GPIO16/17/18 are safe output pins with no boot-time side effects.
 
 ---
 
@@ -80,7 +82,7 @@ The DM542T has optically isolated inputs (PUL+, DIR+, ENA+, and shared GND). Key
 
 ### Level Shifting: NPN Transistor (3.3V → 5V)
 
-Simplest and cheapest approach — one NPN transistor per channel, using the 5V rail from the MP1584:
+Simplest and cheapest approach — one NPN transistor per channel (PUL, DIR, ENA), using the 5V rail:
 
 ```
                         5V (from XL1509)
@@ -89,16 +91,16 @@ Simplest and cheapest approach — one NPN transistor per channel, using the 5V 
                          │
 ESP32 GPIO ──[1kΩ]──► Base ──► NPN (S8050)
                               │
-                          Collector ──────► DM542T PUL+ or DIR+
+                          Collector ──────► DM542T PUL+ / DIR+ / ENA+
                           Emitter ──► GND
 
-DM542T PUL- / DIR- ──────────────► GND
+DM542T PUL- / DIR- / ENA- ──────────► GND
 ```
 
 **Logic:** ESP32 HIGH → NPN saturates → collector goes LOW → DM542T sees 0V.
 ESP32 LOW → NPN off → collector pulled to 5V → DM542T sees 5V.
 
-> **Note:** This inverts the signal. AccelStepper handles this fine — just swap the `HIGH`/`LOW` logic in firmware, or use `stepper.setPinsInverted(true, false)` in AccelStepper.
+> **Note:** This inverts the signal. AccelStepper handles this fine — use `stepper.setPinsInverted(true, false)`. ENA is active-low on DM542T (LOW = enabled), so the inversion actually helps: ESP32 HIGH → NPN on → ENA LOW → driver enabled.
 
 ### Confirmed Working Parameters (from EXP_011, to port to ESP32)
 
@@ -274,15 +276,15 @@ The PWR LED connects directly to the 3.3V rail through a 330Ω resistor (no GPIO
 | LDO regulator | AMS1117-3.3 | SOT-223 | 1 | 5V → 3.3V (JLCPCB basic ✅) |
 | USB-serial | CH340C | SOP-16 | 1 | USB-to-UART for programming |
 | USB-C connector | Standard 16-pin | SMD | 1 | Programming/debug |
-| NPN transistors | S8050 | SOT-23 | **4** | 2× auto-reset + 2× motor level shift |
+| NPN transistors | S8050 | SOT-23 | **5** | 2× auto-reset + 3× motor level shift (PUL/DIR/ENA) |
 | Schottky diode | SS34 | SMA | 1 | Buck converter freewheeling |
 | Inductor | 100µH | 8×8mm | 1 | Buck converter (XL1509) |
 | Electrolytic caps | 100µF, 220µF | 6.3×7mm | 2 | XL1509 input/output filtering |
 | ESD protection | USBLC6-2SC6 | SOT-23-6 | 1 | USB data line protection |
 | Zener diode | 3.3V | SOD-323 | 1 | Sensor GPIO protection |
 | Caps (ceramic) | 22µF, 10µF, 100nF | 0805/0603 | ~8 | Decoupling/filtering |
-| Resistors | Various | 0603 | ~17 | Pull-ups, level shift, feedback, I2C, LED current limit |
-| Screw terminals | 2-pos, 5.08mm pitch | Through-hole | 3 | 24V in, Motor out, Sensor |
+| Resistors | Various | 0603 | ~19 | Pull-ups, level shift, feedback, I2C, LED current limit |
+| Screw terminals | 2-pos, 5.08mm pitch | Through-hole | 4 | 24V in, Motor PUL+/-, Motor DIR+/ENA+, Sensor |
 | OLED header | 4-pin 2.54mm | Through-hole | 1 | SSD1306 OLED connector |
 | LED (green) | 0603 | SMD | 1 | PWR indicator (hardwired) |
 | LED (blue) | 0603 | SMD | 1 | WiFi status (GPIO23) |
