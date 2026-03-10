@@ -26,3 +26,11 @@ Index of all scripts, firmware, data files, and generated artifacts.
 | `applications/experiment-designer/dashboard/src/app/page.tsx` | Protocol builder UI with block/stimulus editors, timeline preview |
 | `applications/experiment-designer/dashboard/src/lib/protocol.ts` | Protocol types, factory functions, utility functions |
 | `applications/experiment-designer/server/main.py` | FastAPI backend — protocol CRUD + validation |
+
+## Data Analysis Scripts
+
+| File | Description |
+|------|-------------|
+| `experiments/EXP_010/analysis/01_load_and_explore.py` | Load CSV, basic stats, full-session voltage trace with stimulus bands |
+| `experiments/EXP_010/analysis/02_stimulus_response.py` | Epoch analysis around stimuli, mean response curves, paired t-tests |
+| `experiments/EXP_010/analysis/03_summary_figures.py` | 4-panel publication figure: trace, mean response, RMS box plot, PSD |
