@@ -96,6 +96,7 @@ void runPattern();
 String getStatusJSON();
 const char* patternName(Pattern p);
 void setupDebugAPI();
+void reinitPCA9685();
 
 // ── I2C register helpers ─────────────────────────
 uint8_t readPCA9685Reg(uint8_t reg) {
@@ -250,16 +251,60 @@ void setupOTA() {
 // ==========================================================
 void setupPCA9685() {
     Wire.begin(I2C_SDA, I2C_SCL);
+    delay(50);  // Let I2C bus stabilize
+
+    // Retry initialization up to 5 times
+    bool found = false;
+    for (int attempt = 0; attempt < 5; attempt++) {
+        Wire.beginTransmission(PCA9685_ADDR);
+        uint8_t err = Wire.endTransmission();
+        if (err == 0) {
+            found = true;
+            wifiLog("[PCA9685] Found on attempt %d", attempt + 1);
+            break;
+        }
+        wifiLog("[PCA9685] Not found (attempt %d, err=%d), retrying...", attempt + 1, err);
+        delay(500);
+    }
+
+    if (!found) {
+        wifiLog("[PCA9685] WARNING: chip not found after 5 attempts!");
+        wifiLog("[PCA9685] Run /api/reinit or /api/debug/scanpins to recover");
+    }
+
     pwm.begin();
     pwm.setOscillatorFrequency(25000000);
     pwm.setPWMFreq(PWM_FREQ);
     delay(10);
 
+    // Verify the frequency was actually set by reading the prescale register
+    uint8_t prescale = readPCA9685Reg(0xFE);
+    float actualFreq = 25000000.0f / (4096.0f * (prescale + 1));
+    wifiLog("[PCA9685] Init @ 0x%02X, target=%dHz actual=%dHz prescale=%d",
+            PCA9685_ADDR, PWM_FREQ, (int)actualFreq, prescale);
+
     // All channels off
     for (int i = 0; i < 16; i++) {
         pwm.setPWM(i, 0, 0);
     }
-    wifiLog("[PCA9685] Init @ 0x%02X, %d Hz", PCA9685_ADDR, PWM_FREQ);
+}
+
+// Re-initialize PCA9685 (callable via API after pin scanner or bus glitch)
+void reinitPCA9685() {
+    Wire.end();
+    delay(50);
+    Wire.begin(I2C_SDA, I2C_SCL);
+    delay(50);
+    pwm.begin();
+    pwm.setOscillatorFrequency(25000000);
+    pwm.setPWMFreq(PWM_FREQ);
+    delay(10);
+    for (int i = 0; i < 16; i++) {
+        pwm.setPWM(i, 0, 0);
+    }
+    uint8_t prescale = readPCA9685Reg(0xFE);
+    float actualFreq = 25000000.0f / (4096.0f * (prescale + 1));
+    wifiLog("[PCA9685] Re-init complete: %dHz (prescale=%d)", (int)actualFreq, prescale);
 }
 
 // Apply PWM to a channel (sets both IN1 and IN2 of the DRV8870)
@@ -544,6 +589,25 @@ void setupAPI() {
             applyChannel(i, 0);
         }
         request->send(200, "application/json", "{\"ok\":true,\"pattern\":\"none\"}");
+    });
+
+    // ── POST /api/reinit ─────────────────────────
+    server.on("/api/reinit", HTTP_POST, [](AsyncWebServerRequest *request) {
+        wifiLog("[API] PCA9685 re-init requested");
+        reinitPCA9685();
+        // Verify
+        Wire.beginTransmission(PCA9685_ADDR);
+        uint8_t err = Wire.endTransmission();
+        uint8_t prescale = readPCA9685Reg(0xFE);
+        float freq = 25000000.0f / (4096.0f * (prescale + 1));
+        JsonDocument resp;
+        resp["ok"] = (err == 0);
+        resp["i2c_present"] = (err == 0);
+        resp["freq_hz"] = (int)freq;
+        resp["prescale"] = prescale;
+        String out;
+        serializeJson(resp, out);
+        request->send(200, "application/json", out);
     });
 
     // ── OPTIONS (CORS preflight) ──────────────────
