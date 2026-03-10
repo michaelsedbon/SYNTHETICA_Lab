@@ -30,7 +30,7 @@ Give **autonomous control** of the machine to a local **Ollama LLM** running on 
 - Built KiCad schematic with full connectivity (`level_motor_controler.kicad_sch`)
 - Documented ISD04 NEMA17 integrated stepper motors
 
-### Phase 2: Firmware & Communication ✅ (partial)
+### Phase 2: Firmware & Communication ✅
 - **ESP8266 firmware deployed** — WiFi + OTA + web dashboard + OLED
   - IP: `172.16.1.115` / `cryptobeings.local`
   - Web dashboard: http://172.16.1.115 (live WebSocket debug logs)
@@ -41,12 +41,17 @@ Give **autonomous control** of the machine to a local **Ollama LLM** running on 
   - Serial command protocol: MOVE, HOME, STATUS, STOP, SPEED
   - ISD04 stepper driver with trapezoidal acceleration
   - Hall-effect sensor homing support
-- **Not yet done**: Wire ESP↔Nano together and test full serial bridge chain
+- ESP↔Nano serial bridge tested (see EXP_005/EXP_011 for advanced motor control debug)
 
-### Phase 3: Ollama Integration 🔲
-- Deploy Ollama on local network server (172.16.1.80)
-- Create agent wrapper with tool-use for machine control
-- Define safety constraints and autonomous operation boundaries
+### Phase 3: Ollama Integration ✅
+- **Lab Agent app deployed** on local server (172.16.1.80)
+  - App: `applications/lab-agent/` (FastAPI + WebSocket)
+  - LLM: qwen2.5:14b via local Ollama
+  - 13 tools: file ops, terminal, HTTP, machine control, knowledge base
+  - WebSocket event streaming on `/ws/agent`
+  - JSONL session timelines for persistent memory
+- **Agent Presence display** — kiosk screen on server showing agent activity in real-time
+  - App: `applications/agent-presence/` (Canvas face animation + event feed)
 
 ## Hardware Summary
 

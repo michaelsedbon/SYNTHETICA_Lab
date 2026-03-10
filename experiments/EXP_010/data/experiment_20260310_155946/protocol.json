@@ -1,0 +1,33 @@
+{
+  "name": "New Protocol",
+  "version": "1.0",
+  "created": "2026-03-10T14:26:26.455Z",
+  "description": "",
+  "literature_reference": "Mishra et al. 2024",
+  "global_defaults": {
+    "isi_s": 20,
+    "led_channel": 7,
+    "led_driver_url": "http://172.16.1.126"
+  },
+  "baseline": {
+    "pre_s": 1,
+    "post_s": 1
+  },
+  "blocks": [
+    {
+      "label": "Block 1",
+      "randomize": false,
+      "stimuli": [
+        {
+          "type": "pulse",
+          "pwm": 1024,
+          "duration_s": 2,
+          "repeat": 7,
+          "isi_s": 1
+        }
+      ]
+    }
+  ],
+  "randomize_blocks": false,
+  "random_seed": 42
+}

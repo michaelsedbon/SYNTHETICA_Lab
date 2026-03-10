@@ -1,0 +1,62 @@
+# ============================================================
+# USB-C + CH340C + Auto-Reset Module
+# ============================================================
+
+from "parts.ato" import CH340C, USB_C_Connector, USBLC6_2SC6
+from "parts.ato" import S8050_NPN, Resistor_10k, Resistor_5k1, Cap_100nF, Cap_1uF
+
+module USBProgramming:
+    signal v3v3
+    signal gnd
+    signal esp_tx
+    signal esp_rx
+    signal esp_en
+    signal esp_gpio0
+
+    # ── USB-C connector ──────────────────────────
+    usb = new USB_C_Connector
+    r_cc1 = new Resistor_5k1
+    r_cc2 = new Resistor_5k1
+
+    usb.gnd ~ gnd
+    usb.cc1 ~ r_cc1.p1
+    r_cc1.p2 ~ gnd
+    usb.cc2 ~ r_cc2.p1
+    r_cc2.p2 ~ gnd
+
+    # ── ESD protection ───────────────────────────
+    esd = new USBLC6_2SC6
+    esd.vbus ~ v3v3
+    esd.gnd ~ gnd
+    usb.dp ~ esd.io1_in
+    usb.dm ~ esd.io2_in
+
+    # ── CH340C USB-to-serial ─────────────────────
+    ch = new CH340C
+    c_ch_dec = new Cap_100nF
+
+    ch.vcc ~ v3v3
+    ch.v3 ~ v3v3
+    ch.gnd ~ gnd
+    v3v3 ~ c_ch_dec.p1
+    gnd ~ c_ch_dec.p2
+    esd.io1_out ~ ch.ud_plus
+    esd.io2_out ~ ch.ud_minus
+    ch.txd ~ esp_rx
+    ch.rxd ~ esp_tx
+
+    # ── Auto-reset circuit (2× NPN) ─────────────
+    q1 = new S8050_NPN
+    q2 = new S8050_NPN
+    r_dtr = new Resistor_10k
+    r_rts = new Resistor_10k
+
+    ch.dtr ~ r_dtr.p1
+    r_dtr.p2 ~ q1.base
+    q1.collector ~ esp_gpio0
+    q1.emitter ~ ch.rts
+
+    ch.rts ~ r_rts.p1
+    r_rts.p2 ~ q2.base
+    q2.collector ~ esp_en
+    q2.emitter ~ ch.dtr

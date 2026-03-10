@@ -1,0 +1,6 @@
+ato-version: ^0.2.0
+paths:
+- elec/src
+builds:
+  default:
+    entry: elec/src/main.ato:MotorController

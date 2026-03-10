@@ -1,0 +1,49 @@
+# ============================================================
+# Power Supply Module
+# 24V → XL1509 (5V) → AMS1117-3.3 (3.3V)
+# ============================================================
+
+from "parts.ato" import XL1509_5V, AMS1117_3V3, SS34, Inductor_100uH
+from "parts.ato" import Cap_100uF_Elec, Cap_220uF_Elec, Cap_22uF, Cap_10uF, Cap_100nF
+
+module PowerSupply:
+    signal vin_24v
+    signal v5
+    signal v3v3
+    signal gnd
+
+    # ── XL1509 Buck: 24V → 5V (fixed output) ────
+    buck = new XL1509_5V
+    diode = new SS34
+    inductor = new Inductor_100uH
+    c_buck_in = new Cap_100uF_Elec
+    c_buck_out = new Cap_220uF_Elec
+    c_buck_bypass = new Cap_100nF
+
+    vin_24v ~ buck.vin
+    vin_24v ~ c_buck_in.p1
+    vin_24v ~ buck.on_off
+    gnd ~ buck.gnd
+    gnd ~ c_buck_in.p2
+    gnd ~ c_buck_out.p2
+    gnd ~ c_buck_bypass.p2
+    gnd ~ diode.anode
+    buck.out ~ inductor.p1
+    inductor.p2 ~ v5
+    v5 ~ c_buck_out.p1
+    buck.fb ~ v5
+    diode.cathode ~ buck.out
+    buck.vin ~ c_buck_bypass.p1
+
+    # ── AMS1117-3.3 LDO: 5V → 3.3V ──────────────
+    ldo = new AMS1117_3V3
+    c_ldo_in = new Cap_22uF
+    c_ldo_out = new Cap_22uF
+
+    v5 ~ ldo.vin
+    v5 ~ c_ldo_in.p1
+    gnd ~ ldo.gnd
+    gnd ~ c_ldo_in.p2
+    gnd ~ c_ldo_out.p2
+    v3v3 ~ ldo.vout
+    v3v3 ~ c_ldo_out.p1

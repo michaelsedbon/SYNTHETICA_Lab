@@ -1,0 +1,262 @@
+# ============================================================
+# Explicit LCSC component definitions
+# EXP_012 ESP32 Motor Controller
+#
+# NOTE: mpn MUST be the LCSC part number (not manufacturer PN).
+# Atopile maps mpn → BOM "LCSC" column for JLCPCB.
+# ============================================================
+
+# ── Resistors (0603) ─────────────────────────────────────────
+
+component Resistor_330R:
+    lcsc_id = "C23138"
+    footprint = "R0603"
+    mpn = "C23138"
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2
+
+component Resistor_1k:
+    lcsc_id = "C21190"
+    footprint = "R0603"
+    mpn = "C21190"
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2
+
+component Resistor_4k7:
+    lcsc_id = "C23162"
+    footprint = "R0603"
+    mpn = "C23162"
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2
+
+component Resistor_5k1:
+    lcsc_id = "C23186"
+    footprint = "R0603"
+    mpn = "C23186"
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2
+
+component Resistor_10k:
+    lcsc_id = "C25804"
+    footprint = "R0603"
+    mpn = "C25804"
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2
+
+# ── Capacitors ───────────────────────────────────────────────
+
+component Cap_100nF:
+    lcsc_id = "C14663"
+    footprint = "C0603"
+    mpn = "C14663"
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2
+
+component Cap_1uF:
+    lcsc_id = "C15849"
+    footprint = "C0603"
+    mpn = "C15849"
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2
+
+component Cap_10uF:
+    lcsc_id = "C15850"
+    footprint = "C0805"
+    mpn = "C15850"
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2
+
+component Cap_22uF:
+    lcsc_id = "C45783"
+    footprint = "C0805"
+    mpn = "C45783"
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2
+
+component Cap_100uF_Elec:
+    lcsc_id = "C108785"
+    footprint = "CAP-SMD_BD6.3-L6.6-W6.6-LS7.6-FD"
+    mpn = "C108785"
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2
+
+component Cap_220uF_Elec:
+    lcsc_id = "C106456"
+    footprint = "CAP-SMD_BD6.3-L6.6-W6.6-LS7.6-FD"
+    mpn = "C106456"
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2
+
+# ── Diodes ───────────────────────────────────────────────────
+
+component SS34:
+    lcsc_id = "C8678"
+    footprint = "SMA_L4.4-W2.8-LS5.4"
+    mpn = "C8678"
+    signal anode ~ pin 1
+    signal cathode ~ pin 2
+
+component Zener_3V3:
+    lcsc_id = "C15127"
+    footprint = "SOD-323_L1.8-W1.3-LS2.5-RD"
+    mpn = "C15127"
+    signal anode ~ pin 1
+    signal cathode ~ pin 2
+
+# ── LEDs (0603) ──────────────────────────────────────────────
+
+component LED_Green:
+    lcsc_id = "C72043"
+    footprint = "LED0603"
+    mpn = "C72043"
+    signal anode ~ pin 2
+    signal cathode ~ pin 1
+
+component LED_Blue:
+    lcsc_id = "C72041"
+    footprint = "LED0603"
+    mpn = "C72041"
+    signal anode ~ pin 2
+    signal cathode ~ pin 1
+
+component LED_Yellow:
+    lcsc_id = "C72038"
+    footprint = "LED0603"
+    mpn = "C72038"
+    signal anode ~ pin 2
+    signal cathode ~ pin 1
+
+# ── NPN Transistor ───────────────────────────────────────────
+
+component S8050_NPN:
+    lcsc_id = "C2146"
+    footprint = "SOT-23-3_L2.9-W1.6-H1.2-LS2.8-BR"
+    mpn = "C2146"
+    signal base ~ pin 1
+    signal emitter ~ pin 3
+    signal collector ~ pin 2
+
+# ── ICs ──────────────────────────────────────────────────────
+
+component XL1509_5V:
+    lcsc_id = "C61063"
+    footprint = "SOP-8_L4.9-W3.9-P1.27-LS6.0"
+    mpn = "C61063"
+    signal vin ~ pin 8
+    signal gnd ~ pin 6
+    signal out ~ pin 2
+    signal fb ~ pin 4
+    signal on_off ~ pin 5
+
+component AMS1117_3V3:
+    lcsc_id = "C6186"
+    footprint = "SOT-223-3_L6.5-W3.4-H1.6-LS7.0-BR"
+    mpn = "C6186"
+    signal vin ~ pin 3
+    signal vout ~ pin 2
+    signal gnd ~ pin 1
+
+component CH340C:
+    lcsc_id = "C84681"
+    footprint = "SOP-16_L10.0-W3.9-P1.27-LS6.0"
+    mpn = "C84681"
+    signal ud_plus ~ pin 5
+    signal ud_minus ~ pin 6
+    signal txd ~ pin 9
+    signal rxd ~ pin 8
+    signal dtr ~ pin 13
+    signal rts ~ pin 14
+    signal vcc ~ pin 16
+    signal gnd ~ pin 1
+    signal v3 ~ pin 4
+
+component USBLC6_2SC6:
+    lcsc_id = "C7519"
+    footprint = "SOT-23-6_L2.9-W1.6-H1.2-LS2.8-BR"
+    mpn = "C7519"
+    signal vbus ~ pin 1
+    signal io1_in ~ pin 3
+    signal io1_out ~ pin 4
+    signal io2_in ~ pin 6
+    signal io2_out ~ pin 5
+    signal gnd ~ pin 2
+
+component ESP32_WROOM_32:
+    lcsc_id = "C82899"
+    footprint = "WIFI-SMD_ESP32-WROOM-32"
+    mpn = "C82899"
+    signal gnd ~ pin 1
+    signal vdd ~ pin 2
+    signal en ~ pin 3
+    signal gpio36 ~ pin 4
+    signal gpio39 ~ pin 5
+    signal gpio34 ~ pin 6
+    signal gpio35 ~ pin 7
+    signal gpio32 ~ pin 8
+    signal gpio33 ~ pin 9
+    signal gpio25 ~ pin 10
+    signal gpio26 ~ pin 11
+    signal gpio27 ~ pin 12
+    signal gpio14 ~ pin 13
+    signal gpio12 ~ pin 14
+    signal gpio13 ~ pin 16
+    signal gpio15 ~ pin 23
+    signal gpio2 ~ pin 24
+    signal gpio0 ~ pin 25
+    signal gpio4 ~ pin 26
+    signal gpio16 ~ pin 27
+    signal gpio17 ~ pin 28
+    signal gpio5 ~ pin 29
+    signal gpio18 ~ pin 30
+    signal gpio19 ~ pin 31
+    signal gpio21 ~ pin 33
+    signal gpio3 ~ pin 34
+    signal gpio1 ~ pin 35
+    signal gpio22 ~ pin 36
+    signal gpio23 ~ pin 37
+
+# ── Connectors ───────────────────────────────────────────────
+
+component ScrewTerminal_2P:
+    lcsc_id = "C8269"
+    footprint = "CONN-TH_2P-P5.08_WJ128V-5.0-2P"
+    mpn = "C8269"
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2
+
+component Header_4P:
+    lcsc_id = "C124378"
+    footprint = "HDR-TH_4P-P2.54-V"
+    mpn = "C124378"
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2
+    signal p3 ~ pin 3
+    signal p4 ~ pin 4
+
+component USB_C_Connector:
+    lcsc_id = "C165948"
+    footprint = "USB-C-SMD_TYPE-C-31-M-12"
+    mpn = "C165948"
+    signal vbus ~ pin A4
+    signal gnd ~ pin A1
+    signal dp ~ pin A6
+    signal dm ~ pin A7
+    signal cc1 ~ pin A5
+    signal cc2 ~ pin B5
+    signal shield ~ pin S1
+
+component TactileButton:
+    lcsc_id = "C318884"
+    footprint = "SW-SMD_L5.1-W5.1-P3.70"
+    mpn = "C318884"
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2
+
+# ── Inductor ─────────────────────────────────────────────────
+
+component Inductor_100uH:
+    lcsc_id = "C107564"
+    footprint = "IND-SMD_L6.6-W6.6"
+    mpn = "C107564"
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2

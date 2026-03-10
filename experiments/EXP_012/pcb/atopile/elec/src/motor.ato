@@ -1,0 +1,59 @@
+# ============================================================
+# Motor Level Shift Module
+# 3× NPN open-collector (3.3V → 5V) for PUL, DIR, ENA
+# ============================================================
+
+from "parts.ato" import S8050_NPN, Resistor_1k
+
+module NPN_LevelShift:
+    signal input
+    signal output
+    signal v5
+    signal gnd
+
+    q = new S8050_NPN
+    r_base = new Resistor_1k
+    r_pullup = new Resistor_1k
+
+    input ~ r_base.p1
+    r_base.p2 ~ q.base
+    q.emitter ~ gnd
+    v5 ~ r_pullup.p1
+    r_pullup.p2 ~ q.collector
+    q.collector ~ output
+
+module MotorInterface:
+    signal step_in
+    signal dir_in
+    signal ena_in
+    signal v5
+    signal gnd
+
+    signal pul_plus
+    signal pul_minus
+    signal dir_plus
+    signal dir_minus
+    signal ena_plus
+    signal ena_minus
+
+    ls_step = new NPN_LevelShift
+    ls_dir = new NPN_LevelShift
+    ls_ena = new NPN_LevelShift
+
+    step_in ~ ls_step.input
+    ls_step.v5 ~ v5
+    ls_step.gnd ~ gnd
+    ls_step.output ~ pul_plus
+    gnd ~ pul_minus
+
+    dir_in ~ ls_dir.input
+    ls_dir.v5 ~ v5
+    ls_dir.gnd ~ gnd
+    ls_dir.output ~ dir_plus
+    gnd ~ dir_minus
+
+    ena_in ~ ls_ena.input
+    ls_ena.v5 ~ v5
+    ls_ena.gnd ~ gnd
+    ls_ena.output ~ ena_plus
+    gnd ~ ena_minus

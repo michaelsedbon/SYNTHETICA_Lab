@@ -1,7 +1,7 @@
 # EXP_005: High-Power Motor Control (DM542T)
 
 **Start Date:** 2026-03-04
-**Status:** In progress
+**Status:** ⚠️ Blocked — fatal PCB defect, superseded by EXP_011/EXP_012
 **Airtable Links:** None
 
 ---
@@ -34,9 +34,17 @@ Successfully configure, flash, and verify motor control boards using the bare ES
 
 ## Results
 
-- ESP8266 and Arduino Nano communicate reliably over serial at 115200 baud.
+- ESP8266 and Arduino Nano communicate reliably over serial at 115200 baud via USB.
 - Web dashboard at `http://172.16.1.115/` provides full motor control.
 - OTA flashing works for both ESP (ArduinoOTA) and Nano (STK500v1 over TCP bridge).
+- ❌ **Motor does not move when commands sent via WiFi/ESP bridge** — motor only moves with USB serial directly to Nano.
+
+## Root Cause (discovered in EXP_011)
+
+**Fatal PCB TX/RX short:** Nano TX (D1) is connected to both ESP RX AND ESP TX on the same trace. This shorts two outputs together, corrupting all serial communication through the WiFi bridge. The motor works perfectly via USB but fails over WiFi.
+
+→ **EXP_011**: Incremental firmware debug that confirmed the hardware root cause.  
+→ **EXP_012**: Replacement PCB design using a single ESP32 (eliminates dual-chip architecture).
 
 ## References
 

@@ -1,0 +1,168 @@
+# ============================================================
+# ESP32 Motor Controller — Top-Level
+# EXP_012 | Single DM542T stepper driver controller
+# ============================================================
+
+from "power.ato" import PowerSupply
+from "motor.ato" import MotorInterface
+from "usb.ato" import USBProgramming
+from "parts.ato" import ESP32_WROOM_32, ScrewTerminal_2P, Header_4P
+from "parts.ato" import TactileButton, Resistor_10k, Resistor_1k
+from "parts.ato" import Resistor_4k7, Resistor_330R, Zener_3V3
+from "parts.ato" import Cap_100nF, Cap_1uF, Cap_10uF
+from "parts.ato" import LED_Green, LED_Blue, LED_Yellow
+
+module MotorController:
+    # ══════════════════════════════════════════════
+    # INSTANTIATE BLOCKS
+    # ══════════════════════════════════════════════
+
+    power = new PowerSupply
+    motor = new MotorInterface
+    usb = new USBProgramming
+    esp = new ESP32_WROOM_32
+
+    # Connectors
+    j_24v = new ScrewTerminal_2P
+    j_pul = new ScrewTerminal_2P
+    j_dir_ena = new ScrewTerminal_2P
+    j_sensor = new ScrewTerminal_2P
+    j_oled = new Header_4P
+
+    # Buttons
+    btn_boot = new TactileButton
+    btn_reset = new TactileButton
+
+    # ESP32 decoupling
+    c_esp_dec1 = new Cap_100nF
+    c_esp_dec2 = new Cap_10uF
+
+    # EN pin RC
+    r_en_pullup = new Resistor_10k
+    c_en = new Cap_1uF
+
+    # Sensor protection
+    r_sensor_series = new Resistor_1k
+    r_sensor_pullup = new Resistor_10k
+    z_sensor = new Zener_3V3
+
+    # I2C pull-ups
+    r_sda = new Resistor_4k7
+    r_scl = new Resistor_4k7
+
+    # LEDs
+    led_pwr = new LED_Green
+    r_led_pwr = new Resistor_330R
+    led_wifi = new LED_Blue
+    r_led_wifi = new Resistor_330R
+    led_motor = new LED_Yellow
+    r_led_motor = new Resistor_330R
+
+    # ══════════════════════════════════════════════
+    # POWER CONNECTIONS
+    # ══════════════════════════════════════════════
+
+    # 24V input screw terminal
+    j_24v.p1 ~ power.vin_24v
+    j_24v.p2 ~ power.gnd
+
+    # ESP32 power
+    power.v3v3 ~ esp.vdd
+    power.gnd ~ esp.gnd
+    power.v3v3 ~ c_esp_dec1.p1
+    power.gnd ~ c_esp_dec1.p2
+    power.v3v3 ~ c_esp_dec2.p1
+    power.gnd ~ c_esp_dec2.p2
+
+    # ══════════════════════════════════════════════
+    # EN PIN (reset + pull-up + cap)
+    # ══════════════════════════════════════════════
+
+    power.v3v3 ~ r_en_pullup.p1
+    r_en_pullup.p2 ~ esp.en
+    esp.en ~ c_en.p1
+    power.gnd ~ c_en.p2
+
+    # ══════════════════════════════════════════════
+    # USB PROGRAMMING
+    # ══════════════════════════════════════════════
+
+    usb.v3v3 ~ power.v3v3
+    usb.gnd ~ power.gnd
+    usb.esp_tx ~ esp.gpio1
+    usb.esp_rx ~ esp.gpio3
+    usb.esp_en ~ esp.en
+    usb.esp_gpio0 ~ esp.gpio0
+
+    # ══════════════════════════════════════════════
+    # MOTOR INTERFACE (GPIO16=PUL, GPIO17=DIR, GPIO18=ENA)
+    # ══════════════════════════════════════════════
+
+    esp.gpio16 ~ motor.step_in
+    esp.gpio17 ~ motor.dir_in
+    esp.gpio18 ~ motor.ena_in
+    power.v5 ~ motor.v5
+    power.gnd ~ motor.gnd
+
+    # Motor screw terminals
+    motor.pul_plus ~ j_pul.p1
+    motor.pul_minus ~ j_pul.p2
+    motor.dir_plus ~ j_dir_ena.p1
+    motor.ena_plus ~ j_dir_ena.p2
+
+    # ══════════════════════════════════════════════
+    # SENSOR INPUT (GPIO34)
+    # ══════════════════════════════════════════════
+
+    j_sensor.p1 ~ r_sensor_series.p1
+    r_sensor_series.p2 ~ esp.gpio34
+    power.v3v3 ~ r_sensor_pullup.p1
+    r_sensor_pullup.p2 ~ esp.gpio34
+    z_sensor.cathode ~ esp.gpio34
+    z_sensor.anode ~ power.gnd
+    j_sensor.p2 ~ power.gnd
+
+    # ══════════════════════════════════════════════
+    # OLED DISPLAY (I2C: GPIO21=SDA, GPIO22=SCL)
+    # ══════════════════════════════════════════════
+
+    j_oled.p1 ~ power.gnd
+    j_oled.p2 ~ power.v3v3
+    j_oled.p3 ~ esp.gpio21
+    j_oled.p4 ~ esp.gpio22
+
+    power.v3v3 ~ r_sda.p1
+    r_sda.p2 ~ esp.gpio21
+    power.v3v3 ~ r_scl.p1
+    r_scl.p2 ~ esp.gpio22
+
+    # ══════════════════════════════════════════════
+    # STATUS LEDs
+    # ══════════════════════════════════════════════
+
+    # PWR LED (hardwired to 3.3V)
+    power.v3v3 ~ r_led_pwr.p1
+    r_led_pwr.p2 ~ led_pwr.anode
+    led_pwr.cathode ~ power.gnd
+
+    # WiFi LED (GPIO23)
+    esp.gpio23 ~ r_led_wifi.p1
+    r_led_wifi.p2 ~ led_wifi.anode
+    led_wifi.cathode ~ power.gnd
+
+    # Motor LED (GPIO25)
+    esp.gpio25 ~ r_led_motor.p1
+    r_led_motor.p2 ~ led_motor.anode
+    led_motor.cathode ~ power.gnd
+
+    # ══════════════════════════════════════════════
+    # BUTTONS
+    # ══════════════════════════════════════════════
+
+    # BOOT button: GPIO0 → GND
+    esp.gpio0 ~ btn_boot.p1
+    btn_boot.p2 ~ power.gnd
+
+    # RESET button: EN → GND
+    esp.en ~ btn_reset.p1
+    btn_reset.p2 ~ power.gnd

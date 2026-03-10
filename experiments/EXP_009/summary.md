@@ -50,8 +50,11 @@ ESP32-S3 firmware with:
 - ArduinoOTA for wireless firmware updates
 - REST API for 8-channel PWM control
 - 4 built-in patterns: pulse, blink, fade, sweep
-- Web dashboard served from LittleFS
+- Web dashboard served from LittleFS (JSON protocol import with portable UUID generator)
 - WiFi debug diagnostics (I2C scanner, PCA9685 register dump, GPIO pin scanner, log buffer)
+- **PCA9685 init retry** — 3 attempts with exponential backoff on boot
+- **`/api/reinit`** endpoint — re-initialize PCA9685 on demand without reboot
+- **Heartbeat broadcasting** — periodic UDP beacon for auto-discovery by ADC-24 backend
 
 ### API Endpoints
 
@@ -91,8 +94,8 @@ pio run -e ota -t uploadfs    # Flash dashboard (LittleFS)
 - [x] Step 5: Web dashboard (LittleFS upload ✓)
 - [x] Step 6: WiFi debug diagnostics + I2C pin fix (GPIO6/1)
 - [x] Step 7: LED control verified working ✓
-- [ ] Step 8: Wire boards together for mycelium stimulation
-- [ ] Step 9: Integrate with mycelium recording setup (EXP_001)
+- [x] Step 8: Wire boards together for mycelium stimulation ✓ (via EXP_010)
+- [x] Step 9: Integrate with mycelium recording setup ✓ (ADC-24 dashboard controls LED-DRV8 via HTTP, see EXP_010)
 
 ## References
 

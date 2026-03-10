@@ -18,6 +18,8 @@ Using PDA + Streptomycin (100 µM/ml final concentration).
 
 **System Characterization (2026-02-19):** Compared custom ADC-24 web app vs PicoLog commercial software for baseline noise (no biology). Custom app shows 68× lower noise (0.4 vs 27 µV std) and 41× lower DC offset. PicoLog settings need verification. See `summary.md` for full analysis.
 
+**Long-Term Recording (2026-03-09):** ~430-hour recording shows voltage ramp from ~0 µV to ~150 µV beginning at hour 330, indicating mycelium bridged electrodes. Sustained signal (~120–150 µV) consistent with Mishra et al. 2024 (~135 µV).
+
 ---
 
 ## EXP_002
@@ -26,7 +28,7 @@ Using PDA + Streptomycin (100 µM/ml final concentration).
 **Airtable Links:** None
 **Folder:** `experiments/EXP_002/`
 
-Bio-hybrid machine (Marimo moss balls for binary data storage) — giving autonomous control to a local Ollama LLM. Phase 1: hardware documentation with SKiDL circuit descriptions. Phase 2: Ollama integration via network API.
+Bio-hybrid machine (Marimo moss balls for binary data storage) — giving autonomous control to a local Ollama LLM. Phase 1: hardware documentation (SKiDL + KiCad schematics). Phase 2: ESP8266 + Nano firmware deployed. Phase 3: Lab Agent app running qwen2.5:14b with 13 tools, WebSocket streaming, and Agent Presence kiosk display.
 
 ---
 
@@ -56,7 +58,7 @@ Cable-pair continuity testing tool for the Cryptographic Beings installation. Ar
 **Airtable Links:** None
 **Folder:** `experiments/EXP_005/`
 
-Setup and configuration of specialized motor control PCBs for DM542T drivers (Board 3 & 4). Uses 24V power and NEMA 23/34 motors. Dedicated workspace to isolate hardware-specific firmware (D4=Step, D2=Dir) from the standard EXP_002 installation.
+Setup and configuration of specialized motor control PCBs for DM542T drivers (Board 3 & 4). Uses 24V power and NEMA 23/34 motors. ⚠️ **Blocked**: fatal PCB TX/RX short discovered — Nano TX wired to both ESP TX and RX. Motor works via USB but fails over WiFi. Superseded by EXP_011 (debug) and EXP_012 (new PCB).
 
 ---
 
@@ -99,7 +101,7 @@ Custom PCB design for recording extracellular action potentials (8ch) and delive
 **Folder:** `experiments/EXP_009/`
 **Project:** Bio Electronic Music
 
-Using existing lab PCBs to control LEDs and deliver optical stimulation to *P. eryngii* mycelium, aiming to elicit electrical spiking responses.
+Using existing lab PCBs to control LEDs and deliver optical stimulation to *P. eryngii* mycelium, aiming to elicit electrical spiking responses. All 9 pipeline steps complete: firmware, web dashboard, PCA9685 init retry, heartbeat auto-discovery, and full integration with ADC-24 dashboard for EXP_010.
 
 ---
 
@@ -121,7 +123,7 @@ Systematic characterisation of light-evoked electrical responses in *P. eryngii*
 **Folder:** `experiments/EXP_011/`
 **Parent:** EXP_005
 
-Fresh-start debug of DM542T motor controller. Rebuilds firmware incrementally in 9 steps (LED blink → raw GPIO → AccelStepper → full feature restore) to isolate why the motor doesn't physically move.
+Fresh-start debug of DM542T motor controller. Steps 1–6 passed (LED blink, raw GPIO, AccelStepper, serial commands). Step 7 (ESP bridge) failed — root cause: **PCB TX/RX short** (Nano TX wired to both ESP TX and RX). Confirmed working config: AccelStepper DRIVER mode, 2000 sps, 1000 accel, 20 µs min pulse. Led to EXP_012 (ESP32 redesign).
 
 ---
 

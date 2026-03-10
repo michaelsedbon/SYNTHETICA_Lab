@@ -1,6 +1,6 @@
 # Applications Index
 
-> **13 applications** powering the SYNTHETIC Lab — from electrophysiology recording to autonomous AI control.
+> **14 applications** powering the SYNTHETIC Lab — from electrophysiology recording to autonomous AI control.
 
 > [!IMPORTANT]
 > **All apps are git submodules.** Each has its own repo at `github.com/michaelsedbon/<app-name>`.  
@@ -27,6 +27,8 @@ All lab applications live under `applications/`. Each app has a `DOCS.md` with f
 | 10 | [🍄 Mycelium Sim](#-mycelium-sim) | `mycelium-sim` | 8765 (WS) | P5.js · Python · WebSocket | ✅ Working |
 | 11 | [⚡ Skill Manager](#-skill-manager) | `skill-manager` | 8004 | FastAPI · Vanilla JS | ✅ Working |
 | 12 | [🔬 Experiment Designer](#-experiment-designer) | `experiment-designer` | 8005 · 3006 | FastAPI · Next.js | ✅ Working |
+| 13 | [📋 Audits](#-audits) | `audits` | — | Markdown reports | 📄 Reference |
+| 14 | [🎨 Theme Showcase](#-theme-showcase) | `theme-showcase` | — | Static HTML | 📄 Reference |
 
 ---
 
@@ -46,6 +48,7 @@ Backend (Python FastAPI)          Frontend (Next.js / Static)
                                   3005  Agent Presence Dashboard
 8765  Mycelium Sim WS             file:// Mycelium Sim (static)
 8004  Skill Manager API+Static
+8005  Experiment Designer API      3006  Experiment Designer
 ```
 
 ---
@@ -300,6 +303,32 @@ All applications follow a consistent **VS Code-inspired dark theme** with:
 
 ---
 
+## 📋 Audits
+
+**Per-application audit reports with screenshots and browser test recordings.**
+
+Not a running application — this directory contains detailed audit documents and annotated screenshots for each lab app. Used during quality checks and feature reviews.
+
+| Detail | Value |
+|--------|-------|
+| Directory | `applications/audits/` |
+| Contents | 8 audit reports (Markdown) + screenshots + WebP recordings |
+
+---
+
+## 🎨 Theme Showcase
+
+**Static HTML reference for the shared VS Code-inspired dark theme.**
+
+Single `index.html` page demonstrating the lab's design tokens (colors, typography, spacing) in one visual reference.
+
+| Detail | Value |
+|--------|-------|
+| Directory | `applications/theme-showcase/` |
+| Contents | `index.html` |
+
+---
+
 ## Starting Everything
 
 The fastest way to launch all apps:
@@ -307,3 +336,38 @@ The fastest way to launch all apps:
 1. Start the **App Launcher** on port 3100
 2. Use the launcher UI to start/stop individual apps
 3. Or run each app manually — see individual `DOCS.md` files for exact commands
+
+---
+
+## 🔬 Experiment Designer
+
+**Protocol designer for light-evoked electrophysiology experiments.**
+
+Design, preview, and export JSON stimulation protocols for the ADC-24 dashboard. Supports dose-response and adaptation protocols with configurable intensity, duration, ISI, and block randomization. Interactive timeline preview and JSON export/import.
+
+| Detail | Value |
+|--------|-------|
+| Ports | 8005 (API) · 3006 (UI) |
+| Stack | FastAPI · Next.js 16 · Tailwind 4 · shadcn |
+| Linked Experiment | EXP_010 |
+| Protocol Storage | `protocols/` directory |
+
+**Key capabilities:** Block/stimulus editors, interactive timeline preview, literature presets (dose-response: 15 blocks/105 stimuli, adaptation: 50 reps), JSON import/export, CRUD validation.
+
+📄 **Full docs:** [`experiment-designer/README.md`](experiment-designer/README.md)
+
+---
+
+## 📋 Audits
+
+**End-to-end audit reports for all lab applications.**
+
+8 detailed audit reports with screenshots and browser recordings. Covers UI walkthroughs, feature verification, and visual regression for each production app.
+
+| Detail | Value |
+|--------|-------|
+| Reports | 8 (Fab Planner, ADC-24, Experiment Viewer, Research Scout, Plasmid Viewer, Virtual Lab, App Launcher, Agent Presence) |
+| Assets | 56 files (screenshots + WebP recordings) |
+| Linked Experiment | — |
+
+📄 **Reports:** [`audits/`](audits/)
