@@ -113,3 +113,25 @@ Using existing lab PCBs to control LEDs and deliver optical stimulation to *P. e
 Systematic characterisation of light-evoked electrical responses in *P. eryngii* mycelium using ADC-24 + LED-DRV8. Includes companion Experiment Designer app for protocol design and integrated stimulus-recording in the ADC-24 dashboard.
 
 ---
+
+## EXP_011
+**Title:** Sequential Motor Firmware Debug (DM542T)
+**Start Date:** 2026-03-10
+**Airtable Links:** None
+**Folder:** `experiments/EXP_011/`
+**Parent:** EXP_005
+
+Fresh-start debug of DM542T motor controller. Rebuilds firmware incrementally in 9 steps (LED blink → raw GPIO → AccelStepper → full feature restore) to isolate why the motor doesn't physically move.
+
+---
+
+## EXP_012
+**Title:** ESP32 Motor Controller — PCB Design
+**Start Date:** 2026-03-10
+**Airtable Links:** None
+**Folder:** `experiments/EXP_012/`
+**Parent:** EXP_005, EXP_011
+
+Custom PCB design replacing the dual-chip ESP8266+Nano motor controller with a single ESP32. Controls 1× DM542T stepper driver, WiFi + OTA, proximity sensor, 24V→3.3V regulation. JLCPCB fabrication.
+
+---

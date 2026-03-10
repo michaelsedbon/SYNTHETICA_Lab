@@ -582,6 +582,8 @@
         let channels = new Array(NUM_CH).fill(0);
         let activePattern = 'none';
         let pollTimer = null;
+        let userInteracting = false;
+        let interactTimer = null;
 
         // ── Build channel cards ──────────────
         function buildChannels() {
@@ -624,6 +626,10 @@
             val = parseInt(val);
             channels[ch] = val;
             updateChannelUI(ch, val);
+            // Suppress poll overwrites while user is dragging
+            userInteracting = true;
+            clearTimeout(interactTimer);
+            interactTimer = setTimeout(() => { userInteracting = false; }, 1000);
             clearTimeout(chTimers[ch]);
             chTimers[ch] = setTimeout(() => {
                 api('/api/channel', { channel: ch, pwm: val });
@@ -658,6 +664,9 @@
         masterSlider.addEventListener('input', () => {
             const val = parseInt(masterSlider.value);
             document.getElementById('masterValue').textContent = val + '%';
+            userInteracting = true;
+            clearTimeout(interactTimer);
+            interactTimer = setTimeout(() => { userInteracting = false; }, 1000);
             clearTimeout(masterTimer);
             masterTimer = setTimeout(() => {
                 api('/api/master', { brightness: val });
@@ -719,15 +728,15 @@
             const rssi = data.wifi?.rssi || 0;
             document.getElementById('wifiRSSI').textContent = rssi + ' dBm';
 
-            // Sync channel values (from pattern engine)
-            if (data.channels) {
+            // Sync channel values (from pattern engine) — skip if user is dragging a slider
+            if (data.channels && !userInteracting) {
                 for (let i = 0; i < NUM_CH; i++) {
                     channels[i] = data.channels[i];
                     document.getElementById(`chSlider${i}`).value = data.channels[i];
                     updateChannelUI(i, data.channels[i]);
                 }
             }
-            if (data.master !== undefined) {
+            if (data.master !== undefined && !userInteracting) {
                 masterSlider.value = data.master;
                 document.getElementById('masterValue').textContent = data.master + '%';
             }
