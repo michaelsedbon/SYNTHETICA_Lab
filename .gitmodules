@@ -37,3 +37,6 @@
 [submodule "applications/virtual-lab"]
 	path = applications/virtual-lab
 	url = https://github.com/michaelsedbon/virtual-lab.git
+[submodule "applications/medicalex-audit"]
+	path = applications/medicalex-audit
+	url = https://github.com/michaelsedbon/medicalex-audit.git

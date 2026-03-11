@@ -29,6 +29,7 @@ All lab applications live under `applications/`. Each app has a `DOCS.md` with f
 | 12 | [🔬 Experiment Designer](#-experiment-designer) | `experiment-designer` | 8005 · 3006 | FastAPI · Next.js | ✅ Working |
 | 13 | [📋 Audits](#-audits) | `audits` | — | Markdown reports | 📄 Reference |
 | 14 | [🎨 Theme Showcase](#-theme-showcase) | `theme-showcase` | — | Static HTML | 📄 Reference |
+| 15 | [📋 Medicalex Audit](#-medicalex-audit) | `medicalex-audit` | 3007 | Next.js · Prisma · SQLite | ✅ Working |
 
 ---
 
@@ -49,6 +50,7 @@ Backend (Python FastAPI)          Frontend (Next.js / Static)
 8765  Mycelium Sim WS             file:// Mycelium Sim (static)
 8004  Skill Manager API+Static
 8005  Experiment Designer API      3006  Experiment Designer
+                                    3007  Medicalex Audit
 ```
 
 ---
@@ -371,3 +373,19 @@ Design, preview, and export JSON stimulation protocols for the ADC-24 dashboard.
 | Linked Experiment | — |
 
 📄 **Reports:** [`audits/`](audits/)
+
+---
+
+## 📋 Medicalex Audit
+
+**CE-marking audit tracker for medical device technical dossiers.**
+
+Track non-conformities from TDACR reports, manage PIC responses, link evidence from dossier files, and monitor compliance status. Includes automated pipeline for NC extraction, PIC auditing, and evidence scanning.
+
+| Detail | Value |
+|--------|-------|
+| Port | 3007 (full-stack Next.js) |
+| Database | SQLite + Prisma (12 models) |
+| Stack | Next.js 16 · React 19 · Prisma 6 |
+
+**Key capabilities:** NC tracking with status workflow, PIC response editor with version history, evidence linking with file viewer, automated TDACR extraction pipeline, PIC audit with verdict scoring, dossier file scanner, gap/quality report generation (DOCX export).
