@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Machine Controller — Cryptographic Beings</title>
+    <meta name="description" content="Motor, camera, and relay control dashboard for the Cryptographic Beings installation">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="app">
+        <!-- Top Bar -->
+        <header class="topbar">
+            <h1>
+                <i data-lucide="cpu" class="icon-header"></i>
+                Machine Controller
+            </h1>
+            <div class="topbar-status">
+                <span class="ws-indicator" id="wsIndicator"></span>
+                <span class="ws-label" id="wsLabel">Connecting...</span>
+            </div>
+            <div class="topbar-actions">
+                <button class="btn btn-scan" id="btnScan" title="Rescan devices">
+                    <i data-lucide="search" class="icon-btn"></i> Scan
+                </button>
+                <button class="btn btn-danger" id="btnStopAll" title="Emergency stop all motors">
+                    <i data-lucide="octagon" class="icon-btn"></i> STOP ALL
+                </button>
+            </div>
+        </header>
+
+        <!-- Tab Bar -->
+        <nav class="tab-bar" id="tabBar">
+            <button class="tab active" data-tab="motors">
+                <i data-lucide="settings" class="icon-tab"></i> Motors
+            </button>
+            <button class="tab" data-tab="cameras">
+                <i data-lucide="camera" class="icon-tab"></i> Cameras
+            </button>
+            <button class="tab" data-tab="relays">
+                <i data-lucide="toggle-right" class="icon-tab"></i> Relays
+            </button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main" id="mainContent">
+            <!-- Motors Tab -->
+            <div class="tab-content active" id="tab-motors">
+                <div class="empty-state" id="emptyState">
+                    <i data-lucide="unplug" class="empty-icon"></i>
+                    <div class="title">No motors detected</div>
+                    <div class="subtitle">Connect an Arduino Nano via USB and click Scan</div>
+                </div>
+                <div class="motors-grid" id="motorsGrid"></div>
+            </div>
+
+            <!-- Cameras Tab -->
+            <div class="tab-content" id="tab-cameras">
+                <div class="empty-state" id="emptyStateCam" style="display:none;">
+                    <i data-lucide="camera-off" class="empty-icon"></i>
+                    <div class="title">No cameras configured</div>
+                    <div class="subtitle">Add ESP32-CAM devices to devices.yaml</div>
+                </div>
+                <div class="cameras-grid" id="camerasGrid"></div>
+            </div>
+
+            <!-- Relays Tab -->
+            <div class="tab-content" id="tab-relays">
+                <div class="empty-state" style="display:flex;">
+                    <i data-lucide="toggle-right" class="empty-icon"></i>
+                    <div class="title">Relay control coming soon</div>
+                    <div class="subtitle">Add relay devices to devices.yaml when ready</div>
+                </div>
+                <div class="relays-grid" id="relaysGrid"></div>
+            </div>
+        </main>
+
+        <!-- Log Panel -->
+        <aside class="log-panel" id="logPanel">
+            <div class="log-header">
+                <span><i data-lucide="terminal" class="icon-log"></i> Live Log</span>
+                <button class="btn-icon" id="btnClearLog" title="Clear log">
+                    <i data-lucide="trash-2"></i>
+                </button>
+            </div>
+            <div class="log-content" id="logContent"></div>
+        </aside>
+    </div>
+
+    <!-- Motor Card Template -->
+    <template id="motorCardTemplate">
+        <div class="motor-card" data-motor-id="">
+            <div class="card-header">
+                <div class="card-title">
+                    <i data-lucide="settings" class="icon-card"></i>
+                    <span class="motor-name">MOTOR_1</span>
+                    <span class="calibrated-badge" style="display:none" title="Calibrated">&#10003;</span>
+                </div>
+                <div class="card-indicators">
+                    <span class="sensor-indicator" title="Proximity sensor">
+                        <i data-lucide="radio" class="icon-sensor"></i>
+                    </span>
+                    <span class="connection-dot connected" title="Connected"></span>
+                </div>
+            </div>
+            <div class="card-description"></div>
+
+            <div class="card-body">
+                <!-- Status Display -->
+                <div class="status-grid">
+                    <div class="status-item">
+                        <span class="status-label">Position</span>
+                        <span class="status-value motor-pos">0</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Target</span>
+                        <span class="status-value motor-target">0</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Speed</span>
+                        <span class="status-value motor-speed">2000</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Moving</span>
+                        <span class="status-value motor-moving">&mdash;</span>
+                    </div>
+                </div>
+
+                <!-- Move Controls -->
+                <div class="control-group">
+                    <div class="control-label">Move</div>
+                    <div class="move-buttons">
+                        <button class="btn btn-move" data-steps="-1000">-1000</button>
+                        <button class="btn btn-move" data-steps="-100">-100</button>
+                        <button class="btn btn-move" data-steps="100">+100</button>
+                        <button class="btn btn-move" data-steps="1000">+1000</button>
+                    </div>
+                </div>
+
+                <!-- Custom Move -->
+                <div class="control-group">
+                    <div class="custom-move">
+                        <input type="number" class="input-steps" placeholder="Steps" value="500">
+                        <button class="btn btn-primary btn-go">GO</button>
+                    </div>
+                </div>
+
+                <!-- Speed & Accel -->
+                <div class="control-group">
+                    <div class="control-label">Speed</div>
+                    <div class="slider-row">
+                        <input type="range" class="slider speed-slider" min="100" max="4000" value="2000">
+                        <span class="slider-value speed-val">2000</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="control-label">Accel</div>
+                    <div class="slider-row">
+                        <input type="range" class="slider accel-slider" min="100" max="4000" value="1000">
+                        <span class="slider-value accel-val">1000</span>
+                    </div>
+                </div>
+
+                <!-- Level Controls (manual calibration) -->
+                <div class="control-group level-controls" style="display:none;">
+                    <div class="control-label">Max Steps</div>
+                    <div class="custom-move">
+                        <input type="number" class="input-max-steps" placeholder="e.g. 5000">
+                        <button class="btn btn-primary btn-set-max" title="Set max travel steps">SET</button>
+                    </div>
+                    <div class="control-label" style="margin-top:8px;">Level %</div>
+                    <div class="slider-row">
+                        <input type="range" class="slider level-slider" min="0" max="100" value="0" disabled>
+                        <span class="slider-value level-val">0%</span>
+                        <button class="btn btn-primary btn-level-go" disabled>GO</button>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn btn-home" title="Home to sensor"><i data-lucide="home" class="icon-btn"></i> Home</button>
+                    <button class="btn btn-zero" title="Zero position"><i data-lucide="crosshair" class="icon-btn"></i> Zero</button>
+                    <button class="btn btn-stop" title="Stop motor"><i data-lucide="square" class="icon-btn"></i> Stop</button>
+                </div>
+
+                <!-- ESP-specific Actions (hidden by default) -->
+                <div class="action-buttons esp-actions" style="display:none;">
+                    <button class="btn btn-calibrate" title="Calibrate motor"><i data-lucide="sliders-horizontal" class="icon-btn"></i> Calibrate</button>
+                    <button class="btn btn-half" title="Move to half position"><i data-lucide="arrow-down-to-line" class="icon-btn"></i> Half</button>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <span class="port-label">/dev/ttyUSB1</span>
+            </div>
+        </div>
+    </template>
+
+    <!-- Camera Card Template -->
+    <template id="cameraCardTemplate">
+        <div class="camera-card" data-camera-id="">
+            <div class="card-header">
+                <div class="card-title">
+                    <i data-lucide="camera" class="icon-card"></i>
+                    <span class="camera-name">CAM_1</span>
+                </div>
+                <div class="card-indicators">
+                    <span class="connection-dot" title="Connection status"></span>
+                </div>
+            </div>
+            <div class="card-description"></div>
+            <div class="card-body camera-body">
+                <div class="camera-feed">
+                    <img class="camera-stream" alt="Camera feed" loading="lazy">
+                    <div class="camera-offline">
+                        <i data-lucide="camera-off" class="empty-icon"></i>
+                        <span>Camera offline</span>
+                    </div>
+                </div>
+                <div class="camera-actions">
+                    <button class="btn btn-primary btn-stream" title="Start MJPEG stream">
+                        <i data-lucide="video" class="icon-btn"></i> Stream
+                    </button>
+                    <button class="btn btn-capture" title="Capture snapshot">
+                        <i data-lucide="aperture" class="icon-btn"></i> Capture
+                    </button>
+                    <button class="btn btn-cam-stop" title="Stop stream">
+                        <i data-lucide="square" class="icon-btn"></i> Stop
+                    </button>
+                </div>
+            </div>
+            <div class="card-footer">
+                <span class="port-label">192.168.1.x</span>
+            </div>
+        </div>
+    </template>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

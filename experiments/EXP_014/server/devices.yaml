@@ -1,0 +1,31 @@
+# Device registry for EXP_014 Machine Controller
+# Each entry references its source experiment and firmware paths.
+
+esp_devices:
+  - id: LEVEL_1
+    host: 172.16.1.115
+    type: isd04_level
+    description: "Cryptographic Beings Level Motor"
+    experiment: EXP_002
+    firmware:
+      esp: experiments/EXP_002/firmware/esp8266_ota/
+      nano: experiments/EXP_002/firmware/arduino_nano/
+    notes: "ISD04 NEMA17 integrated stepper, hall-effect sensor homing"
+
+usb_devices:
+  - id: MOTOR_1
+    port: /dev/ttyUSB1
+    type: dm556_stepper
+    description: "Slewing Bearing DM556 Motor"
+    experiment: EXP_014
+    firmware: experiments/EXP_014/firmware/motor_nano/
+    parent_experiments: [EXP_005, EXP_011]
+    notes: "DM556 driver, 24V, NEMA23, AccelStepper DRIVER mode, D4=Step D2=Dir D3=Sensor"
+
+camera_devices:
+  - id: CAM_1
+    host: 172.16.1.120
+    description: "Main ESP32-CAM"
+    experiment: EXP_005
+    firmware: experiments/EXP_005/firmware/esp32_cam_test/
+    notes: "AI-Thinker ESP32-CAM, port 80=capture, port 81=MJPEG stream"
