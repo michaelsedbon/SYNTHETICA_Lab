@@ -1,0 +1,23 @@
+title: Bio Electronic Music
+icon: music
+sections:
+  - name: Overview
+    file: summary.md
+  - name: Knowledge Base
+    children:
+      - name: System Architecture
+        file: knowledge/structure.md
+      - name: Hardware Inventory
+        file: knowledge/hardware.md
+      - name: Software & Deployment
+        file: knowledge/software.md
+      - name: Firmware
+        children:
+          - name: "LED-DRV8 — ESP32-S3 LED Driver"
+            file: knowledge/firmware/led_drv8.md
+      - name: API Documentation
+        children:
+          - name: "LED-DRV8 REST API"
+            file: knowledge/api/led_drv8.md
+      - name: Knowledge Base Guide
+        file: knowledge/GUIDE.md

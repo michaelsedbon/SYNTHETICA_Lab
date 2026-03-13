@@ -1,6 +1,7 @@
-ato-version: ^0.2.0
+requires-atopile: '0.12.5'
 paths:
-- elec/src
+  src: elec/src
+  layout: ./build
 builds:
   default:
     entry: elec/src/main.ato:MyceliumBoard

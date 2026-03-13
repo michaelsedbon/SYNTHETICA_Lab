@@ -75,6 +75,7 @@ int logIndex = 0;
 
 // ── Serial bridge buffer (reads from Nano) ──
 String nanoBuffer = "";
+#define MAX_NANO_BUFFER 256  // Prevent OOM from garbage serial data
 
 // ── API response collection ──
 // When an API call is in progress, we collect Nano responses here
@@ -166,7 +167,11 @@ bool apiCollectLines(unsigned long timeout) {
                     nanoBuffer = "";
                 }
             } else if (c != '\r') {
-                nanoBuffer += c;
+                if (nanoBuffer.length() < MAX_NANO_BUFFER) {
+                    nanoBuffer += c;
+                } else {
+                    nanoBuffer = "";
+                }
             }
         }
 
@@ -512,7 +517,11 @@ void handleApiPositions() {
                     nanoBuffer = "";
                 }
             } else if (c != '\r') {
-                nanoBuffer += c;
+                if (nanoBuffer.length() < MAX_NANO_BUFFER) {
+                    nanoBuffer += c;
+                } else {
+                    nanoBuffer = "";
+                }
             }
         }
         yield();
@@ -870,7 +879,13 @@ void loop() {
         debugLog("TCP bridge client connected");
     }
 
+    // Limit bytes per loop iteration to prevent WDT resets
+    // when Nano sends continuous garbage (e.g. corrupted firmware)
+    int bytesRead = 0;
+    const int MAX_BYTES_PER_LOOP = 64;
+
     if (tcpClient && tcpClient.connected()) {
+        // TCP bridge mode: full throughput needed for STK500 flashing
         // TCP → Serial (raw bytes from flasher to Nano)
         while (tcpClient.available()) {
             Serial.write(tcpClient.read());
@@ -881,15 +896,23 @@ void loop() {
         }
     } else if (!apiWaiting) {
         // Normal mode: read Nano responses line-by-line for logging
-        // (Skip when API is waiting — it handles its own serial reads)
-        while (Serial.available()) {
+        // Byte-limited to prevent WDT resets from garbage data
+        bytesRead = 0;
+        while (Serial.available() && bytesRead < MAX_BYTES_PER_LOOP) {
             char c = Serial.read();
+            bytesRead++;
             if (c == '\n') {
                 debugLog("RX << " + nanoBuffer);
                 nanoBuffer = "";
             } else if (c != '\r') {
-                nanoBuffer += c;
+                if (nanoBuffer.length() < MAX_NANO_BUFFER) {
+                    nanoBuffer += c;
+                } else {
+                    nanoBuffer = "";
+                }
             }
         }
     }
+
+    yield();  // Feed watchdog
 }

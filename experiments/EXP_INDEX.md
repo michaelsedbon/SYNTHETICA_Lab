@@ -137,3 +137,27 @@ Fresh-start debug of DM542T motor controller. Steps 1–6 passed (LED blink, raw
 Custom PCB design replacing the dual-chip ESP8266+Nano motor controller with a single ESP32. Controls 1× DM542T stepper driver, WiFi + OTA, proximity sensor, 24V→3.3V regulation. JLCPCB fabrication.
 
 ---
+
+## EXP_013
+**Title:** Blue Light Dose-Response Electrophysiology of P. eryngii
+**Start Date:** 2026-03-10
+**Airtable Links:** None
+**Folder:** `experiments/EXP_013/`
+**Project:** Bio Electronic Music
+**Parent:** EXP_010
+
+Testing blue-light dose-response electrophysiology of *P. eryngii* mycelium via WC-1 photoreceptor (λ ~450 nm). Sub-experiments: validation, dose-response, adaptation, priming, dark control, no-biology control. Uses ADC-24 + LED-DRV8 hardware from EXP_010.
+
+---
+
+## EXP_014
+**Title:** LattePanda Alpha Serial Machine Controller
+**Start Date:** 2026-03-12
+**Status:** Phase 3 complete — backend + dashboard running
+**Airtable Links:** None
+**Folder:** `experiments/EXP_014/`
+**Parent:** EXP_005, EXP_011, EXP_012
+
+Full machine control platform for Cryptographic Beings. LattePanda Alpha 864s (Ubuntu 24.04) controlling DM556 stepper motors via Arduino Nanos over USB serial. FastAPI backend + web dashboard live at `http://172.16.1.128:8000`. REST API + WebSocket real-time status. SSH access via `ssh lp`.
+
+---

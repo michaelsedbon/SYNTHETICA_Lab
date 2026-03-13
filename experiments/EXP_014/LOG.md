@@ -113,5 +113,42 @@ Chronological record of all actions, changes, and observations.
 ### Pending
 - [ ] Verify ESP32-CAM IP address (power on camera and scan network)
 - [ ] Redesign proximity sensor trigger part in metal
-- [ ] Phase 5: Hardening (udev rules, systemd service, error handling)
 - **Phase 4C complete ✅**
+
+## 2026-03-13 — Phase 5: Production Hardening
+
+### Udev Rules
+- Created `/etc/udev/rules.d/99-machine-controller.rules` on LattePanda.
+- Stable symlink: `/dev/motor_1 → ttyUSB1` via USB port path (`ATTRS{devpath}=="2"`).
+- CH340 clone (vendor `04e2:1410`) has no serial number — port-path based only.
+- Updated `devices.yaml` to use `/dev/motor_1` instead of `/dev/ttyUSB1`.
+- **Important:** each motor must always be plugged into the same physical USB port.
+
+### Systemd Service
+- Created `/etc/systemd/system/machine-controller.service` — auto-starts on boot.
+- Runs as `michael` user via venv uvicorn.
+- `Restart=always` with 5s delay — survives crashes.
+- `systemctl enable machine-controller` — enabled for boot.
+
+### Error Handling & Reconnection
+- **Fixed CH340 bug:** removed vendor allowlist (`0x1A86, 0x0403, 0x2341`) from `scan_and_connect()`. Now fully config-driven — connects to ports listed in `devices.yaml`.
+- **USB reconnection:** background task checks disconnected USB devices every 15s, reconnects if port reappears.
+- **ESP reconnection:** re-probes disconnected ESP devices every 15s.
+- **Camera reconnection:** re-probes disconnected cameras every 15s.
+- **Serial error handling:** catches `serial.SerialException` specifically, cleans up connection, marks disconnected.
+
+### Deploy Script
+- Created `server/deploy.sh` — rsync code to LP + systemctl restart + health check.
+
+### Files Modified
+- `server/main.py` — config-driven scan, reconnection_poller, SerialException handling
+- `server/devices.yaml` — `/dev/motor_1` symlink
+- `server/deploy.sh` — [NEW] deployment script
+
+### Status
+- LEVEL_1 (ESP8266): ✅ connected
+- MOTOR_1 (USB Nano): ❌ no PONG (Nano may need power cycle / motor PCB power)
+- CAM_1: ❌ offline (not powered)
+- Reconnection poller active — will auto-connect when devices come online.
+- **Phase 5 complete ✅**
+

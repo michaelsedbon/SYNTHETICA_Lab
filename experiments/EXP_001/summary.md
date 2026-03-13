@@ -1,15 +1,23 @@
-# EXP_001: Growing pleurotus. eryngii
+# EXP_001: Growing *Pleurotus eryngii*
 
 **Start Date:** 2026-02-17
+**Status:** Active
 **Airtable Links:** MS_S_001
+**Project:** Bio Electronic Music
 
 ---
 
-Starting from Petri dish culture and liquid culture
+## Overview
 
-from here https://mail.google.com/mail/u/0/?ogbl#search/contact%40lamycosphere.com/FMfcgzQfBkFZTkDNBTslVKTDdxvlpKDx
+Culturing *Pleurotus eryngii* (king oyster mushroom) from commercial liquid and plate cultures on PDA media, then recording extracellular electrical signals using a Pico Log ADC-24 to detect mycelium bridging electrodes. Also served as the testbed for developing and benchmarking the custom ADC-24 web dashboard against PicoLog commercial software.
 
-Grown in PDA + Streptomycin 100uM/ml (final concentration)
+## Goal
+
+1. Establish a viable *P. eryngii* culture on PDA + Streptomycin (100 µg/ml final concentration).
+2. Demonstrate mycelium electrode bridging via long-term voltage recording.
+3. Benchmark the custom ADC-24 dashboard against PicoLog for noise and signal quality.
+
+**Supplier:** Mycosphere (La Mycosphère, contact@lamycosphere.com) — liquid culture and plate culture.
 
 ## Inoculation Details (Update 2026-02-17)
 - Inoculated PDA petri dish with samples from **Mycosphere** liquid culture.

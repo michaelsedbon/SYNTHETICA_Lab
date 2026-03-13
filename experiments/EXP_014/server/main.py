@@ -95,6 +95,15 @@ class USBMotorConnection:
                 self.ser.write(f"{command}\n".encode())
                 await asyncio.sleep(0.3)
                 return self.ser.read_all().decode("utf-8", errors="replace").strip()
+            except serial.SerialException as e:
+                logger.error(f"Serial disconnected {self.port}: {e}")
+                self.connected = False
+                try:
+                    self.ser.close()
+                except Exception:
+                    pass
+                self.ser = None
+                return f"ERROR:DISCONNECTED"
             except Exception as e:
                 logger.error(f"Serial error on {self.port}: {e}")
                 self.connected = False
@@ -209,28 +218,23 @@ class DeviceManager:
             logger.warning(f"No devices.yaml found at {config_path}")
 
     async def scan_and_connect(self):
-        """Scan USB ports and connect to configured devices."""
+        """Connect to all devices defined in devices.yaml."""
         self.close_all()
         self.motors.clear()
         self.load_config()
 
-        # ── USB devices ──
-        usb_configs = {d["port"]: d for d in self.config.get("usb_devices", [])}
-        ports = serial.tools.list_ports.comports()
-        for p in ports:
-            if "ttyACM" in p.device and "Leonardo" in (p.description or ""):
-                continue
-            if p.vid == 0x04e2:
-                continue
-            if p.vid in (0x1A86, 0x0403, 0x2341):
-                # Use config-assigned ID if available
-                cfg = usb_configs.get(p.device, {})
-                device_id = cfg.get("id", "unknown")
-                info = {k: v for k, v in cfg.items() if k != "id"}
-                motor = USBMotorConnection(p.device, device_id=device_id, info=info)
+        # ── USB devices (config-driven, no vendor scan) ──
+        for usb_cfg in self.config.get("usb_devices", []):
+            port = usb_cfg["port"]
+            device_id = usb_cfg["id"]
+            info = {k: v for k, v in usb_cfg.items() if k not in ("id", "port")}
+            motor = USBMotorConnection(port, device_id=device_id, info=info)
+            if os.path.exists(port):
                 motor.connect()
-                if motor.connected:
-                    self.motors[motor.device_id] = motor
+            else:
+                logger.warning(f"USB port not found: {port} for {device_id}")
+            # Add even if not connected — card shows as disconnected
+            self.motors[device_id] = motor
 
         # ── ESP devices ──
         for esp_cfg in self.config.get("esp_devices", []):
@@ -320,9 +324,11 @@ mgr = DeviceManager()
 async def lifespan(app: FastAPI):
     logger.info("Starting Machine Controller...")
     await mgr.scan_and_connect()
-    task = asyncio.create_task(status_poller())
+    poller_task = asyncio.create_task(status_poller())
+    reconnect_task = asyncio.create_task(reconnection_poller())
     yield
-    task.cancel()
+    poller_task.cancel()
+    reconnect_task.cancel()
     mgr.close_all()
 
 app = FastAPI(title="Machine Controller", lifespan=lifespan)
@@ -346,6 +352,51 @@ async def status_poller():
         except Exception as e:
             logger.error(f"Poller error: {e}")
             await asyncio.sleep(2)
+
+
+async def reconnection_poller():
+    """Periodically attempt to reconnect disconnected USB and ESP devices."""
+    while True:
+        try:
+            await asyncio.sleep(15)
+            for mid, motor in list(mgr.motors.items()):
+                if motor.connected:
+                    continue
+                # ── USB reconnect ──
+                if isinstance(motor, USBMotorConnection):
+                    if os.path.exists(motor.port):
+                        logger.info(f"Attempting USB reconnect: {mid} on {motor.port}")
+                        motor.connect()
+                        if motor.connected:
+                            logger.info(f"USB reconnected: {mid}")
+                            await mgr.broadcast({"type": "reconnect", "device": mid})
+                # ── ESP reconnect ──
+                elif isinstance(motor, ESPMotorConnection):
+                    await motor.probe()
+                    if motor.connected:
+                        logger.info(f"ESP reconnected: {mid}")
+                        await mgr.broadcast({"type": "reconnect", "device": mid})
+
+            # ── Camera reconnect ──
+            for cid, cam in mgr.cameras.items():
+                if cam.get("connected"):
+                    continue
+                host = cam["host"]
+                try:
+                    async with httpx.AsyncClient(timeout=3.0) as client:
+                        r = await client.get(f"http://{host}/capture")
+                        if r.status_code == 200:
+                            cam["connected"] = True
+                            logger.info(f"Camera reconnected: {cid}")
+                            await mgr.broadcast({"type": "reconnect", "device": cid})
+                except Exception:
+                    pass
+
+        except asyncio.CancelledError:
+            break
+        except Exception as e:
+            logger.error(f"Reconnection poller error: {e}")
+            await asyncio.sleep(5)
 
 
 def parse_status(raw: str, device_type: str = "usb_serial") -> dict:

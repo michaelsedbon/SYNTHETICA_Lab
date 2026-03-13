@@ -1,7 +1,7 @@
 # EXP_014: LattePanda Alpha Serial Machine Controller
 
 **Start Date:** 2026-03-12
-**Status:** Phase 4C complete — tabbed dashboard with motors, cameras, relays
+**Status:** Phase 5 complete — production hardening (udev, systemd, reconnection)
 **Airtable Links:** None
 **Parent Experiments:** EXP_005, EXP_011, EXP_012
 
@@ -43,7 +43,7 @@ Build a scalable, headless machine controller that:
 - ✅ **Phase 4A:** ISD04 level motors via ESP HTTP, `devices.yaml` registry with experiment refs.
 - ✅ **Phase 4B:** EXP_014 firmware flashed (IDENTIFY/SENSOR/HOME), 57600 baud bootloader fix.
 - ✅ **Phase 4C:** Manual calibration (max_steps, level %), tabbed dashboard (Motors/Cameras/Relays), ESP32-CAM card.
-- ⬜ **Phase 5:** udev rules, systemd service, multi-motor scaling, error handling.
+- ✅ **Phase 5:** Udev rules (`/dev/motor_1`), systemd auto-start, USB/ESP/camera reconnection, deploy script.
 
 ## Results
 

@@ -5,18 +5,18 @@ esp_devices:
   - id: LEVEL_1
     host: 172.16.1.115
     type: isd04_level
-    description: "Cryptographic Beings Level Motor"
+    description: "Cryptographic Beings Slewing Bearing Motor"
     experiment: EXP_002
     firmware:
       esp: experiments/EXP_002/firmware/esp8266_ota/
       nano: experiments/EXP_002/firmware/arduino_nano/
-    notes: "ISD04 NEMA17 integrated stepper, hall-effect sensor homing"
+    notes: "ISD04 NEMA17 integrated stepper (12-38VDC, running at 24V), hall-effect sensor homing"
 
 usb_devices:
   - id: MOTOR_1
-    port: /dev/ttyUSB1
+    port: /dev/motor_1
     type: dm556_stepper
-    description: "Slewing Bearing DM556 Motor"
+    description: "Bottom Linear Actuator DM556 Motor"
     experiment: EXP_014
     firmware: experiments/EXP_014/firmware/motor_nano/
     parent_experiments: [EXP_005, EXP_011]

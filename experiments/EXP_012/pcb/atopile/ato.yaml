@@ -1,6 +1,8 @@
-ato-version: ^0.2.0
+ato-version: '^0.2.69'
+requires-atopile: '0.14.0'
 paths:
-- elec/src
+  src: elec/src
+  layout: ./build
 builds:
   default:
     entry: elec/src/main.ato:MotorController

@@ -305,19 +305,6 @@ All applications follow a consistent **VS Code-inspired dark theme** with:
 
 ---
 
-## 📋 Audits
-
-**Per-application audit reports with screenshots and browser test recordings.**
-
-Not a running application — this directory contains detailed audit documents and annotated screenshots for each lab app. Used during quality checks and feature reviews.
-
-| Detail | Value |
-|--------|-------|
-| Directory | `applications/audits/` |
-| Contents | 8 audit reports (Markdown) + screenshots + WebP recordings |
-
----
-
 ## 🎨 Theme Showcase
 
 **Static HTML reference for the shared VS Code-inspired dark theme.**
@@ -389,3 +376,5 @@ Track non-conformities from TDACR reports, manage PIC responses, link evidence f
 | Stack | Next.js 16 · React 19 · Prisma 6 |
 
 **Key capabilities:** NC tracking with status workflow, PIC response editor with version history, evidence linking with file viewer, automated TDACR extraction pipeline, PIC audit with verdict scoring, dossier file scanner, gap/quality report generation (DOCX export).
+
+📄 **Full docs:** [`medicalex-audit/README.md`](medicalex-audit/README.md)

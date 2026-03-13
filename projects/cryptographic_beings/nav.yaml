@@ -1,0 +1,60 @@
+title: Cryptographic Beings
+icon: cpu
+
+sections:
+  - name: Overview
+    file: summary.md
+
+  - name: System Documentation
+    file: SYSTEM_DOCUMENTATION.md
+
+  - name: Knowledge Base
+    children:
+      - name: Structure & Architecture
+        file: knowledge/structure.md
+      - name: Hardware Inventory
+        file: knowledge/hardware.md
+      - name: Software & Deployment
+        file: knowledge/software.md
+      - name: Firmware
+        children:
+          - name: "MOTOR_1 — Linear Actuator (DM556)"
+            file: knowledge/firmware/motor_nano_dm556.md
+          - name: "LEVEL_1 — Slewing Bearing Nano"
+            file: knowledge/firmware/level_nano_dm542.md
+          - name: "LEVEL_1 — ESP8266 WiFi Bridge"
+            file: knowledge/firmware/level_esp8266.md
+          - name: "CAM_1 — ESP32-CAM"
+            file: knowledge/firmware/esp32_cam.md
+      - name: API Documentation
+        children:
+          - name: Machine Controller (FastAPI)
+            file: knowledge/api/machine_controller.md
+          - name: ESP8266 Level Motor API
+            file: knowledge/api/esp8266_level_motor.md
+          - name: ESP32-CAM API
+            file: knowledge/api/esp32_cam.md
+      - name: Knowledge Base Guide
+        file: knowledge/GUIDE.md
+
+  - name: Hardware
+    children:
+      - name: Connector Mapping
+        file: knowledge/connector_mapping.md
+
+  - name: Experiments
+    children:
+      - name: "EXP_002: Cryptographic Beings — LLM Autonomous Control"
+        file: ../../experiments/EXP_002/summary.md
+      - name: "EXP_003 — Marimo Buoyancy Mathematical Modeling"
+        file: ../../experiments/EXP_003/summary.md
+      - name: "EXP_004: Automated Connector Mapping"
+        file: ../../experiments/EXP_004/summary.md
+      - name: "EXP_005: High-Power Motor Control (DM542T)"
+        file: ../../experiments/EXP_005/summary.md
+      - name: "EXP_011: Sequential Motor Firmware Debug"
+        file: ../../experiments/EXP_011/summary.md
+      - name: "EXP_012: ESP32 Motor Controller PCB"
+        file: ../../experiments/EXP_012/summary.md
+      - name: "EXP_014: LattePanda Machine Controller"
+        file: ../../experiments/EXP_014/summary.md
