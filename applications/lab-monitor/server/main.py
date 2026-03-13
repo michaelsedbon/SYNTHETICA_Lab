@@ -56,13 +56,14 @@ async def broadcast_ws(data: dict):
     if not ws_clients:
         return
     message = json.dumps(data)
-    disconnected = set()
-    for ws in ws_clients:
+    disconnected = []
+    for ws in list(ws_clients):
         try:
             await ws.send_text(message)
         except Exception:
-            disconnected.add(ws)
-    ws_clients -= disconnected
+            disconnected.append(ws)
+    for ws in disconnected:
+        ws_clients.discard(ws)
 
 
 async def handle_mqtt_message(topic: str, payload: str):
