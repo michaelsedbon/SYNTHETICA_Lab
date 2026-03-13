@@ -109,6 +109,9 @@ Stop pattern and turn all channels off. No body required.
 
 Re-initialize PCA9685 I²C connection (recovery after bus glitch).
 
+> [!TIP]
+> This is the fix for the **recurring I²C bus hang** where the PCA9685 is not found after boot. Also available as the **🔄 Reinit I2C** button in the dashboard Quick Actions row.
+
 **Response:**
 ```json
 {"ok": true, "i2c_present": true, "freq_hz": 1000, "prescale": 5}

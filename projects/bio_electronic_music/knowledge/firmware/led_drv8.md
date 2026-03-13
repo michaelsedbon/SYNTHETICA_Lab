@@ -37,6 +37,7 @@
 - **Heartbeat** ping to dev machine every 15s
 - **WiFi log** ring buffer (50 lines, accessible via API)
 - **Debug tools:** I²C bus scanner, PCA9685 register dump, GPIO pin scanner
+- **I²C Reinit** button in Quick Actions — one-tap recovery from bus hangs
 
 ## Communication Protocol
 
@@ -67,6 +68,18 @@ Speed (0–100) maps to tick interval: 100ms (slow) → 5ms (fast).
 If STA connection fails after 20s, the board starts AP mode:
 - SSID: `LED-Driver-Setup`
 - Password: `12345678`
+
+## Known Issues
+
+### I²C Bus Hang on Boot (recurring)
+
+| Field | Detail |
+|-------|--------|
+| **Symptom** | PCA9685 not found — all channels unresponsive, `/api/debug/i2c` returns `{"count":0,"status":"no_devices"}` |
+| **Root cause** | The ESP32 `Wire` library can initialize with the I²C bus in a stuck state (SDA held LOW by PCA9685 after an incomplete transaction during boot or power glitch). The bus never recovers until `Wire` is re-initialized. |
+| **Diagnosis** | `GET /api/debug/i2c` → 0 devices, but `GET /api/debug/scanpins` (which calls `Wire.begin()` per pair) finds the PCA9685 at `0x40` on SDA=6/SCL=1. |
+| **Fix** | Hit `POST /api/reinit` or press the **🔄 Reinit I2C** button on the dashboard (Quick Actions row). This re-runs `Wire.begin()` + PCA9685 init and restores normal operation. |
+| **Permanent fix (TODO)** | Add I²C bus recovery at startup: clock out 9 SCL pulses before `Wire.begin()` to clear a stuck SDA line, then retry init up to 3 times. |
 
 ## Build & Flash
 

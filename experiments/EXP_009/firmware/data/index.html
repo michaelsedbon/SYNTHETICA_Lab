@@ -454,6 +454,7 @@
                 <button class="action-btn" onclick="setAll(1024)">25%</button>
                 <button class="action-btn" onclick="setAll(512)">12%</button>
                 <button class="action-btn danger" onclick="setAll(0)">All OFF</button>
+                <button class="action-btn" id="reinitBtn" onclick="reinitI2C()" style="border-color:var(--amber); color:var(--amber); margin-left:auto;">🔄 Reinit I2C</button>
             </div>
         </div>
 
@@ -908,6 +909,35 @@
                 el.innerHTML = html;
             }
             showToast(`Test: PWM ${pwm}`);
+        }
+
+        async function reinitI2C() {
+            const btn = document.getElementById('reinitBtn');
+            btn.textContent = '⏳ Reinitializing...';
+            btn.style.pointerEvents = 'none';
+            const data = await api('/api/reinit');
+            if (data && data.ok && data.i2c_present) {
+                btn.style.borderColor = 'var(--green)';
+                btn.style.color = 'var(--green)';
+                btn.textContent = '✓ I2C OK';
+                showToast(`I2C reinitialized — PCA9685 found (${data.freq_hz} Hz)`);
+            } else if (data && data.ok) {
+                btn.style.borderColor = 'var(--red)';
+                btn.style.color = 'var(--red)';
+                btn.textContent = '⚠ Not Found';
+                showToast('Reinit done but PCA9685 not found!', true);
+            } else {
+                btn.style.borderColor = 'var(--red)';
+                btn.style.color = 'var(--red)';
+                btn.textContent = '⚠ Failed';
+                showToast('Reinit failed — connection error', true);
+            }
+            btn.style.pointerEvents = '';
+            setTimeout(() => {
+                btn.textContent = '🔄 Reinit I2C';
+                btn.style.borderColor = 'var(--amber)';
+                btn.style.color = 'var(--amber)';
+            }, 3000);
         }
 
         async function fetchLog() {

@@ -1,0 +1,19 @@
+# PlatformIO
+.pio/
+.vscode/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.db
+
+# SQLite data
+server/data/
+
+# Node
+dashboard/node_modules/
+dashboard/.next/
+
+# OS
+.DS_Store

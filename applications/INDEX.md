@@ -30,6 +30,7 @@ All lab applications live under `applications/`. Each app has a `DOCS.md` with f
 | 13 | [📋 Audits](#-audits) | `audits` | — | Markdown reports | 📄 Reference |
 | 14 | [🎨 Theme Showcase](#-theme-showcase) | `theme-showcase` | — | Static HTML | 📄 Reference |
 | 15 | [📋 Medicalex Audit](#-medicalex-audit) | `medicalex-audit` | 3007 | Next.js · Prisma · SQLite | ✅ Working |
+| 16 | [🌡️ Lab Monitor](#-lab-monitor) | `lab-monitor` | 8006 · 3008 | FastAPI · Next.js · MQTT · SQLite | ✅ Working |
 
 ---
 
@@ -51,6 +52,7 @@ Backend (Python FastAPI)          Frontend (Next.js / Static)
 8004  Skill Manager API+Static
 8005  Experiment Designer API      3006  Experiment Designer
                                     3007  Medicalex Audit
+8006  Lab Monitor API               3008  Lab Monitor Dashboard
 ```
 
 ---
@@ -378,3 +380,22 @@ Track non-conformities from TDACR reports, manage PIC responses, link evidence f
 **Key capabilities:** NC tracking with status workflow, PIC response editor with version history, evidence linking with file viewer, automated TDACR extraction pipeline, PIC audit with verdict scoring, dossier file scanner, gap/quality report generation (DOCX export).
 
 📄 **Full docs:** [`medicalex-audit/README.md`](medicalex-audit/README.md)
+
+---
+
+## 🌡️ Lab Monitor
+
+**Real-time environmental sensor monitoring via MQTT.**
+
+Track temperature, humidity, and WiFi signal from ESP8266 sensor nodes. Sensors auto-register when they publish to the MQTT broker. First deployment: incubator at 25°C.
+
+| Detail | Value |
+|--------|-------|
+| Ports | 8006 (API) · 3008 (UI) |
+| Stack | FastAPI · aiomqtt · SQLite · Next.js 16 · Canvas |
+| Hardware | Wemos D1 Mini (ESP8266) + DHT22 |
+| MQTT Broker | Mosquitto on 172.16.1.80:1883 |
+
+**Key capabilities:** MQTT auto-discovery, real-time WebSocket streaming, Canvas dual-axis charts (temp + humidity), sensor cards with gauges, time-series history (24h/7d/30d), OTA firmware updates, data retention (7d raw, 90d hourly).
+
+📄 **Full docs:** [`lab-monitor/DOCS.md`](lab-monitor/DOCS.md)

@@ -1,6 +1,6 @@
 # Hardware Inventory
 
-> Last updated: 2026-03-12
+> Last updated: 2026-03-13
 
 ## Devices
 
@@ -45,6 +45,9 @@
 | M8 | LED14, LED15 | Driver 8 |
 
 > For LED driving: IN1 = PWM (forward current), IN2 = 0 (ground path)
+
+> [!WARNING]
+> **Known issue:** The I²C bus between ESP32-S3 and PCA9685 can hang on boot (SDA stuck LOW). If channels are unresponsive, press **🔄 Reinit I2C** in the dashboard Quick Actions or call `POST /api/reinit`. See [firmware/led_drv8.md](firmware/led_drv8.md#known-issues) for details.
 
 ## Mycelium Sensor/Stim Board — Design Summary (EXP_008)
 

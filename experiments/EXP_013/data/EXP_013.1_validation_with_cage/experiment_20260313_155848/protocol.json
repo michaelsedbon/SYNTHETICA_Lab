@@ -1,0 +1,36 @@
+{
+  "name": "EXP_013.1 - Validation Run",
+  "version": "1.0",
+  "created": "2026-03-10T16:32:01.262586",
+  "description": "Confirm system records real signal and blue light produces detectable response. 5 pulses at PWM 2048, 2s duration, ISI 20s.",
+  "literature_reference": "Mishra et al. 2024",
+  "global_defaults": {
+    "isi_s": 20,
+    "led_channel": 7,
+    "led_driver_url": "http://172.16.1.126"
+  },
+  "baseline": {
+    "pre_s": 300,
+    "post_s": 300
+  },
+  "blocks": [
+    {
+      "label": "Validation - PWM 2048, 2s",
+      "randomize": false,
+      "stimuli": [
+        {
+          "type": "pulse",
+          "channel": null,
+          "pwm": 2048,
+          "duration_s": 2,
+          "isi_s": null,
+          "repeat": 5,
+          "train_count": null,
+          "train_interval_s": null
+        }
+      ]
+    }
+  ],
+  "randomize_blocks": false,
+  "random_seed": 42
+}
