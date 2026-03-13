@@ -76,15 +76,7 @@ A circular LED array (~70 LEDs in radial spiral) on a separate PCB. Passive boar
 ## Experiments
 
 <!-- AUTO:EXPERIMENTS -->
-| Experiment | Title | Status |
-|-----------|-------|--------|
-| [EXP_001](../../experiments/EXP_001/summary.md) | Growing *P. eryngii* & Electrophysiology Setup | Active |
-| [EXP_006](../../experiments/EXP_006/summary.md) | Fungal Electrophysiology Literature Review & Characterization | Active |
-| [EXP_007](../../experiments/EXP_007/summary.md) | MyceliumBrain — Reproducing DishBrain with Fungal Networks | In progress |
-| [EXP_008](../../experiments/EXP_008/summary.md) | Mycelium Sensor/Stim Board — PCB Design | In progress |
-| [EXP_009](../../experiments/EXP_009/summary.md) | LED Stimulation of Mycelium via Existing PCBs | Active |
-| [EXP_010](../../experiments/EXP_010/summary.md) | Light-Evoked Electrophysiology — Infrastructure & Tooling | Complete |
-| [EXP_013](../../experiments/EXP_013/summary.md) | Blue Light Dose-Response Electrophysiology of *P. eryngii* | Inconclusive |
+*No experiments tagged yet.*
 <!-- /AUTO:EXPERIMENTS -->
 
 ## Knowledge Base

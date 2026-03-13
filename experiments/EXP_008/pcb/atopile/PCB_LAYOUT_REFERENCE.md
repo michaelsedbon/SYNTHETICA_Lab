@@ -10,7 +10,7 @@ Quick-reference for KiCad PCB layout. Use alongside the PCB editor.
 ┌─────────────────────────────────────────┐
 │  🟢 ANALOG ZONE        │  🔵 DIGITAL   │
 │  U11 (ADS1299)          │  U41 (ESP32)  │
-│  U19-U22 (ESD)          │  U46,U48 LEDs │
+│  U19-U26* (ESD ×8)      │  U46,U48 LEDs │
 │  U13 (Crystal)          │  U56 (Debug)  │
 │  U50,U51 (Electrodes)  │               │
 ├─────────────────────────┤               │
@@ -24,6 +24,8 @@ Quick-reference for KiCad PCB layout. Use alongside the PCB editor.
 │  U7 (±5V DC-DC)     U53 (USB-C)       │
 └─────────────────────────────────────────┘
 ```
+
+> **New:** 8× ESD protectors (was 4), SRB2 reference on hdr_rec2 pin 9
 
 ---
 
@@ -47,10 +49,37 @@ Quick-reference for KiCad PCB layout. Use alongside the PCB editor.
 | Designator | Component | Role |
 |---|---|---|
 | **U53** | USB-C 16P (SMD) | Power + data input |
-| **U50** | 2×5 pin header | Recording electrodes ch 1-4 |
-| **U51** | 2×5 pin header | Recording electrodes ch 5-8 |
-| **U52** | 1×5 pin header | Stimulation outputs |
+| **U50** | 2×5 pin header | Recording electrodes ch 1-4 + GND |
+| **U51** | 2×5 pin header | Recording electrodes ch 5-8 + **SRB2 ref** + GND |
+| **U52** | 1×5 pin header | Stimulation outputs + GND |
 | **U56** | 1×4 pin header | SWD debug |
+
+### U51 Pinout (updated)
+| Pin | Signal |
+|---|---|
+| 1-2 | Ch5 ± |
+| 3-4 | Ch6 ± |
+| 5-6 | Ch7 ± |
+| 7-8 | Ch8 ± |
+| **9** | **SRB2 reference electrode** (new) |
+| 10 | GND |
+
+---
+
+## ESD Protection (all 8 channels now covered)
+
+| Designator | Component | Protects |
+|---|---|---|
+| **U19** | PRTR5V0U2X | Electrode ch 1 (±) |
+| **U20** | PRTR5V0U2X | Electrode ch 2 (±) |
+| **U21** | PRTR5V0U2X | Electrode ch 3 (±) |
+| **U22** | PRTR5V0U2X | Electrode ch 4 (±) |
+| **NEW** | PRTR5V0U2X | Electrode ch 5 (±) |
+| **NEW** | PRTR5V0U2X | Electrode ch 6 (±) |
+| **NEW** | PRTR5V0U2X | Electrode ch 7 (±) |
+| **NEW** | PRTR5V0U2X | Electrode ch 8 (±) |
+
+> Designators for the new ESD ICs will be assigned after `ato build`.
 
 ---
 
@@ -83,19 +112,8 @@ Quick-reference for KiCad PCB layout. Use alongside the PCB editor.
 | **U54, U55** | 5.1kΩ | USB-C CC1/CC2 |
 | **U30, U32, U35, U42** | 10kΩ | Howland pump Rf (ch 1-4) |
 | **U33, U36, U38, U39** | 10kΩ | Howland pump Ri (ch 1-4) |
-| **U31, U34, U37, U40** | 1kΩ | Howland pump Rs (ch 1-4) + LEDs |
+| **U31, U34, U37, U40** | 1kΩ | Howland pump Rs (ch 1-4) |
 | **U47, U49** | 1kΩ | LED current limiting |
-
----
-
-## ESD Protection
-
-| Designator | Component | Protects |
-|---|---|---|
-| **U19** | PRTR5V0U2X | Electrode ch 1 (±) |
-| **U20** | PRTR5V0U2X | Electrode ch 2 (±) |
-| **U21** | PRTR5V0U2X | Electrode ch 3 (±) |
-| **U22** | PRTR5V0U2X | Electrode ch 4 (±) |
 
 ---
 
@@ -108,10 +126,21 @@ Quick-reference for KiCad PCB layout. Use alongside the PCB editor.
 
 ---
 
+## Recording Modes (software-switchable)
+
+| Mode | Description | Electrodes |
+|---|---|---|
+| **Differential** | Each ch: independent IN+/IN− | 16 + GND = 17 |
+| **Referenced (MEA)** | All IN− → SRB2 reference electrode | 8 + SRB2 + GND = 10 |
+
+Switch via ADS1299 `CHnSET` register MUX bits. No hardware change needed.
+
+---
+
 ## KiCad Tips
 
-- **Hover + E** → Open component properties (see value, footprint)
-- **Hover + I** → Quick inspect
-- **T** → Get/move component by reference (type "U11" to jump to ADS1299)
+- **T** → Get & move footprint by reference (type "U11")
 - **Ctrl+F** → Find component by reference
-- **N** → Toggle ratsnest visibility
+- **X** → Route trace, **V** → via, **/** → bend direction
+- **B** → Fill all zones
+- **E** → Component properties

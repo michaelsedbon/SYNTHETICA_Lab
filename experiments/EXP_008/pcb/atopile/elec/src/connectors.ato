@@ -91,6 +91,7 @@ module ElectrodeConnectors:
     signal stim_ch2
     signal stim_ch3
     signal stim_ch4
+    signal srb2_ref
     signal gnd
 
     hdr_rec1 = new PinHeader_2x5
@@ -114,7 +115,7 @@ module ElectrodeConnectors:
     rec_ch7n ~ hdr_rec2.p6
     rec_ch8p ~ hdr_rec2.p7
     rec_ch8n ~ hdr_rec2.p8
-    gnd ~ hdr_rec2.p9
+    srb2_ref ~ hdr_rec2.p9
     gnd ~ hdr_rec2.p10
 
     hdr_stim = new PinHeader_1x5

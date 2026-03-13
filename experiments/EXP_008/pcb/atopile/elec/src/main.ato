@@ -92,6 +92,9 @@ module MyceliumBoard:
     # Ground electrode
     rec_electrodes.gnd ~ power.agnd
 
+    # SRB2 shared reference (MEA-style recording)
+    rec_electrodes.srb2_ref ~ recording.srb2_ref
+
     # ══════════════════════════════════════════════
     # USB DATA
     # ══════════════════════════════════════════════

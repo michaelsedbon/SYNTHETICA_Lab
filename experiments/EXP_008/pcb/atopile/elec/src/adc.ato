@@ -89,6 +89,7 @@ module RecordingFrontEnd:
     signal inn7
     signal inp8
     signal inn8
+    signal srb2_ref
 
     # ── ADS1299 IC ────────────────────────────────
     adc = new ADS1299
@@ -145,15 +146,27 @@ module RecordingFrontEnd:
     esd2 = new PRTR5V0U2X
     esd3 = new PRTR5V0U2X
     esd4 = new PRTR5V0U2X
+    esd5 = new PRTR5V0U2X
+    esd6 = new PRTR5V0U2X
+    esd7 = new PRTR5V0U2X
+    esd8 = new PRTR5V0U2X
 
     avdd ~ esd1.vcc
     avdd ~ esd2.vcc
     avdd ~ esd3.vcc
     avdd ~ esd4.vcc
+    avdd ~ esd5.vcc
+    avdd ~ esd6.vcc
+    avdd ~ esd7.vcc
+    avdd ~ esd8.vcc
     agnd ~ esd1.gnd
     agnd ~ esd2.gnd
     agnd ~ esd3.gnd
     agnd ~ esd4.gnd
+    agnd ~ esd5.gnd
+    agnd ~ esd6.gnd
+    agnd ~ esd7.gnd
+    agnd ~ esd8.gnd
 
     # ── Analog Inputs (DC-coupled!) ───────────────
     inp1 ~ esd1.io1
@@ -176,15 +189,31 @@ module RecordingFrontEnd:
     inn4 ~ esd4.io2
     esd4.io2 ~ adc.IN4N
 
-    inp5 ~ adc.IN5P
-    inn5 ~ adc.IN5N
-    inp6 ~ adc.IN6P
-    inn6 ~ adc.IN6N
-    inp7 ~ adc.IN7P
-    inn7 ~ adc.IN7N
-    inp8 ~ adc.IN8P
-    inn8 ~ adc.IN8N
+    inp5 ~ esd5.io1
+    esd5.io1 ~ adc.IN5P
+    inn5 ~ esd5.io2
+    esd5.io2 ~ adc.IN5N
+
+    inp6 ~ esd6.io1
+    esd6.io1 ~ adc.IN6P
+    inn6 ~ esd6.io2
+    esd6.io2 ~ adc.IN6N
+
+    inp7 ~ esd7.io1
+    esd7.io1 ~ adc.IN7P
+    inn7 ~ esd7.io2
+    esd7.io2 ~ adc.IN7N
+
+    inp8 ~ esd8.io1
+    esd8.io1 ~ adc.IN8P
+    inn8 ~ esd8.io2
+    esd8.io2 ~ adc.IN8N
 
     # Bias feedback
     adc.BIASOUT ~ adc.BIASINV
     agnd ~ adc.SRB1
+
+    # SRB2 — shared reference bus for MEA-style recording
+    # When SRB2 is enabled via register, all IN_N inputs
+    # internally route to this pin. Connect to reference electrode.
+    srb2_ref ~ adc.SRB2

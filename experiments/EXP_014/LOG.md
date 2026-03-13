@@ -119,10 +119,8 @@ Chronological record of all actions, changes, and observations.
 
 ### Udev Rules
 - Created `/etc/udev/rules.d/99-machine-controller.rules` on LattePanda.
-- Stable symlink: `/dev/motor_1 → ttyUSB1` via USB port path (`ATTRS{devpath}=="2"`).
-- CH340 clone (vendor `04e2:1410`) has no serial number — port-path based only.
+- Stable symlink: `/dev/motor_1` using VID/PID match (`1A86:7523` — standard CH340G).
 - Updated `devices.yaml` to use `/dev/motor_1` instead of `/dev/ttyUSB1`.
-- **Important:** each motor must always be plugged into the same physical USB port.
 
 ### Systemd Service
 - Created `/etc/systemd/system/machine-controller.service` — auto-starts on boot.
@@ -140,15 +138,20 @@ Chronological record of all actions, changes, and observations.
 ### Deploy Script
 - Created `server/deploy.sh` — rsync code to LP + systemctl restart + health check.
 
+### USB Hub Debugging
+- Initial udev rule targeted `04E2:1410` (thought to be CH340 clone) — turned out to be an **Exar XR21V1410 USB-UART** built into the USB hub, not the Nano.
+- Real Nano uses standard CH340G (`1A86:7523`). Updated udev rule to match by VID/PID.
+- **brltty fix:** Ubuntu's `brltty` (Braille display daemon) was hijacking the CH340 USB interface through the hub. `dmesg` showed: `usbfs: interface 0 claimed by ch341 while 'brltty' sets config #1`. Fixed by `sudo apt remove brltty`.
+- Nano now works both direct and through hub → `/dev/motor_1`.
+
 ### Files Modified
 - `server/main.py` — config-driven scan, reconnection_poller, SerialException handling
 - `server/devices.yaml` — `/dev/motor_1` symlink
 - `server/deploy.sh` — [NEW] deployment script
 
 ### Status
-- LEVEL_1 (ESP8266): ✅ connected
-- MOTOR_1 (USB Nano): ❌ no PONG (Nano may need power cycle / motor PCB power)
-- CAM_1: ❌ offline (not powered)
-- Reconnection poller active — will auto-connect when devices come online.
+- MOTOR_1 (USB Nano): ✅ connected via hub → `/dev/motor_1`
+- LEVEL_1 (ESP8266): ✅ connected → `172.16.1.115`
+- CAM_1 (ESP32-CAM): ✅ connected → `172.16.1.120`
 - **Phase 5 complete ✅**
 

@@ -1,6 +1,16 @@
 # System Architecture
 
-> Last updated: 2026-03-12
+> Last updated: 2026-03-13
+
+## Quick Access
+
+| Interface | URL | Description |
+|-----------|-----|-------------|
+| **🖥️ Machine Controller Dashboard** | **[http://172.16.1.128:8000](http://172.16.1.128:8000)** | **Main control interface — motors, cameras, relays** |
+| ESP8266 Level Motor API | [http://172.16.1.115](http://172.16.1.115) | Direct ESP8266 web dashboard & REST API |
+| ESP32-CAM Stream | [http://172.16.1.120:81/stream](http://172.16.1.120:81/stream) | Live MJPEG camera stream |
+| ESP32-CAM Capture | [http://172.16.1.120/capture](http://172.16.1.120/capture) | Single frame capture |
+| LattePanda SSH | `ssh lp` | SSH access to Ubuntu 24.04 controller |
 
 ## Network Topology
 
@@ -59,7 +69,7 @@ User/Agent
    │
    ▼
 Machine Controller (FastAPI :8000)
-   ├─ USB serial (/dev/ttyUSB1) ──→ Arduino Nano (MOTOR_1)
+   │─ USB serial (/dev/motor_1) ──→ Arduino Nano (MOTOR_1)
    │                                   └─ DM556 stepper driver
    │                                       └─ Bottom linear actuator
    ├─ HTTP (172.16.1.115) ──→ ESP8266
@@ -74,7 +84,7 @@ Machine Controller (FastAPI :8000)
 
 | Link | Protocol | Baud/Port | Notes |
 |------|----------|-----------|-------|
-| LattePanda → MOTOR_1 Nano | USB Serial | 115200 | Direct `/dev/ttyUSB1` |
+| LattePanda → MOTOR_1 Nano | USB Serial | 115200 | `/dev/motor_1` (udev symlink) |
 | LattePanda → LEVEL_1 ESP | HTTP REST | Port 80 | Via WiFi |
 | ESP8266 → LEVEL_1 Nano | UART Serial | 115200 | Wired, D5 = Nano reset |
 | LattePanda → CAM_1 | HTTP | Port 80/81 | Capture + MJPEG stream |

@@ -1,6 +1,6 @@
 # Software & Deployment
 
-> Last updated: 2026-03-12
+> Last updated: 2026-03-13
 
 ## Machine Controller Dashboard
 
@@ -42,12 +42,14 @@ experiments/EXP_014/server/
 # SSH to LattePanda
 ssh lp
 
-# Start manually
-cd ~/lab/experiments/EXP_014/server
-python3 -m uvicorn main:app --host 0.0.0.0 --port 8000
-
-# Or via systemd (if configured)
+# Via systemd (auto-starts on boot)
 sudo systemctl start machine-controller
+sudo systemctl status machine-controller
+sudo journalctl -u machine-controller -f   # live logs
+
+# Or start manually
+cd ~/machine-controller-app
+~/machine-controller/bin/uvicorn main:app --host 0.0.0.0 --port 8000
 ```
 
 ### Dependencies
@@ -74,7 +76,7 @@ esp_devices:           # ESP8266/ESP32 devices accessed via HTTP
 
 usb_devices:           # Arduino devices accessed via USB serial
   - id: MOTOR_1
-    port: /dev/ttyUSB1
+    port: /dev/motor_1
     type: dm556_stepper
 
 camera_devices:        # ESP32-CAM devices
@@ -87,10 +89,11 @@ Each entry can include `experiment`, `firmware`, and `notes` fields for traceabi
 ## Deployment from Workstation
 
 ```bash
-# Copy server files to LattePanda
-scp -r experiments/EXP_014/server/ lp:~/lab/experiments/EXP_014/server/
+# One-command deploy (from experiments/EXP_014/server/)
+./deploy.sh
 
-# Restart service
+# Or manually:
+scp -r experiments/EXP_014/server/ lp:~/machine-controller-app/
 ssh lp "sudo systemctl restart machine-controller"
 ```
 
