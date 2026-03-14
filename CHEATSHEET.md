@@ -9,6 +9,8 @@ Tell the AI assistant any of these to trigger a workflow:
 ### Day-to-Day
 | Command | What it does |
 |---------|-------------|
+| `/orient` | Start-of-session — read persistent memory and orient in the workspace |
+| `/end-of-day` | End-of-session — update AGENT_STATE.md with today's work and priorities |
 | `/catch-up` | Sync everything (bibliography + experiments + projects) and report what's new |
 | `/audit-docs` | Scan all experiments, apps, and projects — report documentation gaps |
 | `/preview-markdown` | Open any markdown file in the Experiment Viewer |

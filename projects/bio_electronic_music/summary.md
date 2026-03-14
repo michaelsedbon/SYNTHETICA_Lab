@@ -76,7 +76,13 @@ A circular LED array (~70 LEDs in radial spiral) on a separate PCB. Passive boar
 ## Experiments
 
 <!-- AUTO:EXPERIMENTS -->
-*No experiments tagged yet.*
+| Exp | Title | Start Date |
+|-----|-------|------------|
+| [EXP_006](../../experiments/EXP_006/summary.md) | Fungal Electrophysiology Literature Review & Characterization | 2026-03-06 |
+| [EXP_008](../../experiments/EXP_008/summary.md) | Mycelium Sensor/Stim Board — PCB Design | 2026-03-09 |
+| [EXP_009](../../experiments/EXP_009/summary.md) | LED Stimulation of Mycelium via Existing PCBs | 2026-03-09 |
+| [EXP_010](../../experiments/EXP_010/summary.md) | Light-Evoked Electrophysiology of P. eryngii | 2026-03-09 |
+| [EXP_013](../../experiments/EXP_013/summary.md) | Blue Light Dose-Response Electrophysiology of P. eryngii | 2026-03-10 |
 <!-- /AUTO:EXPERIMENTS -->
 
 ## Knowledge Base

@@ -28,8 +28,12 @@ Key subsystems:
 | Exp | Title | Start Date |
 |-----|-------|------------|
 | [EXP_002](../../experiments/EXP_002/summary.md) | Cryptographic Beings — LLM Autonomous Control | 2026-03-01 |
-| [EXP_003](../../experiments/EXP_003/summary.md) |  |  |
+| [EXP_003](../../experiments/EXP_003/summary.md) | Marimo Buoyancy Mathematical Modeling | 2026-03-01 |
 | [EXP_004](../../experiments/EXP_004/summary.md) | Connector Mapper — Cryptographic Beings | 2026-03-03 |
+| [EXP_005](../../experiments/EXP_005/summary.md) | Cryptographic Beings — High-Power Motor Control (DM542T) | 2026-03-04 |
+| [EXP_011](../../experiments/EXP_011/summary.md) | Sequential Motor Firmware Debug (DM542T) | 2026-03-10 |
+| [EXP_012](../../experiments/EXP_012/summary.md) | ESP32 Motor Controller — PCB Design | 2026-03-10 |
+| [EXP_014](../../experiments/EXP_014/summary.md) | LattePanda Alpha Serial Machine Controller | 2026-03-12 |
 <!-- /AUTO:EXPERIMENTS -->
 
 ## Knowledge Base
