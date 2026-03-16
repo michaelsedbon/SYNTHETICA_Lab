@@ -40,3 +40,6 @@
 [submodule "applications/medicalex-audit"]
 	path = applications/medicalex-audit
 	url = https://github.com/michaelsedbon/medicalex-audit.git
+[submodule "applications/grant-tracker"]
+	path = applications/grant-tracker
+	url = https://github.com/michaelsedbon/grant-tracker.git
