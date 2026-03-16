@@ -283,3 +283,85 @@ Or use the **Delete All** button in the All Grants view.
 - Prefer grants that value **interdisciplinary** work, **innovation**, and **art-science** crossover
 - When in doubt about relevance, include the grant — the user can archive what's not useful
 - The user can right-click a grant → "Mark as new" to revert if they skimmed too fast
+
+## API Reference
+
+All endpoints are on `http://localhost:3009`.
+
+### Grants
+```bash
+# List all active grants
+GET /api/grants
+
+# List all grants including archived
+GET /api/grants?archived=all
+
+# Filter by tag or funder
+GET /api/grants?tag=bioart
+GET /api/grants?funder=Wellcome
+
+# Get a specific grant
+GET /api/grants/<id>
+
+# Create a grant (seen: false → NEW badge)
+POST /api/grants
+Content-Type: application/json
+{ "name", "funder", "description", "amount", "amountMin", "amountMax",
+  "currency", "deadline", "duration", "url", "eligibility", "trlLevel",
+  "tags", "seen": false, "archived": false }
+
+# Update a grant
+PUT /api/grants/<id>
+Content-Type: application/json
+{ field: value, ... }
+
+# Delete ALL grants (prototyping only)
+DELETE /api/grants
+```
+
+### Project-Grant Links
+```bash
+# Link a grant to a project
+POST /api/project-grants
+{ "projectId", "grantId", "status": "identified", "matchScore": 1-5 }
+
+# Update link status/score
+PUT /api/project-grants/<id>
+{ "status", "matchScore" }
+```
+
+### Projects
+```bash
+GET /api/projects              # List all projects
+GET /api/projects/<id>         # Get project with all relations
+PUT /api/projects/<id>         # Update project
+```
+
+### Other
+```bash
+GET /api/profile               # User profile
+POST /api/bibliography         # Add bibliography entry
+POST /api/partners             # Add partner
+PUT /api/partners/<id>         # Update partner
+```
+
+## Scraper Scripts
+
+Reusable Python scrapers for aggregator sites live in:
+```
+.agents/scripts/scrapers/
+```
+
+Available scrapers:
+- `eflux_scraper.py` — Scrapes e-flux announcements for open calls
+- `onthemove_scraper.py` — Scrapes On The Move funding database
+
+Usage:
+```bash
+python3 .agents/scripts/scrapers/eflux_scraper.py
+```
+
+Each scraper outputs JSON to stdout with format:
+```json
+[{ "name", "funder", "deadline", "url", "description", "tags" }, ...]
+```
