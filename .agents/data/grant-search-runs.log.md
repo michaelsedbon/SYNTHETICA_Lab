@@ -52,8 +52,27 @@
   5. CNAP Rebond — variable, deadline Jun 23 (support, not project-based)
 
 ### Cumulative stats
-- **Total grants in DB**: 11
-- **Total project links**: 26
-- **Sources checked**: ~12/30
+- **Total grants in DB**: 17
+- **Total project links**: 41
+- **Sources checked**: ~15/30
 - **Scrapers built**: 2 (e-flux, On The Move — HTML-only, need JS for SPA sites)
 
+## Run: 2026-03-17 (pass 3 — larger institutional programs)
+
+- **Focus**: Larger aides à la création, CNAP, DRAC, DAC Paris, Horizon Europe Cluster 2, NEB
+- **Sources checked**: CNAP, DRAC IdF, DAC Paris, Horizon Europe, New European Bauhaus
+- **Web searches performed**: 5 (CNAP, DRAC, DAC Paris, Horizon Europe art-science, NEB)
+- **Grants added**: 6 (all with NEW badge)
+- **Project links created**: 15
+- **Highlights**:
+  1. Horizon Europe "Artistic Intelligence" — €5M/project, deadline Sep 23 ⭐⭐⭐
+  2. NEB Facility — €3.5-10M/project, deadline Dec 1 ⭐⭐
+  3. NEB Prizes — €20k, deadline Mar 17 (today!) ⭐
+  4. CNAP Acquisitions — variable, Mar 18–Apr 1 ⭐
+  5. DAC Paris Residences — €5-15k, deadline ~May ⭐
+  6. DRAC IdF AIC 2027 — €5-20k, deadline ~Feb 2027 (annual, track)
+
+### Updated cumulative stats
+- **Total grants in DB**: 17
+- **Total project links**: 41
+- **Sources checked**: ~15/30
