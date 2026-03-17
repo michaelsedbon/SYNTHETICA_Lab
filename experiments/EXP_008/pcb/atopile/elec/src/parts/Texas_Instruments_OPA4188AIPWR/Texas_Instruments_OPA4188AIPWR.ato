@@ -1,0 +1,32 @@
+#pragma experiment("TRAITS")
+import has_datasheet
+import has_designator_prefix
+import has_part_picked
+import is_atomic_part
+import is_auto_generated
+
+component Texas_Instruments_OPA4188AIPWR_package:
+    # This trait marks this file as auto-generated
+    # If you want to manually change it, remove the trait
+    trait is_auto_generated<system="ato_part", source="easyeda:C118204", date="2026-03-14T16:47:03.111159+00:00", checksum="e0e7eb4c0aa061a1319129c0c62ab2adb488993a561274cd0fd7f357ed4af980">
+
+    trait is_atomic_part<manufacturer="Texas Instruments", partnumber="OPA4188AIPWR", footprint="TSSOP-14_L5.0-W4.4-P0.65-LS6.4-BL.kicad_mod", symbol="OPA4188AIPWR.kicad_sym", model="TSSOP-14_L5.0-W4.4-H1.0-LS6.4-P0.65.step">
+    trait has_part_picked::by_supplier<supplier_id="lcsc", supplier_partno="C118204", manufacturer="Texas Instruments", partno="OPA4188AIPWR">
+    trait has_designator_prefix<prefix="U">
+    trait has_datasheet<datasheet="https://www.lcsc.com/datasheet/lcsc_datasheet_1809051327_Texas-Instruments-OPA4188AIPWR_C118204.pdf">
+
+    # pins
+    signal OUTA ~ pin 1
+    signal INA_N ~ pin 2
+    signal INA_P ~ pin 3
+    signal INB_P ~ pin 5
+    signal INB_N ~ pin 6
+    signal OUTB ~ pin 7
+    signal OUTC ~ pin 8
+    signal INC_N ~ pin 9
+    signal INC_P ~ pin 10
+    signal IND_P ~ pin 12
+    signal IND_N ~ pin 13
+    signal OUTD ~ pin 14
+    signal VSneg ~ pin 11
+    signal VSpos ~ pin 4

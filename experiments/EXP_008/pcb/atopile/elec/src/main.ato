@@ -3,13 +3,13 @@
 # EXP_008 | Tier 2: 8 recording + 4 stimulation channels
 # ============================================================
 
-import PowerSupply from "power.ato"
-import RecordingFrontEnd from "adc.ato"
-import StimulationCircuit from "stim.ato"
-import MCU_Module from "mcu.ato"
-import ElectrodeConnectors from "connectors.ato"
-import USBConnector from "connectors.ato"
-import DebugHeader from "connectors.ato"
+from "power.ato" import PowerSupply
+from "adc.ato" import RecordingFrontEnd
+from "stim.ato" import StimulationCircuit
+from "mcu.ato" import MCU_Module
+from "connectors.ato" import ElectrodeConnectors
+from "connectors.ato" import USBConnector
+from "connectors.ato" import DebugHeader
 
 module MyceliumBoard:
     # ── Instantiate blocks ────────────────────────

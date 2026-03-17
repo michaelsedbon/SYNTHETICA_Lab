@@ -1,0 +1,43 @@
+#pragma experiment("TRAITS")
+import has_datasheet
+import has_designator_prefix
+import has_part_picked
+import is_atomic_part
+import is_auto_generated
+
+component Texas_Instruments_TPS65131RGER_package:
+    """TPS65131RGER"""
+
+    # This trait marks this file as auto-generated
+    # If you want to manually change it, remove the trait
+    trait is_auto_generated<system="ato_part", source="easyeda:C87663", date="2026-03-14T13:00:40.723059+00:00", checksum="516c4a9033cc761471279b880d11cb998f114f2b3961cab4ad3d342f0bb69815">
+
+    trait is_atomic_part<manufacturer="Texas Instruments", partnumber="TPS65131RGER", footprint="QFN-24_L4.0-W4.0-P0.50-TL-EP2.6.kicad_mod", symbol="TPS65131RGER.kicad_sym", model="QFN-24_L4.0-W4.0-P0.50-TL-EP2.6.STEP">
+    trait has_part_picked::by_supplier<supplier_id="lcsc", supplier_partno="C87663", manufacturer="Texas Instruments", partno="TPS65131RGER">
+    trait has_designator_prefix<prefix="U">
+    trait has_datasheet<datasheet="https://www.lcsc.com/datasheet/lcsc_datasheet_2410010302_Texas-Instruments-TPS65131RGER_C87663.pdf">
+
+    # pins
+    signal AGND ~ pin 19
+    signal BSW ~ pin 7
+    signal CN ~ pin 18
+    signal CP ~ pin 21
+    signal ENN ~ pin 10
+    signal ENP ~ pin 8
+    signal EP ~ pin 25
+    signal FBN ~ pin 16
+    signal FBP ~ pin 22
+    signal INN ~ pin 5
+    INN ~ pin 6
+    signal INP ~ pin 1
+    INP ~ pin 24
+    signal OUTN ~ pin 13
+    OUTN ~ pin 14
+    signal PGND ~ pin 2
+    PGND ~ pin 3
+    signal PSN ~ pin 11
+    signal PSP ~ pin 9
+    signal VIN ~ pin 4
+    signal VNEG ~ pin 15
+    signal VPOS ~ pin 23
+    signal VREF ~ pin 17

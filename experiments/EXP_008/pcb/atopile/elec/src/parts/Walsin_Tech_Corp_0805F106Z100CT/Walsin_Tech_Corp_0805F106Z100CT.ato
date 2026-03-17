@@ -1,0 +1,22 @@
+#pragma experiment("TRAITS")
+import has_datasheet
+import has_designator_prefix
+import has_part_picked
+import is_atomic_part
+import is_auto_generated
+
+component Walsin_Tech_Corp_0805F106Z100CT_package:
+    """10uF(106) -20/+80% 10V"""
+
+    # This trait marks this file as auto-generated
+    # If you want to manually change it, remove the trait
+    trait is_auto_generated<system="ato_part", source="easyeda:C83061", date="2026-03-14T12:59:58.223303+00:00", checksum="9e9f45d1f0d48af357403e0da390ae6cde97269905b6b320ff4ef911ba2444bb">
+
+    trait is_atomic_part<manufacturer="Walsin Tech Corp", partnumber="0805F106Z100CT", footprint="C0805.kicad_mod", symbol="0805F106Z100.kicad_sym", model="C0805_L2.0-W1.3-H1.3.step">
+    trait has_part_picked::by_supplier<supplier_id="lcsc", supplier_partno="C83061", manufacturer="Walsin Tech Corp", partno="0805F106Z100CT">
+    trait has_designator_prefix<prefix="C">
+    trait has_datasheet<datasheet="https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/1810231215_Walsin-Tech-Corp-0805F106Z100CT_C83061.pdf">
+
+    # pins
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2

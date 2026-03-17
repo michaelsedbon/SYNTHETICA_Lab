@@ -1,65 +1,48 @@
 # ============================================================
-# Generic component definitions with explicit LCSC parts
-# Replaces "generics/resistors.ato" and "generics/capacitors.ato"
-# to avoid database lookups
-#
-# NOTE: mpn MUST be the LCSC part number (e.g. C25744), NOT the
-# manufacturer part number. Atopile maps mpn → BOM "LCSC" column
-# which JLCPCB uses for pricing and 3D model lookup.
+# Component aliases — imports from ato-created parts
+# EXP_008 | MyceliumBoard
 # ============================================================
 
-component Resistor_10k:
-    lcsc_id = "C25744"
-    footprint = "R0402"
-    mpn = "C25744"
+# ── Resistors ─────────────────────────────────────────────────
+from "parts/UNI_ROYAL_0402WGF1002TCE/UNI_ROYAL_0402WGF1002TCE.ato" import UNI_ROYAL_0402WGF1002TCE_package
+from "parts/YAGEO_RC0402FR_071KL/YAGEO_RC0402FR_071KL.ato" import YAGEO_RC0402FR_071KL_package
+from "parts/YAGEO_RC0402JR_075K1L/YAGEO_RC0402JR_075K1L.ato" import YAGEO_RC0402JR_075K1L_package
+
+component Resistor_10k from UNI_ROYAL_0402WGF1002TCE_package:
     signal p1 ~ pin 1
     signal p2 ~ pin 2
 
-component Resistor_1k:
-    lcsc_id = "C106235"
-    footprint = "R0402"
-    mpn = "C106235"
+component Resistor_1k from YAGEO_RC0402FR_071KL_package:
     signal p1 ~ pin 1
     signal p2 ~ pin 2
 
-component Resistor_5k1:
-    lcsc_id = "C105873"
-    footprint = "R0402"
-    mpn = "C105873"
+component Resistor_5k1 from YAGEO_RC0402JR_075K1L_package:
     signal p1 ~ pin 1
     signal p2 ~ pin 2
 
-component Cap_100nF:
-    lcsc_id = "C1525"
-    footprint = "C0402"
-    mpn = "C1525"
+# ── Capacitors ────────────────────────────────────────────────
+from "parts/Samsung_Electro_Mechanics_CL05B104KO5NNNC/Samsung_Electro_Mechanics_CL05B104KO5NNNC.ato" import Samsung_Electro_Mechanics_CL05B104KO5NNNC_package
+from "parts/Samsung_Electro_Mechanics_CL10A105KB8NNNC/Samsung_Electro_Mechanics_CL10A105KB8NNNC.ato" import Samsung_Electro_Mechanics_CL10A105KB8NNNC_package
+from "parts/Samsung_Electro_Mechanics_CL10A475KO8NNNC/Samsung_Electro_Mechanics_CL10A475KO8NNNC.ato" import Samsung_Electro_Mechanics_CL10A475KO8NNNC_package
+from "parts/Walsin_Tech_Corp_0805F106Z100CT/Walsin_Tech_Corp_0805F106Z100CT.ato" import Walsin_Tech_Corp_0805F106Z100CT_package
+from "parts/FH_0402CG220J500NT/FH_0402CG220J500NT.ato" import FH_0402CG220J500NT_package
+
+component Cap_100nF from Samsung_Electro_Mechanics_CL05B104KO5NNNC_package:
     signal p1 ~ pin 1
     signal p2 ~ pin 2
 
-component Cap_1uF:
-    lcsc_id = "C15849"
-    footprint = "C0402"
-    mpn = "C15849"
+component Cap_1uF from Samsung_Electro_Mechanics_CL10A105KB8NNNC_package:
     signal p1 ~ pin 1
     signal p2 ~ pin 2
 
-component Cap_4u7:
-    lcsc_id = "C19666"
-    footprint = "C0603"
-    mpn = "C19666"
+component Cap_4u7 from Samsung_Electro_Mechanics_CL10A475KO8NNNC_package:
     signal p1 ~ pin 1
     signal p2 ~ pin 2
 
-component Cap_10uF:
-    lcsc_id = "C83061"
-    footprint = "C0805"
-    mpn = "C83061"
+component Cap_10uF from Walsin_Tech_Corp_0805F106Z100CT_package:
     signal p1 ~ pin 1
     signal p2 ~ pin 2
 
-component Cap_22pF:
-    lcsc_id = "C1555"
-    footprint = "C0402"
-    mpn = "C1555"
+component Cap_22pF from FH_0402CG220J500NT_package:
     signal p1 ~ pin 1
     signal p2 ~ pin 2

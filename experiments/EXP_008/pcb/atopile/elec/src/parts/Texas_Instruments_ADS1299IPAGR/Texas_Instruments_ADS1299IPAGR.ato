@@ -1,0 +1,80 @@
+#pragma experiment("TRAITS")
+import has_datasheet
+import has_designator_prefix
+import has_part_picked
+import is_atomic_part
+import is_auto_generated
+
+component Texas_Instruments_ADS1299IPAGR_package:
+    # This trait marks this file as auto-generated
+    # If you want to manually change it, remove the trait
+    trait is_auto_generated<system="ato_part", source="easyeda:C476817", date="2026-03-14T16:33:52.307431+00:00", checksum="c3513b3dd84524ad48b1845bb9cbf57409056f171468de7c92270427f4b79bea">
+
+    trait is_atomic_part<manufacturer="Texas Instruments", partnumber="ADS1299IPAGR", footprint="TQFP-64_L10.0-W10.0-P0.50-LS12.0-TL.kicad_mod", symbol="ADS1299IPAGR.kicad_sym", model="TQFP-64_L10.0-W10.0-H1.2-LS12.0-P0.50.step">
+    trait has_part_picked::by_supplier<supplier_id="lcsc", supplier_partno="C476817", manufacturer="Texas Instruments", partno="ADS1299IPAGR">
+    trait has_designator_prefix<prefix="U">
+    trait has_datasheet<datasheet="https://www.lcsc.com/datasheet/lcsc_datasheet_2410121943_Texas-Instruments-ADS1299IPAGR_C476817.pdf">
+
+    # pins
+    signal AVDD ~ pin 19
+    AVDD ~ pin 21
+    AVDD ~ pin 22
+    AVDD ~ pin 56
+    AVDD ~ pin 59
+    signal AVDD1 ~ pin 54
+    signal AVSS ~ pin 20
+    AVSS ~ pin 23
+    AVSS ~ pin 32
+    AVSS ~ pin 57
+    AVSS ~ pin 58
+    signal AVSS1 ~ pin 53
+    signal BIASIN ~ pin 62
+    signal BIASINV ~ pin 61
+    signal BIASOUT ~ pin 63
+    signal BIASREF ~ pin 60
+    signal CLK ~ pin 37
+    signal CLKSEL ~ pin 52
+    signal DAISY_IN ~ pin 41
+    signal DGND ~ pin 33
+    DGND ~ pin 49
+    DGND ~ pin 51
+    signal DIN ~ pin 34
+    signal DOUT ~ pin 43
+    signal DVDD ~ pin 48
+    DVDD ~ pin 50
+    signal GPIO1 ~ pin 42
+    signal GPIO2 ~ pin 44
+    signal GPIO3 ~ pin 45
+    signal GPIO4 ~ pin 46
+    signal IN1N ~ pin 15
+    signal IN1P ~ pin 16
+    signal IN2N ~ pin 13
+    signal IN2P ~ pin 14
+    signal IN3N ~ pin 11
+    signal IN3P ~ pin 12
+    signal IN4N ~ pin 9
+    signal IN4P ~ pin 10
+    signal IN5N ~ pin 7
+    signal IN5P ~ pin 8
+    signal IN6N ~ pin 5
+    signal IN6P ~ pin 6
+    signal IN7N ~ pin 3
+    signal IN7P ~ pin 4
+    signal IN8N ~ pin 1
+    signal IN8P ~ pin 2
+    signal RESERVED ~ pin 64
+    signal RESV1 ~ pin 31
+    signal SCLK ~ pin 40
+    signal SRB1 ~ pin 17
+    signal SRB2 ~ pin 18
+    signal START ~ pin 38
+    signal VCAP1 ~ pin 28
+    signal VCAP2 ~ pin 30
+    signal VCAP3 ~ pin 55
+    signal VCAP4 ~ pin 26
+    signal VREFN ~ pin 25
+    signal VREFP ~ pin 24
+    signal nCS ~ pin 39
+    signal nDRDY ~ pin 47
+    signal nPWDN ~ pin 35
+    signal nRESET ~ pin 36

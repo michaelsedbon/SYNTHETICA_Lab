@@ -1,0 +1,20 @@
+#pragma experiment("TRAITS")
+import has_datasheet
+import has_designator_prefix
+import has_part_picked
+import is_atomic_part
+import is_auto_generated
+
+component YXC_H1OSC_SUG_8_192M_package:
+    # This trait marks this file as auto-generated
+    # If you want to manually change it, remove the trait
+    trait is_auto_generated<system="ato_part", source="easyeda:C20617535", date="2026-03-14T16:34:03.731397+00:00", checksum="76d57346347b354a4e85f5a79c82c10de8292457097781889918077453a31560">
+
+    trait is_atomic_part<manufacturer="YXC", partnumber="H1OSC-SUG-8.192M", footprint="HC-49S_L11.5-W4.7-P4.88.kicad_mod", symbol="H1OSC-SUG-8.192M.kicad_sym", model="HC-49S_L11.5-W4.7-P4.88.step">
+    trait has_part_picked::by_supplier<supplier_id="lcsc", supplier_partno="C20617535", manufacturer="YXC", partno="H1OSC-SUG-8.192M">
+    trait has_designator_prefix<prefix="X">
+    trait has_datasheet<datasheet="https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2403291505_YXC-Crystal-Oscillators-H1OSC-SUG-8-192M_C20617535.pdf">
+
+    # pins
+    signal OSC1 ~ pin 1
+    signal OSC2 ~ pin 2

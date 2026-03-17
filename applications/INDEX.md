@@ -31,6 +31,7 @@ All lab applications live under `applications/`. Each app has a `DOCS.md` with f
 | 14 | [🎨 Theme Showcase](#-theme-showcase) | `theme-showcase` | — | Static HTML | 📄 Reference |
 | 15 | [📋 Medicalex Audit](#-medicalex-audit) | `medicalex-audit` | 3007 | Next.js · Prisma · SQLite | ✅ Working |
 | 16 | [🌡️ Lab Monitor](#-lab-monitor) | `lab-monitor` | 8006 · 3008 | FastAPI · Next.js · MQTT · SQLite | ✅ Working |
+| 17 | [🎯 Grant Tracker](#-grant-tracker) | `grant-tracker` | 3009 | Next.js · Prisma · SQLite | ✅ Working |
 
 ---
 
@@ -53,6 +54,7 @@ Backend (Python FastAPI)          Frontend (Next.js / Static)
 8005  Experiment Designer API      3006  Experiment Designer
                                     3007  Medicalex Audit
 8006  Lab Monitor API               3008  Lab Monitor Dashboard
+                                     3009  Grant Tracker
 ```
 
 ---

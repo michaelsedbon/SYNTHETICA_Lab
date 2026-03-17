@@ -1,0 +1,24 @@
+#pragma experiment("TRAITS")
+import has_datasheet
+import has_designator_prefix
+import has_part_picked
+import is_atomic_part
+import is_auto_generated
+
+component Nexperia_PRTR5V0U2X_215_package:
+    """PRTR5V0U2X"""
+
+    # This trait marks this file as auto-generated
+    # If you want to manually change it, remove the trait
+    trait is_auto_generated<system="ato_part", source="easyeda:C12333", date="2026-03-14T13:00:16.385082+00:00", checksum="60001eb4d947ca94ade27929ca897ecec5ee9dbc6bc762d260ffaf50178248ee">
+
+    trait is_atomic_part<manufacturer="Nexperia", partnumber="PRTR5V0U2X,215", footprint="SOT-143_L2.9-W1.3-P1.92-LS2.3-BR.kicad_mod", symbol="PRTR5V0U2X,215.kicad_sym", model="SOT-143-4P_L3.0-W1.3-H1.0-LS2.3-P1.70.step">
+    trait has_part_picked::by_supplier<supplier_id="lcsc", supplier_partno="C12333", manufacturer="Nexperia", partno="PRTR5V0U2X,215">
+    trait has_designator_prefix<prefix="D">
+    trait has_datasheet<datasheet="https://www.lcsc.com/datasheet/lcsc_datasheet_2410010302_Nexperia-PRTR5V0U2X-215_C12333.pdf">
+
+    # pins
+    signal GND ~ pin 1
+    signal IO1 ~ pin 2
+    signal IO2 ~ pin 3
+    signal VCC ~ pin 4

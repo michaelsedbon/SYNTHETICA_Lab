@@ -1,0 +1,58 @@
+#pragma experiment("TRAITS")
+import has_designator_prefix
+import has_part_picked
+import is_atomic_part
+import is_auto_generated
+
+component BOOMELE_2_54_2_20P_package:
+    """2.54mm 2*20P"""
+
+    # This trait marks this file as auto-generated
+    # If you want to manually change it, remove the trait
+    trait is_auto_generated<system="ato_part", source="easyeda:C50982", date="2026-03-14T13:00:33.526930+00:00", checksum="84161d5427a35a9984575cd4b12e51b09258f799a66d4cd4aaba4801e32f9ba0">
+
+    trait is_atomic_part<manufacturer="BOOMELE", partnumber="2.54-2*20P母", footprint="HDR-TH_40P-P2.54-V-F-R2-C20-S2.54.kicad_mod", symbol="Header-Female-2.54_2x20.kicad_sym", model="HDR-TH_40P-P2.54-F-LI-2X20P.step">
+    trait has_part_picked::by_supplier<supplier_id="lcsc", supplier_partno="C50982", manufacturer="BOOMELE", partno="2.54-2*20P母">
+    trait has_designator_prefix<prefix="P">
+
+    # pins
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2
+    signal p3 ~ pin 3
+    signal p4 ~ pin 4
+    signal p5 ~ pin 5
+    signal p6 ~ pin 6
+    signal p7 ~ pin 7
+    signal p8 ~ pin 8
+    signal p9 ~ pin 9
+    signal p10 ~ pin 10
+    pin 11
+    pin 12
+    pin 13
+    pin 14
+    pin 15
+    pin 16
+    pin 17
+    pin 18
+    pin 19
+    pin 20
+    pin 21
+    pin 22
+    pin 23
+    pin 24
+    pin 25
+    pin 26
+    pin 27
+    pin 28
+    pin 29
+    pin 30
+    pin 31
+    pin 32
+    pin 33
+    pin 34
+    pin 35
+    pin 36
+    pin 37
+    pin 38
+    pin 39
+    pin 40

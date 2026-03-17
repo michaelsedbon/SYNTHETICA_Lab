@@ -6,7 +6,7 @@
 - [ ] **PCB Editor** → File → Import Netlist → select `experiments/EXP_008/pcb/atopile/build/default.net`
 - [ ] Set footprint library path: Preferences → Manage Footprint Libraries → add `experiments/EXP_008/pcb/atopile/build/footprints/footprints.pretty`
 - [ ] Import netlist again (now footprints will resolve)
-- [ ] Verify all 56 components appear on the board
+- [ ] Verify all components appear on the board
 
 ## Board Setup
 
@@ -17,19 +17,19 @@
 
 ## Component Placement (do in this order)
 
-- [ ] **Connectors first** — USB-C (U53) on one edge, electrode headers (U50, U51, U52) on opposite edge, debug (U56) on a side
-- [ ] **ADS1299** (U11) — center-left, near electrode headers, short analog traces
-- [ ] **ESD protection** (U19–U22) — between electrode headers and ADS1299
-- [ ] **Crystal** (U13) + load caps (U14, U15) — close to ADS1299 CLK pin
-- [ ] **ADC decoupling** (U16, U17, U18) — directly next to ADS1299 power pins
-- [ ] **DAC8564** (U23) + **OPA4188** (U26) — opposite side from ADC to minimize crosstalk
-- [ ] **Stimulation resistors** (U29–U40) — near OPA4188
-- [ ] **Stim decoupling** (U24, U25, U27, U28) — next to DAC/opamp power pins
-- [ ] **ESP32-S3** (U41) — near USB-C, digital side
-- [ ] **MCU decoupling** (U42–U45) — next to ESP32 power pins
-- [ ] **LEDs** (U46, U48) + resistors (U47, U49) — board edge, visible
-- [ ] **Power supply** — LDOs (U1, U4), DC-DC (U7) near USB input
-- [ ] **Power caps** (U2, U3, U5, U6, U8–U10) — next to their respective regulators
+- [ ] **Connectors first** — USB-C on one edge, electrode headers on opposite edge, debug on a side
+- [ ] **ADS1299** (TQFP-64) — center-left, near electrode headers, short analog traces
+- [ ] **ESD protection** (PRTR5V0U2X ×8) — between electrode headers and ADS1299
+- [ ] **Crystal** (HC-49S) + load caps (22pF ×2) — close to ADS1299 CLK pin
+- [ ] **ADC decoupling** (100nF, 1µF) — directly next to ADS1299 power pins
+- [ ] **DAC8564** (TSSOP-16) + **OPA4188** (TSSOP-14) — opposite side from ADC for crosstalk isolation
+- [ ] **Stimulation resistors** (10kΩ ×8, 1kΩ ×4) — near OPA4188
+- [ ] **Stim decoupling** (100nF ×3, 10µF) — next to DAC/opamp power pins
+- [ ] **ESP32-S3** (WiFi module) — near USB-C, digital side
+- [ ] **MCU decoupling** (100nF, 10µF, 1µF) — next to ESP32 power pins
+- [ ] **LEDs** (green + blue) + resistors (1kΩ ×2) — board edge, visible
+- [ ] **Power supply** — AMS1117 (SOT-223), TLV75733 (SOT-23-5), TPS65131 (QFN-24) near USB input
+- [ ] **Power caps** — 10µF ×5, 4.7µF ×2 next to their respective regulators
 
 ## Routing Priority
 

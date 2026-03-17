@@ -2,52 +2,11 @@
 # Connectors — USB-C, electrode headers, debug
 # ============================================================
 
-from "parts.ato" import Resistor_5k1
-
-component USB_C_16P:
-    lcsc_id = "C2765186"
-    footprint = "USB-C-SMD-16P"
-    mpn = "C2765186"
-    signal VBUS ~ pin 1
-    signal GND ~ pin 5
-    signal DP ~ pin 3
-    signal DM ~ pin 2
-    signal CC1 ~ pin 4
-    signal CC2 ~ pin 6
-
-component PinHeader_2x5:
-    lcsc_id = "C50982"
-    footprint = "HDR-TH_10P-P2.54-V-R2-C5"
-    mpn = "C50982"
-    signal p1 ~ pin 1
-    signal p2 ~ pin 2
-    signal p3 ~ pin 3
-    signal p4 ~ pin 4
-    signal p5 ~ pin 5
-    signal p6 ~ pin 6
-    signal p7 ~ pin 7
-    signal p8 ~ pin 8
-    signal p9 ~ pin 9
-    signal p10 ~ pin 10
-
-component PinHeader_1x5:
-    lcsc_id = "C49257"
-    footprint = "HDR-TH_5P-P2.54-V"
-    mpn = "C49257"
-    signal p1 ~ pin 1
-    signal p2 ~ pin 2
-    signal p3 ~ pin 3
-    signal p4 ~ pin 4
-    signal p5 ~ pin 5
-
-component PinHeader_1x4:
-    lcsc_id = "C49256"
-    footprint = "HDR-TH_4P-P2.54-V"
-    mpn = "C49256"
-    signal p1 ~ pin 1
-    signal p2 ~ pin 2
-    signal p3 ~ pin 3
-    signal p4 ~ pin 4
+from "parts/YAGEO_RC0402JR_075K1L/YAGEO_RC0402JR_075K1L.ato" import YAGEO_RC0402JR_075K1L_package
+from "parts/SHOU_HAN_TYPE_C_16PIN_2MD_073/SHOU_HAN_TYPE_C_16PIN_2MD_073.ato" import SHOU_HAN_TYPE_C_16PIN_2MD_073_package
+from "parts/BOOMELE_2_54_2_20P/BOOMELE_2_54_2_20P.ato" import BOOMELE_2_54_2_20P_package
+from "parts/BOOMELE_2_54_1_5P/BOOMELE_2_54_1_5P.ato" import BOOMELE_2_54_1_5P_package
+from "parts/JXTCONN_PH2_54_1X4P_H25/JXTCONN_PH2_54_1X4P_H25.ato" import JXTCONN_PH2_54_1X4P_H25_package
 
 module USBConnector:
     signal vbus
@@ -55,10 +14,11 @@ module USBConnector:
     signal dp
     signal dm
 
-    usb = new USB_C_16P
+    # USB-C: GND=1/12, VBUS=4/9, CC1=4, CC2=10, DP1=6, DN1=7
+    usb = new SHOU_HAN_TYPE_C_16PIN_2MD_073_package
 
-    r_cc1 = new Resistor_5k1
-    r_cc2 = new Resistor_5k1
+    r_cc1 = new YAGEO_RC0402JR_075K1L_package
+    r_cc2 = new YAGEO_RC0402JR_075K1L_package
 
     usb.CC1 ~ r_cc1.p1
     r_cc1.p2 ~ gnd
@@ -67,8 +27,8 @@ module USBConnector:
 
     vbus ~ usb.VBUS
     gnd ~ usb.GND
-    dp ~ usb.DP
-    dm ~ usb.DM
+    dp ~ usb.DP1
+    dm ~ usb.DN1
 
 module ElectrodeConnectors:
     signal rec_ch1p
@@ -94,7 +54,8 @@ module ElectrodeConnectors:
     signal srb2_ref
     signal gnd
 
-    hdr_rec1 = new PinHeader_2x5
+    # Electrode header 1 (ch1-4) — BOOMELE 2×20 (C50982)
+    hdr_rec1 = new BOOMELE_2_54_2_20P_package
     rec_ch1p ~ hdr_rec1.p1
     rec_ch1n ~ hdr_rec1.p2
     rec_ch2p ~ hdr_rec1.p3
@@ -106,7 +67,8 @@ module ElectrodeConnectors:
     gnd ~ hdr_rec1.p9
     gnd ~ hdr_rec1.p10
 
-    hdr_rec2 = new PinHeader_2x5
+    # Electrode header 2 (ch5-8 + SRB2) — BOOMELE 2×20 (C50982)
+    hdr_rec2 = new BOOMELE_2_54_2_20P_package
     rec_ch5p ~ hdr_rec2.p1
     rec_ch5n ~ hdr_rec2.p2
     rec_ch6p ~ hdr_rec2.p3
@@ -118,7 +80,8 @@ module ElectrodeConnectors:
     srb2_ref ~ hdr_rec2.p9
     gnd ~ hdr_rec2.p10
 
-    hdr_stim = new PinHeader_1x5
+    # Stim header — BOOMELE 1×5 (C50950)
+    hdr_stim = new BOOMELE_2_54_1_5P_package
     stim_ch1 ~ hdr_stim.p1
     stim_ch2 ~ hdr_stim.p2
     stim_ch3 ~ hdr_stim.p3
@@ -131,7 +94,8 @@ module DebugHeader:
     signal vcc
     signal gnd
 
-    hdr = new PinHeader_1x4
+    # Debug header — JXTCONN 1×4 (C42431808)
+    hdr = new JXTCONN_PH2_54_1X4P_H25_package
     vcc ~ hdr.p1
     swdio ~ hdr.p2
     swclk ~ hdr.p3

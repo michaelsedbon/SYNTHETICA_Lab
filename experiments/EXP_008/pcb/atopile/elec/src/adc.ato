@@ -3,65 +3,13 @@
 # CRITICAL: NO AC coupling caps — mycelium signals are sub-Hz
 # ============================================================
 
-from "parts.ato" import Cap_100nF, Cap_1uF, Cap_22pF, Resistor_10k
-
-component ADS1299:
-    lcsc_id = "C246563"
-    footprint = "TQFP-64_L10.0-W10.0-P0.5-LS12.0-BL"
-    mpn = "C246563"
-    signal AVDD ~ pin 19
-    signal AVDD1 ~ pin 61
-    signal AVSS ~ pin 20
-    signal AVSS1 ~ pin 60
-    signal DVDD ~ pin 48
-    signal DGND ~ pin 49
-    signal SCLK ~ pin 1
-    signal DIN ~ pin 2
-    signal DOUT ~ pin 64
-    signal CS ~ pin 3
-    signal DRDY ~ pin 4
-    signal START ~ pin 5
-    signal RESET ~ pin 52
-    signal PWDN ~ pin 51
-    signal CLKSEL ~ pin 53
-    signal CLK ~ pin 50
-    signal IN1P ~ pin 12
-    signal IN1N ~ pin 13
-    signal IN2P ~ pin 14
-    signal IN2N ~ pin 15
-    signal IN3P ~ pin 16
-    signal IN3N ~ pin 17
-    signal IN4P ~ pin 18
-    signal IN4N ~ pin 11
-    signal IN5P ~ pin 57
-    signal IN5N ~ pin 58
-    signal IN6P ~ pin 59
-    signal IN6N ~ pin 56
-    signal IN7P ~ pin 55
-    signal IN7N ~ pin 54
-    signal IN8P ~ pin 10
-    signal IN8N ~ pin 9
-    signal BIASOUT ~ pin 21
-    signal BIASIN ~ pin 22
-    signal BIASINV ~ pin 23
-    signal SRB1 ~ pin 7
-    signal SRB2 ~ pin 8
-
-component Crystal_8192kHz:
-    lcsc_id = "C16008"
-    footprint = "HC-49S_L11.0-W4.6"
-    mpn = "C16008"
-    signal p1 ~ pin 1
-    signal p2 ~ pin 2
-
-component PRTR5V0U2X:
-    lcsc_id = "C12333"
-    footprint = "SOT-143B_L2.9-W1.3-H1.1-LS2.4-BR"
-    mpn = "C12333"
-    signal vcc ~ pin 1
-    signal io1 ~ pin 2
-    signal gnd ~ pin 3
-    signal io2 ~ pin 4
+from "parts/Samsung_Electro_Mechanics_CL05B104KO5NNNC/Samsung_Electro_Mechanics_CL05B104KO5NNNC.ato" import Samsung_Electro_Mechanics_CL05B104KO5NNNC_package
+from "parts/Samsung_Electro_Mechanics_CL10A105KB8NNNC/Samsung_Electro_Mechanics_CL10A105KB8NNNC.ato" import Samsung_Electro_Mechanics_CL10A105KB8NNNC_package
+from "parts/FH_0402CG220J500NT/FH_0402CG220J500NT.ato" import FH_0402CG220J500NT_package
+from "parts/UNI_ROYAL_0402WGF1002TCE/UNI_ROYAL_0402WGF1002TCE.ato" import UNI_ROYAL_0402WGF1002TCE_package
+from "parts/Nexperia_PRTR5V0U2X_215/Nexperia_PRTR5V0U2X_215.ato" import Nexperia_PRTR5V0U2X_215_package
+from "parts/Texas_Instruments_ADS1299IPAGR/Texas_Instruments_ADS1299IPAGR.ato" import Texas_Instruments_ADS1299IPAGR_package
+from "parts/YXC_H1OSC_SUG_8_192M/YXC_H1OSC_SUG_8_192M.ato" import YXC_H1OSC_SUG_8_192M_package
 
 module RecordingFrontEnd:
     signal avdd
@@ -91,10 +39,9 @@ module RecordingFrontEnd:
     signal inn8
     signal srb2_ref
 
-    # ── ADS1299 IC ────────────────────────────────
-    adc = new ADS1299
+    # ── ADS1299 (C476817) ────────────────────────
+    adc = new Texas_Instruments_ADS1299IPAGR_package
 
-    # Power
     avdd ~ adc.AVDD
     avdd ~ adc.AVDD1
     avdd ~ adc.DVDD
@@ -102,37 +49,36 @@ module RecordingFrontEnd:
     agnd ~ adc.AVSS1
     agnd ~ adc.DGND
 
-    # SPI
     sclk ~ adc.SCLK
     din ~ adc.DIN
     dout ~ adc.DOUT
-    cs ~ adc.CS
-    drdy ~ adc.DRDY
+    cs ~ adc.nCS
+    drdy ~ adc.nDRDY
     start ~ adc.START
-    reset ~ adc.RESET
+    reset ~ adc.nRESET
 
     # PWDN pull-up
-    r_pwdn = new Resistor_10k
+    r_pwdn = new UNI_ROYAL_0402WGF1002TCE_package
     avdd ~ r_pwdn.p1
-    r_pwdn.p2 ~ adc.PWDN
+    r_pwdn.p2 ~ adc.nPWDN
 
     # CLKSEL high = external crystal
     avdd ~ adc.CLKSEL
 
-    # Crystal
-    xtal = new Crystal_8192kHz
-    c_xtal1 = new Cap_22pF
-    c_xtal2 = new Cap_22pF
-    adc.CLK ~ xtal.p1
+    # ── Crystal 8.192MHz (C20617535) ──────────────
+    xtal = new YXC_H1OSC_SUG_8_192M_package
+    c_xtal1 = new FH_0402CG220J500NT_package
+    c_xtal2 = new FH_0402CG220J500NT_package
+    adc.CLK ~ xtal.OSC1
     adc.CLK ~ c_xtal1.p1
-    xtal.p2 ~ c_xtal2.p1
+    xtal.OSC2 ~ c_xtal2.p1
     agnd ~ c_xtal1.p2
     agnd ~ c_xtal2.p2
 
-    # Decoupling
-    c_avdd = new Cap_100nF
-    c_avdd_bulk = new Cap_1uF
-    c_dvdd = new Cap_100nF
+    # ── Decoupling ────────────────────────────────
+    c_avdd = new Samsung_Electro_Mechanics_CL05B104KO5NNNC_package
+    c_avdd_bulk = new Samsung_Electro_Mechanics_CL10A105KB8NNNC_package
+    c_dvdd = new Samsung_Electro_Mechanics_CL05B104KO5NNNC_package
 
     avdd ~ c_avdd.p1
     agnd ~ c_avdd.p2
@@ -141,79 +87,76 @@ module RecordingFrontEnd:
     adc.DVDD ~ c_dvdd.p1
     agnd ~ c_dvdd.p2
 
-    # ── ESD Protection ────────────────────────────
-    esd1 = new PRTR5V0U2X
-    esd2 = new PRTR5V0U2X
-    esd3 = new PRTR5V0U2X
-    esd4 = new PRTR5V0U2X
-    esd5 = new PRTR5V0U2X
-    esd6 = new PRTR5V0U2X
-    esd7 = new PRTR5V0U2X
-    esd8 = new PRTR5V0U2X
+    # ── ESD Protection (PRTR5V0U2X, C12333) ──────
+    # Pins: GND=1, IO1=2, IO2=3, VCC=4
+    esd1 = new Nexperia_PRTR5V0U2X_215_package
+    esd2 = new Nexperia_PRTR5V0U2X_215_package
+    esd3 = new Nexperia_PRTR5V0U2X_215_package
+    esd4 = new Nexperia_PRTR5V0U2X_215_package
+    esd5 = new Nexperia_PRTR5V0U2X_215_package
+    esd6 = new Nexperia_PRTR5V0U2X_215_package
+    esd7 = new Nexperia_PRTR5V0U2X_215_package
+    esd8 = new Nexperia_PRTR5V0U2X_215_package
 
-    avdd ~ esd1.vcc
-    avdd ~ esd2.vcc
-    avdd ~ esd3.vcc
-    avdd ~ esd4.vcc
-    avdd ~ esd5.vcc
-    avdd ~ esd6.vcc
-    avdd ~ esd7.vcc
-    avdd ~ esd8.vcc
-    agnd ~ esd1.gnd
-    agnd ~ esd2.gnd
-    agnd ~ esd3.gnd
-    agnd ~ esd4.gnd
-    agnd ~ esd5.gnd
-    agnd ~ esd6.gnd
-    agnd ~ esd7.gnd
-    agnd ~ esd8.gnd
+    avdd ~ esd1.VCC
+    avdd ~ esd2.VCC
+    avdd ~ esd3.VCC
+    avdd ~ esd4.VCC
+    avdd ~ esd5.VCC
+    avdd ~ esd6.VCC
+    avdd ~ esd7.VCC
+    avdd ~ esd8.VCC
+    agnd ~ esd1.GND
+    agnd ~ esd2.GND
+    agnd ~ esd3.GND
+    agnd ~ esd4.GND
+    agnd ~ esd5.GND
+    agnd ~ esd6.GND
+    agnd ~ esd7.GND
+    agnd ~ esd8.GND
 
     # ── Analog Inputs (DC-coupled!) ───────────────
-    inp1 ~ esd1.io1
-    esd1.io1 ~ adc.IN1P
-    inn1 ~ esd1.io2
-    esd1.io2 ~ adc.IN1N
+    inp1 ~ esd1.IO1
+    esd1.IO1 ~ adc.IN1P
+    inn1 ~ esd1.IO2
+    esd1.IO2 ~ adc.IN1N
 
-    inp2 ~ esd2.io1
-    esd2.io1 ~ adc.IN2P
-    inn2 ~ esd2.io2
-    esd2.io2 ~ adc.IN2N
+    inp2 ~ esd2.IO1
+    esd2.IO1 ~ adc.IN2P
+    inn2 ~ esd2.IO2
+    esd2.IO2 ~ adc.IN2N
 
-    inp3 ~ esd3.io1
-    esd3.io1 ~ adc.IN3P
-    inn3 ~ esd3.io2
-    esd3.io2 ~ adc.IN3N
+    inp3 ~ esd3.IO1
+    esd3.IO1 ~ adc.IN3P
+    inn3 ~ esd3.IO2
+    esd3.IO2 ~ adc.IN3N
 
-    inp4 ~ esd4.io1
-    esd4.io1 ~ adc.IN4P
-    inn4 ~ esd4.io2
-    esd4.io2 ~ adc.IN4N
+    inp4 ~ esd4.IO1
+    esd4.IO1 ~ adc.IN4P
+    inn4 ~ esd4.IO2
+    esd4.IO2 ~ adc.IN4N
 
-    inp5 ~ esd5.io1
-    esd5.io1 ~ adc.IN5P
-    inn5 ~ esd5.io2
-    esd5.io2 ~ adc.IN5N
+    inp5 ~ esd5.IO1
+    esd5.IO1 ~ adc.IN5P
+    inn5 ~ esd5.IO2
+    esd5.IO2 ~ adc.IN5N
 
-    inp6 ~ esd6.io1
-    esd6.io1 ~ adc.IN6P
-    inn6 ~ esd6.io2
-    esd6.io2 ~ adc.IN6N
+    inp6 ~ esd6.IO1
+    esd6.IO1 ~ adc.IN6P
+    inn6 ~ esd6.IO2
+    esd6.IO2 ~ adc.IN6N
 
-    inp7 ~ esd7.io1
-    esd7.io1 ~ adc.IN7P
-    inn7 ~ esd7.io2
-    esd7.io2 ~ adc.IN7N
+    inp7 ~ esd7.IO1
+    esd7.IO1 ~ adc.IN7P
+    inn7 ~ esd7.IO2
+    esd7.IO2 ~ adc.IN7N
 
-    inp8 ~ esd8.io1
-    esd8.io1 ~ adc.IN8P
-    inn8 ~ esd8.io2
-    esd8.io2 ~ adc.IN8N
+    inp8 ~ esd8.IO1
+    esd8.IO1 ~ adc.IN8P
+    inn8 ~ esd8.IO2
+    esd8.IO2 ~ adc.IN8N
 
     # Bias feedback
     adc.BIASOUT ~ adc.BIASINV
     agnd ~ adc.SRB1
-
-    # SRB2 — shared reference bus for MEA-style recording
-    # When SRB2 is enabled via register, all IN_N inputs
-    # internally route to this pin. Connect to reference electrode.
     srb2_ref ~ adc.SRB2

@@ -1,0 +1,20 @@
+#pragma experiment("TRAITS")
+import has_designator_prefix
+import has_part_picked
+import is_atomic_part
+import is_auto_generated
+
+component JXTCONN_PH2_54_1X4P_H25_package:
+    # This trait marks this file as auto-generated
+    # If you want to manually change it, remove the trait
+    trait is_auto_generated<system="ato_part", source="easyeda:C42431808", date="2026-03-14T16:47:34.641487+00:00", checksum="fe248254fdb668a058b2ddb389b744882e7483be4c8dc9c8d0a650e7bf639a4e">
+
+    trait is_atomic_part<manufacturer="JXTCONN", partnumber="PH2.54-1X4P-H25", footprint="HDR-TH_4P-P2.54-V-M.kicad_mod", symbol="PH2.54-1X4P-H25.kicad_sym", model="HDR-TH_4P-P2.54-M-LI-1X4P.step">
+    trait has_part_picked::by_supplier<supplier_id="lcsc", supplier_partno="C42431808", manufacturer="JXTCONN", partno="PH2.54-1X4P-H25">
+    trait has_designator_prefix<prefix="H">
+
+    # pins
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2
+    signal p3 ~ pin 3
+    signal p4 ~ pin 4

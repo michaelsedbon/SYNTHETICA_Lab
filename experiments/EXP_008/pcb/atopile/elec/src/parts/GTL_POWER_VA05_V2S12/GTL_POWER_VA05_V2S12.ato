@@ -1,0 +1,23 @@
+#pragma experiment("TRAITS")
+import has_datasheet
+import has_designator_prefix
+import has_part_picked
+import is_atomic_part
+import is_auto_generated
+
+component GTL_POWER_VA05_V2S12_package:
+    # This trait marks this file as auto-generated
+    # If you want to manually change it, remove the trait
+    trait is_auto_generated<system="ato_part", source="easyeda:C341500", date="2026-03-14T16:41:09.747240+00:00", checksum="f5481b0cba89beb1f15e5119c8a104872f4dcfe454034cea0bf897370b9c9a83">
+
+    trait is_atomic_part<manufacturer="GTL-POWER", partnumber="VA05-V2S12", footprint="PWRM-TH_VA05-V2S12.kicad_mod", symbol="VA05-V2S12.kicad_sym", model="PWRM-TH_VA05-V2S12.step">
+    trait has_part_picked::by_supplier<supplier_id="lcsc", supplier_partno="C341500", manufacturer="GTL-POWER", partno="VA05-V2S12">
+    trait has_designator_prefix<prefix="U">
+    trait has_datasheet<datasheet="https://www.lcsc.com/datasheet/lcsc_datasheet_1912111437_GTL-POWER-VA05-V2S12_C341500.pdf">
+
+    # pins
+    signal FG ~ pin 1
+    signal L ~ pin 3
+    signal N ~ pin 2
+    signal VOneg ~ pin 4
+    signal VOpos ~ pin 8

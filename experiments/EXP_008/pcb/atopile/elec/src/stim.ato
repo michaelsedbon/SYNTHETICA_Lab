@@ -3,45 +3,12 @@
 # 0–200 µA programmable constant-current source
 # ============================================================
 
-from "parts.ato" import Cap_100nF, Cap_10uF, Resistor_10k, Resistor_1k
-
-component DAC8564:
-    lcsc_id = "C129428"
-    footprint = "TSSOP-16_L5.0-W4.4-P0.65-LS6.4-BL"
-    mpn = "C129428"
-    signal VOUTA ~ pin 1
-    signal VOUTB ~ pin 2
-    signal VOUTC ~ pin 15
-    signal VOUTD ~ pin 16
-    signal AVDD ~ pin 13
-    signal GND ~ pin 7
-    signal VREFH ~ pin 14
-    signal VREFL ~ pin 3
-    signal SCLK ~ pin 5
-    signal DIN ~ pin 4
-    signal SYNC ~ pin 6
-    signal LDAC ~ pin 8
-    signal RSTSEL ~ pin 9
-    signal CLR ~ pin 10
-
-component OPA4188:
-    lcsc_id = "C131418"
-    footprint = "TSSOP-14_L5.0-W4.4-P0.65-LS6.4-BL"
-    mpn = "C131418"
-    signal OUTA ~ pin 1
-    signal INA_N ~ pin 2
-    signal INA_P ~ pin 3
-    signal VCC ~ pin 4
-    signal INB_P ~ pin 5
-    signal INB_N ~ pin 6
-    signal OUTB ~ pin 7
-    signal OUTC ~ pin 8
-    signal INC_N ~ pin 9
-    signal INC_P ~ pin 10
-    signal VEE ~ pin 11
-    signal IND_P ~ pin 12
-    signal IND_N ~ pin 13
-    signal OUTD ~ pin 14
+from "parts/Samsung_Electro_Mechanics_CL05B104KO5NNNC/Samsung_Electro_Mechanics_CL05B104KO5NNNC.ato" import Samsung_Electro_Mechanics_CL05B104KO5NNNC_package
+from "parts/Walsin_Tech_Corp_0805F106Z100CT/Walsin_Tech_Corp_0805F106Z100CT.ato" import Walsin_Tech_Corp_0805F106Z100CT_package
+from "parts/UNI_ROYAL_0402WGF1002TCE/UNI_ROYAL_0402WGF1002TCE.ato" import UNI_ROYAL_0402WGF1002TCE_package
+from "parts/YAGEO_RC0402FR_071KL/YAGEO_RC0402FR_071KL.ato" import YAGEO_RC0402FR_071KL_package
+from "parts/Texas_Instruments_DAC8564IAPWR/Texas_Instruments_DAC8564IAPWR.ato" import Texas_Instruments_DAC8564IAPWR_package
+from "parts/Texas_Instruments_OPA4188AIPWR/Texas_Instruments_OPA4188AIPWR.ato" import Texas_Instruments_OPA4188AIPWR_package
 
 module StimulationCircuit:
     signal vpos
@@ -55,45 +22,49 @@ module StimulationCircuit:
     signal out3
     signal out4
 
-    # ── DAC8564 ───────────────────────────────────
-    dac = new DAC8564
+    # ── DAC8564 (C2680186) ────────────────────────
+    # Signals: AVDD, GND, VOUTA-D, SCLK, DIN, nSYNC, LDAC,
+    #          VREFH_VREFOUT, VREFL, nENABLE, A0, A1, IOVDD
+    dac = new Texas_Instruments_DAC8564IAPWR_package
     vpos ~ dac.AVDD
-    vpos ~ dac.VREFH
+    vpos ~ dac.IOVDD
+    vpos ~ dac.VREFH_VREFOUT
     gnd ~ dac.GND
     gnd ~ dac.VREFL
-    gnd ~ dac.RSTSEL
-    gnd ~ dac.CLR
+    gnd ~ dac.A0
+    gnd ~ dac.A1
     gnd ~ dac.LDAC
     sclk ~ dac.SCLK
     din ~ dac.DIN
-    sync ~ dac.SYNC
+    sync ~ dac.nSYNC
+    vpos ~ dac.nENABLE
 
-    c_dac = new Cap_100nF
+    c_dac = new Samsung_Electro_Mechanics_CL05B104KO5NNNC_package
     vpos ~ c_dac.p1
     gnd ~ c_dac.p2
 
-    c_dac_bulk = new Cap_10uF
+    c_dac_bulk = new Walsin_Tech_Corp_0805F106Z100CT_package
     vpos ~ c_dac_bulk.p1
     gnd ~ c_dac_bulk.p2
 
-    # ── OPA4188 ───────────────────────────────────
-    opamp = new OPA4188
-    vpos ~ opamp.VCC
-    vneg ~ opamp.VEE
+    # ── OPA4188 (C118204) ─────────────────────────
+    # Signals: VSpos(V+), VSneg(V-), OUTA-D, INA_P/N, INB_P/N, INC_P/N, IND_P/N
+    opamp = new Texas_Instruments_OPA4188AIPWR_package
+    vpos ~ opamp.VSpos
+    vneg ~ opamp.VSneg
 
-    c_op_vcc = new Cap_100nF
+    c_op_vcc = new Samsung_Electro_Mechanics_CL05B104KO5NNNC_package
     vpos ~ c_op_vcc.p1
     gnd ~ c_op_vcc.p2
 
-    c_op_vee = new Cap_100nF
+    c_op_vee = new Samsung_Electro_Mechanics_CL05B104KO5NNNC_package
     vneg ~ c_op_vee.p1
     gnd ~ c_op_vee.p2
 
     # ── Howland Pump Ch1 ──────────────────────────
-    rf1 = new Resistor_10k
-    ri1 = new Resistor_10k
-    rs1 = new Resistor_1k
-
+    rf1 = new UNI_ROYAL_0402WGF1002TCE_package
+    ri1 = new UNI_ROYAL_0402WGF1002TCE_package
+    rs1 = new YAGEO_RC0402FR_071KL_package
     dac.VOUTA ~ ri1.p1
     ri1.p2 ~ opamp.INA_P
     opamp.INA_N ~ rf1.p1
@@ -102,10 +73,9 @@ module StimulationCircuit:
     rs1.p2 ~ out1
 
     # ── Howland Pump Ch2 ──────────────────────────
-    rf2 = new Resistor_10k
-    ri2 = new Resistor_10k
-    rs2 = new Resistor_1k
-
+    rf2 = new UNI_ROYAL_0402WGF1002TCE_package
+    ri2 = new UNI_ROYAL_0402WGF1002TCE_package
+    rs2 = new YAGEO_RC0402FR_071KL_package
     dac.VOUTB ~ ri2.p1
     ri2.p2 ~ opamp.INB_P
     opamp.INB_N ~ rf2.p1
@@ -114,10 +84,9 @@ module StimulationCircuit:
     rs2.p2 ~ out2
 
     # ── Howland Pump Ch3 ──────────────────────────
-    rf3 = new Resistor_10k
-    ri3 = new Resistor_10k
-    rs3 = new Resistor_1k
-
+    rf3 = new UNI_ROYAL_0402WGF1002TCE_package
+    ri3 = new UNI_ROYAL_0402WGF1002TCE_package
+    rs3 = new YAGEO_RC0402FR_071KL_package
     dac.VOUTC ~ ri3.p1
     ri3.p2 ~ opamp.INC_P
     opamp.INC_N ~ rf3.p1
@@ -126,10 +95,9 @@ module StimulationCircuit:
     rs3.p2 ~ out3
 
     # ── Howland Pump Ch4 ──────────────────────────
-    rf4 = new Resistor_10k
-    ri4 = new Resistor_10k
-    rs4 = new Resistor_1k
-
+    rf4 = new UNI_ROYAL_0402WGF1002TCE_package
+    ri4 = new UNI_ROYAL_0402WGF1002TCE_package
+    rs4 = new YAGEO_RC0402FR_071KL_package
     dac.VOUTD ~ ri4.p1
     ri4.p2 ~ opamp.IND_P
     opamp.IND_N ~ rf4.p1

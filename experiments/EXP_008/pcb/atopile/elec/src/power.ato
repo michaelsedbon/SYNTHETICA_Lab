@@ -3,34 +3,11 @@
 # USB 5V → DVDD 3.3V + AVDD 3.3V + ±5V for stimulation
 # ============================================================
 
-from "parts.ato" import Cap_10uF, Cap_4u7
-
-component AMS1117_3V3:
-    lcsc_id = "C6186"
-    footprint = "SOT-223-3_L6.5-W3.4-H1.6-LS7.0-BR"
-    mpn = "C6186"
-    signal vin ~ pin 3
-    signal vout ~ pin 2
-    signal gnd ~ pin 1
-
-component TLV75733:
-    lcsc_id = "C485517"
-    footprint = "SOT-23-5_L3.0-W1.7-H1.3-LS2.8-BR"
-    mpn = "C485517"
-    signal vin ~ pin 1
-    signal gnd ~ pin 2
-    signal en ~ pin 3
-    signal vout ~ pin 5
-
-component TPS65131:
-    lcsc_id = "C87663"
-    footprint = "QFN-24_L4.0-W4.0-P0.5-BL-EP2.65"
-    mpn = "C87663"
-    signal vin ~ pin 1
-    signal vpos ~ pin 12
-    signal vneg ~ pin 20
-    signal gnd ~ pin 13
-    signal en ~ pin 9
+from "parts/Walsin_Tech_Corp_0805F106Z100CT/Walsin_Tech_Corp_0805F106Z100CT.ato" import Walsin_Tech_Corp_0805F106Z100CT_package
+from "parts/Samsung_Electro_Mechanics_CL10A475KO8NNNC/Samsung_Electro_Mechanics_CL10A475KO8NNNC.ato" import Samsung_Electro_Mechanics_CL10A475KO8NNNC_package
+from "parts/Advanced_Monolithic_Systems_AMS1117_3_3/Advanced_Monolithic_Systems_AMS1117_3_3.ato" import Advanced_Monolithic_Systems_AMS1117_3_3_package
+from "parts/Texas_Instruments_TLV75733PDBVR/Texas_Instruments_TLV75733PDBVR.ato" import Texas_Instruments_TLV75733PDBVR_package
+from "parts/Texas_Instruments_TPS65131RGER/Texas_Instruments_TPS65131RGER.ato" import Texas_Instruments_TPS65131RGER_package
 
 module PowerSupply:
     signal vin
@@ -43,48 +20,51 @@ module PowerSupply:
     signal vneg
 
     # ── Digital 3.3V LDO (AMS1117-3.3) ───────────
-    ldo_dig = new AMS1117_3V3
-    c_dig_in = new Cap_10uF
-    c_dig_out = new Cap_10uF
+    # AMS1117 pins: GND=1, VOUT=2, VIN=3
+    ldo_dig = new Advanced_Monolithic_Systems_AMS1117_3_3_package
+    c_dig_in = new Walsin_Tech_Corp_0805F106Z100CT_package
+    c_dig_out = new Walsin_Tech_Corp_0805F106Z100CT_package
 
-    vin ~ ldo_dig.vin
+    vin ~ ldo_dig.VIN
     vin ~ c_dig_in.p1
-    gnd ~ ldo_dig.gnd
+    gnd ~ ldo_dig.GND
     gnd ~ c_dig_in.p2
     gnd ~ c_dig_out.p2
-    dvdd ~ ldo_dig.vout
+    dvdd ~ ldo_dig.VOUT
     dvdd ~ c_dig_out.p1
     dgnd ~ gnd
 
     # ── Analog 3.3V LDO (TLV75733, low noise) ────
-    ldo_ana = new TLV75733
-    c_ana_in = new Cap_4u7
-    c_ana_out = new Cap_4u7
+    # TLV75733 pins: IN=1, GND=2, EN=3, OUT=5
+    ldo_ana = new Texas_Instruments_TLV75733PDBVR_package
+    c_ana_in = new Samsung_Electro_Mechanics_CL10A475KO8NNNC_package
+    c_ana_out = new Samsung_Electro_Mechanics_CL10A475KO8NNNC_package
 
-    vin ~ ldo_ana.vin
+    vin ~ ldo_ana.IN
     vin ~ c_ana_in.p1
-    ldo_ana.en ~ vin
-    gnd ~ ldo_ana.gnd
+    ldo_ana.EN ~ vin
+    gnd ~ ldo_ana.GND
     gnd ~ c_ana_in.p2
     gnd ~ c_ana_out.p2
-    avdd ~ ldo_ana.vout
+    avdd ~ ldo_ana.OUT
     avdd ~ c_ana_out.p1
     agnd ~ gnd
 
     # ── Bipolar ±5V DC-DC (TPS65131) ─────────────
-    dcdc = new TPS65131
-    c_dcdc_in = new Cap_10uF
-    c_dcdc_pos = new Cap_10uF
-    c_dcdc_neg = new Cap_10uF
+    # TPS65131 key pins: VIN=1, ENP=8, VPOS(FBP=22), VNEG(FBN=16), AGND=19
+    dcdc = new Texas_Instruments_TPS65131RGER_package
+    c_dcdc_in = new Walsin_Tech_Corp_0805F106Z100CT_package
+    c_dcdc_pos = new Walsin_Tech_Corp_0805F106Z100CT_package
+    c_dcdc_neg = new Walsin_Tech_Corp_0805F106Z100CT_package
 
-    dvdd ~ dcdc.vin
+    dvdd ~ dcdc.VIN
     dvdd ~ c_dcdc_in.p1
-    dcdc.en ~ dvdd
-    gnd ~ dcdc.gnd
+    dcdc.ENP ~ dvdd
+    gnd ~ dcdc.AGND
     gnd ~ c_dcdc_in.p2
     gnd ~ c_dcdc_pos.p2
     gnd ~ c_dcdc_neg.p2
-    vpos ~ dcdc.vpos
+    vpos ~ dcdc.FBP
     vpos ~ c_dcdc_pos.p1
-    vneg ~ dcdc.vneg
+    vneg ~ dcdc.FBN
     vneg ~ c_dcdc_neg.p1

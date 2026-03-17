@@ -1,6 +1,6 @@
 # AGENT_STATE.md — Persistent Memory
 
-*Last updated by: Antigravity agent | 2026-03-14T10:30*
+*Last updated by: Antigravity agent | 2026-03-14T18:25*
 
 This file is the agent's persistent memory. **Read it on every startup. Update it after every task.**
 
@@ -49,6 +49,12 @@ Capturing electrical signals from *P. eryngii* mycelium and transforming them in
 ### Lab Infrastructure
 - **Lab Monitor:** ESP8266 + DHT22 sensors → MQTT → `http://172.16.1.80:3008` (deployed 2026-03-13)
 - **Production server:** 172.16.1.80 (all apps, Mosquitto MQTT broker)
+
+### Atopile (PCB Design)
+- **⚠️ PATH:** Always run with `PATH="/Users/michaelsedbon/.local/bin:$PATH"` — the old `/opt/anaconda3/bin/ato` (v0.2.x) causes stalling/hangs if found first
+- **Version:** v0.14.1005 installed via `uv tool install atopile`
+- **EXP_008 PCB:** Fully migrated to v0.14. All 21 components use auto-gen packages with LCSC sourcing. Build passes (17/17 stages ✓). Ready for KiCad layout.
+- **EXP_012 PCB:** Also uses atopile, same PATH requirement applies
 
 ---
 
