@@ -41,6 +41,7 @@ module MyceliumBoard:
     power.vpos ~ stimulation.vpos
     power.vneg ~ stimulation.vneg
     power.agnd ~ stimulation.gnd
+    power.dvdd ~ stimulation.dvdd
 
     # ══════════════════════════════════════════════
     # SPI1 — MCU → ADS1299
@@ -89,8 +90,9 @@ module MyceliumBoard:
     rec_electrodes.stim_ch3 ~ stimulation.out3
     rec_electrodes.stim_ch4 ~ stimulation.out4
 
-    # Ground electrode
+    # Ground & Power (Barrel Jack)
     rec_electrodes.gnd ~ power.agnd
+    rec_electrodes.vbus ~ power.vin
 
     # SRB2 shared reference (MEA-style recording)
     rec_electrodes.srb2_ref ~ recording.srb2_ref

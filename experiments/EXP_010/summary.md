@@ -4,6 +4,9 @@
 **End Date:** 2026-03-10
 **Status:** Complete (infrastructure phase)
 **Airtable Links:** None
+**Project:** Bio Electronic Music
+**Parent:** —
+**Hardware:** ADC-24, LED-DRV8
 
 ---
 

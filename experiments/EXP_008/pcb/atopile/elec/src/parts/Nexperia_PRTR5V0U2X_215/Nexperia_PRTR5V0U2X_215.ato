@@ -1,5 +1,4 @@
 #pragma experiment("TRAITS")
-import has_datasheet
 import has_designator_prefix
 import has_part_picked
 import is_atomic_part
@@ -15,7 +14,6 @@ component Nexperia_PRTR5V0U2X_215_package:
     trait is_atomic_part<manufacturer="Nexperia", partnumber="PRTR5V0U2X,215", footprint="SOT-143_L2.9-W1.3-P1.92-LS2.3-BR.kicad_mod", symbol="PRTR5V0U2X,215.kicad_sym", model="SOT-143-4P_L3.0-W1.3-H1.0-LS2.3-P1.70.step">
     trait has_part_picked::by_supplier<supplier_id="lcsc", supplier_partno="C12333", manufacturer="Nexperia", partno="PRTR5V0U2X,215">
     trait has_designator_prefix<prefix="D">
-    trait has_datasheet<datasheet="https://www.lcsc.com/datasheet/lcsc_datasheet_2410010302_Nexperia-PRTR5V0U2X-215_C12333.pdf">
 
     # pins
     signal GND ~ pin 1

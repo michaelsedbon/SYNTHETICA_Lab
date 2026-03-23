@@ -3,7 +3,9 @@
 **Start Date:** 2026-03-12
 **Status:** Phase 5 complete — production hardening (udev, systemd, reconnection)
 **Airtable Links:** None
-**Parent Experiments:** EXP_005, EXP_011, EXP_012
+**Project:** Cryptographic Beings
+**Parent:** EXP_005, EXP_011, EXP_012
+**Hardware:** LattePanda, DM556
 
 ---
 

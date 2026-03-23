@@ -1,12 +1,15 @@
 # ============================================================
 # Recording Front-End — ADS1299 (8ch 24-bit DC-coupled)
 # CRITICAL: NO AC coupling caps — mycelium signals are sub-Hz
+# ADS1299 AVDD = 5V (from VBUS), DVDD = 1.8V (internal)
 # ============================================================
 
 from "parts/Samsung_Electro_Mechanics_CL05B104KO5NNNC/Samsung_Electro_Mechanics_CL05B104KO5NNNC.ato" import Samsung_Electro_Mechanics_CL05B104KO5NNNC_package
 from "parts/Samsung_Electro_Mechanics_CL10A105KB8NNNC/Samsung_Electro_Mechanics_CL10A105KB8NNNC.ato" import Samsung_Electro_Mechanics_CL10A105KB8NNNC_package
+from "parts/Walsin_Tech_Corp_0805F106Z100CT/Walsin_Tech_Corp_0805F106Z100CT.ato" import Walsin_Tech_Corp_0805F106Z100CT_package
 from "parts/FH_0402CG220J500NT/FH_0402CG220J500NT.ato" import FH_0402CG220J500NT_package
 from "parts/UNI_ROYAL_0402WGF1002TCE/UNI_ROYAL_0402WGF1002TCE.ato" import UNI_ROYAL_0402WGF1002TCE_package
+from "parts/Yageo_1nF_0402/Yageo_1nF_0402.ato" import Yageo_1nF_0402_package
 from "parts/Nexperia_PRTR5V0U2X_215/Nexperia_PRTR5V0U2X_215.ato" import Nexperia_PRTR5V0U2X_215_package
 from "parts/Texas_Instruments_ADS1299IPAGR/Texas_Instruments_ADS1299IPAGR.ato" import Texas_Instruments_ADS1299IPAGR_package
 from "parts/YXC_H1OSC_SUG_8_192M/YXC_H1OSC_SUG_8_192M.ato" import YXC_H1OSC_SUG_8_192M_package
@@ -42,13 +45,20 @@ module RecordingFrontEnd:
     # ── ADS1299 (C476817) ────────────────────────
     adc = new Texas_Instruments_ADS1299IPAGR_package
 
+    # Power: AVDD = 5V (from USB VBUS), DVDD = 1.8V internal
     avdd ~ adc.AVDD
     avdd ~ adc.AVDD1
-    avdd ~ adc.DVDD
     agnd ~ adc.AVSS
     agnd ~ adc.AVSS1
     agnd ~ adc.DGND
 
+    # DVDD: 1.8V generated internally, bypass only (do NOT drive externally)
+    # Connect DVDD pins together and decouple to DGND
+    c_dvdd = new Samsung_Electro_Mechanics_CL05B104KO5NNNC_package
+    adc.DVDD ~ c_dvdd.p1
+    agnd ~ c_dvdd.p2
+
+    # SPI
     sclk ~ adc.SCLK
     din ~ adc.DIN
     dout ~ adc.DOUT
@@ -57,7 +67,7 @@ module RecordingFrontEnd:
     start ~ adc.START
     reset ~ adc.nRESET
 
-    # PWDN pull-up
+    # PWDN pull-up (active-low, tie high for normal operation)
     r_pwdn = new UNI_ROYAL_0402WGF1002TCE_package
     avdd ~ r_pwdn.p1
     r_pwdn.p2 ~ adc.nPWDN
@@ -75,17 +85,49 @@ module RecordingFrontEnd:
     agnd ~ c_xtal1.p2
     agnd ~ c_xtal2.p2
 
-    # ── Decoupling ────────────────────────────────
+    # ── AVDD Decoupling ──────────────────────────
     c_avdd = new Samsung_Electro_Mechanics_CL05B104KO5NNNC_package
     c_avdd_bulk = new Samsung_Electro_Mechanics_CL10A105KB8NNNC_package
-    c_dvdd = new Samsung_Electro_Mechanics_CL05B104KO5NNNC_package
-
     avdd ~ c_avdd.p1
     agnd ~ c_avdd.p2
     avdd ~ c_avdd_bulk.p1
     agnd ~ c_avdd_bulk.p2
-    adc.DVDD ~ c_dvdd.p1
-    agnd ~ c_dvdd.p2
+
+
+    # ── VCAP Capacitors (MANDATORY for internal refs) ─
+    # VCAP1: internal 1.8V LDO output — needs 10µF min (100µF ideal)
+    c_vcap1 = new Walsin_Tech_Corp_0805F106Z100CT_package
+    adc.VCAP1 ~ c_vcap1.p1
+    agnd ~ c_vcap1.p2
+
+    # VCAP2, VCAP3, VCAP4: internal reference buffers — 1µF each
+    c_vcap2 = new Samsung_Electro_Mechanics_CL10A105KB8NNNC_package
+    adc.VCAP2 ~ c_vcap2.p1
+    agnd ~ c_vcap2.p2
+
+    c_vcap3 = new Samsung_Electro_Mechanics_CL10A105KB8NNNC_package
+    adc.VCAP3 ~ c_vcap3.p1
+    agnd ~ c_vcap3.p2
+
+    c_vcap4 = new Samsung_Electro_Mechanics_CL10A105KB8NNNC_package
+    adc.VCAP4 ~ c_vcap4.p1
+    agnd ~ c_vcap4.p2
+
+    # ── VREF Capacitors (internal reference output) ──
+    # VREFP: 1µF ceramic
+    c_vrefp = new Samsung_Electro_Mechanics_CL10A105KB8NNNC_package
+    adc.VREFP ~ c_vrefp.p1
+    agnd ~ c_vrefp.p2
+
+    # VREFN: tie to AVSS (agnd)
+    agnd ~ adc.VREFN
+
+    # ── Reserved & Unused Pins ───────────────────
+    avdd ~ adc.RESERVED
+    agnd ~ adc.RESV1
+    agnd ~ adc.DAISY_IN
+    agnd ~ adc.BIASREF
+    agnd ~ adc.BIASIN
 
     # ── ESD Protection (PRTR5V0U2X, C12333) ──────
     # Pins: GND=1, IO1=2, IO2=3, VCC=4
@@ -115,48 +157,145 @@ module RecordingFrontEnd:
     agnd ~ esd7.GND
     agnd ~ esd8.GND
 
-    # ── Analog Inputs (DC-coupled!) ───────────────
+    # ── Analog Inputs (10kΩ / 1nF Anti-Aliasing Filter) ───────────────
+    # Channel 1
     inp1 ~ esd1.IO1
-    esd1.IO1 ~ adc.IN1P
+    r_in1p = new UNI_ROYAL_0402WGF1002TCE_package
+    c_in1p = new Yageo_1nF_0402_package
+    esd1.IO1 ~ r_in1p.p1
+    r_in1p.p2 ~ adc.IN1P
+    adc.IN1P ~ c_in1p.p1
+    agnd ~ c_in1p.p2
+
     inn1 ~ esd1.IO2
-    esd1.IO2 ~ adc.IN1N
+    r_in1n = new UNI_ROYAL_0402WGF1002TCE_package
+    c_in1n = new Yageo_1nF_0402_package
+    esd1.IO2 ~ r_in1n.p1
+    r_in1n.p2 ~ adc.IN1N
+    adc.IN1N ~ c_in1n.p1
+    agnd ~ c_in1n.p2
 
+    # Channel 2
     inp2 ~ esd2.IO1
-    esd2.IO1 ~ adc.IN2P
+    r_in2p = new UNI_ROYAL_0402WGF1002TCE_package
+    c_in2p = new Yageo_1nF_0402_package
+    esd2.IO1 ~ r_in2p.p1
+    r_in2p.p2 ~ adc.IN2P
+    adc.IN2P ~ c_in2p.p1
+    agnd ~ c_in2p.p2
+
     inn2 ~ esd2.IO2
-    esd2.IO2 ~ adc.IN2N
+    r_in2n = new UNI_ROYAL_0402WGF1002TCE_package
+    c_in2n = new Yageo_1nF_0402_package
+    esd2.IO2 ~ r_in2n.p1
+    r_in2n.p2 ~ adc.IN2N
+    adc.IN2N ~ c_in2n.p1
+    agnd ~ c_in2n.p2
 
+    # Channel 3
     inp3 ~ esd3.IO1
-    esd3.IO1 ~ adc.IN3P
+    r_in3p = new UNI_ROYAL_0402WGF1002TCE_package
+    c_in3p = new Yageo_1nF_0402_package
+    esd3.IO1 ~ r_in3p.p1
+    r_in3p.p2 ~ adc.IN3P
+    adc.IN3P ~ c_in3p.p1
+    agnd ~ c_in3p.p2
+
     inn3 ~ esd3.IO2
-    esd3.IO2 ~ adc.IN3N
+    r_in3n = new UNI_ROYAL_0402WGF1002TCE_package
+    c_in3n = new Yageo_1nF_0402_package
+    esd3.IO2 ~ r_in3n.p1
+    r_in3n.p2 ~ adc.IN3N
+    adc.IN3N ~ c_in3n.p1
+    agnd ~ c_in3n.p2
 
+    # Channel 4
     inp4 ~ esd4.IO1
-    esd4.IO1 ~ adc.IN4P
+    r_in4p = new UNI_ROYAL_0402WGF1002TCE_package
+    c_in4p = new Yageo_1nF_0402_package
+    esd4.IO1 ~ r_in4p.p1
+    r_in4p.p2 ~ adc.IN4P
+    adc.IN4P ~ c_in4p.p1
+    agnd ~ c_in4p.p2
+
     inn4 ~ esd4.IO2
-    esd4.IO2 ~ adc.IN4N
+    r_in4n = new UNI_ROYAL_0402WGF1002TCE_package
+    c_in4n = new Yageo_1nF_0402_package
+    esd4.IO2 ~ r_in4n.p1
+    r_in4n.p2 ~ adc.IN4N
+    adc.IN4N ~ c_in4n.p1
+    agnd ~ c_in4n.p2
 
+    # Channel 5
     inp5 ~ esd5.IO1
-    esd5.IO1 ~ adc.IN5P
+    r_in5p = new UNI_ROYAL_0402WGF1002TCE_package
+    c_in5p = new Yageo_1nF_0402_package
+    esd5.IO1 ~ r_in5p.p1
+    r_in5p.p2 ~ adc.IN5P
+    adc.IN5P ~ c_in5p.p1
+    agnd ~ c_in5p.p2
+
     inn5 ~ esd5.IO2
-    esd5.IO2 ~ adc.IN5N
+    r_in5n = new UNI_ROYAL_0402WGF1002TCE_package
+    c_in5n = new Yageo_1nF_0402_package
+    esd5.IO2 ~ r_in5n.p1
+    r_in5n.p2 ~ adc.IN5N
+    adc.IN5N ~ c_in5n.p1
+    agnd ~ c_in5n.p2
 
+    # Channel 6
     inp6 ~ esd6.IO1
-    esd6.IO1 ~ adc.IN6P
+    r_in6p = new UNI_ROYAL_0402WGF1002TCE_package
+    c_in6p = new Yageo_1nF_0402_package
+    esd6.IO1 ~ r_in6p.p1
+    r_in6p.p2 ~ adc.IN6P
+    adc.IN6P ~ c_in6p.p1
+    agnd ~ c_in6p.p2
+
     inn6 ~ esd6.IO2
-    esd6.IO2 ~ adc.IN6N
+    r_in6n = new UNI_ROYAL_0402WGF1002TCE_package
+    c_in6n = new Yageo_1nF_0402_package
+    esd6.IO2 ~ r_in6n.p1
+    r_in6n.p2 ~ adc.IN6N
+    adc.IN6N ~ c_in6n.p1
+    agnd ~ c_in6n.p2
 
+    # Channel 7
     inp7 ~ esd7.IO1
-    esd7.IO1 ~ adc.IN7P
-    inn7 ~ esd7.IO2
-    esd7.IO2 ~ adc.IN7N
+    r_in7p = new UNI_ROYAL_0402WGF1002TCE_package
+    c_in7p = new Yageo_1nF_0402_package
+    esd7.IO1 ~ r_in7p.p1
+    r_in7p.p2 ~ adc.IN7P
+    adc.IN7P ~ c_in7p.p1
+    agnd ~ c_in7p.p2
 
+    inn7 ~ esd7.IO2
+    r_in7n = new UNI_ROYAL_0402WGF1002TCE_package
+    c_in7n = new Yageo_1nF_0402_package
+    esd7.IO2 ~ r_in7n.p1
+    r_in7n.p2 ~ adc.IN7N
+    adc.IN7N ~ c_in7n.p1
+    agnd ~ c_in7n.p2
+
+    # Channel 8
     inp8 ~ esd8.IO1
-    esd8.IO1 ~ adc.IN8P
+    r_in8p = new UNI_ROYAL_0402WGF1002TCE_package
+    c_in8p = new Yageo_1nF_0402_package
+    esd8.IO1 ~ r_in8p.p1
+    r_in8p.p2 ~ adc.IN8P
+    adc.IN8P ~ c_in8p.p1
+    agnd ~ c_in8p.p2
+
     inn8 ~ esd8.IO2
-    esd8.IO2 ~ adc.IN8N
+    r_in8n = new UNI_ROYAL_0402WGF1002TCE_package
+    c_in8n = new Yageo_1nF_0402_package
+    esd8.IO2 ~ r_in8n.p1
+    r_in8n.p2 ~ adc.IN8N
+    adc.IN8N ~ c_in8n.p1
+    agnd ~ c_in8n.p2
 
     # Bias feedback
     adc.BIASOUT ~ adc.BIASINV
     agnd ~ adc.SRB1
     srb2_ref ~ adc.SRB2
+

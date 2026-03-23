@@ -1,5 +1,23 @@
 # CLAUDE.md
 
+## ⚠️ Workspace Rules — SYNTHETICA Lab
+
+**Every experiment summary.md MUST include these tags** (for the knowledge graph):
+- `**Project:**` — which project this belongs to (e.g. Bio Electronic Music, Cryptographic Beings)
+- `**Parent:**` — parent experiment ID if this continues previous work (e.g. EXP_005)
+- `**Hardware:**` — comma-separated hardware used (e.g. ESP32-S3, ADC-24, DM542T)
+
+**When creating new content:**
+- Papers → place in correct category folder under `papers_txt/` (not uncategorized)
+- Apps → reference `EXP_XXX` in the app's `applications/INDEX.md` entry
+- New paper categories → update `CATEGORY_PROJECT_MAP` in `applications/experiment-viewer/server/main.py`
+
+**For full workspace context, run `/orient` at conversation start.**
+
+---
+
+## Atopile Reference
+
 ato is a declarative DSL to design electronics (PCBs) with.
 It is part of the atopile project.
 Atopile is run by the vscode/cursor/windsurf extension.

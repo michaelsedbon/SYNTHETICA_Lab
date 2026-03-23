@@ -1,0 +1,17 @@
+#pragma experiment("TRAITS")
+import has_designator_prefix
+import has_part_picked
+import is_atomic_part
+import is_auto_generated
+
+component Alps_SKRPACE010_package:
+    trait is_atomic_part<manufacturer="Alps Alpine", partnumber="SKRPACE010", footprint="KEY-SMD_4P-L4.2-W3.2-P2.20-LS4.6.kicad_mod", symbol="SKRPACE010.kicad_sym">
+    trait has_part_picked::by_supplier<supplier_id="lcsc", supplier_partno="C139797", manufacturer="Alps Alpine", partno="SKRPACE010">
+    trait has_designator_prefix<prefix="SW">
+
+    # pins: 1,2 = side A (shorted), 3,4 = side B (shorted)
+    # Button press connects A to B
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2
+    signal p3 ~ pin 3
+    signal p4 ~ pin 4

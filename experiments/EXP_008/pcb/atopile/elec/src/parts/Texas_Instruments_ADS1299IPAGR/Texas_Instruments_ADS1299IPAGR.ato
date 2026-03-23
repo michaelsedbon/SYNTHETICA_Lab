@@ -1,5 +1,4 @@
 #pragma experiment("TRAITS")
-import has_datasheet
 import has_designator_prefix
 import has_part_picked
 import is_atomic_part
@@ -13,7 +12,6 @@ component Texas_Instruments_ADS1299IPAGR_package:
     trait is_atomic_part<manufacturer="Texas Instruments", partnumber="ADS1299IPAGR", footprint="TQFP-64_L10.0-W10.0-P0.50-LS12.0-TL.kicad_mod", symbol="ADS1299IPAGR.kicad_sym", model="TQFP-64_L10.0-W10.0-H1.2-LS12.0-P0.50.step">
     trait has_part_picked::by_supplier<supplier_id="lcsc", supplier_partno="C476817", manufacturer="Texas Instruments", partno="ADS1299IPAGR">
     trait has_designator_prefix<prefix="U">
-    trait has_datasheet<datasheet="https://www.lcsc.com/datasheet/lcsc_datasheet_2410121943_Texas-Instruments-ADS1299IPAGR_C476817.pdf">
 
     # pins
     signal AVDD ~ pin 19

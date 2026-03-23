@@ -3,6 +3,9 @@
 **Start Date:** 2026-03-03
 **Status:** In progress
 **Airtable Links:** None
+**Project:** Cryptographic Beings
+**Parent:** —
+**Hardware:** Arduino Mega
 
 ---
 

@@ -151,6 +151,13 @@ Every experiment folder **must** contain these 4 files (see `experiments/EXPERIM
 | `SCRIPT_INDEX.md` | Index of all scripts, firmware, data files, and artifacts |
 | `DOC_INDEX.md` | Index of all markdown/documentation files |
 
+**Knowledge Graph tags** — every `summary.md` **must** include these at the top:
+- `**Project:**` — which project this belongs to (check `projects/` for existing ones)
+- `**Parent:**` — parent experiment ID if continuing previous work (e.g. `EXP_005`), or `—`
+- `**Hardware:**` — comma-separated hardware used (e.g. `ESP32-S3, ADC-24`), or `—`
+
+These tags are parsed by the Experiment Viewer's knowledge graph to build relationships. Missing tags = orphan nodes.
+
 **Mandatory rules when working inside an experiment:**
 
 1. **Log everything** — every action, file creation, analysis, or change **must** be appended to `LOG.md` with a date heading (`## YYYY-MM-DD — Description`).

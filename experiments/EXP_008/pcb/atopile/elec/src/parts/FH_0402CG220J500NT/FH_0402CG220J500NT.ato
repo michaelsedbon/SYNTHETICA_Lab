@@ -1,5 +1,4 @@
 #pragma experiment("TRAITS")
-import has_datasheet
 import has_designator_prefix
 import has_part_picked
 import is_atomic_part
@@ -15,7 +14,6 @@ component FH_0402CG220J500NT_package:
     trait is_atomic_part<manufacturer="FH", partnumber="0402CG220J500NT", footprint="C0402.kicad_mod", symbol="0402CG220J500NT.kicad_sym", model="C0402_L1.0-W0.5-H0.5.step">
     trait has_part_picked::by_supplier<supplier_id="lcsc", supplier_partno="C1555", manufacturer="FH", partno="0402CG220J500NT">
     trait has_designator_prefix<prefix="C">
-    trait has_datasheet<datasheet="https://www.lcsc.com/datasheet/lcsc_datasheet_2304140030_FH--Guangdong-Fenghua-Advanced-Tech-0402CG220J500NT_C1555.pdf">
 
     # pins
     signal p1 ~ pin 1

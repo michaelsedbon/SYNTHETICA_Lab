@@ -13,6 +13,7 @@ Each project folder contains:
 |---------|--------|-------------|
 | Cryptographic Beings | `cryptographic_beings/` | Bio-hybrid art installation using Marimo algae for binary data storage |
 | Bio Electronic Music | `bio_electronic_music/` | Biological signal → electronic music pipeline |
+| Center for Living Design | `center_for_living_design/` | Interdisciplinary lab & studio bridging synthetic biology, bioart, and design |
 
 ## Syncing
 

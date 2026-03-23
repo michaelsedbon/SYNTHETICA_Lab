@@ -1,6 +1,9 @@
 # EXP_003 — Marimo Buoyancy Mathematical Modeling
 
-## Status: Active
+**Status:** Active
+**Project:** Cryptographic Beings
+**Parent:** —
+**Hardware:** —
 
 ## Goal
 

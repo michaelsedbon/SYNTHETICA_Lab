@@ -1,7 +1,9 @@
 # EXP_002: Cryptographic Beings — LLM Autonomous Control
 
 **Start Date:** 2026-03-01
-**Project:** Cryptographic Beings LLM
+**Project:** Cryptographic Beings
+**Parent:** —
+**Hardware:** ESP8266, Arduino Nano
 **Status:** Phase 1 complete, Phase 2 in progress
 
 ---

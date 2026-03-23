@@ -10,6 +10,7 @@ from "parts/YAGEO_RC0402FR_071KL/YAGEO_RC0402FR_071KL.ato" import YAGEO_RC0402FR
 from "parts/Espressif_Systems_ESP32_S3_WROOM_1_N16R8/Espressif_Systems_ESP32_S3_WROOM_1_N16R8.ato" import Espressif_Systems_ESP32_S3_WROOM_1_N16R8_package
 from "parts/Everlight_Elec_19_217_GHC_YR1S2_3T/Everlight_Elec_19_217_GHC_YR1S2_3T.ato" import Everlight_Elec_19_217_GHC_YR1S2_3T_package
 from "parts/Everlight_Elec_19_217_BHC_ZL1M2RY_3T/Everlight_Elec_19_217_BHC_ZL1M2RY_3T.ato" import Everlight_Elec_19_217_BHC_ZL1M2RY_3T_package
+from "parts/Alps_SKRPACE010/Alps_SKRPACE010.ato" import Alps_SKRPACE010_package
 
 module MCU_Module:
     signal dvdd
@@ -31,7 +32,7 @@ module MCU_Module:
 
     # ESP32-S3 pins: EN=3, GND=1/40/41, IO0-IO48
     mcu = new Espressif_Systems_ESP32_S3_WROOM_1_N16R8_package
-    dvdd ~ mcu.IO2
+    dvdd ~ mcu.P3V3
     dgnd ~ mcu.GND
 
     # Enable RC
@@ -85,3 +86,20 @@ module MCU_Module:
     mcu.IO8 ~ r_led_act.p1
     r_led_act.p2 ~ led_act.A
     led_act.C ~ dgnd
+
+    # ── RESET button — press to reset ESP32-S3 ───
+    # Momentary press pulls EN low → chip resets
+    # SKRPACE010: pin1/pin2 = side A, pin3/pin4 = side B
+    btn_reset = new Alps_SKRPACE010_package
+    mcu.EN ~ btn_reset.p1
+    dgnd ~ btn_reset.p3
+
+    # ── BOOT button — hold during reset for download mode ──
+    # GPIO0 must be LOW during reset to enter firmware download
+    # Internal pull-up exists, but external 10kΩ recommended
+    r_boot = new UNI_ROYAL_0402WGF1002TCE_package
+    dvdd ~ r_boot.p1
+    r_boot.p2 ~ mcu.IO0
+    btn_boot = new Alps_SKRPACE010_package
+    mcu.IO0 ~ btn_boot.p1
+    dgnd ~ btn_boot.p3

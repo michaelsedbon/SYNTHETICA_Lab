@@ -1,5 +1,4 @@
 #pragma experiment("TRAITS")
-import has_datasheet
 import has_designator_prefix
 import has_part_picked
 import is_atomic_part
@@ -15,7 +14,6 @@ component Texas_Instruments_TPS65131RGER_package:
     trait is_atomic_part<manufacturer="Texas Instruments", partnumber="TPS65131RGER", footprint="QFN-24_L4.0-W4.0-P0.50-TL-EP2.6.kicad_mod", symbol="TPS65131RGER.kicad_sym", model="QFN-24_L4.0-W4.0-P0.50-TL-EP2.6.STEP">
     trait has_part_picked::by_supplier<supplier_id="lcsc", supplier_partno="C87663", manufacturer="Texas Instruments", partno="TPS65131RGER">
     trait has_designator_prefix<prefix="U">
-    trait has_datasheet<datasheet="https://www.lcsc.com/datasheet/lcsc_datasheet_2410010302_Texas-Instruments-TPS65131RGER_C87663.pdf">
 
     # pins
     signal AGND ~ pin 19

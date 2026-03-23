@@ -1,5 +1,4 @@
 #pragma experiment("TRAITS")
-import has_datasheet
 import has_designator_prefix
 import has_part_picked
 import is_atomic_part
@@ -13,7 +12,6 @@ component Texas_Instruments_TLV75733PDBVR_package:
     trait is_atomic_part<manufacturer="Texas Instruments", partnumber="TLV75733PDBVR", footprint="SOT-23-5_L2.9-W1.6-P0.95-LS2.8-BL.kicad_mod", symbol="TLV75733PDBVR.kicad_sym", model="SOT-23-5_L2.9-W1.6-P0.95-LS2.8-BL.step">
     trait has_part_picked::by_supplier<supplier_id="lcsc", supplier_partno="C485517", manufacturer="Texas Instruments", partno="TLV75733PDBVR">
     trait has_designator_prefix<prefix="U">
-    trait has_datasheet<datasheet="https://www.lcsc.com/datasheet/lcsc_datasheet_2304140030_Texas-Instruments-TLV75733PDBVR_C485517.pdf">
 
     # pins
     signal EN ~ pin 3

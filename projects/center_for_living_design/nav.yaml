@@ -1,0 +1,9 @@
+title: Center for Living Design
+icon: flask
+sections:
+  - name: Overview
+    file: summary.md
+  - name: Knowledge Base
+    children:
+      - name: "Association & BSL1 Lab Setup (France)"
+        file: knowledge/france_association_bsl1_research.md

@@ -3,6 +3,9 @@
 **Start Date:** 2026-03-06
 **Status:** In progress
 **Airtable Links:** None
+**Project:** Bio Electronic Music
+**Parent:** —
+**Hardware:** —
 
 ---
 

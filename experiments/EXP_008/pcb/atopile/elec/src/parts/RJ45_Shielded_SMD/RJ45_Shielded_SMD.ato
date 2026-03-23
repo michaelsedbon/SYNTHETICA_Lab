@@ -1,0 +1,23 @@
+#pragma experiment("TRAITS")
+import has_designator_prefix
+import has_part_picked
+import is_atomic_part
+
+component RJ45_Shielded_SMD_package:
+    trait is_atomic_part<manufacturer="KH", partnumber="KH-RJ45-56-8P8C", footprint="RJ45-TH_KH-RJ45-56-8P8C.kicad_mod", symbol="KH-RJ45-56-8P8C.kicad_sym">
+    trait has_part_picked::by_supplier<supplier_id="lcsc", supplier_partno="C2683359", manufacturer="KH", partno="KH-RJ45-56-8P8C">
+    trait has_designator_prefix<prefix="J">
+
+    # Signal Pins
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2
+    signal p3 ~ pin 3
+    signal p4 ~ pin 4
+    signal p5 ~ pin 5
+    signal p6 ~ pin 6
+    signal p7 ~ pin 7
+    signal p8 ~ pin 8
+    
+    # Shield Pins (KH-RJ45-56 pads 9 and 10 are the shield anchors)
+    signal SH1 ~ pin 9
+    signal SH2 ~ pin 10

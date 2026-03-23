@@ -1,0 +1,14 @@
+#pragma experiment("TRAITS")
+import has_designator_prefix
+import has_part_picked
+import is_atomic_part
+
+component Yageo_1nF_0402_package:
+    """1nF (102) ±10% 50V"""
+    trait is_atomic_part<manufacturer="Yageo", partnumber="CC0402KRX7R9BB102", footprint="C0402.kicad_mod", symbol="CL05B104KO5NNNC.kicad_sym", model="C0402_L1.0-W0.5-H0.5.step">
+    trait has_part_picked::by_supplier<supplier_id="lcsc", supplier_partno="C1523", manufacturer="Yageo", partno="CC0402KRX7R9BB102">
+    trait has_designator_prefix<prefix="C">
+
+    # pins
+    signal p2 ~ pin 2
+    signal p1 ~ pin 1

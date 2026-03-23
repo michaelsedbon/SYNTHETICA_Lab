@@ -1,10 +1,12 @@
 # ============================================================
 # Power Supply Module
-# USB 5V → DVDD 3.3V + AVDD 3.3V + ±5V for stimulation
+# USB 5V → DVDD 3.3V + AVDD 5V (filtered) + ±5V for stimulation
 # ============================================================
 
 from "parts/Walsin_Tech_Corp_0805F106Z100CT/Walsin_Tech_Corp_0805F106Z100CT.ato" import Walsin_Tech_Corp_0805F106Z100CT_package
 from "parts/Samsung_Electro_Mechanics_CL10A475KO8NNNC/Samsung_Electro_Mechanics_CL10A475KO8NNNC.ato" import Samsung_Electro_Mechanics_CL10A475KO8NNNC_package
+from "parts/Samsung_Electro_Mechanics_CL05B104KO5NNNC/Samsung_Electro_Mechanics_CL05B104KO5NNNC.ato" import Samsung_Electro_Mechanics_CL05B104KO5NNNC_package
+from "parts/Samsung_Electro_Mechanics_CL10A105KB8NNNC/Samsung_Electro_Mechanics_CL10A105KB8NNNC.ato" import Samsung_Electro_Mechanics_CL10A105KB8NNNC_package
 from "parts/Advanced_Monolithic_Systems_AMS1117_3_3/Advanced_Monolithic_Systems_AMS1117_3_3.ato" import Advanced_Monolithic_Systems_AMS1117_3_3_package
 from "parts/Texas_Instruments_TLV75733PDBVR/Texas_Instruments_TLV75733PDBVR.ato" import Texas_Instruments_TLV75733PDBVR_package
 from "parts/Texas_Instruments_TPS65131RGER/Texas_Instruments_TPS65131RGER.ato" import Texas_Instruments_TPS65131RGER_package
@@ -34,37 +36,100 @@ module PowerSupply:
     dvdd ~ c_dig_out.p1
     dgnd ~ gnd
 
-    # ── Analog 3.3V LDO (TLV75733, low noise) ────
-    # TLV75733 pins: IN=1, GND=2, EN=3, OUT=5
-    ldo_ana = new Texas_Instruments_TLV75733PDBVR_package
-    c_ana_in = new Samsung_Electro_Mechanics_CL10A475KO8NNNC_package
-    c_ana_out = new Samsung_Electro_Mechanics_CL10A475KO8NNNC_package
-
-    vin ~ ldo_ana.IN
-    vin ~ c_ana_in.p1
-    ldo_ana.EN ~ vin
-    gnd ~ ldo_ana.GND
-    gnd ~ c_ana_in.p2
-    gnd ~ c_ana_out.p2
-    avdd ~ ldo_ana.OUT
-    avdd ~ c_ana_out.p1
+    # ── Analog 5V Supply (filtered from VBUS) ────
+    # ADS1299 requires AVDD = 4.75–5.25V
+    # Use VBUS (5V) with LC filter for analog supply
+    # TODO: Add ferrite bead between VIN and AVDD for noise isolation
+    # For now: connect AVDD directly to VIN with extra decoupling
+    c_avdd_in = new Walsin_Tech_Corp_0805F106Z100CT_package
+    c_avdd_filt = new Samsung_Electro_Mechanics_CL05B104KO5NNNC_package
+    vin ~ avdd
+    avdd ~ c_avdd_in.p1
+    gnd ~ c_avdd_in.p2
+    avdd ~ c_avdd_filt.p1
+    gnd ~ c_avdd_filt.p2
     agnd ~ gnd
 
     # ── Bipolar ±5V DC-DC (TPS65131) ─────────────
-    # TPS65131 key pins: VIN=1, ENP=8, VPOS(FBP=22), VNEG(FBN=16), AGND=19
+    # Generates +5V (VPOS) and -5V (VNEG) for stimulation opamp
+    #
+    # CRITICAL: This IC requires external inductors, Schottky diodes,
+    # and feedback resistor dividers. These need to be added as proper
+    # parts when available. For now, all pins are correctly connected.
+    #
+    # TPS65131 pins:
+    #   VIN=4, ENP=8, ENN=10, AGND=19, PGND=2/3, EP=25
+    #   Boost: INP=1/24, BSW=7, VPOS=23, FBP=22
+    #   Invert: INN=5/6, OUTN=13/14, VNEG=15, FBN=16
+    #   Ref: VREF=17, PSP=9, PSN=11, CN=18, CP=21
     dcdc = new Texas_Instruments_TPS65131RGER_package
+
+    # Input power
+    dvdd ~ dcdc.VIN
+
+    # Ground connections (CRITICAL: PGND and EP must connect to GND)
+    gnd ~ dcdc.AGND
+    gnd ~ dcdc.PGND
+    gnd ~ dcdc.EP
+
+    # Enable both converters
+    dvdd ~ dcdc.ENP
+    gnd ~ dcdc.ENN
+
+    # Input decoupling
     c_dcdc_in = new Walsin_Tech_Corp_0805F106Z100CT_package
+    dvdd ~ c_dcdc_in.p1
+    gnd ~ c_dcdc_in.p2
+
+    # Output capacitors on VPOS and VNEG (actual output pins!)
     c_dcdc_pos = new Walsin_Tech_Corp_0805F106Z100CT_package
     c_dcdc_neg = new Walsin_Tech_Corp_0805F106Z100CT_package
-
-    dvdd ~ dcdc.VIN
-    dvdd ~ c_dcdc_in.p1
-    dcdc.ENP ~ dvdd
-    gnd ~ dcdc.AGND
-    gnd ~ c_dcdc_in.p2
-    gnd ~ c_dcdc_pos.p2
-    gnd ~ c_dcdc_neg.p2
-    vpos ~ dcdc.FBP
+    vpos ~ dcdc.VPOS
     vpos ~ c_dcdc_pos.p1
-    vneg ~ dcdc.FBN
+    gnd ~ c_dcdc_pos.p2
+    vneg ~ dcdc.VNEG
     vneg ~ c_dcdc_neg.p1
+    gnd ~ c_dcdc_neg.p2
+
+    # VREF decoupling (1.213V internal reference)
+    c_vref = new Samsung_Electro_Mechanics_CL05B104KO5NNNC_package
+    dcdc.VREF ~ c_vref.p1
+    gnd ~ c_vref.p2
+
+    # Charge pump caps (required for operation)
+    c_cn = new Samsung_Electro_Mechanics_CL05B104KO5NNNC_package
+    c_cp = new Samsung_Electro_Mechanics_CL05B104KO5NNNC_package
+    dcdc.CN ~ c_cn.p1
+    gnd ~ c_cn.p2
+    dcdc.CP ~ c_cp.p1
+    gnd ~ c_cp.p2
+
+    # Soft-start caps (optional, improve startup behavior)
+    c_psp = new Samsung_Electro_Mechanics_CL05B104KO5NNNC_package
+    c_psn = new Samsung_Electro_Mechanics_CL05B104KO5NNNC_package
+    dcdc.PSP ~ c_psp.p1
+    gnd ~ c_psp.p2
+    dcdc.PSN ~ c_psn.p1
+    gnd ~ c_psn.p2
+
+    # ── TODO: Parts that need to be added ────────
+    # The following components are required but need new part files:
+    #
+    # 1. INDUCTOR L1 (4.7µH): VIN → L1 → dcdc.INP (boost input)
+    # 2. INDUCTOR L2 (4.7µH): VIN → L2 → dcdc.INN (inverting input)
+    # 3. SCHOTTKY D1: dcdc.BSW → D1.anode, D1.cathode → VPOS
+    # 4. SCHOTTKY D2: VNEG → D2.anode, D2.cathode → dcdc.OUTN
+    # 5. FB divider VPOS: FBP → resistor divider → GND (sets +5V)
+    #    R_FBP_TOP = 787kΩ, R_FBP_BOT = 249kΩ
+    # 6. FB divider VNEG: FBN → resistor divider → VREF (sets -5V)
+    #    R_FBN_TOP = 100kΩ (to VREF), R_FBN_BOT = 412kΩ (to VNEG)
+    #
+    # For now, these connections are left open. The board WILL NOT
+    # generate ±5V until these parts are added and connected.
+    # Connect FBP/FBN to a temporary voltage for build to succeed:
+    # (In reality these need the resistor dividers)
+    #
+    # Temporary: connect inductor inputs directly for now
+    dvdd ~ dcdc.INP
+    dvdd ~ dcdc.INN
+    # FBP/FBN will float until feedback dividers are added

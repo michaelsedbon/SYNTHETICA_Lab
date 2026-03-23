@@ -5,6 +5,7 @@
 **Airtable Links:** None
 **Project:** Bio Electronic Music
 **Parent:** EXP_010
+**Hardware:** ADC-24, LED-DRV8
 
 ---
 

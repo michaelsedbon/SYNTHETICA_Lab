@@ -1,0 +1,10 @@
+{
+  "autodeskProduct": "Fusion",
+  "type": "addin",
+  "author": "Michael Sedbon",
+  "description": {
+    "": "Adds a toolbar button to export the current design as .f3d + .fbx into a zip saved to Downloads."
+  },
+  "supportedOS": "windows|mac",
+  "editEnabled": true
+}

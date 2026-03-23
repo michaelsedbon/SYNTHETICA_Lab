@@ -1,5 +1,4 @@
 #pragma experiment("TRAITS")
-import has_datasheet
 import has_designator_prefix
 import has_part_picked
 import is_atomic_part
@@ -13,7 +12,6 @@ component SHOU_HAN_TYPE_C_16PIN_2MD_073_package:
     trait is_atomic_part<manufacturer="SHOU HAN", partnumber="TYPE-C 16PIN 2MD(073)", footprint="USB-C-SMD_TYPE-C-6PIN-2MD-073.kicad_mod", symbol="TYPE-C16PIN2MD(073).kicad_sym", model="USB-C-SMD_TYPE-C-6PIN-2MD-073.STEP">
     trait has_part_picked::by_supplier<supplier_id="lcsc", supplier_partno="C2765186", manufacturer="SHOU HAN", partno="TYPE-C 16PIN 2MD(073)">
     trait has_designator_prefix<prefix="USB">
-    trait has_datasheet<datasheet="https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8588920841703079936">
 
     # pins
     signal CC1 ~ pin 4

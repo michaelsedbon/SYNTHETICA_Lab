@@ -1,0 +1,1344 @@
+--- Page 1 ---
+Mishra et al., Sci. Robot. 9, eadk8019 (2024)     28 August 2024
+S c i e n c e  R o b ot i c s  | R e s e a r c h  A r t i c l e
+1 of 14
+B I O M AT E R I A L S
+Sensorimotor control of robots mediated by 
+electrophysiological measurements of fungal mycelia
+Anand Kumar Mishra1, Jaeseok Kim2, Hannah Baghdadi1, Bruce R. Johnson3,  
+Kathie T. Hodge4, Robert F. Shepherd1*
+Living tissues are still far from being used as practical components in biohybrid robots because of limitations in 
+life span, sensitivity to environmental factors, and stringent culture procedures. Here, we introduce fungal myce-
+lia as an easy-­to-­use and robust living component in biohybrid robots. We constructed two biohybrid robots that 
+use the electrophysiological activity of living mycelia to control their artificial actuators. The mycelia sense their 
+environment and issue action potential–like spiking voltages as control signals to the motors and valves of the 
+robots that we designed and built. The paper highlights two key innovations: first, a vibration-­ and electromag-
+netic interference–shielded mycelium electrical interface that allows for stable, long-­term electrophysiological 
+bioelectric recordings during untethered, mobile operation; second, a control architecture for robots inspired by 
+neural central pattern generators, incorporating rhythmic patterns of positive and negative spikes from the living 
+mycelia. We used these signals to control a walking soft robot as well as a wheeled hard one. We also demon-
+strated the use of mycelia to respond to environmental cues by using ultraviolet light stimulation to augment the 
+robots’ gaits.
+INTRODUCTION
+With extreme care and effort, robots can operate with animal-­like 
+gaits that impress even a lay audience. The efficiency, durability, re-
+peatability, and capabilities of these demonstrations, however, still 
+do not match those of their biological counterparts, such as dogs 
+and humans.
+Organisms solve these hardware issues by growing, not assem-
+bling, sensors, actuators, and the neural networks that connect them. 
+A human fingertip, for example, has more than 3000 mechanorecep-
+tors attached to thousands of interconnected nerves and neuronal 
+signaling pathways that communicate with a distally located brain 
+(1, 2). The nanoscale bottom-­up assembly processes that enable these 
+features are not a capability of human technology yet; therefore, syn-
+thetic robots do not approach the capabilities of natural organisms. 
+One approach for biohybrid robots is the use of living tissue to con-
+trol mechanisms (3, 4). In some ways, this approach is akin to the 
+use of unconventional computing to control robots (5) as opposed to 
+traditional controllers, such as the design of Belousov-­Zhabotinsky 
+liquid marbles with light-­stimulated controllers, chemical taxis con-
+trollers (6–9), and autonomous liquid robots (10).
+Two primary methods of living biohybrid machine construction 
+involve directing cultured cells into useful forms and excising and 
+using tissues after natural formation. Among the five kingdoms, 
+animal-­based biohybrid machines are the most popular in literature 
+because of their implied motility (11, 12), and, after forming the tis-
+sue construct, they have been controlled by pulses of optical, electri-
+cal, or magnetic stimuli (11, 13).
+Culturing animal cells typically involves growing muscle bun-
+dles from single cells through self-­assembly and embedding them 
+into mechanical structures or scaffolding (11, 13). This method has 
+been applied to various biohybrid robots usually composed of ei-
+ther skeletal or cardiac muscle cells (3, 14–21). Whole muscle tis-
+sues have also been used for biohybrid robots, where their actuation 
+is typically triggered electrically or chemically (4, 22–26). Animal 
+biohybrids have been used for swimming, walking, and other 
+behaviors—for example, frog and cardiac muscles for swimming (22, 
+23), Aplysia californica I2 muscles for walking (24), earthworm mus-
+cles for bio-­micropumps and valves (4, 25), and neural cells to con-
+trol robots (27). Although these accomplishments are exciting, there 
+are many challenges to solve related to animal biohybrids and the 
+difficulty of maintaining healthy, living tissues in pragmatic envi-
+ronmental conditions (28). For example, a sterile environment and 
+daily medium exchange with infusion of supplements and antibiot-
+ics such as penicillin are required to maintain living cell cultures.
+Nonanimal systems have started to garner interest because they 
+may be less prone to some of these issues and provide other oppor-
+tunities, such as reduced complexity. These nonanimal biohybrids 
+are primarily based on plants and bacteria. Like animals, bacteria 
+are predominantly researched because of their motility (12) and have 
+been used for tumor site detection (29), targeted payload delivery 
+(30), and micromotors (31). Plant-­based biohybrid systems are typi-
+cally built not only for nontraditional robotics use cases, such as 
+environmental sensing (32) and energy harvesting (33), but also as 
+actuators (34). The relatively short life span of individual bacteria 
+and a plant’s slower movements [see exceptions (35, 36)] provide 
+challenges. Slime mold (Physarum polycephalum) has also been used 
+to control robots through its physical oscillatory movements (37), 
+but the shape change is on the order of minutes.
+The kingdom Fungi is less explored for biohybrid robots; how-
+ever, it offers several potential advantages over other kinds of or-
+ganisms. Unlike animal cells, fungi can be easily cultured in large 
+quantities and have relatively simple engineering requirements for 
+sustaining life (38, 39). Common fungal species have demonstrated 
+the ability to thrive in extreme environments, including the Arctic 
+and Antarctic (40), nuclear radiation sites (40, 41), and highly acid-
+ic or saline conditions (42), making them promising candidates for 
+1Sibley School of Mechanical and Aerospace Engineering, Cornell University, Ithaca, 
+NY 14853, USA. 2Department of Industrial Engineering, University of Florence, 
+Florence, Tuscany 50139, Italy. 3Department of Neurobiology and Behavior, Cornell 
+University, Ithaca, NY 14853, USA. 4Plant Pathology and Plant-­Microbe Biology Sec-
+tion, School of Integrative Plant Science, Cornell University, Ithaca, NY 14853, USA.
+*Corresponding author. Email: rfs247@​cornell.​edu
+Copyright © 2024 The 
+Authors, some rights 
+reserved; exclusive 
+licensee American 
+Association for the 
+Advancement of 
+Science. No claim to 
+original U.S. 
+Government Works 
+Downloaded from https://www.science.org at Massachusetts Institute of Technology on September 09, 2024
+
+
+--- Page 2 ---
+Mishra et al., Sci. Robot. 9, eadk8019 (2024)     28 August 2024
+S c i e n c e  R o b ot i c s  | R e s e a r c h  A r t i c l e
+2 of 14
+various robotics applications requiring robust operation in hazard-
+ous conditions.
+Mycelial networks comprise the mostly subterranean portion of 
+fungi; they sense, communicate, and transport nutrients and water 
+(43). Mycelia are composed of filamentous, branching hyphae and 
+can grow to extremely large scales (44). Their interconnected, complex 
+networks exhibit rapid signal transmission, growth, and the produc-
+tion of signaling molecules (38, 45, 46).
+These fungi are also sensitive to environmental cues, such as light 
+and chemicals (39). Their light sensitivity is believed to be because 
+of proteins, such as opsins, phytochromes, and white collar-­1 (WC-­
+1), that change conformation in response to light. WC-­1 is a blue-­
+light photoreceptor that is sensitive to the wavelengths between 
+blue and ultraviolet (UV) (39, 47, 48). These light-­sensitive proteins 
+are also likely involved in hyphal growth regulation and circadian 
+rhythms (49).
+The electrical signals that are indicative of these environmental 
+cues, as well as other regulatory processes, are transmitted through 
+the transmembrane movement of ions. Action potential–like signals 
+have been recorded intracellularly and extracellularly from several 
+fungal species, such as Neurospora crassa (45), Armillaria bulbosa 
+(46), Ganoderma resinaceum (50), and Pleurotus djamor (51). For 
+example, A. bulbosa can produce electrical signals between 1 and 
+5 Hz under mechanical stimulation (46). Mechanically sensitive ion 
+channels permeable to calcium and potassium have been described 
+in fungal species (52). Changes in membrane potential producing 
+action potential–like events may be mechanistically similar to the 
+depolarization and repolarization phases of action potentials in ani-
+mal neurons (53). Our intention in this work was not to explore the 
+mechanisms of electrical excitability in fungi but, instead, to use these 
+signals to sense the environment and control robots.
+Fungi have recently drawn the attention of researchers who are 
+interested in harnessing their unique characteristics to develop bio-
+hybrid solutions. Some examples where a living fungus was used for 
+biohybrid applications include pressure-­detection insoles (54), fungal 
+“skin” sensors (55), self-­healing mycelium-­based composite materials 
+created using 3D-printed hydrogel matrices (56), and the mapping of 
+action potential waveforms to 50 different English words (57).
+Here, we introduce biohybrid robots controlled by fungal mycelia, 
+focusing on two key advancements. First, we have developed a vibra-
+tion-­ and electromagnetic interference (EMI)–shielded mycelium-­
+electrical interface for stable, long-­term bioelectric recordings during 
+untethered, mobile operation. Second, we have crafted a control archi-
+tecture for robots inspired by neural central pattern generators, incor-
+porating rhythmic patterns of positive and negative spikes from living 
+mycelia. We combined these two advances to use mycelia to control 
+the locomotion of both a tethered, 3D-­printed soft robot and an 
+untethered, wheeled robot. In both cases, we also demonstrated the 
+use of UV light incident on the mycelia to alter the trajectories of 
+the robots.
+RESULTS
+Fungal mycelium
+We selected Pleurotus eryngii as the fungus to interface with our 
+electromechanical system because of its favorable characteristics, 
+such as filamentous mycelial growth pattern, rapid growth rate, and 
+nonpoisonous character (58). Our fungal culture protocol used the 
+following steps: agar medium preparation and sterilization, transfer 
+of the medium to petri dishes, inoculation, incubation, and subcul-
+turing (see fig. S1, steps 1 to 7). We conducted mycelium growth 
+tests in petri dishes of two sizes: small (60 mm) and large (150 mm) 
+diameters. The fungus typically requires ~ 14 to 33 days to fully in-
+tegrate into the robot’s scaffolding, depending on the dish size. De-
+tailed methodologies and results can be found in Fig. 1A, fig. S2 (A 
+and B), the Fungal culture protocols section, and the Growth test 
+section in the Supplementary Methods.
+Hardware design for stable electrophysiological 
+mycelium measurement
+We chose extracellular electrophysiology (EEP) methods to estab-
+lish a bioelectric connection between Pleurotus mycelia and our ro-
+bot’s microcontroller unit (MCU). EEP offers several advantages, 
+including noninvasiveness, wide spatial contact with mycelia, stable 
+long-­term recordings, and high temporal resolution when using dif-
+ferential electrodes (59, 60).
+We used this mycelium scaffold to measure voltage spikes from 
+the hyphal bundles, as shown in Fig. 1A. The plates featured three 
+electrode inputs (E1, E2, and EGND; Fig. 1B). Figure 1C displays the 
+scaffold integrated with its casing, electrodes, and mycelia. We also 
+demonstrated effective electrode positioning, allowing the mycelia 
+to grow onto the electrodes and ensuring stable and cohesive con-
+tact with the hyphal bundles. Several microscopic images capturing 
+these interfaces and the fungal mycelia are presented in Fig. 1D and 
+fig. S3 (A to D). Detailed discussions on the fabrication and integra-
+tion procedures of the 3D-­printed scaffold, along with the imaging 
+procedure, are described in the 3D-­printed mycelium scaffold sec-
+tion and the Fungi imaging section in the Supplementary Methods. 
+These scaffold modules facilitated the growth of the mycelia into the 
+electromechanical robot interface; for instance, a starfish-­like legged 
+soft robot is illustrated in Fig. 1E. The mycelia within the scaffold 
+generate spontaneous electrical action potential–like signals and are 
+also capable of producing these potentials in response to UV stimu-
+lation. These signals function as both motor commands and sensory 
+feedback, allowing the robot to control its movement. The techniques 
+that we use to measure these signals have been used previously for 
+other biological cells and tissues (59, 60). The bioelectric, possibly 
+cellular-­level circuit model that we use is based on Ohm’s law and is 
+depicted in Fig. 2A
+where Vnative is the spontaneous action potentials, Im is the mem-
+brane current, and Ze is the equivalent impedance.
+In addition, for the signal recording circuit, we used two elec-
+trodes (E1 and E2) in the mycelium and a ground electrode (EGND) 
+in agar medium. We connected E1 and E2 to differential input ports 
+and EGND to a ground port of our high-­resolution data acquisition 
+system (ADC-­24, PicoLog) that has a 24-­bit analog-­to-­digital con-
+verter (ADC) with four channels and a maximum sampling rate of 
+16 S s−1 . We placed the measurement setup in a custom-­built Faraday 
+cage for long-­term recordings. The complete measurement setup is 
+shown in Fig. 2B and fig. S4 (A and B), and setup requirements and 
+fabrication are thoroughly discussed in the Fungal signal recording 
+setup section.
+Signal acquisition
+We measured bioelectrical signals from fungi in several small 
+(60 mm, fig. S5A) and large (150 mm, fig. S5B) plates inoculated with 
+Vnative = ImZe
+(1)
+Downloaded from https://www.science.org at Massachusetts Institute of Technology on September 09, 2024
+
+
+--- Page 3 ---
+Mishra et al., Sci. Robot. 9, eadk8019 (2024)     28 August 2024
+S c i e n c e  R o b ot i c s  | R e s e a r c h  A r t i c l e
+3 of 14
+mycelia over a period of more than 30 days. To validate the authen-
+ticity of the signals, we used a pure agar plate as a control. Our 
+recording procedure involved recording from the day of inocula-
+tion, as the mycelia grew and visually reached the electrodes on the 
+small plate, and recording from a fully grown mycelium plate, with 
+a parallel agar plate serving as a control for comparison. We have 
+presented the bioelectric signals from both the plates and the con-
+trol in Fig. 1A and fig. S5C. Before starting the electrical record-
+ings, we also measured the electrode dc resistance in both the 
+mycelium-­grown and control plates. The electrode resistance was 
+2.2 ± 0.2 megohms for the agar plate and 1.4 ± 0.25 megohms for 
+the mycelium plate.
+Our recorded data display no electrical spiking activity before 
+the hyphae contacting the electrodes or in control plates with a base-
+line signal of <20 μV (refer to Fig. 1A and fig. S5C). Conversely, we 
+observed large spiking activity in mycelium plates. We discussed 
+resistance, bioelectric signals, and signal authenticity measurement 
+procedures in the Electrode resistance and Mycelium scaffold signal 
+recording setup sections in the Supplementary Methods.
+Signal processing and analysis
+We processed the raw signals from the 30-­day-­long recorded fungal 
+datasets by considering several factors: baseline voltage, sampling, 
+digital filtering, noise exclusion, data normalization, prominent 
+Fig. 1. Fungal bioelectric signal recording and robot interface. (A) Mycelium growth and electrical signal recording were conducted over a 4-­week period on small 
+plates, with no electrical events observed in the control plate (only PDA). A red dotted circle highlights both electrodes. (B) Depiction of 3D-­printed scaffold design with 
+mycelia and electrodes. (C) Fabricated scaffold. (D) Microscopic imaging of the mycelium-­electrode interface at two magnifications. (E) Starfish-­like soft robot design and 
+working principle.
+Downloaded from https://www.science.org at Massachusetts Institute of Technology on September 09, 2024
+
+
+--- Page 4 ---
+Mishra et al., Sci. Robot. 9, eadk8019 (2024)     28 August 2024
+S c i e n c e  R o b ot i c s  | R e s e a r c h  A r t i c l e
+4 of 14
+thresholding, peak identification, and peak analysis. We reported 
+eight signal characteristics, including the analysis of spontaneous 
+action potentials over time; probability density distribution for sig-
+nal peaks, heights, and widths; and the relationships between height 
+and width, height and time, width and time, and spiking frequency 
+(peaks s−1).
+We applied the Savitzky-­Golay filter (61) to a set of digital data 
+points for the purpose of smoothing. We chose this filter because it 
+is particularly effective at reducing noise while preserving the key 
+features of the signal, making it highly suitable for a variety of time 
+series data applications. The filter operates by fitting a polynomial of 
+a specified order to the data points within a certain window size. For 
+our application, we used a third-­order polynomial (k = 3) and a 
+commonly used window size of 11 points (n = 11); see Eq. 2.
+Vﬁltered,i =
+∑n−1
+2
+j=−n−1
+2
+cj ⋅Vi+j
+(2)
+Fig. 2. Fungal electrical recording preparation and signal analysis. (A) Bioelectric circuit diagram of electrode connection with mycelial membrane through EEP. 
+(B) The signal measurement setup involves a scaffold with electrodes connected to a high-­resolution, 24-­bit analog-­to-­digital DAQ system (PicoLog). The entire setup is 
+housed inside a Faraday cage to minimize external interference. The DAQ system is connected to the computer, facilitating data acquisition and analysis. (C) A 5-­hour-­long 
+signal was recorded from the fungi on the 14th day, taken from a 30-­day dataset of a small plate. (D) Graph illustrating the heights and widths of the mycelia’s spontaneous 
+action potentials. (E) Fungal spiking frequency and sampling time. (F and G) Histogram distribution of action potential peaks and widths. In (F), the histogram shows ac-
+tion potential peaks with the observed data fitted using a skew-­normal distribution (green bars), and the black dashed lines represent a fit to the distributed data. The 
+mean (μ) of the peaks is 126.487 μV with an SD (σ) of 70.371 μV. (G) The peak widths were also fitted using a skew-­normal distribution; the mean (μ) is 1.106 s with an SD 
+(σ) of 1.104 s. (H) Weekly analysis of fungal signal for spiking peak and frequency. The bars represent the mean action potential and spiking frequency values. Error bars 
+represent the SD of the measurements. Each weekly dataset consists of a 48-­hour period, with a sample size of n = 1,728,000 data points collected at a frequency of 10 Hz 
+from a 30-­day period, totaling 25,920,000 samples. S-­W1 to S-­W4 denote data from the small plate from the first to the fourth week, respectively, and B-­W1 to B-­W4 simi-
+larly represent data from the large plate from the first to the fourth week.
+Downloaded from https://www.science.org at Massachusetts Institute of Technology on September 09, 2024
+
+
+--- Page 5 ---
+Mishra et al., Sci. Robot. 9, eadk8019 (2024)     28 August 2024
+S c i e n c e  R o b ot i c s  | R e s e a r c h  A r t i c l e
+5 of 14
+where Vfiltered,i is the smoothed voltage value at point i, Vi+j is the 
+original voltage data points, and cj is the filter coefficient.
+To identify signal peaks in fungal datasets, for each data point Vi 
+in the fungal signal array Vfungi = [V1, V2, …, Vn], we applied a con-
+dition: If Vi is greater than its immediate neighbors (Vi > Vi−1 and 
+Vi > Vi+1), then Vi is considered a peak. We also set a prominence 
+level to be compared with a predefined threshold.
+For determining peak height and width, we extracted the voltage 
+peak and the defined region using Eq. 3, adopted from (62), fol-
+lowed by estimating the height using Eq. 4. The first step involved 
+calculating the evaluation height, after which the function identi-
+fied the left and right boundaries of the peak height. The peak width 
+was then estimated as the horizontal distance between these bound-
+aries, providing a precise measurement of the peak’s width in the 
+voltage data. This approach offers valuable insights into the signal’s 
+characteristics by accurately determining the peak dimensions.
+where Vp(t) is the peak voltage, Vraw(t) is the fungal raw voltage sig-
+nal, B(t) is the mean baseline voltage, P is the prominence, heval is the 
+evaluation height, hp(t) is the peak height, hr is the relative height, 
+and [t1, t2] is the peak region.
+We identified the baseline voltage, B(t), and net baseline voltage 
+changes ΔB(t) of the recorded signal from both mycelium and con-
+trol plates as approximately less than 2 μV. We implemented the peak 
+detection model in Python, as shown in the flowchart in fig. S6. For 
+a detailed description of the experiment design, please refer to the 
+Fungal signal analysis method and Statistical analysis sections.
+Figure 2C presents a 5-­hour fungal signal, specifically highlight-
+ing the 14th day of recording from a small plate (Fig. 1A). Our re-
+sults show the existence of multiple bands of signal widths (τnative), 
+such as 1.5, 2, and 2.5 s (see Fig. 2D). Furthermore, we observed 
+that the spiking frequency (ξnative) can reach up to 36 peaks min−1, 
+with a mean of 11 peaks min−1 (refer to Fig. 2E). The Vnative had an 
+average value of ~ 194 μV, with a maximum positive peak of 1140 μV 
+and a negative spike of −216 μV (Fig. 2F). The mean spike height 
+was 60 μV, with a range of up to 1000 μV, as reported in Fig. 2G and 
+fig. S7A. The mean τnative was 1.1 s, and the  τmax
+native  was ~10 s, as 
+shown in Fig. 2G and fig. S7 (C and D). In addition, we analyzed 
+complete fungal data for both plates. We selected 48 hours of data 
+from each week over a 30-­day period. We discussed the detailed re-
+sults in the Small and large petri dish mycelium scaffold weekly data 
+analysis section in the Supplementary Methods. The corresponding 
+figures for the small plate datasets are figs. S8 to S11, and the figures 
+for the large plate datasets are figs. S12 to S15. The complete ana-
+lyzed results show that the mean baseline potential for both plates 
+reached Vnative ~ 135 μV with maximum peaks of Vnative ~ 1868 μV 
+and minimum peaks of Vnative ~ 35 μV (Fig. 2H). Similarly, the 
+mean spiking frequency varied around ξnative ~ 0.12 spikes s−1, with 
+a maximum of ξnative ~ 0.6 spikes s−1 over the course of the 30-­day 
+recordings (Fig. 2E and figs. S8 to S15).
+In our study, we used the light-­sensing abilities of Pleurotus my-
+celia to alter the trajectory of our robots. We conducted tests using 
+four types of light (UV, blue, red, and white) and measured the result-
+ing voltage spikes. From our results, we found that fungi were more 
+sensitive to UV light stimulation, so we ran several tests with varia-
+tions in intensity, duration, and height. We also tested for other light 
+responses (blue, red, and white) at optimized UV exposure param-
+eters. We discussed the detailed experimental procedure and setup 
+in fig. S16 (A and B) and in the UV light stimulation setup section 
+and the Blue, red, and white (BRW) light stimulation setup section 
+in the Supplementary Methods (63). For our control data, we mea-
+sured the voltage over time from agar medium without mycelium 
+growth and repeated all of the experiments at least seven times.
+We report the UV stimulation data from two different plates. In 
+Fig. 3A, we report data from the first plate with variations in UV 
+intensity from 0.1 W cm−2 < Γ < 1 W cm−2 at a UV source height of 
+12 cm. We analyzed Vlight and τlight at full width at half maximum 
+(FWHM). We observed a consistent increase in action potential 
+amplitude, ranging from Vlight = 25 ± 4 μV at 0.1 W cm−2 to 
+Vlight = 281 ± 14 μV at 1 W cm−2 with a constant width of 1.3 ± 0.1 s 
+(see fig. S16, C and D). In contrast, UV stimulation of the agar 
+plate alone did not show any substantial spiking activity (refer to 
+fig. S16E). For the second mycelium plate, we observed even larger 
+peaks ranging between Vlight = 208 ± 72 μV and Vlight = 18,569 ± 1772 μV 
+(refer to fig. S16F). We also conducted variable exposure height 
+tests by adjusting the gap between the UV source and the plate in 
+UV tests, ranging from 12 to 20 cm, and varied the exposure time of 
+UV light from 2 to 12 s. We have included all analyzed data in Table 1 
+and in fig. S17 (A to E).
+We found that, at longer wavelengths beyond UV, our mycelium 
+scaffold only responded to blue light stimulation, with Vlight poten-
+tials reaching 83 ± 11 μV at an illumination distance of 12 cm and 
+an exposure time of 2 s. We did not, however, observe any spontane-
+ous response in the mycelium when exposed to red and white light. 
+We did not see any red and white light response in agar plates (see 
+fig. S17, F and G).
+Mycelium-­directed CPG control model
+We categorized the mycelium signals into two types: positive electri-
+cal potentials (positive Vnative; Fig. 3Bi) and negative electrical po-
+tentials (negative Vnative; Fig. 3Bii) as depicted in Fig. 3B. From these 
+analog spikes, we identified four distinct signals. These four analog 
+signals were then converted into four digital control inputs as de-
+picted in Fig. 3B (iii and vi).
+The first type of signal input consisted of spontaneous action po-
+tential spiking trains converted to constant digital control signals, 
+transforming Vnative height information into constant or binary (0, 
+1) digital signals, as shown in Fig. 3Biii. The second type of signal 
+input involved spontaneous action potential spiking trains being con-
+verted into variable digital control signals, translating Vnative height 
+information into variable pulse width modulation (PWM) signals, 
+normalized between 0 and 255, also illustrated in Fig. 3Biv. The 
+third type of control input was a UV-­stimulated signal with artifi-
+cially generated high-­frequency digital signals. We used the V value 
+as a threshold; if Vlight was more than the mean Vnative, then we gen-
+erated artificial high-­frequency digital signals (Fig. 3Bv). The fourth 
+type of control input was a UV light–stimulated central pattern gen-
+eration (CPG) as a digital control signal, using only Vlight height in-
+formation and translating it into constant PWM signals (Fig. 3Bvi). 
+In addition, we incorporated τlight for all applied signals at 80% of 
+the detected peak height.
+To allow these mycelia to operate the mechatronic system of the 
+robot, we developed algorithms to test control scenarios that read 
+Vp(t) = Vraw(t) −B(t) −P
+tϵ[t1, t2
+]
+(3)
+heval = hp(t) −P ⋅hr
+(4)
+Downloaded from https://www.science.org at Massachusetts Institute of Technology on September 09, 2024
+
+
+--- Page 6 ---
+Mishra et al., Sci. Robot. 9, eadk8019 (2024)     28 August 2024
+S c i e n c e  R o b ot i c s  | R e s e a r c h  A r t i c l e
+6 of 14
+Fig. 3. Light stimulation and control signals. (A) A 24-­hour UV-­stimulated electrical recording for mycelia at variable UV intensities. (B) Illustration of mycelium signal to 
+digital control signals: (i) Positive action potential translated to digital control signal. (ii) Negative action potential to digital control signal. (iii) Action potential pulses used 
+for CPG-­like control with constant PWM. (iv) Action potential pulses used for CPG-­like control with variable PWM. (v) UV-­stimulated feedback-­controlled artificial signals. 
+(vi) UV light–stimulated action potential pulses translated to digital control signals. (C) Block diagram illustrating the control architecture of mycelium-­directed control in 
+both robots.
+Table 1. Variable height and exposure time tests. The measurements represent the mean and SD of recorded changes in electrical potential and peak width.
+Types of tests/measurements
+Variable height
+Variable exposure time
+14 cm
+20 cm
+2 s
+12 s
+Vlight
+736 ± 48 μV
+306 ± 12 μV
+237 ± 41 μV
+499 ± 52 μV
+τlight
+2 ± 0.1 s
+2 ± 0.1 s
+1.4 ± 0.4 s
+5 ± 0.1 s
+Downloaded from https://www.science.org at Massachusetts Institute of Technology on September 09, 2024
+
+
+--- Page 7 ---
+Mishra et al., Sci. Robot. 9, eadk8019 (2024)     28 August 2024
+S c i e n c e  R o b ot i c s  | R e s e a r c h  A r t i c l e
+7 of 14
+the mycelium signal spiking trains at 30-­s intervals and translate 
+them into CPG-­like digital control signals (Fig.  3C). The algo-
+rithms consisted of three major data processing steps, all performed 
+in real time: signal acquisition, signal computation, and control 
+signal generation and transmission to the robots. We discussed 
+the detailed control process through a flowchart, which is avail-
+able in fig. S18A, the Mycelium-­directed robot control method 
+section, and movie S1. We reported the mycelium signal sampled 
+every 30 s and performed real-­time calculations for 10 min to de-
+tect peak existence and measure peak width (see fig. S18B). We 
+then implemented the CPG to control both tethered and unteth-
+ered biohybrid robots.
+Robot control strategies and demonstrations
+We used these signal processing techniques to translate the action 
+potentials emitted by the hyphae to control either valves or motors 
+in the robots that we built. We used valves for a pneumatically actu-
+ated legged robot and motors for an untethered and wheeled hard 
+robot. We demonstrated both robots in three control scenarios.
+Native, Vnative, electrophysiological control
+For Vnative control, which we anticipate could be useful in substan-
+tially varying environmental conditions, we used both constant and 
+variable PWM signals. We transmitted the width and height infor-
+mation of the spontaneous fungal signal to the MCU. The peak height 
+and width were mapped to a digital signal. By translating the fungal 
+peak information into digital output pins using PWM mode, we 
+represented the signal as either high (1) or low (0). We incorporated 
+fungal width information using delay functions between each high 
+and low state. For soft robots, we used only one digital output pin to 
+activate and deactivate the valve; for the motor encoder system, we 
+used two digital output pins; and for the wheeled robot, we used a 
+total of eight digital output pins with combinations of high and low 
+signals with a constant PWM.
+Because the Vnative peaks of the mycelium signal are not constant, 
+we incorporated both the height and width information. We ex-
+tracted the peak and width information from the mycelium signal 
+and normalized the height value to the highest PWM value. This 
+approach allowed for automatic adjustment of duty cycles and effec-
+tive voltage (as described in Eq. 5)
+Veff is the effective voltage, Vs is the maximum supply voltage, τo 
+is on time, and τp is the period.
+Light-­stimulated, Vlight, electrophysiological,  
+high-­frequency control
+Before starting a demonstration, we first exposed the mycelial scaf-
+fold to UV light. We then estimated the height ratio between Vlight 
+and Vnative. From our experiments, the height ratios were 3 to 
+10 times larger than the spontaneous signal. We then set a threshold 
+value of typically ~3 Vnative, such that whenever the UV light expo-
+sure caused the mycelium signal to surpass it, we generated a high-­
+frequency signal from the MCU at 100% duty cycle without using 
+the fungal peak height and width properties.
+Light-­stimulated, Vlight, electrophysiological, native control
+We followed a similar approach to the Vnative-­based control signals, 
+but, in this case, we used only UV-­stimulated spike width and height 
+information. We exposed the mycelium plate to UV light for 1 s at a 
+20-­s interval to generate a light-­stimulated spiking pattern. We then 
+followed the robot with the UV source, periodically exposed the 
+mycelia to it, and incorporated each UV-­stimulated spike into the 
+digital signal for control.
+Tethered legged soft robot
+We designed a starfish-­like tethered robot with five soft-­legged 
+actuators (L1, L2, L3, L4, and L5) in an isosceles trapezoidal shape, 
+featuring interconnected chambers and a strain-­limiting layer for 
+bending motion. We connected these actuators to a pentagonal 
+central base using an internal channel and a barbed tube connector, 
+enabling actuation from a single pressure source, as depicted in 
+fig. S19A. For movement, the robot uses an asymmetric friction 
+method within its feet [Fs > (Fr1, Fr2, Fr3, Fr4)] to locomote efficiently 
+on flat surfaces (64). It involves use of four low-­friction rigid mate-
+rials for the feet (Fr1, Fr2, Fr3, and Fr4) and one high-­friction elastomer 
+foot (Fs), depicted in fig. S19B.
+To facilitate real-­time control of locomotion using Vnative and 
+Vlight signals from fungi, we mounted a mycelial scaffold atop the 
+robot. Ensuring seamless integration between the robot’s body and 
+the scaffold is crucial for movement success, especially in isolating 
+external EMI and mechanical interferences and simplifying scaf-
+fold replacement. For this integration, we adopted plug and socket 
+joints, with the plug part designed on the base and the socket part 
+on the scaffold, both in a pentagonal shape. To mitigate mechanical 
+noise, we used soft pads and elastomers, and, for electrical noise 
+insulation, we implemented a copper mesh layer to ground the 
+electrodes to the base. Moreover, we ensured a tight fit between the 
+plug and socket components to eliminate any relative movement 
+between the robot body and the scaffold during locomotion, as 
+illustrated in fig. S19C.
+We also used a pressure sensor to gauge the robotic actuation 
+output, aligning it with the mycelium input signal. It allowed us to 
+verify the actuator’s response time and the width of the fungal signal, 
+ensuring precise synchronization between the robot’s movements 
+and the mycelium inputs.
+For fabrication, we 3D-­printed the legged robot using both soft 
+and rigid materials, constructing it as a monolithic structure through 
+a multimaterial design approach. The robot’s elastomer offers visco-
+elasticity and a low elastic modulus, providing inherent compliance, 
+vibration damping, and noise reduction. We include more design 
+and fabrication details in fig. S19 (A to E), the Soft legged robot 
+design and fabrication section, and the Soft legged robot 3D printing 
+fabrication procedure section in the Supplementary Methods. For 
+the wiring, we connected mycelium electrodes to an ADC and 
+used the microcontroller to issue commands to the valve. We 
+discussed the complete circuit and wiring details in fig. S20, the 
+Soft legged robot electronics section in the Supplementary Methods, 
+and the Pressure sensor integrated soft robot for signal I/O mapping 
+setup section.
+We began demonstrating the soft robot on a wooden table with 
+mycelium-­directed Vnative and its corresponding digital output as a 
+change in actuation pressure, control scenario 1. First, we conducted 
+a 10-­min test of the robot without attaching the mycelium scaffold 
+to the robot’s body but instead placing it inside the Faraday cage 
+(refer to fig. S21A and movie S2). During this test, the robot was 
+only connected to air sources, although the rest of the electronics, 
+scaffold, valve, sensor, and MCU were kept inside the Faraday 
+cage. We then demonstrated the robot with the mycelium scaffold 
+Veﬀ= Vs
+τo
+τp
+(5)
+Downloaded from https://www.science.org at Massachusetts Institute of Technology on September 09, 2024
+
+
+--- Page 8 ---
+Mishra et al., Sci. Robot. 9, eadk8019 (2024)     28 August 2024
+S c i e n c e  R o b ot i c s  | R e s e a r c h  A r t i c l e
+8 of 14
+attached to it for 20 min [reported input and output (I/O) data in 
+Fig. 4, A and B, and movie S3].
+For control scenario 2, we activated Arduino signals at a frequen-
+cy of 1 Hz whenever the UV-­stimulated voltage height was more 
+than 100 μV. We conducted again tests on the robot both with and 
+without the mycelium scaffold attached to its body. Initially, we tested 
+the robot without the mycelium scaffold for 4 min (see fig. S21B and 
+movie S4), followed by a test with the scaffold attached for 7 min (refer 
+to Fig. 4, C and D, and movie S5). Last, we tested control scenario 3, 
+shown in fig. S21 (C and D) and movie S6. All three mycelium-­directed 
+control scenarios were able to drive the soft robot. In addition, myce-
+lium input and robot output signal verification showed an alignment 
+between the spiking signals and the corresponding robot pressure un-
+der all three tested conditions, with minor computational delays.
+Untethered wheeled robot
+We designed an untethered wheeled robot for fast movement, in-
+corporating a four-­wheel drive system, as shown in fig. S22A. Our 
+multilevel design seamlessly integrates mechanical components, 
+electronics, and power supplies. At the base level, we installed a 
+four-­wheel drive mechanism comprising four dc motors, brackets, 
+and an ac-­dc power supply, illustrated in fig. S22 (B and C). We 
+equipped each motor with wheels and synchronized the circuit to 
+ensure uniform direction of motor rotation. On the second level, 
+we placed the mini-­PC, MCU, and motor control circuit, central-
+izing the electronic components.
+To enable mycelium-­directed control using Vnative and Vlight sig-
+nals, we mounted a mycelium scaffold, electrode connectors, and a 
+PicoLog DAQ system on the top level, as seen in fig. S22D. We 
+Fig. 4. Demonstrations of the mycelium-­directed tethered soft robot in different control scenarios. (A) Graph illustrating fungal signals (Vnative) over a 20-­min period 
+and their corresponding digital signals used to control the starfish-­like soft robot. (B) Soft robot walking on the table with an integrated mycelium scaffold, using signals 
+reported in (A). (C) Graph displaying the I/O signals of Vlight, which are feedback-­controlled artificial signals. (D) Robot motion is controlled by the I/O signals of Vlight, which 
+are feedback-­controlled artificial signals in (C). The robot initially moves using Vnative, and, after UV exposure, it accelerates, moving faster because of a high-­frequency 
+artificial digital signal.
+Downloaded from https://www.science.org at Massachusetts Institute of Technology on September 09, 2024
+
+
+--- Page 9 ---
+Mishra et al., Sci. Robot. 9, eadk8019 (2024)     28 August 2024
+S c i e n c e  R o b ot i c s  | R e s e a r c h  A r t i c l e
+9 of 14
+tackled mechanical and EMI disturbances, such as ground vibra-
+tion noise, external perturbations, mini-­PC fan noise, and electro-
+magnetic noise from the power supply and wiring, with various 
+strategies. We incorporated a vibration isolation system (VIS) be-
+tween the second and third levels using vibration-­damping materi-
+als, shock-­absorbing sponges, and rubber-­coated wheels to reduce 
+mechanical noise. In addition, we placed a sand bed and sponge 
+pads on the third level to dampen vibrations from the robot’s move-
+ment, securing the plate and electrodes in sand on all sides except 
+the top and stabilizing the PicoLog against internal movements. 
+To counteract electrical disturbances, we equipped all levels with 
+Faraday cages and ensured proper soldering of ground connections 
+with copper mesh.
+We fabricated the wheeled robot through 3D printing and tradi-
+tional assembly methods, including nuts, bolts, screws, and glue. For 
+detailed information on the design and fabrication process, refer to 
+the Supplementary Materials and the Untethered wheeled robot de-
+sign and fabrication section.
+We connected the motor wires to the motor driver PCB, powered 
+the mini-­PC with ac, and supplied the 
+motors with dc from an ac-­dc power 
+source. We have documented the com-
+plete wiring diagrams, circuit fabrica-
+tion, and electronics for the wheeled 
+robot in fig. S23A and the Untethered 
+wheeled robot electronics section in 
+the Supplementary Methods. Before 
+implementing full robot control, we 
+first tested a single motor with an en-
+coder on a motor testbed setup (depicted 
+in fig. S23B and the Encoder-­integrated 
+dc motor for signal I/O mapping set-
+up section) to ensure that the fungal 
+input signals synchronized with mo-
+tor rotation, applying the same testing 
+approach used with the legged robot 
+actuators.
+We reported signal motor control re-
+sults in fig. S24 (A to D), movies S7 to S9, 
+and the Motor encoder mapping results 
+section in the Supplementary Methods. 
+We first tested for 10 min where the my-
+celium scaffolds, electronics, and MCU 
+were placed in the Faraday cage and 
+transmitted the signal directly to a motor 
+outside of the environment. We observed 
+mycelium signals exhibiting positive and 
+negative Vnative, and then, we mapped 
+the mycelium input signals to encoder 
+output in the form of motor revolu-
+tion counts.
+We then conducted the wheeled ro-
+bot demonstrations. First, we performed 
+a demonstration indoors using control 
+scenario 1, where we allowed the ro-
+bot to drive for 15 min using myceli-
+um action potentials ranging between 
+95 < Vnative < 130 μV (Fig. 5, A and B, 
+and movie S10). We then tested control 
+scenario 2, where UV excitation caused the robot to move away from 
+the light source. The mycelium data along with the time stamp of 
+robot movement and the corresponding video can be found in Fig. 5 
+(C and D) and movie S11. Last, we conducted control scenario 3, 
+moving the UV light source along the Vlight-­controlled robot. During 
+these experiments, we shone UV light onto the mycelium six times 
+for 3 min, resulting in recorded Vlight peaks of ~350 μV with a width 
+of  ~4 s at 80% FWHM. The corresponding data can be seen in 
+fig. S24E and movie S12.
+CONCLUSION
+We have successfully demonstrated a biohybrid robot controlled 
+by bioelectric signals from fungal mycelium. We confirmed that 
+the spontaneous and evoked electrical signals originated from liv-
+ing fungi by comparing recordings from agar plates without fungi 
+with agar plates before and after the mycelium growth reached 
+our extracellular electrodes (46, 51). Our focus was to adapt these 
+electrical signals for biological sensing and robotic commands. 
+Fig. 5. Mycelium-­directed untethered wheeled robot demonstration in different control scenarios. (A) Graph 
+representing the mycelium-­directed output signal with constant PWM. (B) The robot demonstration corresponding 
+to the graph in (A), moving in a building using Vnative. (C) Graph depicting the UV-­stimulated spikes as feedback signal 
+with artificial control. (D) Robot demonstration corresponding to the graph in (C); robot came out of the box, and, 
+after UV exposure, it went back using a high-­frequency artificial digital signal.
+Downloaded from https://www.science.org at Massachusetts Institute of Technology on September 09, 2024
+
+
+--- Page 10 ---
+Mishra et al., Sci. Robot. 9, eadk8019 (2024)     28 August 2024
+S c i e n c e  R o b ot i c s  | R e s e a r c h  A r t i c l e
+10 of 14
+Our innovations include a 3D-­printed mycelial scaffold for stable 
+long-­term recordings, UV and blue light stimulation response 
+in mycelia, and a control architecture inspired by central pattern 
+generators observed in the animal kingdom (65, 66). We used 
+these advances to cause movement in legged and wheeled ro-
+bots over long durations while capturing dynamic environmental 
+changes as feedback.
+Using fungi for developing biohybrid robots brings several ad-
+vantages over other approaches, such as more facile and low-­cost 
+culture protocols and low risk of contamination while interfacing 
+with engineered systems. The mycelia have action potential–like activ-
+ity and environmental sensing abilities (39) that persist for months, 
+demonstrating the potential for real-­world application, perhaps in 
+agriculture or security.
+Adapting electrophysiological mycelium signaling to biohybrid 
+robotics presents several challenges that need to be addressed. Some 
+of these challenges include the plasticity of fungal signals, with grad-
+ual weakening observed over time, and the difficulty of capturing 
+low-­amplitude signals (<50 μV) at high sampling rates because of 
+insufficient resolution. Another challenge is the 30-­s data sampling 
+interval that introduces a lag during Vlight control because of fungal 
+spiking frequencies. Choosing different sliding window configura-
+tions should reduce this lag. Further, and quite obviously, living 
+systems die. Addressing these challenges calls for enhanced high-­
+precision electronics for signal amplification, as well as techniques 
+for regeneration and regrowth of the mycelia.
+In the UV experiment, we tested both mycelia and their con-
+trol. The experiments showed that UV-­stimulated signals in the 
+mycelia ranged from 600 to 17,000 μV, whereas those in agar-­
+stimulated controls hovered around 10 to 20 μV. In conclusion, 
+although some activity was observed in the controls, it was quite 
+small compared with that of the mycelia, where signals were 60-­ to 
+1000-­fold larger. To more accurately quantify the effects of UV 
+stimulation, however, further validation through biochemistry 
+and genomics is needed to isolate our measurements from poten-
+tial heat effects.
+Last, this emerging field of fungal biohybrids warrants increased 
+cooperation, standardization, and effort. Fungal electrophysiology 
+has been studied by a few researchers, such as Slayman et al. (45) and 
+Olsson and Hansson (46) through intracellular electrophysiology, 
+and Adamatzky and Gandia (50, 51, 57) have focused on EEP. We 
+have introduced the measurement of spiking action potentials from 
+filamentous mycelia to control mobile robots. As the field grows, 
+standards for comparison (signaling, hardware, wetware, organisms) 
+will be important to measure progress.
+MATERIALS AND METHODS
+Fungal culture protocols
+We cultured the fungi in sterilized conditions using a biosafety cab-
+inet (BSC). To achieve a contamination-­free and pure fungiculture, 
+maintaining a sterilized condition is crucial. The fungal culture is a 
+multistep process [see fig. S1 (steps 1 to 7)].
+Medium preparation and sterilization
+In our fungal model, we used potato dextrose agar (PDA). For me-
+dium preparation, we used a recipe of 3.6% (w/v) PDA powder and 
+mixed in deionized water in an Erlenmeyer flask. We covered the 
+flask with aluminum foil to prevent it from spilling. After preparing 
+the liquid medium, we then mixed it using a magnetic stirrer for 
+15 min. We sterilized the medium in an autoclave for 45 min us-
+ing 30-­min sterilization and 15-­min cooling cycles at 34.47 kPa 
+and 120°C. We also used autoclave tape to ensure that the medium 
+was completely sterilized (fig. S1, steps 1 to 4).
+Medium transfer
+After the autoclaving cycle finished, we let the flask cool for 20 to 
+30 min until we could comfortably hold it. We then poured the me-
+dium into polystyrene circular-­shaped large [150 mm (diameter, D) 
+by 15 mm (height, H)]– and small [60 mm (D) by 15 mm (H)]–size 
+petri dishes under the BSC. We regulated the amount of the medium 
+in the petri dishes using a weighing scale so that the fungi could eas-
+ily grow over the electrodes. For example, for small petri dishes, we 
+used 14.5 to 15 g, and, for large petri dishes, we used 50 to 54 g of 
+agar. Furthermore, we waited at least 4 hours for gelation of the me-
+dium in petri dishes (fig. S1, step 5).
+Fungal inoculation
+After gelling medium in petri dishes, we started inoculating the 
+fungi. We first purchased a P. eryngii (king oyster) mushroom kit 
+from Amazon.com (root mushroom farm) and then grew it until it 
+produced a fruiting body. We inoculated our first culture from the 
+fruiting body. We began the process for fungal inoculation by spray-
+ing disinfectant in the BSC and turning on the filter for 15 min. We then 
+sprayed 70% (v/v) ethanol and wiped the BSC again. Then, we put 
+medium plates in the BSC as well as a live fruiting body. We steril-
+ized a scalpel using 100% ethanol and directly exposed it to fire from 
+a burner. We then cut small pieces from the inner side of the fruiting 
+body to ensure a clean surface, transferred them into a medium 
+plate, and repeated the process for multiple petri dishes. Last, we 
+closed the petri dish lids and wrapped them with parafilm to pre-
+vent any further contamination (fig. S1, step 6).
+Fungal incubation
+We stored multiple plates in an incubator at room temperature. We 
+waited for 3 weeks and 5 weeks for the mycelia to grow fully in the 
+small and large petri dishes, respectively (fig. S1, step 7).
+Subcultures
+We used a clean culture as a master plate and regularly inoculated 
+several plates for subcultures following the same procedure (steps 1 
+to 7). We continued to transfer the fungus to freshly prepared me-
+dium every month to keep it alive and vigorous for future studies.
+3D-­printed mycelium scaffold
+Scaffold hardware design
+To provide a substrate for mycelia and an electrical interface with our 
+mechatronic system, we designed and 3D-­printed a mycelium culture 
+plate using a Carbon M1 printer and polyurethane materials (RPU, 
+Carbon Inc.; Fig. 1, B and C). These plates feature three electrode 
+inputs (E1, E2, and EGND; MN4022D10S#, Spes Medica, Italy; see 
+Fig. 1B). The scaffold consisted of a petri dish containing agar medi-
+um, freshly inoculated mycelia, three electrodes (E1, E2, and EGND), 
+connectors to hold the electrodes, an antivibration electrometric pad, 
+and a casing to secure the petri dish. The casing replicated a petri dish 
+and was precisely designed to position the electrodes. For electrode 
+attachment, we used a Luer lock mechanism to enable easy attachment 
+and detachment of plug and socket connectors. The electrodes were 
+integrated into the socket connector and secured with dental cement 
+to prevent internal movement. Two electrodes (E1 and E2) were posi-
+tioned in parallel, 10 mm from the sides and 10 and 11 mm from the 
+base of the petri dishes, respectively. The EGND electrode was placed at 
+180° and 1 mm from the base of the petri dish (as shown in Fig. 1C).
+Downloaded from https://www.science.org at Massachusetts Institute of Technology on September 09, 2024
+
+
+--- Page 11 ---
+Mishra et al., Sci. Robot. 9, eadk8019 (2024)     28 August 2024
+S c i e n c e  R o b ot i c s  | R e s e a r c h  A r t i c l e
+11 of 14
+Fabrication
+The scaffold fabrication involved three major steps: initially, creating 
+a computer-­aided design 3D model using SOLIDWORKS software 
+(SolidWorks Corp., Dassault Systèms); subsequently, converting the 
+3D models into .stl file format before printing; and lastly, engaging 
+in 3D printing and postprocessing. In our setup, we divided the cas-
+ing in half for easy integration and 3D-­printed all its components 
+using a Carbon M1 printer (Carbon Inc.) with rigid polyurethane 
+(RPU 70, 1.7-­GPa tensile modulus, 30% elongation at break).
+Casing and electrode integration
+To prepare for measuring fungal action potential signals, we inte-
+grated all electrodes and mycelium plates with the casing. We placed 
+a 3D-­printed elastomeric antivibration pad with a thickness of 1 mm 
+on the base of the scaffold before integrating the petri dish. We at-
+tached the petri dish to the casing using Teets cold cure dental ce-
+ment (Co-­ORAL-­ITE Dental Mfg. Co.) and waited for over 30 min 
+until they were fully bonded. Then, we made small holes for the 
+electrodes using a 1-­mm metal rod heated with a burner flame and 
+passed it through the plug holders’ holes to ensure that they were 
+concentric. We inserted the electrodes into the socket connectors 
+and locked them with dental cement. After the electrodes were fully 
+integrated into the connectors, we inserted them into the plug con-
+nectors and locked them using a Luer lock mechanism. Last, we 
+added paper tape around the connectors and electrode wires to en-
+sure that there was no movement (refer to Fig. 1, B and C).
+Fungal signal recording setup
+In our experimental design, we used twisted subdermal needle elec-
+trodes made of stainless steel, lead wire from Cu/Sn with polyvinyl 
+chloride (PVC) coating, and a connector with CuZn with PVC jack-
+et. Specifically, we used electrodes of 220-­mm length and 0.4-­mm 
+diameter (Spes Medica, Italy, intraoperative monitoring neurodiag-
+nostic electrodes). To record signals, we used a PicoLog 24-­bit ADC 
+high-­resolution data acquisition system (DAQ) (Pico Technology, 
+16 S/s, four digital I/O channel maximum of ±2500 mV and mini-
+mum of ±39 mV, and 16 single-­ended voltage/8 differential voltage 
+inputs). We connected the DAQ to PicoLog software and used three 
+electrodes: two for differential input and one for ground input with 
+±39 mV channel at a 10 S/s (<500-­nV resolution) setting.
+To protect against unexpected vibrations and other interference 
+such as electromagnetic impact, we built a large Faraday cage and 
+isolated the recording system. We constructed a large Faraday cage 
+(1 m by 1 m by 1.5 m) using a heavy metal block. The Faraday cage 
+was covered by copper mesh from all sides and wrapped with black 
+cloth to block out light. To prevent high-­amplitude mechanical 
+noise, we used buckets filled with sand at the four corners of the 
+Faraday cage. To ensure long periods of experiments, we minimized 
+the opening of the Faraday cage (refer to Fig. 2B and fig. S4, A and B).
+Fungal signal analysis method
+We stored the large datasets of fungal signals in CSV format, repre-
+senting action potential values in microvolts versus the number of 
+samples, for analysis. We classified any fungal signal below 5 μV as 
+noise and excluded it from further analysis. For algorithm develop-
+ment, we used Python (version 3.9.13) with the SciPy signal library. 
+Our focus included specific time periods: a single 14th day for a 
+5-­hour dataset from the small plate and 48-­hour datasets collected 
+every 7 days from both small and large plates. We sampled the data 
+at 30-­s intervals, a rate sufficient to observe at least one or two peaks. 
+After sampling, we applied the Savitzky-­Golay filter to remove elec-
+tronic noise and smooth any signals below 5 μV. We also defined the 
+baseline potential and prominence (P), setting P = 10 μV for all 
+analyses of fungal signals, addressing both positive and negative 
+spikes. The data were then imported into our developed code, and 
+we analyzed eight signal characteristics, as discussed in the section 
+Signal processing and analysis.
+To identify the peaks, we used the find_peaks and peak_widths 
+functions, using a predefined prominence. The find_peaks function 
+estimated the signal peak and height between depolarization and 
+repolarization from the baseline, as the peak_widths function calcu-
+lated the width, representing the time between depolarization and 
+repolarization at 80% of the spike height. Subsequently, we created 
+arrays for time, peak, height, and width over the given duration as 
+shown through a flow chart in fig. S6. On the basis of these data, we 
+generated histograms for signal peak, height, and width over the 
+48-­hour period. In addition, we counted the number of peaks and 
+normalized it by the sampling time. We also plotted the action 
+potentials versus time, height versus width, height versus time, and 
+width versus time. The results are presented in Fig. 2 (C to G) and 
+figs. S7 to S15. Refer to the Small and large petri dish mycelium scaf-
+fold weekly data analysis section in the Supplementary Methods for 
+further discussion of the results.
+UV light stimulation setup
+For UV sensing, we prepared the same setup as used and discussed 
+in the Fungal signal recording setup section. Once the mycelium 
+plate and recording setup were completed, we proceeded to set up 
+the UV light source. We used an OmniCure versatile UV mercury 
+lamp (OmniCure S1500 Spot UV curing system, 435-­nm Excelitas 
+Technologies Corp.) equipped with a long flexible optical fiber cable 
+and a collimator (fig. S16A).
+The OmniCure lamp was placed outside the Faraday cage, and 
+the optical fiber cable with collimator was clamped onto a variable 
+height stand using a gripper. We ensured that the UV lens was set up 
+to irradiate the scaffold surface perpendicularly. In addition, we used 
+a UV shield for our safety and protection. As a control experiment, 
+we used an agar (PDA) plate without any mycelium inoculation. 
+During the UV sensing experiment, we performed several tests to 
+examine the effects of variable exposure height, variable exposure 
+intensity, and variable exposure time and repeated each set of ex-
+periments at least seven times.
+Variable intensity exposure
+We conducted an experiment to study the effect of UV radiation on 
+fungi by increasing the UV power intensity from 0.1 to 1 W cm−2. 
+Throughout the experiment, we maintained a constant height of the 
+UV source at 12 cm and irradiated the fungi with UV light for 2 s. 
+We waited for 2 min between each illumination event to determine 
+the optimal duration of illumination and to minimize the influence 
+of heat emitted by the light source on the fungus. To ensure pre-
+cise intensity adjustments, we carefully adjusted the position of the 
+light source.
+Variable height exposure
+We conducted variable height tests at an intensity of 0.1 W cm−2, 
+following similar steps as the variable intensity test. However, in this 
+case, we varied the distance between the mycelium plate and colli-
+mator of the light source. The height was adjusted from 12 to 20 cm 
+Downloaded from https://www.science.org at Massachusetts Institute of Technology on September 09, 2024
+
+
+--- Page 12 ---
+Mishra et al., Sci. Robot. 9, eadk8019 (2024)     28 August 2024
+S c i e n c e  R o b ot i c s  | R e s e a r c h  A r t i c l e
+12 of 14
+with 2-­cm increments. The purpose of using a low intensity was to 
+minimize any potential damage to the fungus during the experiment.
+Variable time exposure
+We conducted a time duration test to assess the effect of increasing 
+durations of irradiation on fungi. We started with an initial duration 
+of 2 s and gradually increased it up to 12 s. In addition, we tested 
+different time intervals between illuminations. On the basis of the 
+results of these experiments, we determined that an interval of 
+2 min between each irradiation event provided optimal conditions. 
+Furthermore, throughout the experiments, we maintained a consis-
+tent height of 12 cm and intensity of 0.1 W cm−2.
+Mycelium-­directed robot control method
+To enable real-­time control, we designed an on-­demand control al-
+gorithm that performs all signal processing in real time. The algo-
+rithm consists of three main substeps: real-­time data acquisition, 
+real-­time data computation, and real-­time control signal generation, 
+as illustrated in Fig. 3C, fig. S18A, and movie S1. This process in-
+volves continuously reading the mycelium signals and saving the 
+data every 30 s. The algorithm then analyzes the first 30 s of data, 
+extracting peak width and height information to generate control 
+signals and reprogram the MCU in situ. We created three program 
+files that were sequentially executed from the command prompt: the 
+data acquisition file, followed by the data computation file, and last-
+ly the robot control file. The detailed algorithm flow chart can be 
+found in fig. S18A.
+For real-­time data acquisition, we used a PicoLog DAQ, along 
+with a custom-­built Python program (version 3.9.13) that enabled 
+us to sample the mycelium signal and process it. In Python, we used 
+the Pico SDK library to configure and access the Picolog device.
+The voltage range and conversion time (sampling rate) were set 
+to ±39 mV and 100 ms (10 S s−1), respectively, to accurately record 
+the mycelium signal. We applied a conversion formula provided by 
+the PicoLog datasheet, as shown in Eq. 6, to interpret the record-
+ed signal
+ 
+Here, ADC Valueraw refers to the raw data obtained from the 
+fungi, ADC Valuemax represents the maximum ADC count, and 
+Vmax denotes the voltage range of the dataset. Because our objective 
+involved not only reading the data but also processing it for control 
+purposes, we saved fungal data points in a text file every 30 s at a 
+sampling rate of 10 S/s, resulting in a total of 300 data points per file. 
+Depending on the experimental requirements, we saved text files for 
+different durations in real time from 10 to 60 min.
+For real-­time computation, we began analyzing the signal prop-
+erties, specifically peak width and height. To ensure stability in the 
+membrane potential, we discarded the initial 30-­s data. We imple-
+mented Python code (version 3.9.13) using the SciPy signal library, 
+as discussed in the Fungal signal analysis method section. By de-
+fining the baseline potential (baseline) and setting a prominence 
+threshold of 10 μV, we detected fungal spikes above this threshold, 
+including both positive and negative spikes. To smoothen the signal 
+below 5 μV, we applied the Savitzky-­Golay filter. The find_peaks and 
+peak_widths commands were used to estimate spike height and 
+width, respectively. We reported a 10-­min signal with detection of 
+fungal signal in fig. S18B and in situ process in movie S1.
+For real-­time control signal generation, we provided fungal 
+height and width information from the 30-­s text file to Arduino 
+for robot control, continuously updating this information every 
+30 s using the saved text file. We also developed robot control in 
+Python and interfaced Python with Arduino. We used the pyFir-
+mata library (version 1.1.0), which enabled access to the Arduino 
+microcontroller and allowed for real-­time reprogramming with 
+the fungal information.
+Soft legged robot design and fabrication
+We fabricated a starfish robot as a monolithic structure through a 
+hybrid approach, using polyurethane chemistry–based soft and rig-
+id resins to create the soft monolithic robot. Our process involved 
+three steps. First, we designed 3D models of the robot’s components 
+using SOLIDWORKS software and converted them into .stl files for 
+printing. Next, we printed individual components, such as actuators 
+and the base body. Then, we assembled these components at the un-
+cured stage and subjected them to thermal baking. This process, be-
+cause of the shared chemistry of the soft and rigid materials, allowed 
+for polymerization between the heterogeneous materials, resulting 
+in a single body. This means that we can produce a monolithic ro-
+botic structure with a hybrid material approach, achieving com-
+plex soft robotic structures—in this case, a monolithic starfish-­like 
+soft robot.
+The dimensions of the actuator are a length of 62.7 mm, a base 
+width of 25.5 mm, a top width of 10 mm, and a height of 16 mm. 
+The central body with a side length of l1 = 30 mm and a height of 
+h1 = 25.5 mm; the plug scaffold connector measures l2 = 30 mm by 
+h2 = 15 mm, and the socket scaffold connector measures l3 = 30 mm 
+by h3 = 10 mm. For additional details on the mycelial scaffold setup, 
+refer to the 3D-­printed mycelium scaffold section.
+We used a high-­resolution digital light synthesis printer (Carbon 
+M1, Carbon Inc.) to print the components. Last, we assembled the 
+printed parts by using thermal baking and fastening techniques such 
+as glue, screws, and nuts. We built the robot with a multimaterial 
+approach, soft and rigid. We used UV-­curable silicone elastomer 
+(SIL30, tensile modulus of 3 MPa, elongation at break of 350%, Car-
+bon Inc.) for soft components such as the leg actuators, scaffold plug 
+connector, soft pad, and soft foot (Fs). Conversely, we used RPU 70 
+(tensile modulus of 1.7 GPa, elongation at break of 30%, Carbon 
+Inc.) for rigid components, including the central base, barbed tube 
+connector, rigid feet (Fr1, Fr2, Fr3, and Fr4), and scaffold socket con-
+nector. The multimaterial and multistep 3D-­printing method is dis-
+cussed in the Soft legged robot 3D printing fabrication procedure 
+section in the Supplementary Methods.
+Pressure sensor integrated soft robot for signal I/O 
+mapping setup
+In the soft robot setup, we used the same electronic components and 
+circuits as described in the Soft legged robot electronics section in 
+the Supplementary Methods. In addition, we incorporated an ana-
+log pressure sensor (SSCDANN150PGAA5, 1034.21 kPa, vented 
+gauge, 0.5 to 4.5 V, 8-­DIP) from Honeywell Sensing and Productiv-
+ity Solutions (digikey.com). The sensor, with three pins (Vsupply, Vout, 
+and ground), was connected between the robot’s inlet and valve out-
+let using a T-­shaped barbed connector (refer to fig. S20). To read the 
+data from the sensor, we used an additional Arduino. The Vout pin 
+was connected to an analog read pin (A0), Vsupply to 5 V, and ground 
+to the ground pin. We captured the data in the serial monitor at the 
+V = ADC Valueraw
+ADC Valuemax
+× Vmax
+(6)
+Downloaded from https://www.science.org at Massachusetts Institute of Technology on September 09, 2024
+
+
+--- Page 13 ---
+Mishra et al., Sci. Robot. 9, eadk8019 (2024)     28 August 2024
+S c i e n c e  R o b ot i c s  | R e s e a r c h  A r t i c l e
+13 of 14
+same sampling rate as the mycelium signal (10 Hz) and saved the 
+pressure data in an Excel file.
+Untethered wheeled robot design and fabrication
+We constructed the untethered wheeled robot in the same manner 
+as the tethered soft robot except we used a fused deposition modeling 
+(FDM) printer for most of the components and assembled them 
+with screws and nuts. We used an Ultimaker S5, an extrusion-­based 
+FDM printer from Ultimaker USA Inc., to print the robot base, bat-
+tery support structure (first and second floor), fungi, and datalogger 
+tray (third floor). These components were printed using polylactic 
+acid filaments in black and transparent colors sourced from Maker-
+Bot Industries LLC, with a tensile modulus of 3.3 GPa and an 
+elongation at break of 7.8%. For the motor brackets, wheel-­motor 
+connectors, and VIS support structure, we used urethane methacry-
+late (UMA 90), a resin with a tensile modulus of 1.7 GPa and an 
+elongation at break of 30%, sourced from Carbon Inc., and printed 
+them using the Carbon M1 printer.
+We initiated the fabrication process by 3D-printing the motor brack-
+ets, wheel connectors, and the robot base. For this purpose, we used 
+four shock-­resistant thermoplastic rubber (TPE) tread hard polypro-
+pylene core wheels sourced from McMaster-­Carr, with a diameter of 
+12.7 cm and a width of 2.2 cm. In addition, we selected four dc motors 
+for motion, which we securely fixed into brackets and then connected 
+to the wheels using 3D-­printed connectors. We fastened them in place 
+using screws and nuts. Subsequently, we attached an X-­shaped frame to 
+the brackets both to prevent tilting and to house the battery pack.
+Upon finalizing the wheel-­motor drive chassis, we firmly affixed it 
+to a rectangular base measuring 320 cm by 230 cm. After that, we con-
+nected the VIS module and affixed antivibration foam rubber mats 
+sourced from XCEL via Amazon.com to the robot base. These mats 
+were composed of Neoprene foam with pressure-­sensitive adhesive, 
+measuring 152.5 mm (length, L) by 152.5 mm (width, W) by 6.25 mm 
+(H). The VIS module was composed of four 3D-­printed fixtures and 
+four shock-­absorbing, vibration-­damping disk-­shaped pads purchased 
+from Sonvera Pads via Amazon.com. An attachment was used to es-
+tablish the connection between the VIS module and the tray.
+Next, we securely positioned the minicomputer, motor control 
+circuit, and MCU on a sponge mat embedded base. Subsequently, 
+we proceeded to 3D print the tray using an FDM printer with di-
+mensions of 410 cm (L) by 300 cm (W) by 5 cm (H). To create com-
+partments, we included a partition within the tray. The connectors 
+of the VIS module were then attached to the four corners of the tray 
+and tightly secured using antivibration pads, using a peg and hole 
+joint. We divided the partition into sections, dedicating one section 
+to PicoLog wiring and the other section to the 3D-­printed mycelial 
+scaffold. We show the complete robot schematic and assembled pro-
+totype in fig. S22 (A to D).
+Encoder-­integrated dc motor for signal I/O mapping setup
+For the wheeled robot test, we used a motor encoder setup. We 
+used a micro metal geared brushed motor (6 V, 31 RPM, 100 mA, 
+12 kg·cm, 1.6 A) and a quadrature encoder with a hall effect sensor 
+and magnets (12 CPR, 2.7 to 18 V) sourced from pololu.com. The 
+motor was fixed on a 3D-­printed stand. The motor control circuit is 
+the same as described in the wheeled robot control section. Further-
+more, we used a single motor using the same configuration but added 
+an extra Arduino to read the motor’s output signals from the encoder. 
+The encoder had four pins: two for Vsupply and GND and two output 
+pins (A and B) for digital reading. We connected the Vsupply and 
+ground pins to the Arduino’s 5 V and GND pins, respectively, and the 
+A and B pins to digital input pins. We read the data in the serial mon-
+itor, saved it in an Excel file, and then plotted the mycelium-­directed 
+input signals and encoder output signals together at the same sam-
+pling rate. The complete circuit diagram is shown in fig. S23B.
+Statistical analysis
+We calculated the mean values and SDs (± SD) for all electrical 
+measurements. For example, in our weekly analysis, we used 48-­hour 
+datasets, each containing 1,728,000 samples, from a total pool of 
+25,920,000 samples. We conducted skew-­normal distribution anal-
+ysis on these datasets, estimating both the mean and the SD of 
+the detected peak probability distributions. Similarly, in the light-­
+stimulation experiments, we repeated the light stimulation at least 
+seven times (n = 7) under identical conditions and then calculated 
+the mean and SD of all detected peak values.
+Supplementary Materials
+The PDF file includes:
+Methods
+Figs. S1 to S24
+Other Supplementary Material for this manuscript includes the following:
+Movies S1 to S12
+MDAR Reproducibility Checklist
+REFERENCES AND NOTES
+	 1.	 V. E. Abraira, D. D. Ginty, The sensory neurons of touch. Neuron 79, 618–639 (2013).
+	 2.	 G. Corniani, H. P. Saal, Tactile innervation densities across the whole body. J. Neurophysiol. 
+124, 1229–1240 (2020).
+	 3.	 Y. Morimoto, H. Onoe, S. Takeuchi, Biohybrid robot powered by an antagonistic pair of 
+skeletal muscle tissues. Sci. Robot. 3, eaat4440 (2018).
+	 4.	 Y. Tanaka, S.-­I. Funano, Y. Noguchi, Y. Yalikun, N. Kamamichi, A valve powered by earthworm 
+muscle with both electrical and 100% chemical control. Sci. Rep. 9, 8042 (2019).
+	 5.	 M. Crepaldi, C. Mohan, E. Garofalo, A. Adamatzky, K. Szaciłowski, A. Chiolerio, 
+Experimental demonstration of in-­memory computing in a ferrofluid system. Adv. Mater. 
+35, 2211406 (2023).
+	 6.	 B. de Lacy Costello, A. Adamatzky, N. M. Ratcliffe, C. Melhuish, Experimental 
+reaction-­diffusion chemical processors for robot path planning. J. Intel. Robot. Syst. 37, 
+233–249 (2003).
+	 7.	 H. Yokoi, A. Adamatzky, B. de Lacy Costello, C. Melhuish, Excitable chemical medium 
+controller for a robotic hand: Closed-­loop experiments. Int. J. Bifurcation Chaos 14, 
+3347–3354 (2004).
+	 8.	 M.-­A. Tsompanas, C. Fullarton, A. Adamatzky, Belousov-­Zhabotinsky liquid marbles in 
+robot control. Sens. Actuators B 295, 194–203 (2019).
+	 9.	 A. Adamatzky, B. de Lacy Costello, C. Melhuish, N. Ratcliffe, Experimental implementation 
+of mobile robot taxis with onboard Belousov–Zhabotinsky chemical medium. Mater. Sci. 
+Eng. C 24, 541–548 (2004).
+	10.	 A. Chiolerio, M. B. Quadrelli, Smart fluid systems: The advent of autonomous liquid 
+robotics. Adv. Sci. 4, 1700036 (2017).
+	11.	 L. Ricotti, B. Trimmer, A. W. Feinberg, R. Raman, K. K. Parker, R. Bashir, M. Sitti, S. Martel,  
+P. Dario, A. Menciassi, Biohybrid actuators for robotics: A review of devices actuated by 
+living cells. Sci. Robot. 2, eaaq0495 (2017).
+	12.	 R. W. Carlsen, M. Sitti, Bio-­hybrid cell-­based actuators for microsystems. Small 10, 
+3831–3851 (2014).
+	13.	 L. Gao, M. U. Akhtar, F. Yang, S. Ahmad, J. He, Q. Lian, W. Cheng, J. Zhang, D. Li, Recent 
+progress in engineering functional biohybrid robots actuated by living cells. Acta 
+Biomater. 121, 29–40 (2021).
+	14.	 C. Cvetkovic, R. Raman, V. Chan, B. J. Williams, M. Tolish, P. Bajaj, M. S. Sakar, H. H. Asada,  
+M. T. A. Saif, R. Bashir, Three-­dimensionally printed biological machines powered by 
+skeletal muscle. Proc. Natl. Acad. Sci. U.S.A. 111, 10125–10130 (2014).
+	15.	 R. Raman, C. Cvetkovic, S. G. M. Uzel, R. J. Platt, P. Sengupta, R. D. Kamm, R. Bashir, 
+Optogenetic skeletal muscle-­powered adaptive biological machines. Proc. Natl. Acad. Sci. 
+U.S.A. 113, 3497–3502 (2016).
+	16.	 S.-­J. Park, M. Gazzola, K. S. Park, S. Park, V. Di Santo, E. L. Blevins, J. U. Lind, P. H. Campbell, 
+S. Dauth, A. K. Capulli, F. S. Pasqualini, S. Ahn, A. Cho, H. Yuan, B. M. Maoz, R. Vijaykumar, 
+Downloaded from https://www.science.org at Massachusetts Institute of Technology on September 09, 2024
+
+
+--- Page 14 ---
+Mishra et al., Sci. Robot. 9, eadk8019 (2024)     28 August 2024
+S c i e n c e  R o b ot i c s  | R e s e a r c h  A r t i c l e
+14 of 14
+J.-­W. Choi, K. Deisseroth, G. V. Lauder, L. Mahadevan, K. K. Parker, Phototactic guidance of 
+a tissue-­engineered soft-­robotic ray. Science 353, 158–162 (2016).
+	17.	 Y. Kim, Y. Yang, X. Zhang, Z. Li, A. Vázquez-­Guardado, I. Park, J. Wang, A. I. Efimov, Z. Dou,  
+Y. Wang, J. Park, H. Luan, X. Ni, Y. S. Kim, J. Baek, J. J. Park, Z. Xie, H. Zhao, M. Gazzola,  
+J. A. Rogers, R. Bashir, Remote control of muscle-­driven miniature robots with 
+battery-­free wireless optoelectronics. Sci. Robot. 8, eadd1053 (2023).
+	18.	 O. Aydin, X. Zhang, S. Nuethong, G. J. Pagan-­Diaz, R. Bashir, M. Gazzola, M. T. A. Saif, 
+Neuromuscular actuation of biohybrid motile bots. Proc. Natl. Acad. Sci. U.S.A. 116, 
+19841–19847 (2019).
+	 19.	 D. Blackiston, E. Lederer, S. Kriegman, S. Garbier, J. Bongard, M. Levin, A cellular platform for the 
+development of synthetic living machines. Sci. Robot. 6, eabf1571 (2021).
+	20.	 S. Kriegman, D. Blackiston, M. Levin, J. Bongard, Kinematic self-­replication in 
+reconfigurable organisms. Proc. Natl. Acad. Sci. U.S.A. 118, e2112672118 (2021).
+	21.	 S. Kriegman, D. Blackiston, M. Levin, J. Bongard, A scalable pipeline for designing 
+reconfigurable organisms. Proc. Natl. Acad. Sci. U.S.A. 117, 1853–1859 (2020).
+	22.	 H. Herr, R. G. Dennis, A swimming robot actuated by living muscle tissue. J. Neuroeng. 
+Rehabilitation 1, 6 (2004).
+	23.	 J. C. Nawroth, H. Lee, A. W. Feinberg, C. M. Ripplinger, M. L. McCain, A. Grosberg,  
+J. O. Dabiri, K. K. Parker, A tissue-­engineered jellyfish with biomimetic propulsion. Nat. 
+Biotechnol. 30, 792–797 (2012).
+	24.	 V. A. Webster, K. J. Chapin, E. L. Hawley, J. M. Patel, O. Akkus, H. J. Chiel, R. D. Quinn, 
+“Aplysia californica as a novel source of material for biohybrid robots and organic 
+machines” in Biomimetic and Biohybrid Systems: 5th International Conference, Living 
+Machines 2016, Edinburgh, UK, July 19–22, 2016. Proceedings, N. F, Lepora, A. Mura,  
+M. Mangan, P. F. M. J. Verscure, M. Desmulliez, T. J. Prescott, Eds., vol. 9793 of Lecture Notes 
+in Artificial Intelligence (Springer, 2016), pp. 365–374.
+	25.	 Y. Tanaka, Y. Noguchi, Y. Yalikun, N. Kamamichi, Earthworm muscle driven bio-­micropump. 
+Sens. Actuators B 242, 1186–1192 (2017).
+	26.	 M. Kawai, M. Nie, H. Oda, Y. Morimoto, S. Takeuchi, Living skin on a robot. Matter 5, 
+2190–2208 (2022).
+	27.	 K. Warwick, S. J. Nasuto, V. M. Becerra, B. J. Whalley, “Experiments with an in-­vitro robot 
+brain” in Computing With Instinct: Rediscovering Artificial Intelligence, Y. Cao, Ed., vol. 5897 
+of Lecture Notes in Compuer Science (Springer, 2011), pp. 1–15.
+	28.	 A. Verma, M. Verma, A. Singh, “Animal tissue culture principles and applications”, in 
+Animal Biotechnology, A. S. Verma, A. Singh, Eds. (Elsevier, ed. 2, 2020), pp. 269–293.
+	29.	 S. J. Park, S.-­H. Park, S. Cho, D.-­M. Kim, Y. Lee, S. Y. Ko, Y. Hong, H. E. Choy, J.-­J. Min,  
+J.-­O. Park, S. Park, New paradigm for tumor theranostic methodology using bacteria-­
+based microrobot. Sci. Rep. 3, 3394 (2013).
+	30.	 N. Koumakis, A. Lepore, C. Maggi, R. Di Leonardo, Targeted delivery of colloids by 
+swimming bacteria. Nat. Commun. 4, 2588 (2013).
+	31.	 Y. Hiratsuka, M. Miyata, T. Tada, T. Q. Uyeda, A microrotary motor powered by bacteria. 
+Proc. Natl. Acad. Sci. U.S.A. 103, 13618–13623 (2006).
+	 32.	 D. Parker, Y. Daguerre, G. Dufil, D. Mantione, E. Solano, E. Cloutet, G. Hadziioannou,  
+T. Näsholm, M. Berggren, E. Pavlopoulou, E. Stavrinidou, Biohybrid plants with electronic roots 
+via in vivo polymerization of conjugated oligomers. Mater. Horizons 8, 3295–3305 (2021).
+	 33.	 F. Meder, I. Must, A. Sadeghi, A. Mondini, C. Filippeschi, L. Beccai, V. Mattoli, P. Pingue,  
+B. Mazzolai, Energy conversion at the cuticle of living plants. Adv. Funct. Mater. 28, 1806689 (2018).
+	34.	 W. Li, N. Matsuhisa, Z. Liu, M. Wang, Y. Luo, P. Cai, G. Chen, F. Zhang, C. Li, Z. Liu, Z. Lv,  
+W. Zhang, X. Chen, An on-­demand plant-­based actuator created using conformable 
+electrodes. Nat. Electron. 4, 134–142 (2021).
+	35.	 R. Sachse, A. Westermeier, M. Mylo, J. Nadasdi, M. Bischoff, T. Speck, S. Poppinga, 
+Snapping mechanics of the Venus flytrap (Dionaea muscipula). Proc. Natl. Acad. Sci. U.S.A. 
+117, 16035–16042 (2020).
+	36.	 O. Vincent, C. Weisskopf, S. Poppinga, T. Masselter, T. Speck, M. Joyeux, C. Quilliet,  
+P. Marmottant, Ultra-­fast underwater suction traps. Proc. Biol Sci. 278, 2909–2914 
+(2011).
+	 37.	 S. Tsuda, S. Artmann, K.-­P. Zauner, “The phi-­bot: A robot controlled by a slime mould” in Artificial 
+Life Models in Hardware, A. Adamatzky, M. Komosinski, Eds. (Springer, 2009), pp. 213–232.
+	 38.	 J. Heitman, B. J. Howlett, P. W. Crous, E. H. Stukenbrock, T. Y. james, N. A. R. Gow, The Fungal 
+Kingdom (John Wiley & Sons, 2020).
+	39.	 Y.-­S. Bahn, C. Xue, A. Idnurm, J. C. Rutherford, J. Heitman, M. E. Cardenas, Sensing the 
+environment: Lessons from fungi. Nat. Rev. Microbiol. 5, 57–69 (2007).
+	40.	 N. Magan, Fungi in extreme environments. The Mycota 4, 85–103 (2007).
+	41.	 T. Ohnuki, F. Sakamoto, N. Kozai, K. Nanba, H. Neda, Y. Sasaki, T. Niizato, N. Watanabe,  
+T. Kozaki, Role of filamentous fungi in migration of radioactive cesium in the Fukushima 
+forest soil environment. Environ. Sci.: Processes Impacts 21, 1164–1173 (2019).
+	42.	 C. Gostinčar, P. Zalar, N. Gunde-­Cimerman, No need for speed: Slow development of 
+fungi in extreme environments. Fungal Biol. Rev. 39, 1–14 (2022).
+	43.	 M. Parniske, Arbuscular mycorrhiza: The mother of plant root endosymbioses. Nat. Rev. 
+Microbiol. 6, 763–775 (2008).
+	44.	 M. L. Smith, J. N. Bruhn, J. B. Anderson, The fungus Armillaria bulbosa is among the largest 
+and oldest living organisms. Nature 356, 428–431 (1992).
+	45.	 C. L. Slayman, W. S. Long, D. Gradmann, “Action potentials” in Neurospora crassa, a 
+mycelial fungus. Biochim. Biophys. Acta Biomembranes 426, 732–744 (1976).
+	46.	 S. Olsson, B. Hansson, Action potential-­like activity found in fungal mycelia is sensitive to 
+stimulation. Naturwissenschaften 82, 30–31 (1995).
+	 47.	 Z. Yu, R. Fischer, Light sensing and responses in fungi. Nat. Rev. Microbiol. 17, 25–36 (2019).
+	48.	 A. Idnurm, J. Heitman, Photosensing fungi: Phytochrome in the spotlight. Curr. Biol. 15, 
+R829–R832 (2005).
+	49.	 J. C. Dunlap, J. J. Loros, How fungi keep time: Circadian system in Neurospora and other 
+fungi. Curr. Opinion Microbiol. 9, 579–587 (2006).
+	50.	 A. Adamatzky, A. Gandia, On electrical spiking of Ganoderma resinaceum. Biophys. Rev. 
+Lett. 16, 133–141 (2021).
+	 51.	 A. Adamatzky, On spiking behaviour of oyster fungi Pleurotus djamor. Sci. Rep. 8, 7873 (2018).
+	52.	 R. R. Lew, Mapping fungal ion channel locations. Fungal Genet. Biol. 24, 69–76 (1998).
+	 53.	 B. P. Bean, The action potential in mammalian central neurons. Nat. Rev. Neurosci. 8, 451–465 (2007).
+	54.	 A. Nikolaidou, N. Phillips, M.-­A. Tsompanas, A. Adamatzky, Responsive fungal insoles for 
+pressure detection. Sci. Rep. 13, 4595 (2023).
+	55.	 A. Adamatzky, A. Gandia, A. Chiolerio, Towards fungal sensing skin. Fungal Biol. 
+Biotechnol. 8, 1–7 (2021).
+	56.	 S. Gantenbein, E. Colucci, J. Käch, E. Trachsel, F. B. Coulter, P. A. Rühs, K. Masania,  
+A. R. Studart, Three-­dimensional printing of mycelium hydrogels into living complex 
+materials. Nat. Mater. 22, 128–134 (2023).
+	57.	 A. Adamatzky, Language of fungi derived from their electrical spiking activity. R. Soc. 
+Open Sci. 9, 211926 (2022).
+	 58.	 J. Cao, M. Sun, M. Yu, Y. Xu, J. Xie, H. Zhang, J. Chen, T. Xu, X. Qian, S. Sun, Transcriptome 
+analysis reveals the function of a G-­protein α subunit gene in the growth and 
+development of Pleurotus eryngii. J. Fungi 9, 69 (2023).
+	 59.	 S. L. Hooper, J. Schmidt, “Electrophysiological recording techniques” in Neurobiology of Motor Control: 
+Fundamental Concepts and New Directions, S. L. Hooper, A. Büschges, Eds. (Wiley, 2017), pp. 7–53.
+	60.	 L. Breckenridge, R. J. Wilson, P. Connolly, A. S. Curtis, J. A. Dow, S. E. Blackshaw,  
+C. D. Wilkinson, Advantages of using microfabricated extracellular electrodes for in vitro 
+neuronal recording. J. Neurosci. Res. 42, 266–276 (1995).
+	61.	 A. Savitzky, M. J. Golay, Smoothing and differentiation of data by simplified least squares 
+procedures. Anal. Chem. 36, 1627–1639 (1964).
+	 62.	 P. Du, W. A. Kibbe, S. M. Lin, Improved peak detection in mass spectrum by incorporating 
+continuous wavelet transform-­based pattern matching. Bioinformatics 22, 2059–2065 (2006).
+	 63.	 I. Vilinsky, K. L. Hibbard, B. R. Johnson, D. L. Deitcher, Probing synaptic transmission and behavior in 
+Drosophila with optogenetics: A laboratory exercise. J. Undergrad. Neurosci. Educ. 16, A289 (2018).
+	 64.	 R. F. Shepherd, F. Ilievski, W. Choi, S. A. Morin, A. A. Stokes, A. D. Mazzeo, X. Chen, M. Wang,  
+G. M. Whitesides, Multigait soft robot. Proc. Natl. Acad. Sci. U.S.A. 108, 20400–20403 (2011).
+	65.	 H. X. Ryu, A. D. Kuo, An optimality principle for locomotor central pattern generators. Sci. 
+Rep. 11, 13140 (2021).
+	66.	 E. Marder, D. Bucher, Central pattern generators and the control of rhythmic movements. 
+Curr. Biol. 11, R986–R996 (2001).
+Acknowledgments: We gratefully acknowledge the use of facilities and instrumentation supported 
+by the NSF through the Cornell University Materials Research Science and Engineering Center 
+(DMR-­1719875). A.K.M. extends gratitude to the Engineering Living Materials Institute (ELMI) at 
+Cornell University for providing postdoctoral fellowship funding. We also appreciate the valuable 
+contributions of Y. Zhang, a master’s student, and A. Samardzija, an undergraduate student, both 
+from the Department of Mechanical and Aerospace Engineering at Cornell University, to this project. 
+Special thanks are extended to B. Land, emeritus senior lecturer in the Department of Electrical and 
+Computer Engineering at Cornell University, and S. Olsson from Fujian Agriculture and Forestry 
+University, Fuzhou, China, for insightful guidance and assistance. Funding: This work was supported 
+by the National Science Foundation (NSF) CROPPS Science and Technology Center under award no. 
+DBI-­2019674; United States Department of Agriculture (USDA), National Institute of Food and 
+Agriculture (NIFA) under contract no. 2021-­67021-­33843; and National Science Foundation Signal in 
+Soil under contract no. IOS-­2034351. Author contributions: Conceptualization: A.K.M. and R.F.S. 
+Methodology: A.K.M., J.K., H.B., B.R.J., K.T.H., and R.F.S. Investigation: A.K.M., J.K., and H.B. Visualization: 
+A.K.M., J.K., H.B., B.R.J., K.T.H., and R.F.S. Funding acquisition: R.F.S. Project administration: A.K.M. and 
+R.F.S. Supervision: R.F.S. Writing—original draft: A.K.M. and R.F.S. Writing—review and editing: A.K.M., 
+J.K., H.B., B.R.J., K.T.H., and R.F.S. Competing interests: The authors declare that they have no 
+competing interests. Data and materials availability: All data needed to support the conclusions 
+of this manuscript are included in the main text or Supplementary Materials. The reported raw 
+datasets, as well as the code for data analysis and robot control, can be accessed at Zenodo (https://
+doi.org/10.5281/zenodo.12812074). We also included data analysis and robot control codes on 
+GitHub (https://github.com/Alchemist77/fungi-data-analasis and https://github.com/Alchemist77/
+fungi-­robot-­control).
+Submitted 11 September 2023 
+Accepted 30 July 2024 
+Published 28 August 2024 
+10.1126/scirobotics.adk8019
+Downloaded from https://www.science.org at Massachusetts Institute of Technology on September 09, 2024

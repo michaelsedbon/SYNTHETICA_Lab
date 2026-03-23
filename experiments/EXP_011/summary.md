@@ -3,7 +3,9 @@
 **Start Date:** 2026-03-10
 **Status:** In progress
 **Airtable Links:** None
-**Parent Experiment:** EXP_005
+**Project:** Cryptographic Beings
+**Parent:** EXP_005
+**Hardware:** DM542T
 
 ---
 

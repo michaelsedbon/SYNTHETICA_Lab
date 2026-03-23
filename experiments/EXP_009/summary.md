@@ -3,6 +3,9 @@
 **Start Date:** 2026-03-09
 **Status:** In progress
 **Airtable Links:** None
+**Project:** Bio Electronic Music
+**Parent:** —
+**Hardware:** LED-DRV8, ESP32-S3
 
 ---
 

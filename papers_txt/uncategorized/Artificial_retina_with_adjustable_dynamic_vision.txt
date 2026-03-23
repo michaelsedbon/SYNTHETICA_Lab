@@ -1,0 +1,805 @@
+--- Page 1 ---
+Article
+Artiﬁcial retina with adjustable dynamic vision
+perception using carbon nanotubes and
+bacteriorhodopsin
+Graphical abstract
+Highlights
+d A biomimetic retina is developed with dynamic vision
+capabilities
+d CNTs and micropore/nanopore structures are used to adjust
+dynamic sensing ability
+d A difference perception-based adaptive frame extraction
+method is proposed
+d A visual persistence-based dynamic object trajectory capture
+function is realized
+Authors
+Yu-Tao Li (李宇涛), Jie Lin (林杰),
+Hao-Yuan Shen (慎浩远), ..., Zheng-Jun Li
+(李正军), Tian-Ling Ren (任天令),
+Ye-Liang Wang (王业亮)
+Correspondence
+ytli@bit.edu.cn (Y.-T.L.),
+lizj@mail.buct.edu.cn (Z.-J.L.),
+rentl@tsinghua.edu.cn (T.-L.R.)
+In brief
+Li et al. developed an artiﬁcial retina
+based on carbon nanotubes (CNTs)/
+bacteriorhodopsin, which exhibits two
+types of dynamic vision capabilities:
+difference perception and visual
+persistence ability. By incorporating
+CNTs and integrating micropore/
+nanopore structures, proton-electron
+coupling transport and proton
+transmission rate regulation were
+achieved, enabling adjustable dynamic
+visual sensing ability.
+Li et al., 2025, Device 3, 100750
+July 18, 2025 ª 2025 The Authors. Published by
+Elsevier Inc.
+https://doi.org/10.1016/j.device.2025.100750
+ll
+
+
+--- Page 2 ---
+Article
+Artiﬁcial retina with adjustable
+dynamic vision perception using carbon
+nanotubes and bacteriorhodopsin
+Yu-Tao Li (李宇涛),1,2,* Jie Lin (林杰),3 Hao-Yuan Shen (慎浩远),3 Yao-Zong Chen (陈耀宗),4 Yi-Wen Wu (吴怡雯),3
+Lu-Yu Zhao (赵璐钰),3 Zheng-Jun Li (李正军),4,* Tian-Ling Ren (任天令),2,5,* and Ye-Liang Wang (王业亮)1
+1School of Integrated Circuits and Electronics, MIIT Key Laboratory for Low-Dimensional Quantum Structure and Devices, Beijing Institute of
+Technology, Beijing 100081, China
+2School of Integrated Circuits and Beijing National Research Center for Information Science and Technology (BNRist), Tsinghua University,
+Beijing 100084, China
+3College of Information Science and Technology, Beijing University of Chemical Technology, Beijing 100029, China
+4Beijing Key Laboratory of Bioprocess, College of Life Science and Technology, Beijing University of Chemical Technology, Beijing 100029,
+China
+5Lead contact
+*Correspondence: ytli@bit.edu.cn (Y.-T.L.), lizj@mail.buct.edu.cn (Z.-J.L.), rentl@tsinghua.edu.cn (T.-L.R.)
+https://doi.org/10.1016/j.device.2025.100750
+SUMMARY
+With the development of artiﬁcial intelligence, it is important to obtain high-dimensional information of optical
+sensors from the device level in the intelligent era, especially visual dynamic features. It is difﬁcult for the elec-
+tronic vision system based on conventional photodetectors to capture these dynamic features. Based on the
+transient light response mechanism of the photosensitive protein bacteriorhodopsin (bR), an artiﬁcial retina
+with dynamic recognition ability has been developed. Inspired by the optical regulator cells in the human
+retina, we used carbon nanotubes (CNTs) and micropore/nanopore structures for controlling the photocur-
+rent duration time (PDT). In addition, different dynamic recognition modes and applications were obtained by
+adjusting the PDT. By adjusting the PDT, the artiﬁcial retina demonstrated adaptive frame extraction based
+on its difference perception capability and dynamic trajectory capture based on its visual persistence
+capability.
+INTRODUCTION
+The perception of dynamic differences1 in vision is crucial for or-
+ganisms to react quickly to changes in the external environ-
+ment.2 Sensing devices that can capture visual dynamic features
+provide an efﬁcient, natural, and integrated design solution for
+realizing perceptual interaction. Dynamic vision has two key
+characteristics: difference perception3,4 and visual persistence
+ability.5 Difference perception refers to the ability to recognize
+differences between consecutive frames, while visual persis-
+tence refers to the ability to remember a series of individual
+frames to perceive continuous motion. A sensing device with
+inherent dynamic vision capabilities has applications in motion
+sensing, such as navigation systems for drones and self-driving
+cars, and in security and various environmental monitoring sys-
+tems. The ability to generate output directly based on changes
+instead of a series of images can reduce the data processing
+overhead required for these applications.
+THE BIGGER PICTURE
+The function of vision systems can be classiﬁed into two main categories: the detec-
+tion of objects and the detection of motions. For biological vision systems such as the human retina, there is a
+built-in mechanism in the optical regulator cells for detecting motion features. However, for most imaging de-
+vices like a video camera, the motion detection is done by capturing and comparing the static frames, which
+can be data intensive. Here, we present an artiﬁcial retina with a built-in ability for difference perception and
+visual persistence. Bacteriorhodopsin is used as the photoelectric response generator. CNTs and micropore/
+nanopore structures are used as the photoelectric response regulator. The artiﬁcial retina can realize adap-
+tive frame extraction by responding to sudden movements and can also capture moving object trajectory
+based on the visual persistence effect.
+Device 3, 100750, July 18, 2025 ª 2025 The Authors. Published by Elsevier Inc.
+1
+This is an open access article under the CC BY license (http://creativecommons.org/licenses/by/4.0/).
+ll
+OPEN ACCESS
+
+
+--- Page 3 ---
+Most conventional artiﬁcial retinas,6–9 combined with neural
+networks, could recognize static objects,10,11 such as light infor-
+mation, faces, numbers, and gestures (see Note S7). However,
+devices made of conventional inorganic/organic materials main-
+tained a consistent level of photoelectric response under contin-
+uous light (Table S1), which makes it difﬁcult to adjust the photo-
+current duration time (PDT). This is in contrast to the fatigue
+property of the optic nerve, which naturally decreases its
+response to a persistent stimulus. Dynamic perception requires
+optical sensors to process complex images,12,13 which can be
+realized by adjusting the PDT of the device. As an optoelectronic
+material with material stability14 and biocompatibility,15 bacterio-
+rhodopsin (bR) performs a controllable proton transport process
+from intracellular to extracellular under light stimulation, leading
+to the generation of a transient photocurrent.16 The generation of
+photocurrent is based on the change in light intensity, but the
+photocurrent decays under continuous illumination, which is
+similar to the visual persistence or fatigue in the human vision
+system. This mechanism is different from conventional optoelec-
+tronic materials, allowing the adjustment of photocurrent dura-
+tion time, which is more conducive to applications in biomimetic
+vision.
+The dynamic recognition ability of bR-based artiﬁcial retinal
+devices is related to the PDT. For the human retina, electrochem-
+ical signals produced by photoreceptors are regulated by vari-
+ous optical regulator cells. In our system, this can be mimicked
+using carbon nanotubes (CNTs), which have good biocompati-
+bility and can be combined with bR to achieve electron-proton
+coupling transport function. Moreover, the integration of micro-
+pore/nanopore structures can also affect proton transport and
+extend the PDT.
+In this work, we present an artiﬁcial retina comprising CNTs/
+bR with adjustable difference perception and visual persistence.
+By mimicking the functional aspects of the biological retina, we
+use bR as the photoelectric response generator. In addition,
+CNTs and micropore/nanopore structures are used as the pho-
+toelectric response regulator. This enables adjustable device
+PDT modes, which are correlated with dynamic capture capa-
+bility. Difference perception-based adaptive frame extraction
+simulation was conducted with integrating artiﬁcial intelligence
+algorithms, and visual persistence-based dynamic trajectory
+capture simulation was performed to record object motion tra-
+jectories within image frames.
+RESULTS
+Device design and operation principles
+Figure 1A shows the structure of the human retina.17 Signals in
+the retina propagate from the photoreceptors to the bipolar cells
+and then to the ganglion cells.18 First, photoreceptors convert
+light signals into electrochemical signals. Second, the bipolar
+cells receive the signal and transmit it to the ganglion cells and
+down to the optic nerve. During this process, the bipolar cells
+serve as regulators of the light response, which is done by the
+CNTs in the artiﬁcial retina. Meanwhile, the horizontal cells and
+amacrine cells both affect the signal transmission by inﬂuencing
+other cells on the signal transmission chain. This can be referred
+to as a type of structure regulation, which is accomplished in the
+artiﬁcial retina by the designed micropore/nanopore structures.
+To realize the design concept, we studied the effects of trans-
+mission regulation and structure regulation on the bR-based
+photoreceptor device.
+There are two important characteristics of bR. One is that it
+generates photocurrent when sufﬁcient light intensity change is
+felt, and the other is that the current decreases with time under
+continuous light stimulation. These correspond to the two impor-
+tant characteristics of difference perception and visual persis-
+tence in the dynamic recognition of the human visual system.
+The PDT, which is directly related to the photocycle,19 has an ef-
+fect on both properties. To explore the connection between the
+PDT and the dynamic recognition characteristics, we studied the
+photocycle and the PDT of the bR and the hybrid CNTs/bR.
+The photocycle model,14 proposed by Norbert Hampp, dem-
+onstrates that the photocycle process of bR is accompanied
+by the transport of protons. The asynchronous occurrence of
+bR release and absorption of protons leads to a time difference
+dt1 in the equilibrium of the membrane potential, resulting in a
+transient photocurrent (see Figure 1B). The protons delivered
+to one side are bound to form a proton concentration gradient
+in the external solution. This implies that an equilibration time
+dt2 would affect both the PDT and the photocycle of the bR mole-
+cule. Thus, the following PDT formula for equilibrium time (i.e.,
+proton transport rate) is as follows:
+PDTffðdt1; dt2Þ
+(Equation 1)
+By adjusting the two key parameters of dt1 and dt2, we expect
+to realize the regulation of PDT and then the regulation of dy-
+namic recognition ability.
+The
+photocycle
+period
+of
+bR
+can
+be
+accelerated
+by
+adjusting the concentration of CNTs.15,20 CNTs, as low-
+dimensional nanocarbon-based materials with a carrier mobility
+of 20 cm2/V $ s,21 should enable transmission acceleration for
+proton transport by carrier coupling. Transient absorption tests
+are performed to verify the composite effect (as shown in
+Figures 1C and 1D; the testing procedure can be found in Note
+S1). The addition of CNTs, which leads to faster decay of the in-
+termediate M-state lifetime, indicates a shorter time difference
+dt1 in the equilibrium of the membrane potential and a
+shorter PDT.
+From the perspective of proton equilibrium in the external solu-
+tion, micropore/nanopore structures could be introduced to con-
+trol the equilibrium time by limiting proton transport. As shown in
+Figure 1E, the pore aperture affects the time for the gradient to
+reach equilibrium. Smaller pores allow fewer protons to pass
+per unit time, which makes the equilibrium time dt2 longer, result-
+ing in a longer PDT. The above mechanisms provide the theoret-
+ical basis for the regulation of PDT, which is conducive to our
+further device fabrication and application research.
+Device preparation and characterization
+Before making the artiﬁcial retina, bR was prepared and charac-
+terized. The bR suspension was prepared using techniques
+detailed in the methods section.22 The resulting bR is stable
+against high temperature,14,23 high salt concentration,24 and
+other extreme environmental conditions.25
+2
+Device 3, 100750, July 18, 2025
+Article
+ll
+OPEN ACCESS
+
+
+--- Page 4 ---
+The artiﬁcial retina is composed of two materials: bR as a pho-
+toelectric response generator and CNTs as a photoelectric
+response regulator. The bR suspension was mixed with CNTs
+to enhance the carrier mobility26 for regulating the proton trans-
+port process.27 Figure 2A shows the preparation process of the
+sensing unit for the artiﬁcial retina, which consists of the hybrid
+CNTs/bR ﬁlm. The bR suspension is mixed with the CNT solution
+using ultrasound. Then, the hybrid suspension is dropped onto
+the surface of the indium tin oxide (ITO) conductive glass, which
+acts as an electrode for signal readout, and the hybrid CNTs/bR
+ﬁlm (ﬁlm size: 2 3 2 mm) is prepared by the induced evaporation
+method28 (see more in methods). Atomic force microscopy
+(AFM) and scanning electron microscopy (SEM) tests are per-
+formed to distinguish the hybrid CNTs/bR ﬁlm from the pure
+bR ﬁlm in Figures 2B–2E. According to the AFM images
+(Figures 2B and 2C), the hybrid ﬁlm has a lower roughness value
+(Rq = 17.6 nm) compared to the pure ﬁlm (Rq = 72.6 nm), which
+indicates that the hybrid CNTs/bR ﬁlm is ﬂatter and more
+Figure 1. The working mechanism of PDT regulation
+(A) The artiﬁcial retinal structure of the device.
+(B) Photocycle and transient photocurrent generation model of bR.
+(C) The proton-electron coupled transport model of CNTs/bR (transmission regulation).
+(D) M-state lifetime of the bR and the CNTs/bR. Change in optical density (Delta OD).
+(E) Schematic diagram of PDT affected by proton transport rate (structure regulation).
+Device 3, 100750, July 18, 2025
+3
+Article
+ll
+OPEN ACCESS
+
+
+--- Page 5 ---
+uniform. The SEM images in Figures 2D and 2E also show that
+the surface of the bR ﬁlm is not as uniform as that of the hybrid
+CNTs/bR ﬁlm. The hydrophilicity is different on the two sides of
+the bR membrane, while the surface of CNTs is hydrophobic,29
+resulting in a more orderly bR orientation during evaporation-
+induced deposition of the hybrid ﬁlm.30 Previous studies31,32
+have shown that more ordered bR orientation enhances the
+magnitude and stability of optoelectronic devices based on bR.
+The photoelectric response of hybrid CNTs/bR ﬁlm was
+tested in a polydimethylsiloxane-based solution chamber and
+a xenon lamp (Beijing China Education Au-Light Technology;
+type: CEL/HXF300-T3). The test was performed with a three-
+electrode system using an electrochemical workstation, an
+ITO deposited with hybrid CNTs/bR ﬁlm (as a working elec-
+trode), and a pure ITO (as an auxiliary electrode and reference
+electrode), which were inserted at each end of the chamber.
+One side of the chamber is capable of integrating a single
+pore with a chosen aperture depending on the requirement of
+the application (shown in Figure 2F, and more details about
+the tests can be found in Notes S2 and S3). Under the dual ef-
+fect of CNTs and aperture size, the PDT of the generated
+photocurrent can not only be ﬁnely adjusted in a small range
+(approximately tens of milliseconds) but also in a large range
+macroscopically. The occurrence of this regulation is condu-
+cive to the acquisition and adjustment of difference perception
+and visual persistence characteristics.
+Tuning the PDT
+Unlike conventional photodetectors, which generate a stable
+and continuous photoelectric response level with light, our artiﬁ-
+cial retina produces a spike-like pulse signal with a short PDT for
+capturing dynamic features. To further explore the ability of the
+device, different material composites and device structure de-
+signs were used to assess their impact on PDT. The reference
+PDT value of the device is deﬁned as the duration time for the
+photocurrent to decay from peak to 5%, and the speciﬁc calcu-
+lation method is detailed in Note S4.
+Figure 3A illustrates the difference in the generated photocur-
+rent with/without CNTs at different apertures and their effects on
+the PDT. The hybrid of the bR and the CNTs shortens the PDT
+from 100 to 83 ms. The PDTs of hybrid CNTs/bR ﬁlm have
+a faster decay rate compared to those of the unmixed ﬁlm for
+all aperture sizes. For different aperture sizes, the PDT obtains
+an adjustment range from 100 ms to 5.4 s. Through structure
+regulation and transmission regulation, the PDT can be opti-
+mized. Additional factors that affect the photocurrent are dis-
+cussed in Note S4, which includes light intensity, the concentra-
+tion of the bR suspension, and the concentration of the testing
+solution.
+To study the effect of the amount of CNTs on the PDT, sets of
+different ratios (bR: CNTs = 100:1, 50:1, 20:1, 10:1, and pure bR
+ﬁlm) were made under three different aperture sizes. The variable
+trend of the PDT with incremental CNTs/bR ratios at different
+Figure 2. The composition and characterization of CNTs/bR
+(A) Fabrication procedure of the CNTs/bR ﬁlm.
+(B and C) AFM image showing the top view of (B) the deposited bR ﬁlm and (C) the deposited CNTs/bR ﬁlm.
+(D and E) SEM image showing the top view of (D) the deposited bR ﬁlm and (E) the deposited CNTs/bR ﬁlm.
+(F) Test schematic of devices with different apertures.
+4
+Device 3, 100750, July 18, 2025
+Article
+ll
+OPEN ACCESS
+
+
+--- Page 6 ---
+aperture sizes is shown in Figure 3B. As expected, the PDT
+shows a downward trend with the incremental CNTs/bR ratios.
+In addition, the descending gradient shows different degrees
+of slowing, and the PDT eventually reaches a stable value. As
+shown in Figure 3C, the data conﬁrm the inﬂuence of CNTs
+and aperture on PDT.
+The inﬂuence of light intensity on PDT is depicted in Figure 3D.
+As the light intensity increases from 24 to 220 mW/cm2 (tested
+under a single micropore), the PDT of the device (represented
+by the red pillar) increases until saturation. As the light intensity
+increases, more bR molecules are excited to transport protons,
+leading to an increase in the proton quantity and prolongation of
+the equilibrium time. When the light intensity increases to a
+certain level, fewer bR molecules remain in an inactive state,
+leading to a slower increase in the number of transported pro-
+tons. Meanwhile, the incremental hybrid CNTs/bR ratio main-
+tains a shortening effect on the PDT under different light inten-
+sities, indicating that the regulation effect of CNTs on the PDT
+is relatively independent, repeatable, and stable.
+As discussed above, the PDT of the device can be adjusted by
+mixing CNTs or integrating micropore/nanopore. The processes
+of making device array and signal extraction are relatively com-
+plex, we designed two simulation experiments to demonstrate
+the dynamic vision perception function of the device in slow
+PDT and fast PDT mode.
+Simulated difference perception of the artiﬁcial retina
+To demonstrate the difference perception capability of the artiﬁ-
+cial retina, we designed a simulation experiment based on the
+fast PDT mode of the device. Shown in Figure 4A, after the mix-
+ing of CNTs, the PDT of the device can be reduced greatly, re-
+sulting in a narrow spike signal (83 ms) for signal sampling.
+This sampled signal is generated only when the intensity of
+incoming light changes signiﬁcantly. In our simulation experi-
+ment (see data and code availability for more detail), the device
+array fully receives the light from the video frames. When the
+change in light intensity perceived by any sensor in the array ex-
+ceeds a certain threshold, the device generates a pulse signal,
+and the corresponding frame will be extracted. When the ex-
+tracted dataset is used to train the machine learning algorithm,
+a good recognition model is acquired, showing the effectiveness
+of the adaptive frame extraction method.
+When analyzing dynamic information by traditional photo-
+electric sensors, the average frame extraction method is often
+adopted, which extracts a ﬁxed number of frames (B) with a
+ﬁxed interval (A/B) from a video with a total of A frames.
+Figure 3. Experiments to regulate the PDT
+(A) The generated photocurrent with/without CNTs at different aperture sizes. (Inset) An enlarged graph of the generated photocurrent with/without CNTs at
+centimeter aperture.
+(B and C) (B) The changing trend and (C) the speciﬁc value of PDT with different CNTs/bR ratios at different aperture sizes.
+(D) The effects of light intensity and CNTs/bR ratio on the PDT.
+Device 3, 100750, July 18, 2025
+5
+Article
+ll
+OPEN ACCESS
+
+
+--- Page 7 ---
+Because this approach does not adjust to the content of the
+video dynamically, it can result in data redundancy and exces-
+sive computing if B is too large, and misses important features
+if B is too small. In comparison, a dynamic vision sensor would
+only output signal based on changes between frames and
+avoid both of the shortcomings of average frame extraction.
+Simulated device arrays (see Note S5) are used to achieve
+adaptive capture of frames with dynamic changes as the
+photocurrent pulse is generated, which means the frame data
+will only be extracted when the changes between frames reach
+a certain threshold Vsth. The Vsth represents the degree of
+change in light intensity. This process of frame extraction is
+similar to that of a visual system to distinguish fast-changing
+objects, both of which are able to perceive moving objects
+against a static background.
+Grayscale and image segmentation processing are used in
+continuous video frames, and the gray value indicates the in-
+tensity of light in each segmented area of the image as
+perceived by the artiﬁcial retina unit. Each frame of the video
+is processed into a numeric matrix (grayscale values, i rows,
+and j columns; see more about this pooling process in Note
+S5). Then, as shown in Figure 4A, the ﬁrst frame is taken as
+the base frame, and the next frame is called the compare
+frame; ﬁnally, arithmetic judgment is performed on both by
+the operator H (base, compare):
+Hðbase; compareÞ = ½baseði;jÞ
+ ½compareði;jÞ; i; j = 0; 1; 2; 3.
+(Equation 2)
+Here, [base](i, j) represents row i, column j of the numeric matrix
+on the base frame. In this algorithm, the adaptive frame extrac-
+tion method is achieved by the CNTs/bR photocurrent response
+caused by the change in light intensity. When the change in illu-
+mination intensity is enough to cause the CNTs/bR artiﬁcial
+retina to generate a light response current greater than Vsth,
+the CNTs/bR artiﬁcial retina generates a signal. The addition of
+CNTs modiﬁes the width of this signal by shortening the PDT,
+so it can be used as a switch for spike signal sampling. This in-
+dicates that only the frames with large changes will be extracted.
+The magnitude of the changes depends on the moving speed of
+the car, and the proposed method implements the function of
+Figure 4. A deep learning recognition and prediction assisted by artiﬁcial retina
+(A) Schematic diagram of the data processing method based on the difference perception capability.
+(B) Recognition and prediction results (red box: the current position of the car; blue box: the next position of the car).
+6
+Device 3, 100750, July 18, 2025
+Article
+ll
+OPEN ACCESS
+
+
+--- Page 8 ---
+adaptive frame extraction. These extracted frames can pro-
+vide important features for the displacement prediction of the
+car. Minor position changes (e.g., background changes, small
+displacements of the white car) are not retained during data pro-
+cessing since the mapped matrix [output](i, j) is less than Vsth.
+Therefore, the adaptive frame extraction method avoids the in-
+formation redundancy caused by excessive frame extraction,
+while retaining sufﬁcient feature data to facilitate the prediction
+of subsequent neural networks (read more in Note S5).
+A composite model of YOLOv533 and long short-term mem-
+ory34 was used to identify and predict the current position and
+next position of the vehicle, achieving 0.965 mAP@0.5 (i.e., a
+meanaverageprecision of96.5%underanintersectionover union
+R 0.5). Test results can be found in Figures S6, S7, Note S5, and
+Video S1. Shown in Figure 4B, the red box represents the current
+position of the white car and was marked as ‘‘car,’’ and the blue
+box represents the predicted next position of the white car.
+Simulated visual persistence of the artiﬁcial retina
+Visual persistence is another property of dynamic vision. By
+introducing micropore/nanopore structures, the device can
+achieve a slow PDT mode, thus demonstrating visual persis-
+tence capability. Shown in Figure 5A, a moving point was
+observed by our artiﬁcial retina. The results demonstrate that a
+fading trajectory was captured. Figure 5B explains the mecha-
+nism of visual persistence acquired by the proposed CNTs/bR
+artiﬁcial retina array. When inducing light irradiates a certain
+unit (or multiple units) of the array and begins to move in a direc-
+tion, each newly illuminated unit will obtain an initial current value
+based on the photoelectric response of the device and begin to
+decay with the decay time t related to PDT. Based on the visual
+persistence of the artiﬁcial retina device, dynamic trajectory cap-
+ture can be realized. We conducted a simulation experiment on
+this, in which a device array (see Note S6) was assumed to cap-
+ture the trajectory of the ball. The current values matrix obtained
+from the device array can reﬂect the movement trajectory of ob-
+jects. For the convenience of observing the phenomenon, the
+current value is mapped to the grayscale intensity (more details
+on the simulation process and code can be found in Figure S8,
+Note S6, and Video S2).
+Figure 5C captured a partial frame of a video of a ball move-
+ment. At t0, the ball is ready to rebound when it encounters the
+ground; at t1, it rebounds in mid-air; at t2, it rebounds to its highest
+point; at t3, it falls to the ground and is ready for next bounce; at t4,
+it stops rebounding when it encounters the ground; at t5, the ball
+rolls forward. In a normal video, a bouncing ball would appear
+frozen in any individual frame. In comparison, our artiﬁcial retina
+can capture the relative changes between frames in any individual
+frame.Asshown inFigure5D,whentheball isinafastmotionstate
+(i.e., when a certain velocity threshold is exceeded), the visual
+persistence effect can be observed in the frame. This is because
+the movement speed of the ball exceeds the current attenuation
+speed, allowing for the ability to see residual images of varying
+depths in the frame, but not when the ball is stationary or moving
+at speeds below the velocity threshold. Furthermore, the dynamic
+image capture ability exhibited by the biomimetic retina can be
+adjusted through PDT since the ability reﬂects the motion trajec-
+tory of the ball over a period that is directly related to PDT.
+According to Equation 1, by combining CNTs and adjusting
+aperture size, the PDT can be shortened or extended to adjust
+the visual characteristics and dynamic image capture ability of
+the proposed artiﬁcial retina. As shown in Figure 5E, when the
+PDT extends, the decay time of the photoelectric current in-
+creases, and the following phenomena can be observed in the
+extracted frame: (1) the ball experienced at least one rebound
+motion before time t0; (2) the robotic arm starts moving around
+time t1; (3) t2 and t3 indicate that the robotic arm moves to the
+left, away from the video center; (4) compared to time t4 in Fig-
+ure 5C, it can be observed that the ball no longer rebounds; (5)
+the ball is moving horizontally to the right at time t5. After regu-
+lating the PDT, the ability to capture moving images is adjusted.
+Conclusions
+In this work, inspired by the structure of the biological retina, a
+CNTs/bR hybrid artiﬁcial retina is proposed. By utilizing CNTs
+and micropore/nanopore structures, functional biomimicry of
+signal regulation is achieved and an adjustable range of PDT
+(from 83 ms to 5.4 s) is obtained. Based on different device
+PDT modes, various dynamic feature-capturing functions
+were realized by the device. Utilizing the ultrafast PDT
+mode, a difference perception-based adaptive frame extrac-
+tion method was implemented, coupled with artiﬁcial intelli-
+gence algorithms, achieving high-quality recognition and pre-
+diction models (0.965 mAP@0.5). With the slow PDT mode,
+the motion states of objects were obtained, which cannot be
+acquired
+from
+traditional
+charge-coupled
+device
+image
+frames. This dynamic recognition capability can solve the
+problem of insufﬁcient information acquisition by traditional
+sensors; provide comprehensive, multi-dimensional visual in-
+formation for vision systems; and realize accurate dynamic
+target detection. Moreover, by integrating neural network al-
+gorithms, dynamic recognition can be applied in areas such
+as object trajectory tracking and prediction. This proposed
+CNTs/bR artiﬁcial retina is expected to facilitate more efﬁ-
+cient, natural, and integrated perceptual interaction ability in
+biomimetic intelligent applications.
+METHODS
+Preparation of the bR suspension
+Halobacterium salinarum 1.2368 was obtained from China Gen-
+eral Microbiological Culture Collection Center and cultivated
+in the basal medium (10 g/L yeast extract, 250 g/L NaCl, 20
+g/L MgSO4$7H2O, 20 g/L KCl, 3 g/L Na3-citrate, 0.05 g/L
+FeSO4$7H2O, 0.2 g/L MnSO4$7H2O, and 7.5 g/L casamino
+acids). Shake ﬂask studies for the production of bR were carried
+out at 37C and 200 rpm. Synthesis of purple membrane was as-
+sayed during cell growth by measuring the absorbance at
+560 nm.35,36 When the absorbance reached the maximum, the
+H. salinarum culture was harvested by centrifugation and bR
+was puriﬁed according to the methods reported previously.37
+The UV testing can be found in Note S4.
+Procedure process of the CNTs/bR ﬁlms
+The
+concentration
+of
+bR
+solution
+used
+in
+this
+work
+is
+0.904 mg/mL, and the CNT solution uses a metallic single-walled
+Device 3, 100750, July 18, 2025
+7
+Article
+ll
+OPEN ACCESS
+
+
+--- Page 9 ---
+CNT 70% solution (NanoIntegris IsoNanotubes-M 70%). Five
+small centrifuge tubes were ﬁlled with 100 mL bR solution
+numbered 1, 2, 3, 4, and 5 using a pipette, followed by 1, 2, 5,
+and 10 mL CNT solution in numbers 2, 3, 4, and 5 and mixed ul-
+trasonically for 40 min. The mixed solution (10 mL) was dropped
+on the ITO electrode, respectively (ultrasonic cleaning the base
+electrode ITO for 30 min using acetone, ethanol, and deionized
+water), and then heated with a heating table (45C, 1 h).
+Figure 5. Visual persistence-based dynamic trajectory capture
+(A) Dynamic capture based on visual persistence.
+(B) The mechanism of dynamic capture capability based on visual persistence properties.
+(C) Original video.
+(D) Visual persistence in the captured static frame demonstrating the ability to capture dynamic images.
+(E) Adjust the PDT to alter the dynamic image capture ability and display the motion trajectory.
+The attenuation coefﬁcient ta is positively correlated with t in equation of the PDT calculation. More details can be found in Note S6.
+8
+Device 3, 100750, July 18, 2025
+Article
+ll
+OPEN ACCESS
+
+
+--- Page 10 ---
+Simulations on adaptive difference perception and
+visual persistence
+Simulation details of adaptive difference perception and visual
+persistence can be found in Notes S5 and S6.
+RESOURCE AVAILABILITY
+Lead contact
+Requests for further information and resources should be directed to and will
+be fulﬁlled by the lead contact, Tian-Ling Ren (rentl@tsinghua.edu.cn).
+Material availability
+The materials can be produced following the procedures described in the
+methods section. Readers can contact the lead author about materials
+availability.
+Data and code availability
+All data of this study are available from the lead contact upon reasonable
+request. The relevant code is available from Zenodo (https://doi.org/10.
+5281/zenodo.14899502)
+and
+from
+GitHub
+(https://github.com/Beating-
+Heartshy/BR_1).
+ACKNOWLEDGMENTS
+This research was supported by the National Natural Science Foundation of
+China (grant nos. 62201026, U20A20168, and 51861145202), the National
+Key R&D Program (grant nos. 2022YFB3204100 and 2021YFC300220), and
+the Beijing Institute of Technology Lang Yue Program (grant no. LY2024-15).
+AUTHOR CONTRIBUTIONS
+Conceptualization, Y.-T.L., T.-L.R., Z.-J.L., and Y.-L.W.; methodology, Y.-T.L.,
+Z.-J.L., and J.L.; investigation, Y.-T.L., Y.-W.W., Y.-Z.C., and L.-Y.Z.; re-
+sources, T.-L.R., Y.-T.L., and Z.-J.L.; software, H.-Y.S. and J.L.; validation,
+J.L. and Y.-W.W.; writing – original draft, Y.-T.L. and J.L.; writing – review & ed-
+iting, Y.-T.L., Z.-J.L., and T.-L.R.; supervision, T.-L.R., Y.-L.W., Y.-T.L., and
+Z.-J.L.
+DECLARATION OF INTERESTS
+The authors declare no competing interests.
+SUPPLEMENTAL INFORMATION
+Supplemental information can be found online at https://doi.org/10.1016/j.
+device.2025.100750.
+Received: November 22, 2024
+Revised: January 16, 2025
+Accepted: February 25, 2025
+Published: March 24, 2025
+REFERENCES
+1. Goodale, M.A., and Haffenden, A. (1998). Frames of Reference for Percep-
+tion and Action in the Human Visual System. Neurosci. Biobehav. Rev. 22,
+161–172. https://doi.org/10.1016/S0149-7634(97)00007-9.
+2. Thorpe, S., Fize, D., and Marlot, C. (1996). Speed of processing in the hu-
+man
+visual
+system.
+Nature
+381,
+520–522.
+https://doi.org/10.1038/
+381520a0.
+3. Chua, P.Y., and Kwok, K. (2015). Using V1-based models for difference
+perception and chan ge detection. Proc. SPIE Int. Soc. Opt. Eng. 9394,
+93941N. https://doi.org/10.1117/12.2175690.
+4. Arikawa, K., Inokuma, K., and Eguchi, E. (1987). Pentachromatic visual
+system in a butterﬂy. Naturwissenschaften 74, 297–298. https://doi.org/
+10.1007/BF00366422.
+5. Bowen, R.W., Pola, J., and Matin, L. (1974). Visual persistence: Effects of
+ﬂash luminance, duration and energy. Vis. Res. 14, 295–303. https://doi.
+org/10.1016/0042-6989(74)90079-0.
+6. Qu, S., Sun, L., Zhang, S., Liu, J., Li, Y., Liu, J., and Xu, W. (2023). An ar-
+tiﬁcially-intelligent cornea with tactile sensation enables sensory expan-
+sion and interaction. Nat. Commun. 14, 7181. https://doi.org/10.1038/
+s41467-023-42240-3.
+7. Zhou, F., Zhou, Z., Chen, J., Choy, T.H., Wang, J., Zhang, N., Lin, Z., Yu,
+S., Kang, J., Wong, H.S.P., and Chai, Y. (2019). Optoelectronic resistive
+random access memory for neuromorphic vision sensors. Nat. Nanotech-
+nol. 14, 776–782. https://doi.org/10.1038/s41565-019-0501-3.
+8. Ren, M., and Xu, J. (2022). Quantum dot nanocomposites for ﬂexible
+retina. Nat. Nanotechnol. 17, 819–820. https://doi.org/10.1038/s41565-
+022-01190-5.
+9. Chung, W.G., Jang, J., Cui, G., Lee, S., Jeong, H., Kang, H., Seo, H., Kim,
+S., Kim, E., Lee, J., et al. (2024). Liquid-metal-based three-dimensional
+microelectrode arrays integrated with implantable ultrathin retinal pros-
+thesis for vision restoration. Nat. Nanotechnol. 19, 688–697. https://doi.
+org/10.1038/s41565-023-01587-w.
+10. Zhou, G., Li, J., Song, Q., Wang, L., Ren, Z., Sun, B., Hu, X., Wang, W., Xu,
+G., Chen, X., et al. (2023). Full hardware implementation of neuromorphic
+visual system based on multimodal optoelectronic resistive memory ar-
+rays for versatile image processing. Nat. Commun. 14, 8489. https://doi.
+org/10.1038/s41467-023-43944-2.
+11. Liu, Q., Yin, L., Zhao, C., Wu, Z., Wang, J., Yu, X., Wang, Z., Wei, W., Liu,
+Y., Mitrovic, I.Z., et al. (2022). All-in-one metal-oxide heterojunction artiﬁ-
+cial synapses for visual sensory and neuromorphic computing systems.
+Nano Energy 97, 107171. https://doi.org/10.1016/j.nanoen.2022.107171.
+12. Chen, C., Chen, Z., Liu, D., Zhang, X., Gao, C., Shan, L., Liu, L., Chen, T.,
+Guo, T., and Chen, H. (2024). Three-terminal quantum dot light-emitting
+synapse with active adaptive photoelectric outputs for complex image
+processing/parallel computing. Matter 7, 3891–3906. https://doi.org/10.
+1016/j.matt.2024.06.050.
+13. Tan, H., and van Dijken, S. (2023). Dynamic machine vision with retinomor-
+phic photomemristor-reservoir computing. Nat. Commun. 14, 2169.
+https://doi.org/10.1038/s41467-023-37886-y.
+14. Hampp, N. (2000). Bacteriorhodopsin as a Photochromic Retinal Protein
+for Optical Memories. Chem. Rev. 100, 1755–1776. https://doi.org/10.
+1021/cr980072x.
+15. Li, Y.-T., Tian, H., Zhao, H.-M., Jian, M.-Q., Lv, Y.-J., Tian, Y., Wang, Q.,
+Yang, Y., Xiang, Y., Zhang, Y., and Ren, T.-L. (2018). A novel cell-
+scale bio-nanogenerator based on electron–ion interaction for fast light
+power conversion. Nanoscale 10, 526–532. https://doi.org/10.1039/
+C7NR07671A.
+16. Bondar, A.-N., and Smith, J.C. (2017). Protonation–state-Coupled Confor-
+mational Dynamics in Reaction Mechanisms of Channel and Pump Rho-
+dopsins. Photochem. Photobiol. 93, 1336–1344. https://doi.org/10.1111/
+php.12790.
+17. Grossniklaus, H.E., Geisert, E.E., and Nickerson, J.M. (2015). Chapter
+Twenty-Two - Introduction to the Retina. Prog. Mol. Biol. Transl. Sci.
+134, 383–396.
+18. la Cour, M., and Ehinger, B. (2005). The Retina. Adv. Organ Biol. 10,
+195–252.
+19. Neutze, R., Pebay-Peyroula, E., Edman, K., Royant, A., Navarro, J., and
+Landau, E.M. (2002). Bacteriorhodopsin: a high-resolution structural
+view of vectorial proton transport. Biochim. Biophys. Acta. 1565,
+144–167. https://doi.org/10.1016/S0005-2736(02)00566-7.
+20. Kukushkin, A., Poltev, S., and Khuznetsova, S. (2002). Coupling of electron
+and
+proton
+transport
+in
+photosynthetic
+membranes:
+molecular
+Device 3, 100750, July 18, 2025
+9
+Article
+ll
+OPEN ACCESS
+
+
+--- Page 11 ---
+mechanism.
+Bioelectrochemistry
+56,
+9–12.
+https://doi.org/10.1016/
+S1567-5394(02)00021-X.
+21. Wang, W.M., LeMieux, M.C., Selvarasah, S., Dokmeci, M.R., and Bao, Z.
+(2009). Dip-Pen Nanolithography of Electrical Contacts to Single-Walled
+Carbon Nanotubes. ACS Nano 3, 3543–3551. https://doi.org/10.1021/
+nn900984w.
+22. Oesterhelt, D., and Stoeckenius, W. (1974). [69] Isolation of the cell mem-
+brane of Halobacterium halobium and its fractionation into red and purple
+membrane. Methods Enzymol. 31, 667–678.
+23. Hampp, N.A. (2000). Bacteriorhodopsin: mutating a biomaterial into an op-
+toelectronic material. Appl. Microbiol. Biotechnol. 53, 633–639. https://
+doi.org/10.1007/s002539900311.
+24. Knoblauch, C., Griep, M., and Friedrich, C. (2014). Recent Advances in the
+Field of Bionanotechnology: An Insight into Optoelectric Bacteriorho-
+dopsin, Quantum Dots, and Noble Metal Nanoclusters. Sensors 14,
+19731–19766. https://doi.org/10.3390/s141019731.
+25. Shen, Y., Saﬁnya, C.R., Liang, K.S., Ruppert, A.F., and Rothschild, K.J.
+(1993). Stabilization of the membrane protein bacteriorhodopsin to
+140C in two-dimensional ﬁlms. Nature 366, 48–50. https://doi.org/10.
+1038/366048a0.
+26. Li, H.J., Lu, W.G., Li, J.J., Bai, X.D., and Gu, C.Z. (2005). Multichannel Bal-
+listic Transport in Multiwall Carbon Nanotubes. Phys. Rev. Lett. 95,
+086601. https://doi.org/10.1103/PhysRevLett.95.086601.
+27. Bromley, K.M., Patil, A.J., Seddon, A.M., Booth, P., and Mann, S. (2007).
+Bio-Functional Mesolamellar Nanocomposites Based on Inorganic/
+Polymer Intercalation in Purple Membrane (Bacteriorhodopsin) Films.
+Adv. Mater. 19, 2433–2438. https://doi.org/10.1002/adma.200602250.
+28. Feng, W., Yuan, J., Gao, F., Weng, B., Hu, W., Lei, Y., Huang, X., Yang, L.,
+Shen, J., Xu, D., et al. (2020). Piezopotential-driven simulated electrocata-
+lytic nanosystem of ultrasmall MoC quantum dots encapsulated in ultra-
+thin N-doped graphene vesicles for superhigh H2 production from pure
+water. Nano Energy 75, 104990. https://doi.org/10.1016/j.nanoen.2020.
+104990.
+29. Lee, Y., and Geckeler, K.E. (2010). Carbon Nanotubes in the Biological
+Interphase: The Relevance of Noncovalence. Adv. Mater. 22, 4076–
+4083. https://doi.org/10.1002/adma.201000746.
+30. Li, L.S., Xu, T., Zhang, Y.J., Jin, J., Li, T.J., Zou, B., and Wang, J.-P. (2001).
+Photovoltaic characteristics of BR/p-silicon heterostructures using sur-
+face photovoltage spectroscopy. J. Vac. Sci. Technol. A 19, 1037–1041.
+https://doi.org/10.1116/1.1369785.
+31. Allam, N.K., Yen, C.-W., Near, R.D., and El-Sayed, M.A. (2011). Bacterio-
+rhodopsin/TiO2 nanotube arrays hybrid system for enhanced photoelec-
+trochemical water splitting. Energy Environ. Sci. 4, 2909–2914. https://
+doi.org/10.1039/C1EE01447A.
+32. Wu, M., Lin, F., and Song, Y. (2022). Engineered Bacteriorhodopsin Film
+with Oriented Patterns for the Improvement of the Photoelectric
+Response. Int. J. Mol. Sci. 23, 16079. https://doi.org/10.3390/ijms23
+2416079.
+33. Zhu, X., Lyu, S., Wang, X., and Zhao, Q. (2021). TPH-YOLOv5: Improved
+YOLOv5 Based on Transformer Prediction Head for Object Detection on
+Drone-captured Scenarios. In IEEE/CVF International Conference on
+Computer Vision Workshops (ICCVW), pp. 2778–2788.
+34. Graves, A. (2012). Supervised Sequence Labelling with Recurrent Neural
+Networks. Studies in Computational Intelligence.
+35. Seyedkarimi, M.-S., Aramvash, A., and Ramezani, R. (2015). High produc-
+tion of bacteriorhodopsin from wild type Halobacterium salinarum. Ex-
+tremophiles 19, 1021–1028. https://doi.org/10.1007/s00792-015-0778-6.
+36. Kahaki, F.A., Babaeipour, V., Memari, H.R., and Moﬁd, M.R. (2014). High
+Overexpression and Puriﬁcation of Optimized Bacterio-Opsin from Halo-
+bacterium Salinarum R1 in E. coli. Appl. Biochem. Biotechnol. 174,
+1558–1571. https://doi.org/10.1007/s12010-014-1137-2.
+37. Shiu, P.-J., Chen, H.-M., and Lee, C.-K. (2014). One-step puriﬁcation of
+delipidated Bacteriorhodopsin by aqueous-three-phase system from pur-
+ple membrane of Halobacterium. Food Bioprod. Process. 92, 113–119.
+https://doi.org/10.1016/j.fbp.2014.01.003.
+10
+Device 3, 100750, July 18, 2025
+Article
+ll
+OPEN ACCESS

@@ -1,6 +1,6 @@
 # AGENT_STATE.md — Persistent Memory
 
-*Last updated by: Antigravity agent | 2026-03-14T18:25*
+*Last updated by: Antigravity agent | 2026-03-23T13:55*
 
 This file is the agent's persistent memory. **Read it on every startup. Update it after every task.**
 
@@ -50,6 +50,27 @@ Capturing electrical signals from *P. eryngii* mycelium and transforming them in
 - **Lab Monitor:** ESP8266 + DHT22 sensors → MQTT → `http://172.16.1.80:3008` (deployed 2026-03-13)
 - **Production server:** 172.16.1.80 (all apps, Mosquitto MQTT broker)
 
+### Knowledge Graph (Experiment Viewer)
+The lab has a **knowledge graph** that maps relationships between all experiments, projects, hardware, papers, and applications. **Use it to understand context before starting work.**
+
+**API** (when Experiment Viewer is running on :8001):
+- `GET /api/graph` — full graph (160 nodes, 129 edges)
+- `GET /api/graph/node/EXP_005` — node + direct neighbors
+- `GET /api/graph/search?q=motor` — search by label
+- `GET /api/graph/path?from=EXP_014&to=EXP_005` — shortest path between nodes
+
+**When to use:**
+- Starting a new experiment → check related experiments and hardware
+- Debugging → find parent experiments and shared hardware
+- Writing summaries → always add metadata tags (see below)
+
+**⚠️ Keeping the graph connected — ALWAYS do these when creating/editing content:**
+- **Experiment summaries:** Include `**Project:**`, `**Parent:**`, `**Hardware:**` tags at the top
+- **New papers:** Place in the correct category folder under `papers_txt/` (not uncategorized)
+- **New apps:** Reference `EXP_XXX` in the app's INDEX.md entry
+- **New projects:** Add a `summary.md` and reference experiments with `[EXP_XXX]` links
+- **Category→Project map is in `server/main.py` `CATEGORY_PROJECT_MAP`** — update it if you add new paper categories
+
 ### Atopile (PCB Design)
 - **⚠️ PATH:** Always run with `PATH="/Users/michaelsedbon/.local/bin:$PATH"` — the old `/opt/anaconda3/bin/ato` (v0.2.x) causes stalling/hangs if found first
 - **Version:** v0.14.1005 installed via `uv tool install atopile`
@@ -74,6 +95,7 @@ Capturing electrical signals from *P. eryngii* mycelium and transforming them in
 - [x] Lab Monitor deployed — ESP8266 + DHT22 → MQTT → dashboard at :3008
 - [x] 16 applications built and documented
 - [x] Persistent memory system audited and improved (2026-03-14)
+- [x] Knowledge graph integrated into Experiment Viewer — 65 nodes, 37 edges, 3 query API endpoints (2026-03-23)
 
 ---
 

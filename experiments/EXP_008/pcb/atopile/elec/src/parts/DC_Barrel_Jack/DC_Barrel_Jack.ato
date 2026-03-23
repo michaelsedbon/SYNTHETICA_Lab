@@ -1,0 +1,14 @@
+#pragma experiment("TRAITS")
+import has_designator_prefix
+import has_part_picked
+import is_atomic_part
+
+component DC_Barrel_Jack_package:
+    trait is_atomic_part<manufacturer="Generic", partnumber="DC-005-A200", footprint="DC-IN-TH_DC-005-A200.kicad_mod", symbol="DC-005-A200.kicad_sym">
+    trait has_part_picked::by_supplier<supplier_id="lcsc", supplier_partno="C720557", manufacturer="Generic", partno="DC-005-A200">
+    trait has_designator_prefix<prefix="J">
+
+    # DC Barrel Jack typical pins: 1=Center(Power), 2=Outer(GND), 3=Switch(GND)
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2
+    signal p3 ~ pin 3

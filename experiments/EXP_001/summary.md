@@ -4,6 +4,8 @@
 **Status:** Active
 **Airtable Links:** MS_S_001
 **Project:** Bio Electronic Music
+**Parent:** —
+**Hardware:** ADC-24
 
 ---
 

@@ -8,6 +8,10 @@ description: Orient yourself in a new conversation — read persistent memory fi
 
 Run this at the start of a new conversation to load context about the lab.
 
+## 0. Read workspace manifest
+
+Read `.agent/MANIFEST.md`. This has the complete workspace structure, conventions, experiment rules, literature lookup procedures, and all available skills/workflows.
+
 ## 1. Read agent state
 
 Read `AGENT_STATE.md` in the workspace root. This tells you:

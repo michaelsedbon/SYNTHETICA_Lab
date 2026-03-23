@@ -1,6 +1,9 @@
 # EXP_006 — Fungal Electrophysiology Literature Review & Characterization
 
-## Status: Active
+**Status:** Active
+**Project:** Bio Electronic Music
+**Parent:** —
+**Hardware:** —
 
 ## Goal
 

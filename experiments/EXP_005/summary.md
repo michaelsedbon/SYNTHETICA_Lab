@@ -3,6 +3,9 @@
 **Start Date:** 2026-03-04
 **Status:** ⚠️ Blocked — fatal PCB defect, superseded by EXP_011/EXP_012
 **Airtable Links:** None
+**Project:** Cryptographic Beings
+**Parent:** —
+**Hardware:** DM542T, NEMA 23
 
 ---
 

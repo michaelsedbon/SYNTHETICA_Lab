@@ -1,5 +1,4 @@
 #pragma experiment("TRAITS")
-import has_datasheet
 import has_designator_prefix
 import has_part_picked
 import is_atomic_part
@@ -13,7 +12,6 @@ component Espressif_Systems_ESP32_S3_WROOM_1_N16R8_package:
     trait is_atomic_part<manufacturer="Espressif Systems", partnumber="ESP32-S3-WROOM-1-N16R8", footprint="WIRELM-SMD_ESP32-S3-WROOM-1.kicad_mod", symbol="ESP32-S3-WROOM-1(N16R8).kicad_sym", model="WIRELM-SMD_ESP32-S3-WROOM-1.STEP">
     trait has_part_picked::by_supplier<supplier_id="lcsc", supplier_partno="C2913202", manufacturer="Espressif Systems", partno="ESP32-S3-WROOM-1-N16R8">
     trait has_designator_prefix<prefix="U">
-    trait has_datasheet<datasheet="https://www.lcsc.com/datasheet/lcsc_datasheet_2411121101_Espressif-Systems-ESP32-S3-WROOM-1-N16R8_C2913202.pdf">
 
     # pins
     signal EN ~ pin 3

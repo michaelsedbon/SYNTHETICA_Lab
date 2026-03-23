@@ -14,6 +14,7 @@ module StimulationCircuit:
     signal vpos
     signal vneg
     signal gnd
+    signal dvdd
     signal sclk
     signal din
     signal sync
@@ -27,7 +28,7 @@ module StimulationCircuit:
     #          VREFH_VREFOUT, VREFL, nENABLE, A0, A1, IOVDD
     dac = new Texas_Instruments_DAC8564IAPWR_package
     vpos ~ dac.AVDD
-    vpos ~ dac.IOVDD
+    dvdd ~ dac.IOVDD
     vpos ~ dac.VREFH_VREFOUT
     gnd ~ dac.GND
     gnd ~ dac.VREFL
@@ -37,7 +38,7 @@ module StimulationCircuit:
     sclk ~ dac.SCLK
     din ~ dac.DIN
     sync ~ dac.nSYNC
-    vpos ~ dac.nENABLE
+    gnd ~ dac.nENABLE
 
     c_dac = new Samsung_Electro_Mechanics_CL05B104KO5NNNC_package
     vpos ~ c_dac.p1

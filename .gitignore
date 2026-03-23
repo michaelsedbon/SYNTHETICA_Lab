@@ -31,3 +31,4 @@ package-lock.json
 *.ipynb
 *.png
 applications/fab-planner/public/wasm/occt-import-js.wasm
+backups/
