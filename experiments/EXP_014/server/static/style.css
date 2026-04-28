@@ -504,9 +504,137 @@ body {
 .log-msg.err { color: var(--red); }
 .log-msg.info { color: var(--accent); }
 
+/* ── Relay Cards ── */
+.relays-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 16px;
+}
+
+.relay-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: border-color var(--transition);
+}
+.relay-card:hover { border-color: #555; }
+.relay-card .icon-card { color: var(--yellow); }
+
+.relay-channels {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px 14px;
+}
+
+.relay-channel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    background: var(--bg-base);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+.relay-channel-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.relay-channel-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--accent);
+    min-width: 26px;
+}
+
+.relay-channel-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.relay-c-connector {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--yellow);
+    font-weight: 600;
+}
+
+.relay-channel-function {
+    font-size: 10px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 220px;
+}
+
+/* iOS-ish toggle */
+.relay-toggle {
+    position: relative;
+    display: inline-block;
+    width: 46px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.relay-toggle-input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.relay-toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background: #333;
+    border-radius: 24px;
+    transition: background var(--transition);
+}
+
+.relay-toggle-slider::before {
+    content: "";
+    position: absolute;
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background: #ddd;
+    border-radius: 50%;
+    transition: transform var(--transition), background var(--transition);
+}
+
+.relay-toggle-input:checked + .relay-toggle-slider {
+    background: var(--green);
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.4);
+}
+
+.relay-toggle-input:checked + .relay-toggle-slider::before {
+    transform: translateX(22px);
+    background: #fff;
+}
+
+.relay-toggle-input:disabled + .relay-toggle-slider {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.btn-all-on, .btn-all-off { flex: 1; justify-content: center; }
+.btn-danger-soft { color: var(--red); }
+.btn-danger-soft:hover { background: var(--red); color: #fff; }
+
 /* ─── Responsive ─── */
 @media (max-width: 768px) {
     .app { grid-template-columns: 1fr; }
     .log-panel { display: none; }
-    .motors-grid { grid-template-columns: 1fr; }
+    .motors-grid, .relays-grid { grid-template-columns: 1fr; }
+    .relay-channel-function { max-width: 140px; }
 }

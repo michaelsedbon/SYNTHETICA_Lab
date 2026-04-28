@@ -1,0 +1,558 @@
+[
+  {
+    "wire_number": "W01",
+    "expected_wires": 3,
+    "detected_wires": 3,
+    "bridges": 0,
+    "discrepancy": false,
+    "pin_map": {
+      "1": [
+        1
+      ],
+      "2": [
+        2
+      ],
+      "3": [
+        3
+      ],
+      "4": []
+    },
+    "rig_calibration": {
+      "a": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "b": [
+        3,
+        4,
+        2,
+        1
+      ]
+    },
+    "scanned_at": "2026-04-27T10:54:05.692Z",
+    "notes": ""
+  },
+  {
+    "wire_number": "W02",
+    "expected_wires": 3,
+    "detected_wires": 3,
+    "bridges": 0,
+    "discrepancy": false,
+    "pin_map": {
+      "1": [
+        1
+      ],
+      "2": [
+        2
+      ],
+      "3": [
+        3
+      ],
+      "4": []
+    },
+    "rig_calibration": {
+      "a": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "b": [
+        3,
+        4,
+        2,
+        1
+      ]
+    },
+    "scanned_at": "2026-04-27T10:57:10.793Z",
+    "notes": ""
+  },
+  {
+    "wire_number": "W03",
+    "expected_wires": 4,
+    "detected_wires": 4,
+    "bridges": 0,
+    "discrepancy": false,
+    "pin_map": {
+      "1": [
+        1
+      ],
+      "2": [
+        2
+      ],
+      "3": [
+        3
+      ],
+      "4": [
+        4
+      ]
+    },
+    "rig_calibration": {
+      "a": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "b": [
+        3,
+        4,
+        2,
+        1
+      ]
+    },
+    "scanned_at": "2026-04-27T10:57:56.682Z",
+    "notes": ""
+  },
+  {
+    "wire_number": "W04",
+    "expected_wires": 4,
+    "detected_wires": 4,
+    "bridges": 0,
+    "discrepancy": false,
+    "pin_map": {
+      "1": [
+        1
+      ],
+      "2": [
+        2
+      ],
+      "3": [
+        3
+      ],
+      "4": [
+        4
+      ]
+    },
+    "rig_calibration": {
+      "a": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "b": [
+        3,
+        4,
+        2,
+        1
+      ]
+    },
+    "scanned_at": "2026-04-27T10:52:53.008Z",
+    "notes": ""
+  },
+  {
+    "wire_number": "W05",
+    "expected_wires": 3,
+    "detected_wires": 3,
+    "bridges": 0,
+    "discrepancy": false,
+    "pin_map": {
+      "1": [
+        1
+      ],
+      "2": [
+        2
+      ],
+      "3": [
+        3
+      ],
+      "4": []
+    },
+    "rig_calibration": {
+      "a": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "b": [
+        3,
+        4,
+        2,
+        1
+      ]
+    },
+    "scanned_at": "2026-04-27T11:00:37.073Z",
+    "notes": ""
+  },
+  {
+    "wire_number": "W06",
+    "expected_wires": 3,
+    "detected_wires": 3,
+    "bridges": 0,
+    "discrepancy": false,
+    "pin_map": {
+      "1": [
+        1
+      ],
+      "2": [
+        2
+      ],
+      "3": [
+        3
+      ],
+      "4": []
+    },
+    "rig_calibration": {
+      "a": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "b": [
+        3,
+        4,
+        2,
+        1
+      ]
+    },
+    "scanned_at": "2026-04-27T11:10:54.354Z",
+    "notes": ""
+  },
+  {
+    "wire_number": "W07",
+    "expected_wires": 4,
+    "detected_wires": 4,
+    "bridges": 0,
+    "discrepancy": false,
+    "pin_map": {
+      "1": [
+        1
+      ],
+      "2": [
+        2
+      ],
+      "3": [
+        3
+      ],
+      "4": [
+        4
+      ]
+    },
+    "rig_calibration": {
+      "a": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "b": [
+        3,
+        4,
+        2,
+        1
+      ]
+    },
+    "scanned_at": "2026-04-27T11:12:21.347Z",
+    "notes": ""
+  },
+  {
+    "wire_number": "W08",
+    "expected_wires": 4,
+    "detected_wires": 4,
+    "bridges": 0,
+    "discrepancy": false,
+    "pin_map": {
+      "1": [
+        1
+      ],
+      "2": [
+        2
+      ],
+      "3": [
+        3
+      ],
+      "4": [
+        4
+      ]
+    },
+    "rig_calibration": {
+      "a": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "b": [
+        3,
+        4,
+        2,
+        1
+      ]
+    },
+    "scanned_at": "2026-04-27T11:15:42.305Z",
+    "notes": ""
+  },
+  {
+    "wire_number": "W09",
+    "expected_wires": 2,
+    "detected_wires": 2,
+    "bridges": 0,
+    "discrepancy": false,
+    "pin_map": {
+      "1": [
+        1
+      ],
+      "2": [
+        2
+      ],
+      "3": [],
+      "4": []
+    },
+    "rig_calibration": {
+      "a": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "b": [
+        3,
+        4,
+        2,
+        1
+      ]
+    },
+    "scanned_at": "2026-04-27T11:17:29.282Z",
+    "notes": ""
+  },
+  {
+    "wire_number": "W10",
+    "expected_wires": 2,
+    "detected_wires": 2,
+    "bridges": 0,
+    "discrepancy": false,
+    "pin_map": {
+      "1": [
+        1
+      ],
+      "2": [
+        2
+      ],
+      "3": [],
+      "4": []
+    },
+    "rig_calibration": {
+      "a": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "b": [
+        3,
+        4,
+        2,
+        1
+      ]
+    },
+    "scanned_at": "2026-04-27T11:18:29.262Z",
+    "notes": ""
+  },
+  {
+    "wire_number": "W11",
+    "expected_wires": 2,
+    "detected_wires": 2,
+    "bridges": 0,
+    "discrepancy": false,
+    "pin_map": {
+      "1": [
+        1
+      ],
+      "2": [
+        2
+      ],
+      "3": [],
+      "4": []
+    },
+    "rig_calibration": {
+      "a": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "b": [
+        3,
+        4,
+        2,
+        1
+      ]
+    },
+    "scanned_at": "2026-04-27T11:19:16.043Z",
+    "notes": ""
+  },
+  {
+    "wire_number": "W12",
+    "expected_wires": 2,
+    "detected_wires": 2,
+    "bridges": 0,
+    "discrepancy": false,
+    "pin_map": {
+      "1": [
+        1
+      ],
+      "2": [
+        2
+      ],
+      "3": [],
+      "4": []
+    },
+    "rig_calibration": {
+      "a": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "b": [
+        3,
+        4,
+        2,
+        1
+      ]
+    },
+    "scanned_at": "2026-04-27T11:20:05.980Z",
+    "notes": ""
+  },
+  {
+    "wire_number": "W13",
+    "expected_wires": 4,
+    "detected_wires": 4,
+    "bridges": 0,
+    "discrepancy": false,
+    "pin_map": {
+      "1": [
+        1
+      ],
+      "2": [
+        2
+      ],
+      "3": [
+        3
+      ],
+      "4": [
+        4
+      ]
+    },
+    "rig_calibration": {
+      "a": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "b": [
+        3,
+        4,
+        2,
+        1
+      ]
+    },
+    "scanned_at": "2026-04-27T11:23:34.391Z",
+    "notes": ""
+  },
+  {
+    "wire_number": "W14",
+    "expected_wires": 2,
+    "detected_wires": 2,
+    "bridges": 0,
+    "discrepancy": false,
+    "pin_map": {
+      "1": [
+        1
+      ],
+      "2": [
+        2
+      ],
+      "3": [],
+      "4": []
+    },
+    "rig_calibration": {
+      "a": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "b": [
+        3,
+        4,
+        2,
+        1
+      ]
+    },
+    "scanned_at": "2026-04-27T11:24:24.899Z",
+    "notes": ""
+  },
+  {
+    "wire_number": "W15",
+    "expected_wires": 2,
+    "detected_wires": 2,
+    "bridges": 0,
+    "discrepancy": false,
+    "pin_map": {
+      "1": [
+        1
+      ],
+      "2": [
+        2
+      ],
+      "3": [],
+      "4": []
+    },
+    "rig_calibration": {
+      "a": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "b": [
+        3,
+        4,
+        2,
+        1
+      ]
+    },
+    "scanned_at": "2026-04-27T11:25:33.926Z",
+    "notes": ""
+  },
+  {
+    "wire_number": "W16",
+    "expected_wires": 2,
+    "detected_wires": 2,
+    "bridges": 0,
+    "discrepancy": false,
+    "pin_map": {
+      "1": [
+        1
+      ],
+      "2": [
+        2
+      ],
+      "3": [],
+      "4": []
+    },
+    "rig_calibration": {
+      "a": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "b": [
+        3,
+        4,
+        2,
+        1
+      ]
+    },
+    "scanned_at": "2026-04-27T11:26:15.269Z",
+    "notes": ""
+  }
+]

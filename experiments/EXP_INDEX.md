@@ -161,3 +161,107 @@ Testing blue-light dose-response electrophysiology of *P. eryngii* mycelium via 
 Full machine control platform for Cryptographic Beings. LattePanda Alpha 864s (Ubuntu 24.04) controlling DM556 stepper motors via Arduino Nanos over USB serial. FastAPI backend + web dashboard live at `http://172.16.1.128:8000`. REST API + WebSocket real-time status. SSH access via `ssh lp`.
 
 ---
+
+## EXP_015
+**Title:** Recording Setup Validation & Signal Processing Pipeline
+**Start Date:** 2026-04-01
+**Status:** Active
+**Airtable Links:** None
+**Folder:** `experiments/EXP_015/`
+**Project:** Bio Electronic Music
+**Parent:** EXP_010, EXP_013
+
+Hardware/software validation of the electrophysiology recording pipeline before biological experiments. Systematically validates baseline noise, LED artifact characterisation, and end-to-end signal chain with bridged mycelium. Includes Jupyter analysis pipeline for raw data display, filtering comparison, and peak detection.
+
+---
+
+## EXP_016
+**Title:** Parametric UV Light Holder — Rack & Pinion
+**Start Date:** 2026-04-02
+**Status:** Active
+**Airtable Links:** None
+**Folder:** `experiments/EXP_016/`
+**Project:** Bio Electronic Music
+**Parent:** EXP_015
+
+3D-printable adjustable UV light holder with rack-and-pinion mechanism for controlled light positioning over fungal samples. Designed parametrically in FreeCAD via MCP server (Claude-driven CAD). Exports STEP for Fusion 360 refinement. First experiment using Claude + FreeCAD for mechanical design.
+
+---
+
+## EXP_017
+**Title:** UV Light Stimulation of P. eryngii Mycelium
+**Start Date:** 2026-04-03
+**Status:** In progress
+**Airtable Links:** None
+**Folder:** `experiments/EXP_017/`
+**Project:** Bio Electronic Music
+**Parent:** EXP_015, EXP_016
+
+UV light stimulation of *P. eryngii* mycelium using the adjustable holder from EXP_016 at 80 mm distance. Only sample 2 is illuminated (best signal in EXP_015). Aims to characterise UV-evoked electrophysiological responses and compare with blue-light results.
+
+---
+
+## EXP_018
+**Title:** UV Light Stimulation of P. eryngii — Repeat
+**Start Date:** 2026-04-06
+**Status:** In progress
+**Airtable Links:** None
+**Folder:** `experiments/EXP_018/`
+**Project:** Bio Electronic Music
+**Parent:** EXP_017, EXP_015, EXP_016
+
+Repeat of EXP_017 UV stimulation. EXP_017 showed weak responses (best STA SNR 2.92, 0 Mishra spikes). Re-running same protocol on sample 2 at 80 mm to check reproducibility.
+
+---
+
+## EXP_019
+**Title:** Bioelectric Tissue Automata — Systematic Exploration
+**Start Date:** 2026-04-17
+**Status:** In progress
+**Airtable Links:** None
+**Folder:** `experiments/EXP_019/`
+**Project:** Computational Exploration
+**Parent:** None
+
+Wolfram-style systematic exploration of bioelectric tissue automata: a 2D lattice of cells with continuous membrane voltages coupled by voltage-dependent gap junctions. Sweeps the rule space (gap junction gating × ion channel dynamics) to classify emergent patterns.
+
+---
+
+## EXP_020
+**Title:** Controller Cable Continuity Mapping (W01–W16)
+**Start Date:** 2026-04-27
+**Status:** Complete (16/16 scanned 2026-04-27)
+**Airtable Links:** None
+**Folder:** `experiments/EXP_020/`
+**Project:** Cryptographic Beings
+**Parent:** EXP_004
+
+Per-cable continuity test for the 16 controller-internal cables W01–W16 (C ↔ L). All 16 cables validated 2026-04-27 — clean identity pinout, no discrepancies, no bridges (5×4-wire, 4×3-wire, 7×2-wire). Snapshots in `experiments/EXP_020/results/`.
+
+---
+
+## EXP_021
+**Title:** Front Panel Mapping — Cryptographic Beings Controller Box
+**Start Date:** 2026-04-28
+**Status:** In progress (scoping)
+**Airtable Links:** None
+**Folder:** `experiments/EXP_021/`
+**Project:** Cryptographic Beings
+**Parent:** EXP_020, EXP_004
+
+Maps the front-panel `C##` connectors of the controller box: connector type, active wire count, function, pin assignments, and internal landing point (driver / Arduino / PCB pad). Builds on validated W01–W16 cables (EXP_020) and known L↔p assignments. Method (Option A: open + multimeter trace / Option B: Arduino-rig probe / Option C: doc consolidation) pending user confirmation.
+
+---
+
+## EXP_022
+**Title:** Front-Panel 220 V Relay Controller (LIGHTS_1)
+**Start Date:** 2026-04-28
+**Status:** In progress (firmware + integration done; physical channel→C-connector validation pending)
+**Airtable Links:** None
+**Folder:** `experiments/EXP_022/`
+**Project:** Cryptographic Beings
+**Parent:** EXP_014, EXP_021
+
+Adds a new Arduino Uno R3 (`LIGHTS_1`, `/dev/lights_1`) to the LattePanda chain. The Uno drives 5 mechanical relays that switch 220 V to front-panel `C03/C05/C06/C07/C08`. Firmware (5-channel ASCII relay controller, EXP_022/firmware/lights_uno) compiled + flashed via arduino-cli on the LattePanda. Machine Controller (EXP_014) extended with `USBRelayConnection`, `/api/relays/...` endpoints, WebSocket status broadcasts, and a Relays tab UI. End-to-end click → relay verified.
+
+---

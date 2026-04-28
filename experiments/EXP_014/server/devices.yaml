@@ -22,6 +22,41 @@ usb_devices:
     parent_experiments: [EXP_005, EXP_011]
     notes: "DM556 driver, 24V, NEMA23, AccelStepper DRIVER mode, D4=Step D2=Dir D3=Sensor"
 
+relay_devices:
+  - id: LIGHTS_1
+    port: /dev/lights_1
+    type: relay_8ch
+    description: "Front-panel 220 V per-level light relays"
+    experiment: EXP_022
+    firmware: experiments/EXP_022/firmware/lights_uno/
+    num_channels: 8
+    channels:
+      - id: R1
+        pin: D2
+        function: "Per-Level 220V Light (channel→level TBD)"
+      - id: R2
+        pin: D3
+        function: "Per-Level 220V Light (channel→level TBD)"
+      - id: R3
+        pin: D4
+        function: "Per-Level 220V Light (channel→level TBD)"
+      - id: R4
+        pin: D5
+        function: "Per-Level 220V Light (channel→level TBD)"
+      - id: R5
+        pin: D6
+        function: "Per-Level 220V Light (channel→level TBD)"
+      - id: R6
+        pin: D7
+        function: "Per-Level 220V Light (channel→level TBD)"
+      - id: R7
+        pin: D8
+        function: "Per-Level 220V Light (channel→level TBD)"
+      - id: R8
+        pin: D9
+        function: "Per-Level 220V Light (channel→level TBD)"
+    notes: "Arduino Uno R3, USB ID 2341:0043, serial 85734323231351D0A1A0. udev gives /dev/lights_1. 8-ch active-LOW relay module on D2..D9. Per user 2026-04-28 all channels drive per-level 220V lights (was originally documented as 5ch with mixed functions). Channel→level/C-connector mapping pending validation by clicking each toggle and observing which load fires."
+
 camera_devices:
   - id: CAM_1
     host: 172.16.1.120

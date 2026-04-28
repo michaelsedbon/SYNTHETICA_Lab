@@ -6,6 +6,7 @@
 const API = window.location.origin;
 let ws = null;
 let motors = {};
+let relays = {};
 let sensorState = {};  // track previous sensor values per motor
 
 // Beep when sensor triggers (0 → 1)
@@ -39,9 +40,14 @@ function connectWebSocket() {
         const msg = JSON.parse(event.data);
         if (msg.type === 'status') {
             updateMotorStatus(msg.motor);
+        } else if (msg.type === 'relay_status') {
+            updateRelayStatus(msg.relay);
         } else if (msg.type === 'command') {
             log(`${msg.motor} ← ${msg.cmd}`, 'cmd');
             log(`${msg.motor} → ${msg.resp}`, 'resp');
+        } else if (msg.type === 'reconnect') {
+            log(`${msg.device} reconnected`, 'info');
+            loadDevices();
         }
     };
 
@@ -304,11 +310,104 @@ async function loadDevices() {
         }
     }
 
+    // Relays
+    const relayGrid = document.getElementById('relaysGrid');
+    const emptyRelay = document.getElementById('emptyStateRelay');
+    relayGrid.innerHTML = '';
+    let relayCount = 0;
+    for (const r of (res.relays || [])) {
+        relays[r.id] = r;
+        const card = createRelayCard(r);
+        relayGrid.appendChild(card);
+        relayCount++;
+    }
+
     emptyMotor.style.display = motorCount === 0 ? 'flex' : 'none';
     emptyCam.style.display = cameraCount === 0 ? 'flex' : 'none';
+    if (emptyRelay) emptyRelay.style.display = relayCount === 0 ? 'flex' : 'none';
 
     lucide.createIcons();
-    log(`Found ${motorCount} motor(s), ${cameraCount} camera(s)`, 'info');
+
+    // Pull initial relay states (so toggles reflect reality even before first WS broadcast)
+    for (const rid of Object.keys(relays)) {
+        if (relays[rid].connected) {
+            api('GET', `/api/relays/${rid}/status`).then(s => s && updateRelayStatus(s));
+        }
+    }
+
+    log(`Found ${motorCount} motor(s), ${cameraCount} camera(s), ${relayCount} relay device(s)`, 'info');
+}
+
+// ── Relay Card ─────────────────────────────────────────────────────────────
+
+function createRelayCard(relay) {
+    const tpl = document.getElementById('relayCardTemplate');
+    const card = tpl.content.cloneNode(true).querySelector('.relay-card');
+    card.dataset.relayId = relay.id;
+    card.querySelector('.relay-name').textContent = relay.id;
+    card.querySelector('.connection-dot').classList.toggle('connected', relay.connected);
+
+    const portLabel = card.querySelector('.port-label');
+    const expRef = relay.experiment ? ` · ${relay.experiment}` : '';
+    portLabel.textContent = `${relay.port}${expRef}`;
+
+    if (relay.description) {
+        const desc = card.querySelector('.card-description');
+        if (desc) desc.textContent = relay.description;
+    }
+
+    const channelsEl = card.querySelector('.relay-channels');
+    const numCh = relay.num_channels || 5;
+    const chTpl = document.getElementById('relayChannelTemplate');
+    const channelMeta = relay.channels || [];
+
+    for (let i = 1; i <= numCh; i++) {
+        const ch = chTpl.content.cloneNode(true).querySelector('.relay-channel');
+        ch.dataset.channel = String(i);
+        ch.querySelector('.relay-channel-id').textContent = `R${i}`;
+        const meta = channelMeta.find(c => c.id === `R${i}`) || {};
+        const cConn = ch.querySelector('.relay-c-connector');
+        const fnEl = ch.querySelector('.relay-channel-function');
+        // Tag line: prefer C-connector (front-panel mapping) if known, else fall back to MCU pin
+        cConn.textContent = meta.c_connector || meta.pin || '';
+        fnEl.textContent = meta.function || '';
+        const input = ch.querySelector('.relay-toggle-input');
+        input.disabled = !relay.connected;
+        input.addEventListener('change', async () => {
+            const action = input.checked ? 'on' : 'off';
+            log(`${relay.id} R${i} ← ${action.toUpperCase()}`, 'cmd');
+            const res = await api('POST', `/api/relays/${relay.id}/${i}/${action}`);
+            if (res && res.response) log(`${relay.id} → ${res.response}`, 'resp');
+        });
+        channelsEl.appendChild(ch);
+    }
+
+    card.querySelector('.btn-all-on').addEventListener('click', async () => {
+        log(`${relay.id} ← ALL ON`, 'cmd');
+        const res = await api('POST', `/api/relays/${relay.id}/all/on`);
+        if (res && res.response) log(`${relay.id} → ${res.response}`, 'resp');
+    });
+    card.querySelector('.btn-all-off').addEventListener('click', async () => {
+        log(`${relay.id} ← ALL OFF`, 'cmd');
+        const res = await api('POST', `/api/relays/${relay.id}/all/off`);
+        if (res && res.response) log(`${relay.id} → ${res.response}`, 'resp');
+    });
+
+    return card;
+}
+
+function updateRelayStatus(state) {
+    const card = document.querySelector(`.relay-card[data-relay-id="${state.id}"]`);
+    if (!card) return;
+    for (const [k, v] of Object.entries(state)) {
+        const m = /^r(\d+)$/i.exec(k);
+        if (!m) continue;
+        const idx = parseInt(m[1], 10);
+        const row = card.querySelector(`.relay-channel[data-channel="${idx}"] .relay-toggle-input`);
+        if (!row) continue;
+        const newChecked = !!parseInt(v, 10);
+        if (row.checked !== newChecked) row.checked = newChecked;
+    }
 }
 
 // ── Camera Card ────────────────────────────────────────────────────────────

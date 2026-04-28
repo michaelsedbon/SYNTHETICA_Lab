@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cable Continuity Mapper — EXP_020</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --surface: #12121a;
+            --surface2: #1a1a28;
+            --border: #2a2a3e;
+            --text: #e4e4ef;
+            --text-dim: #7a7a8e;
+            --accent: #6366f1;
+            --accent-glow: rgba(99, 102, 241, 0.3);
+            --green: #22c55e;
+            --green-glow: rgba(34, 197, 94, 0.3);
+            --red: #ef4444;
+            --red-glow: rgba(239, 68, 68, 0.3);
+            --orange: #f59e0b;
+            --radius: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .app {
+            position: relative;
+            z-index: 1;
+            max-width: 880px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header h1 {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), #a78bfa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            font-size: 12px;
+            color: var(--text-dim);
+            margin-top: 2px;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--text-dim);
+        }
+
+        .status-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--red);
+        }
+
+        .status-dot.connected {
+            background: var(--green);
+            box-shadow: 0 0 8px var(--green-glow);
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--surface2);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn:hover { border-color: var(--accent); box-shadow: 0 0 12px var(--accent-glow); }
+        .btn:disabled { opacity: 0.3; cursor: default; box-shadow: none; border-color: var(--border); }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), #818cf8);
+            border-color: transparent;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .btn-scan.active {
+            background: linear-gradient(135deg, var(--red), #f87171);
+            color: #fff;
+            border-color: transparent;
+            animation: pulse-glow 1.5s ease-in-out infinite;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--green), #4ade80);
+            border-color: transparent;
+            color: #052e16;
+            font-weight: 700;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 8px var(--red-glow); }
+            50%      { box-shadow: 0 0 20px var(--red-glow); }
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-dim);
+            margin-bottom: 14px;
+        }
+
+        select, input[type="number"], input[type="text"] {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            background: var(--surface2);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 12px;
+            width: 100%;
+        }
+
+        select:focus, input:focus { outline: none; border-color: var(--accent); }
+
+        .row { display: flex; gap: 12px; align-items: stretch; }
+        .row > * { flex: 1; }
+
+        .cable-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+            background: var(--surface2);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            font-family: 'JetBrains Mono', monospace;
+            margin-bottom: 14px;
+        }
+
+        .cable-header .wnum {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .cable-header .ends {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        .cable-header .arrow { color: var(--text-dim); }
+
+        .cable-header .end-pill {
+            padding: 4px 10px;
+            border-radius: 6px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+        }
+
+        .cable-header .end-pill.a { color: #fca5a5; border-color: #7f1d1d; }
+        .cable-header .end-pill.b { color: #93c5fd; border-color: #1e40af; }
+
+        .field-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-dim);
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        /* Wire grid: 4 channels for end-A driving */
+        .wire-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .wire {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            padding: 14px 6px;
+            border-radius: 10px;
+            border: 2px solid var(--border);
+            background: var(--surface2);
+            transition: all 0.25s ease;
+        }
+
+        .wire .label { font-size: 11px; color: var(--text-dim); font-weight: 600; }
+        .wire .pin { font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700; }
+        .wire .target { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-dim); min-height: 16px; text-align: center; }
+
+        .wire.connected {
+            border-color: var(--green);
+            background: rgba(34, 197, 94, 0.08);
+            box-shadow: 0 0 12px var(--green-glow);
+        }
+        .wire.connected .target { color: var(--green); font-weight: 600; }
+
+        .wire.bridge {
+            border-color: var(--orange);
+            background: rgba(245, 158, 11, 0.08);
+        }
+        .wire.bridge .target { color: var(--orange); font-weight: 600; }
+
+        /* Result summary */
+        .summary {
+            display: flex;
+            gap: 12px;
+            margin-top: 14px;
+        }
+
+        .stat {
+            flex: 1;
+            padding: 14px;
+            border-radius: 10px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .stat .num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 28px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .stat .lbl {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-dim);
+            margin-top: 6px;
+        }
+
+        .stat.match { border-color: var(--green); box-shadow: 0 0 10px var(--green-glow); }
+        .stat.match .num { color: var(--green); }
+        .stat.mismatch { border-color: var(--red); box-shadow: 0 0 10px var(--red-glow); }
+        .stat.mismatch .num { color: var(--red); }
+
+        .pin-map {
+            margin-top: 12px;
+            padding: 12px;
+            background: var(--surface2);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .pin-map .row-line {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .pin-map .a { color: #fca5a5; min-width: 50px; }
+        .pin-map .arr { color: var(--text-dim); }
+        .pin-map .b { color: #93c5fd; }
+        .pin-map .empty { color: var(--text-dim); }
+
+        /* Results table */
+        .results-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .result-row {
+            display: grid;
+            grid-template-columns: 60px 1fr 80px 80px auto;
+            gap: 10px;
+            align-items: center;
+            padding: 10px 12px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+        }
+
+        .result-row.discrepancy { border-color: var(--red); background: rgba(239, 68, 68, 0.05); }
+        .result-row.ok { border-color: var(--green); background: rgba(34, 197, 94, 0.05); }
+
+        .result-row .w { font-weight: 700; color: var(--accent); }
+        .result-row .ends { color: var(--text-dim); font-size: 12px; }
+        .result-row .count { text-align: center; }
+        .result-row .badge {
+            font-size: 10px;
+            text-transform: uppercase;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+        }
+        .result-row .badge.ok { background: rgba(34, 197, 94, 0.2); color: var(--green); }
+        .result-row .badge.bad { background: rgba(239, 68, 68, 0.2); color: var(--red); }
+        .result-row button {
+            background: none;
+            border: none;
+            color: var(--red);
+            cursor: pointer;
+            font-size: 14px;
+            opacity: 0.6;
+        }
+        .result-row button:hover { opacity: 1; }
+
+        .scan-banner {
+            padding: 12px 14px;
+            border-radius: 8px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            font-size: 13px;
+            color: var(--text-dim);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .scan-banner.scanning { border-color: var(--accent); color: var(--text); }
+        .scan-banner.match { border-color: var(--green); background: rgba(34, 197, 94, 0.08); color: var(--green); }
+        .scan-banner.mismatch { border-color: var(--red); background: rgba(239, 68, 68, 0.08); color: var(--red); }
+
+        .log {
+            max-height: 160px;
+            overflow-y: auto;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-dim);
+            line-height: 1.6;
+        }
+
+        .log .ok { color: var(--green); }
+        .log .err { color: var(--red); }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        details summary {
+            cursor: pointer;
+            color: var(--text-dim);
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+        details summary:hover { color: var(--text); }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .pin-info {
+            font-size: 11px;
+            color: var(--text-dim);
+            margin-top: 8px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .remap-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .remap-col h4 {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .remap-row {
+            display: grid;
+            grid-template-columns: 1fr auto 90px;
+            gap: 10px;
+            align-items: center;
+            padding: 6px 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+        }
+
+        .remap-row .lhs { color: var(--text); }
+        .remap-row .arr { color: var(--text-dim); }
+
+        .remap-row select {
+            padding: 6px 8px;
+            font-size: 13px;
+            width: 100%;
+        }
+
+        .calibration-warning {
+            margin-top: 10px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid var(--orange);
+            color: var(--orange);
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <div class="header">
+            <div>
+                <h1>Cable Continuity Mapper</h1>
+                <p>EXP_020 — W01–W16 controller cables (C ↔ L)</p>
+            </div>
+            <div class="header-right">
+                <div class="status">
+                    <span class="status-dot" id="statusDot"></span>
+                    <span id="statusText">Disconnected</span>
+                </div>
+                <button class="btn" id="btnConnect" onclick="toggleConnection()">Connect</button>
+            </div>
+        </div>
+
+        <!-- Cable selector -->
+        <div class="card">
+            <div class="card-title">Cable</div>
+            <div class="row">
+                <div style="flex:2;">
+                    <label class="field-label">Select cable to scan</label>
+                    <select id="cableSelect" onchange="onCableChange()"></select>
+                </div>
+                <div>
+                    <label class="field-label">Expected wires</label>
+                    <input type="number" id="expectedWires" min="0" max="4" value="4" onchange="updateSummary()">
+                </div>
+            </div>
+
+            <div class="cable-header" id="cableHeader" style="margin-top:14px;display:none;">
+                <div class="wnum" id="wireNumLabel">W01</div>
+                <div class="ends">
+                    <div class="end-pill a">End A</div>
+                    <span class="arrow">↔</span>
+                    <div class="end-pill b">End B</div>
+                </div>
+                <div style="margin-left:auto;color:var(--text-dim);font-size:12px;">Connector identity (C/L) will be derived later from the pin map</div>
+            </div>
+
+            <div class="pin-info">
+                End A pins drive D22–D25 (output) → End B pins read D38–D41 (input pullup)
+            </div>
+        </div>
+
+        <!-- Rig Calibration -->
+        <div class="card">
+            <details>
+                <summary style="margin:0;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-dim);">
+                    Rig Calibration — Arduino pin ↔ physical pin
+                </summary>
+                <div style="margin-top:14px;font-size:12px;color:var(--text-dim);margin-bottom:14px;">
+                    Tells the app which physical connector pin each alligator clip is on. Set once, persisted in browser. Default is identity (D22 → phys 1, D23 → phys 2, …).
+                </div>
+                <div class="remap-grid">
+                    <div class="remap-col">
+                        <h4>Side A — output (D22–D25)</h4>
+                        <div class="remap-row"><span class="lhs">D22</span><span class="arr">→ phys pin</span><select id="remapA0"></select></div>
+                        <div class="remap-row"><span class="lhs">D23</span><span class="arr">→ phys pin</span><select id="remapA1"></select></div>
+                        <div class="remap-row"><span class="lhs">D24</span><span class="arr">→ phys pin</span><select id="remapA2"></select></div>
+                        <div class="remap-row"><span class="lhs">D25</span><span class="arr">→ phys pin</span><select id="remapA3"></select></div>
+                    </div>
+                    <div class="remap-col">
+                        <h4>Side B — input (D38–D41)</h4>
+                        <div class="remap-row"><span class="lhs">D38</span><span class="arr">→ phys pin</span><select id="remapB0"></select></div>
+                        <div class="remap-row"><span class="lhs">D39</span><span class="arr">→ phys pin</span><select id="remapB1"></select></div>
+                        <div class="remap-row"><span class="lhs">D40</span><span class="arr">→ phys pin</span><select id="remapB2"></select></div>
+                        <div class="remap-row"><span class="lhs">D41</span><span class="arr">→ phys pin</span><select id="remapB3"></select></div>
+                    </div>
+                </div>
+                <div id="remapWarning" class="calibration-warning" style="display:none;"></div>
+                <div style="margin-top:14px;display:flex;gap:8px;">
+                    <button class="btn" onclick="resetRemap()">Reset to identity</button>
+                </div>
+            </details>
+        </div>
+
+        <!-- Live scan -->
+        <div class="card">
+            <div class="card-title">Continuity Scan</div>
+
+            <div class="scan-banner" id="scanBanner">
+                <span id="scanIcon">⚪</span>
+                <span id="scanMsg">Connect Arduino, plug cable into rig, then click Start</span>
+            </div>
+
+            <div class="actions">
+                <button class="btn btn-primary btn-scan" id="btnScan" onclick="toggleScan()" disabled>▶ Start Scan</button>
+                <button class="btn btn-success" id="btnConfirm" onclick="confirmAndSave()" disabled>✓ Confirm & Save</button>
+                <button class="btn" onclick="skipCable()">Skip →</button>
+            </div>
+
+            <div class="wire-grid" id="wireGrid">
+                <div class="wire" id="wire0">
+                    <div class="label">SIDE A</div>
+                    <div class="pin" id="pinLabel0">PIN 1</div>
+                    <div class="target" id="t0">—</div>
+                </div>
+                <div class="wire" id="wire1">
+                    <div class="label">SIDE A</div>
+                    <div class="pin" id="pinLabel1">PIN 2</div>
+                    <div class="target" id="t1">—</div>
+                </div>
+                <div class="wire" id="wire2">
+                    <div class="label">SIDE A</div>
+                    <div class="pin" id="pinLabel2">PIN 3</div>
+                    <div class="target" id="t2">—</div>
+                </div>
+                <div class="wire" id="wire3">
+                    <div class="label">SIDE A</div>
+                    <div class="pin" id="pinLabel3">PIN 4</div>
+                    <div class="target" id="t3">—</div>
+                </div>
+            </div>
+
+            <div class="summary">
+                <div class="stat" id="statExpected">
+                    <div class="num" id="numExpected">4</div>
+                    <div class="lbl">Expected</div>
+                </div>
+                <div class="stat" id="statDetected">
+                    <div class="num" id="numDetected">0</div>
+                    <div class="lbl">Detected</div>
+                </div>
+                <div class="stat">
+                    <div class="num" id="numBridges" style="color:var(--orange);">0</div>
+                    <div class="lbl">Bridges</div>
+                </div>
+            </div>
+
+            <div class="pin-map" id="pinMap">
+                <div class="empty">No scan yet</div>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div class="card">
+            <div class="toolbar">
+                <div class="card-title" style="margin:0;">Saved Results <span id="resultsCount" style="color:var(--text-dim);font-weight:400;"></span></div>
+                <div style="display:flex;gap:8px;">
+                    <button class="btn" onclick="exportJSON()">Export JSON</button>
+                    <button class="btn" onclick="exportCSV()">Export CSV</button>
+                </div>
+            </div>
+            <div class="results-list" id="resultsList">
+                <div style="text-align:center;color:var(--text-dim);font-size:13px;padding:14px;">No cables scanned yet</div>
+            </div>
+        </div>
+
+        <!-- Log -->
+        <div class="card">
+            <details>
+                <summary>Serial log</summary>
+                <div class="log" id="log"></div>
+                <div style="margin-top:8px;"><button class="btn" onclick="clearLog()">Clear log</button></div>
+            </details>
+        </div>
+    </div>
+
+    <script>
+        // ==================== State ====================
+        let port = null, reader = null, writer = null;
+        let readableStreamClosed = null, writableStreamClosed = null;
+        let connected = false, scanning = false, readBuffer = '';
+        let scanTimer = null;
+        let lastScanMap = null; // [[outIdx, [inIdx,...]], ...]
+        let cables = [];        // loaded from cables.csv (filtered to W01-W16)
+        let results = [];       // [{wire_number, expected_wires, detected_wires, discrepancy, pin_map, scanned_at, notes}]
+
+        // Rig calibration: aPhys[i] = physical pin number on side A that Arduino output index i (D22..D25) is clipped to.
+        //                  bPhys[i] = physical pin number on side B that Arduino input  index i (D38..D41) is clipped to.
+        let aPhys = [1, 2, 3, 4];
+        let bPhys = [1, 2, 3, 4];
+
+        // ==================== Init ====================
+        (async function init() {
+            loadRemap();
+            buildRemapUI();
+            await loadCables();
+            await loadResults();
+            populateCableDropdown();
+            renderResults();
+            onCableChange();
+        })();
+
+        // ==================== Remap ====================
+        const REMAP_KEY = 'exp020_remap';
+
+        function loadRemap() {
+            try {
+                const raw = localStorage.getItem(REMAP_KEY);
+                if (!raw) return;
+                const obj = JSON.parse(raw);
+                if (Array.isArray(obj.a) && obj.a.length === 4) aPhys = obj.a.map(Number);
+                if (Array.isArray(obj.b) && obj.b.length === 4) bPhys = obj.b.map(Number);
+            } catch (e) { /* ignore */ }
+        }
+
+        function saveRemap() {
+            localStorage.setItem(REMAP_KEY, JSON.stringify({ a: aPhys, b: bPhys }));
+        }
+
+        function buildRemapUI() {
+            for (let side of ['A', 'B']) {
+                for (let i = 0; i < 4; i++) {
+                    const sel = document.getElementById(`remap${side}${i}`);
+                    sel.innerHTML = '';
+                    for (let p = 1; p <= 4; p++) {
+                        const opt = document.createElement('option');
+                        opt.value = p;
+                        opt.textContent = `pin ${p}`;
+                        sel.appendChild(opt);
+                    }
+                    sel.value = (side === 'A' ? aPhys : bPhys)[i];
+                    sel.addEventListener('change', onRemapChange);
+                }
+            }
+            updateRemapWarning();
+            updateWireLabels();
+        }
+
+        function onRemapChange() {
+            for (let i = 0; i < 4; i++) {
+                aPhys[i] = parseInt(document.getElementById(`remapA${i}`).value, 10);
+                bPhys[i] = parseInt(document.getElementById(`remapB${i}`).value, 10);
+            }
+            saveRemap();
+            updateRemapWarning();
+            updateWireLabels();
+            // Re-render last scan if any
+            if (lastScanMap) renderScan(lastScanMap);
+            renderResults();
+        }
+
+        function resetRemap() {
+            aPhys = [1, 2, 3, 4];
+            bPhys = [1, 2, 3, 4];
+            saveRemap();
+            for (let i = 0; i < 4; i++) {
+                document.getElementById(`remapA${i}`).value = aPhys[i];
+                document.getElementById(`remapB${i}`).value = bPhys[i];
+            }
+            updateRemapWarning();
+            updateWireLabels();
+            if (lastScanMap) renderScan(lastScanMap);
+            renderResults();
+        }
+
+        function isPermutation(arr) {
+            const s = new Set(arr);
+            return s.size === 4 && [1, 2, 3, 4].every(p => s.has(p));
+        }
+
+        function updateRemapWarning() {
+            const w = document.getElementById('remapWarning');
+            const probs = [];
+            if (!isPermutation(aPhys)) probs.push(`Side A: ${aPhys.join(',')} is not a valid permutation of 1..4`);
+            if (!isPermutation(bPhys)) probs.push(`Side B: ${bPhys.join(',')} is not a valid permutation of 1..4`);
+            if (probs.length === 0) { w.style.display = 'none'; return; }
+            w.style.display = 'block';
+            w.textContent = '⚠ ' + probs.join(' · ');
+        }
+
+        function updateWireLabels() {
+            // Show wire boxes ordered by physical pin (1→2→3→4 left to right).
+            // Each box represents output index i (D22+i) but is labeled with its physical pin aPhys[i].
+            const grid = document.getElementById('wireGrid');
+            const order = [...Array(4).keys()].sort((i, j) => aPhys[i] - aPhys[j]);
+            // Reorder children
+            for (const i of order) {
+                grid.appendChild(document.getElementById(`wire${i}`));
+            }
+            for (let i = 0; i < 4; i++) {
+                document.getElementById(`pinLabel${i}`).textContent = `PIN ${aPhys[i]}`;
+            }
+        }
+
+        async function loadCables() {
+            try {
+                const resp = await fetch('/cables.csv');
+                if (!resp.ok) throw new Error('cables.csv fetch failed');
+                const txt = await resp.text();
+                cables = parseCSV(txt).filter(r => /^W(0[1-9]|1[0-6])$/.test(r.wire_number));
+                cables.sort((a, b) => a.wire_number.localeCompare(b.wire_number));
+                log(`Loaded ${cables.length} cables (W01–W16)`, 'ok');
+            } catch (e) {
+                log(`Failed to load cables.csv: ${e.message} — using built-in fallback`, 'err');
+                // Fallback: synthesize W01–W16 mappings to C01↔L01 etc.
+                cables = [];
+                for (let i = 1; i <= 16; i++) {
+                    const n = String(i).padStart(2, '0');
+                    cables.push({
+                        wire_number: `W${n}`,
+                        end_a_label: `W${n}-C${n}`,
+                        end_a_connector: `C${n}`,
+                        end_b_label: `W${n}-L${n}`,
+                        end_b_connector: `L${n}`,
+                        family: 'controller',
+                        notes: '',
+                        status: 'todo',
+                    });
+                }
+            }
+        }
+
+        async function loadResults() {
+            try {
+                const resp = await fetch('/api/results');
+                if (resp.ok) results = await resp.json();
+            } catch (e) { results = []; }
+        }
+
+        function parseCSV(txt) {
+            const lines = txt.trim().split(/\r?\n/);
+            const headers = lines[0].split(',');
+            const out = [];
+            for (let i = 1; i < lines.length; i++) {
+                const cols = splitCSVLine(lines[i]);
+                const row = {};
+                headers.forEach((h, j) => row[h.trim()] = (cols[j] || '').trim());
+                out.push(row);
+            }
+            return out;
+        }
+
+        function splitCSVLine(line) {
+            // simple CSV parser handling quoted fields
+            const out = [];
+            let cur = '', inQ = false;
+            for (const ch of line) {
+                if (ch === '"') { inQ = !inQ; continue; }
+                if (ch === ',' && !inQ) { out.push(cur); cur = ''; continue; }
+                cur += ch;
+            }
+            out.push(cur);
+            return out;
+        }
+
+        function populateCableDropdown() {
+            const sel = document.getElementById('cableSelect');
+            sel.innerHTML = '';
+            for (const c of cables) {
+                const done = results.find(r => r.wire_number === c.wire_number);
+                const mark = done ? (done.discrepancy ? '⚠' : '✓') : '○';
+                const opt = document.createElement('option');
+                opt.value = c.wire_number;
+                opt.textContent = `${mark}  ${c.wire_number}`;
+                sel.appendChild(opt);
+            }
+            // Auto-select first un-scanned
+            const firstTodo = cables.find(c => !results.find(r => r.wire_number === c.wire_number));
+            if (firstTodo) sel.value = firstTodo.wire_number;
+        }
+
+        function getCurrentCable() {
+            const wn = document.getElementById('cableSelect').value;
+            return cables.find(c => c.wire_number === wn);
+        }
+
+        function onCableChange() {
+            const c = getCurrentCable();
+            if (!c) return;
+            document.getElementById('cableHeader').style.display = 'flex';
+            document.getElementById('wireNumLabel').textContent = c.wire_number;
+
+            // Pre-fill expected from prior result if any
+            const prior = results.find(r => r.wire_number === c.wire_number);
+            if (prior) {
+                document.getElementById('expectedWires').value = prior.expected_wires;
+            }
+
+            // Reset scan display
+            resetScanDisplay();
+            updateSummary();
+        }
+
+        // ==================== Audio ====================
+        let audioCtx = null;
+        function playBeep(freq = 880, duration = 0.25, volume = 0.7) {
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.type = 'square';
+                osc.frequency.value = freq;
+                gain.gain.value = volume;
+                osc.start();
+                gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (e) { }
+        }
+        function playChord() { playBeep(880, 0.12, 0.8); setTimeout(() => playBeep(1320, 0.2, 0.8), 130); }
+        function playFail()  { playBeep(220, 0.4, 0.7); }
+
+        // ==================== Serial ====================
+        async function toggleConnection() {
+            if (connected) await disconnect();
+            else await connectSerial();
+        }
+
+        async function connectSerial() {
+            try {
+                if (!navigator.serial) {
+                    log('Web Serial not supported — use Chrome/Edge', 'err');
+                    return;
+                }
+                port = await navigator.serial.requestPort();
+                await port.open({ baudRate: 115200 });
+                const dec = new TextDecoderStream();
+                readableStreamClosed = port.readable.pipeTo(dec.writable);
+                reader = dec.readable.getReader();
+                const enc = new TextEncoderStream();
+                writableStreamClosed = enc.readable.pipeTo(port.writable);
+                writer = enc.writable.getWriter();
+                connected = true;
+                updateConnectionUI(true);
+                log('Connected to serial port', 'ok');
+                readLoop();
+            } catch (err) {
+                log(`Connection failed: ${err.message}`, 'err');
+            }
+        }
+
+        async function disconnect() {
+            if (scanning) stopScan();
+            connected = false;
+            try {
+                if (reader) { await reader.cancel(); reader = null; }
+                if (readableStreamClosed) { await readableStreamClosed.catch(() => {}); readableStreamClosed = null; }
+                if (writer) { await writer.close().catch(() => {}); writer = null; }
+                if (writableStreamClosed) { await writableStreamClosed.catch(() => {}); writableStreamClosed = null; }
+                if (port) { await port.close(); port = null; }
+            } catch (e) { port = null; }
+            updateConnectionUI(false);
+            log('Disconnected');
+        }
+
+        async function readLoop() {
+            try {
+                while (true) {
+                    const { value, done } = await reader.read();
+                    if (done) break;
+                    if (value) {
+                        readBuffer += value;
+                        const lines = readBuffer.split('\n');
+                        readBuffer = lines.pop();
+                        for (const l of lines) {
+                            const t = l.trim();
+                            if (t) handleMessage(t);
+                        }
+                    }
+                }
+            } catch (err) {
+                if (connected) { log(`Read error: ${err.message}`, 'err'); await disconnect(); }
+            }
+        }
+
+        async function sendCommand(obj) {
+            if (!writer) return;
+            const json = JSON.stringify(obj) + '\n';
+            await writer.write(json);
+        }
+
+        function handleMessage(msg) {
+            log(`← ${msg}`);
+            try {
+                const data = JSON.parse(msg);
+                switch (data.type) {
+                    case 'ready':
+                        log(`Firmware: ${data.msg}`, 'ok');
+                        setTimeout(() => sendCommand({ cmd: 'ping' }), 200);
+                        break;
+                    case 'pong':
+                        log(`Connected — ${data.out} outputs / ${data.in} inputs`, 'ok');
+                        document.getElementById('btnScan').disabled = false;
+                        break;
+                    case 'scan':
+                        handleScanResult(data);
+                        break;
+                    case 'error':
+                        log(`Firmware error: ${data.msg}`, 'err');
+                        break;
+                }
+            } catch (e) { /* non-JSON line, ignore */ }
+        }
+
+        // ==================== Scan ====================
+        function toggleScan() { if (scanning) stopScan(); else startScan(); }
+
+        function startScan() {
+            if (!connected) return;
+            scanning = true;
+            const btn = document.getElementById('btnScan');
+            btn.textContent = '■ Stop';
+            btn.classList.add('active');
+
+            const banner = document.getElementById('scanBanner');
+            banner.className = 'scan-banner scanning';
+            document.getElementById('scanIcon').textContent = '📡';
+            document.getElementById('scanMsg').textContent = `Scanning ${getCurrentCable().wire_number}...`;
+
+            doScan();
+            scanTimer = setInterval(doScan, 300);
+        }
+
+        function stopScan() {
+            scanning = false;
+            clearInterval(scanTimer);
+            scanTimer = null;
+            const btn = document.getElementById('btnScan');
+            btn.textContent = '▶ Start Scan';
+            btn.classList.remove('active');
+        }
+
+        function doScan() {
+            if (!scanning || !connected) return;
+            sendCommand({ cmd: 'scan' });
+        }
+
+        function handleScanResult(data) {
+            const map = data.map || [];
+            lastScanMap = map;
+            renderScan(map);
+
+            const detected = parseInt(document.getElementById('numDetected').textContent, 10) || 0;
+            const bridges = parseInt(document.getElementById('numBridges').textContent, 10) || 0;
+            const expected = parseInt(document.getElementById('expectedWires').value, 10) || 0;
+            const banner = document.getElementById('scanBanner');
+            const btnConfirm = document.getElementById('btnConfirm');
+
+            if (detected === 0) {
+                banner.className = 'scan-banner scanning';
+                document.getElementById('scanIcon').textContent = '📡';
+                document.getElementById('scanMsg').textContent = 'No continuity detected — check probes';
+                btnConfirm.disabled = true;
+            } else {
+                btnConfirm.disabled = false;
+                if (detected === expected && bridges === 0) {
+                    banner.className = 'scan-banner match';
+                    document.getElementById('scanIcon').textContent = '✓';
+                    document.getElementById('scanMsg').textContent = `Match — ${detected}/${expected} wires, clean pinout`;
+                } else if (detected === expected && bridges > 0) {
+                    banner.className = 'scan-banner mismatch';
+                    document.getElementById('scanIcon').textContent = '⚠';
+                    document.getElementById('scanMsg').textContent = `${detected}/${expected} wires but ${bridges} bridge(s) detected`;
+                } else {
+                    banner.className = 'scan-banner mismatch';
+                    document.getElementById('scanIcon').textContent = '⚠';
+                    document.getElementById('scanMsg').textContent = `Discrepancy: detected ${detected}, expected ${expected}`;
+                }
+            }
+        }
+
+        function renderScan(map) {
+            let detected = 0;
+            let bridges = 0;
+            for (const entry of map) {
+                const out = entry[0];
+                const ins = entry[1];
+                const wireEl = document.getElementById(`wire${out}`);
+                const tEl = document.getElementById(`t${out}`);
+
+                if (ins.length === 0) {
+                    wireEl.className = 'wire';
+                    tEl.textContent = '—';
+                } else if (ins.length === 1) {
+                    wireEl.className = 'wire connected';
+                    tEl.textContent = `→ pin ${bPhys[ins[0]]}`;
+                    detected++;
+                } else {
+                    wireEl.className = 'wire bridge';
+                    tEl.textContent = '→ ' + ins.map(i => `pin ${bPhys[i]}`).join('+');
+                    bridges++;
+                    detected++;
+                }
+            }
+            document.getElementById('numDetected').textContent = detected;
+            document.getElementById('numBridges').textContent = bridges;
+            renderPinMap(map);
+            updateSummary(detected);
+        }
+
+        function renderPinMap(map) {
+            const el = document.getElementById('pinMap');
+            // Sort by physical-A pin so the table reads 1,2,3,4 top to bottom regardless of Arduino index order
+            const sorted = [...map].sort((x, y) => aPhys[x[0]] - aPhys[y[0]]);
+            const lines = [];
+            for (const entry of sorted) {
+                const out = entry[0];
+                const ins = entry[1];
+                const aLabel = `A pin ${aPhys[out]}`;
+                const target = ins.length === 0
+                    ? '<span class="empty">(no continuity)</span>'
+                    : ins.map(i => `<span class="b">B pin ${bPhys[i]}</span>`).join(' + ');
+                lines.push(`<div class="row-line"><span class="a">${aLabel}</span><span class="arr">→</span>${target}</div>`);
+            }
+            el.innerHTML = lines.join('');
+        }
+
+        function resetScanDisplay() {
+            for (let i = 0; i < 4; i++) {
+                document.getElementById(`wire${i}`).className = 'wire';
+                document.getElementById(`t${i}`).textContent = '—';
+            }
+            document.getElementById('numDetected').textContent = '0';
+            document.getElementById('numBridges').textContent = '0';
+            document.getElementById('pinMap').innerHTML = '<div class="empty">No scan yet</div>';
+            const banner = document.getElementById('scanBanner');
+            banner.className = 'scan-banner';
+            document.getElementById('scanIcon').textContent = '⚪';
+            document.getElementById('scanMsg').textContent = 'Click Start to scan this cable';
+            document.getElementById('btnConfirm').disabled = true;
+            lastScanMap = null;
+        }
+
+        function updateSummary(detected) {
+            const expected = parseInt(document.getElementById('expectedWires').value, 10) || 0;
+            const det = (typeof detected === 'number')
+                ? detected
+                : parseInt(document.getElementById('numDetected').textContent, 10) || 0;
+            document.getElementById('numExpected').textContent = expected;
+            const statE = document.getElementById('statExpected');
+            const statD = document.getElementById('statDetected');
+            statE.className = 'stat';
+            statD.className = 'stat';
+            if (det > 0) {
+                if (det === expected) {
+                    statE.className = 'stat match';
+                    statD.className = 'stat match';
+                } else {
+                    statE.className = 'stat mismatch';
+                    statD.className = 'stat mismatch';
+                }
+            }
+        }
+
+        // ==================== Confirm & save ====================
+        async function confirmAndSave() {
+            const c = getCurrentCable();
+            if (!c || !lastScanMap) return;
+
+            const expected = parseInt(document.getElementById('expectedWires').value, 10) || 0;
+            const pinMap = {};
+            let detected = 0, bridges = 0;
+            for (const entry of lastScanMap) {
+                const out = entry[0];
+                const ins = entry[1];
+                // Key = physical pin number on side A; value = sorted physical pin numbers on side B
+                pinMap[String(aPhys[out])] = ins.map(i => bPhys[i]).sort((x, y) => x - y);
+                if (ins.length >= 1) detected++;
+                if (ins.length > 1) bridges++;
+            }
+
+            const discrepancy = (detected !== expected) || bridges > 0;
+
+            const record = {
+                wire_number: c.wire_number,
+                expected_wires: expected,
+                detected_wires: detected,
+                bridges,
+                discrepancy,
+                pin_map: pinMap, // {"<phys-A pin>": [<phys-B pins>...], ...}
+                rig_calibration: { a: [...aPhys], b: [...bPhys] },
+                scanned_at: new Date().toISOString(),
+                notes: '',
+            };
+
+            // Stop scan
+            if (scanning) stopScan();
+
+            // Save (POST to server; fall back to localStorage)
+            try {
+                const resp = await fetch('/api/save_result', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(record),
+                });
+                if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                const data = await resp.json();
+                log(`Saved ${c.wire_number} (${data.replaced ? 'updated' : 'new'})`, 'ok');
+            } catch (e) {
+                log(`Server save failed (${e.message}), keeping in memory`, 'err');
+            }
+
+            // Update local results
+            const idx = results.findIndex(r => r.wire_number === c.wire_number);
+            if (idx >= 0) results[idx] = record; else results.push(record);
+
+            playChord();
+            renderResults();
+            populateCableDropdown();
+            advanceToNextUnscanned();
+        }
+
+        function advanceToNextUnscanned() {
+            const next = cables.find(c => !results.find(r => r.wire_number === c.wire_number));
+            if (next) {
+                document.getElementById('cableSelect').value = next.wire_number;
+                onCableChange();
+            } else {
+                document.getElementById('scanMsg').textContent = '🎉 All cables scanned';
+            }
+        }
+
+        function skipCable() {
+            const sel = document.getElementById('cableSelect');
+            const idx = cables.findIndex(c => c.wire_number === sel.value);
+            const next = cables[(idx + 1) % cables.length];
+            sel.value = next.wire_number;
+            onCableChange();
+        }
+
+        // ==================== Results table ====================
+        function renderResults() {
+            const list = document.getElementById('resultsList');
+            const count = document.getElementById('resultsCount');
+            count.textContent = `(${results.length} / ${cables.length})`;
+            if (results.length === 0) {
+                list.innerHTML = '<div style="text-align:center;color:var(--text-dim);font-size:13px;padding:14px;">No cables scanned yet</div>';
+                return;
+            }
+            const sorted = [...results].sort((a, b) => a.wire_number.localeCompare(b.wire_number));
+            list.innerHTML = sorted.map(r => {
+                const cls = r.discrepancy ? 'discrepancy' : 'ok';
+                const badge = r.discrepancy
+                    ? `<span class="badge bad">${r.bridges > 0 ? 'Bridge' : 'Mismatch'}</span>`
+                    : `<span class="badge ok">OK</span>`;
+                const pinMapStr = Object.entries(r.pin_map)
+                    .filter(([, v]) => v.length > 0)
+                    .sort((x, y) => parseInt(x[0], 10) - parseInt(y[0], 10))
+                    .map(([k, v]) => `A${k}→${v.map(i => 'B' + i).join('+')}`)
+                    .join(' ');
+                return `
+                    <div class="result-row ${cls}">
+                        <span class="w">${r.wire_number}</span>
+                        <span><span class="ends">${pinMapStr || '(no continuity)'}</span></span>
+                        <span class="count">${r.detected_wires}/${r.expected_wires}</span>
+                        ${badge}
+                        <button onclick="deleteResult('${r.wire_number}')" title="Delete">✕</button>
+                    </div>`;
+            }).join('');
+        }
+
+        async function deleteResult(wn) {
+            if (!confirm(`Delete result for ${wn}?`)) return;
+            results = results.filter(r => r.wire_number !== wn);
+            // Best-effort: persist by sending the full list via individual save (or reset). We keep it client-only for delete.
+            try {
+                await fetch('/api/save_result', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ wire_number: wn, _deleted: true }),
+                });
+            } catch (e) { /* ignore */ }
+            renderResults();
+            populateCableDropdown();
+        }
+
+        // ==================== Export ====================
+        function exportJSON() {
+            const blob = new Blob([JSON.stringify(results, null, 2)], { type: 'application/json' });
+            downloadBlob(blob, `cable_continuity_${new Date().toISOString().slice(0, 10)}.json`);
+        }
+
+        function exportCSV() {
+            const headers = ['wire_number', 'expected_wires', 'detected_wires', 'bridges', 'discrepancy', 'pin_map', 'scanned_at'];
+            const rows = [headers.join(',')];
+            for (const r of results) {
+                const pmStr = Object.entries(r.pin_map)
+                    .filter(([, v]) => v.length > 0)
+                    .sort((x, y) => parseInt(x[0], 10) - parseInt(y[0], 10))
+                    .map(([k, v]) => `A${k}->B${v.join('+B')}`)
+                    .join(';');
+                rows.push([
+                    r.wire_number, r.expected_wires, r.detected_wires,
+                    r.bridges, r.discrepancy, `"${pmStr}"`, r.scanned_at
+                ].join(','));
+            }
+            const blob = new Blob([rows.join('\n')], { type: 'text/csv' });
+            downloadBlob(blob, `cable_continuity_${new Date().toISOString().slice(0, 10)}.csv`);
+        }
+
+        function downloadBlob(blob, name) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = name; a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // ==================== UI helpers ====================
+        function updateConnectionUI(isConnected) {
+            const dot = document.getElementById('statusDot');
+            const txt = document.getElementById('statusText');
+            const btn = document.getElementById('btnConnect');
+            if (isConnected) {
+                dot.classList.add('connected');
+                txt.textContent = 'Connected';
+                btn.textContent = 'Disconnect';
+            } else {
+                dot.classList.remove('connected');
+                txt.textContent = 'Disconnected';
+                btn.textContent = 'Connect';
+                document.getElementById('btnScan').disabled = true;
+            }
+        }
+
+        function log(msg, cls = '') {
+            const el = document.getElementById('log');
+            const div = document.createElement('div');
+            if (cls) div.className = cls;
+            const ts = new Date().toLocaleTimeString();
+            div.textContent = `[${ts}] ${msg}`;
+            el.appendChild(div);
+            el.scrollTop = el.scrollHeight;
+        }
+
+        function clearLog() { document.getElementById('log').innerHTML = ''; }
+    </script>
+</body>
+</html>

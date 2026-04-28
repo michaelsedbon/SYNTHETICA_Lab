@@ -70,10 +70,10 @@
 
             <!-- Relays Tab -->
             <div class="tab-content" id="tab-relays">
-                <div class="empty-state" style="display:flex;">
+                <div class="empty-state" id="emptyStateRelay" style="display:none;">
                     <i data-lucide="toggle-right" class="empty-icon"></i>
-                    <div class="title">Relay control coming soon</div>
-                    <div class="subtitle">Add relay devices to devices.yaml when ready</div>
+                    <div class="title">No relay controllers detected</div>
+                    <div class="subtitle">Add relay devices to devices.yaml or plug in the Uno</div>
                 </div>
                 <div class="relays-grid" id="relaysGrid"></div>
             </div>
@@ -236,6 +236,53 @@
             <div class="card-footer">
                 <span class="port-label">192.168.1.x</span>
             </div>
+        </div>
+    </template>
+
+    <!-- Relay Card Template -->
+    <template id="relayCardTemplate">
+        <div class="relay-card" data-relay-id="">
+            <div class="card-header">
+                <div class="card-title">
+                    <i data-lucide="toggle-right" class="icon-card"></i>
+                    <span class="relay-name">LIGHTS_1</span>
+                </div>
+                <div class="card-indicators">
+                    <span class="connection-dot" title="Connection status"></span>
+                </div>
+            </div>
+            <div class="card-description"></div>
+            <div class="card-body">
+                <div class="relay-channels"></div>
+                <div class="action-buttons" style="margin-top:12px;">
+                    <button class="btn btn-all-on" title="Turn all relays ON">
+                        <i data-lucide="power" class="icon-btn"></i> All ON
+                    </button>
+                    <button class="btn btn-all-off btn-danger-soft" title="Turn all relays OFF">
+                        <i data-lucide="power-off" class="icon-btn"></i> All OFF
+                    </button>
+                </div>
+            </div>
+            <div class="card-footer">
+                <span class="port-label">/dev/lights_1</span>
+            </div>
+        </div>
+    </template>
+
+    <!-- Relay Channel Row Template -->
+    <template id="relayChannelTemplate">
+        <div class="relay-channel" data-channel="">
+            <div class="relay-channel-info">
+                <span class="relay-channel-id">R1</span>
+                <span class="relay-channel-meta">
+                    <span class="relay-c-connector">C03</span>
+                    <span class="relay-channel-function">Function</span>
+                </span>
+            </div>
+            <label class="relay-toggle">
+                <input type="checkbox" class="relay-toggle-input">
+                <span class="relay-toggle-slider"></span>
+            </label>
         </div>
     </template>
 

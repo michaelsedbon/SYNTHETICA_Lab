@@ -115,6 +115,79 @@ class USBMotorConnection:
         self.connected = False
 
 
+# ── USB Serial Relay Connection ─────────────────────────────────────────────
+
+class USBRelayConnection:
+    """Manages serial connection to a USB-connected Arduino relay controller (EXP_022)."""
+
+    def __init__(self, port: str, device_id: str = "unknown", baudrate: int = 115200, info: dict = None):
+        self.port = port
+        self.device_id = device_id
+        self.baudrate = baudrate
+        self.ser: Optional[serial.Serial] = None
+        self.lock = asyncio.Lock()
+        self.connected = False
+        self.device_type = "usb_relay"
+        self.device_info = info or {}
+        self.num_channels: int = int(info.get("num_channels", 5)) if info else 5
+
+    def connect(self):
+        try:
+            self.ser = serial.Serial(self.port, self.baudrate, timeout=2)
+            time.sleep(2.2)  # wait for Uno auto-reset (DTR pulse on USB-CDC open)
+            for _ in range(5):
+                self.ser.read_all()
+                time.sleep(0.2)
+            self.ser.reset_input_buffer()
+            time.sleep(0.1)
+            self.ser.write(b"PING\n")
+            time.sleep(0.4)
+            resp = self.ser.read_all().decode("utf-8", errors="replace").strip()
+            if "PONG" not in resp:
+                logger.warning(f"No PONG from {self.port}, got: {repr(resp)}")
+                self.connected = False
+                self.ser.close()
+                return
+            self.ser.write(b"IDENTIFY\n")
+            time.sleep(0.3)
+            ident = self.ser.read_all().decode("utf-8", errors="replace").strip()
+            if ident.startswith("LIGHTS_") or ident.startswith("RELAY_"):
+                self.device_id = ident
+            self.connected = True
+            logger.info(f"Relay connected: {self.device_id} on {self.port}")
+        except Exception as e:
+            logger.error(f"Relay connect failed {self.port}: {e}")
+            self.connected = False
+
+    async def send(self, command: str) -> str:
+        async with self.lock:
+            if not self.ser or not self.connected:
+                return "ERROR:NOT_CONNECTED"
+            try:
+                self.ser.reset_input_buffer()
+                self.ser.write(f"{command}\n".encode())
+                await asyncio.sleep(0.15)
+                return self.ser.read_all().decode("utf-8", errors="replace").strip()
+            except serial.SerialException as e:
+                logger.error(f"Serial disconnected {self.port}: {e}")
+                self.connected = False
+                try:
+                    self.ser.close()
+                except Exception:
+                    pass
+                self.ser = None
+                return "ERROR:DISCONNECTED"
+            except Exception as e:
+                logger.error(f"Serial error on {self.port}: {e}")
+                self.connected = False
+                return f"ERROR:{e}"
+
+    def close(self):
+        if self.ser:
+            self.ser.close()
+        self.connected = False
+
+
 # ── ESP8266 HTTP Motor Connection ───────────────────────────────────────────
 
 class ESPMotorConnection:
@@ -202,6 +275,7 @@ class DeviceManager:
 
     def __init__(self):
         self.motors: dict[str, DeviceConnection] = {}
+        self.relays: dict[str, USBRelayConnection] = {}
         self.cameras: dict[str, dict] = {}
         self.ws_clients: list[WebSocket] = []
         self.config: dict = {}
@@ -213,6 +287,7 @@ class DeviceManager:
                 self.config = yaml.safe_load(f) or {}
             logger.info(f"Loaded config: {len(self.config.get('esp_devices', []))} ESP, "
                         f"{len(self.config.get('usb_devices', []))} USB, "
+                        f"{len(self.config.get('relay_devices', []))} relay, "
                         f"{len(self.config.get('camera_devices', []))} camera devices")
         else:
             logger.warning(f"No devices.yaml found at {config_path}")
@@ -221,6 +296,7 @@ class DeviceManager:
         """Connect to all devices defined in devices.yaml."""
         self.close_all()
         self.motors.clear()
+        self.relays.clear()
         self.load_config()
 
         # ── USB devices (config-driven, no vendor scan) ──
@@ -245,6 +321,19 @@ class DeviceManager:
             # Add even if not connected — the card will show as disconnected
             self.motors[device_id] = esp
 
+        # ── Relay devices ──
+        for relay_cfg in self.config.get("relay_devices", []):
+            port = relay_cfg["port"]
+            device_id = relay_cfg["id"]
+            info = {k: v for k, v in relay_cfg.items() if k not in ("id", "port")}
+            relay = USBRelayConnection(port, device_id=device_id, info=info)
+            if os.path.exists(port):
+                relay.connect()
+            else:
+                logger.warning(f"Relay port not found: {port} for {device_id}")
+            # Add even if not connected — card shows as disconnected
+            self.relays[device_id] = relay
+
         # ── Camera devices ──
         for cam_cfg in self.config.get("camera_devices", []):
             device_id = cam_cfg["id"]
@@ -268,6 +357,27 @@ class DeviceManager:
 
     def get_motor(self, motor_id: str) -> Optional[DeviceConnection]:
         return self.motors.get(motor_id)
+
+    def get_relay(self, relay_id: str) -> Optional["USBRelayConnection"]:
+        return self.relays.get(relay_id)
+
+    def list_relays(self) -> list[dict]:
+        out = []
+        for rid, r in self.relays.items():
+            entry = {
+                "id": rid,
+                "connected": r.connected,
+                "type": r.device_type,
+                "port": r.port,
+                "num_channels": r.num_channels,
+            }
+            if r.device_info:
+                entry["description"] = r.device_info.get("description", "")
+                entry["experiment"] = r.device_info.get("experiment", "")
+                if "channels" in r.device_info:
+                    entry["channels"] = r.device_info["channels"]
+            out.append(entry)
+        return out
 
     def list_motors(self) -> list[dict]:
         result = []
@@ -302,6 +412,8 @@ class DeviceManager:
     def close_all(self):
         for m in self.motors.values():
             m.close()
+        for r in self.relays.values():
+            r.close()
 
     def save_max_steps(self, motor_id: str, value: int):
         """Persist max_steps to devices.yaml."""
@@ -336,7 +448,7 @@ app.mount("/static", StaticFiles(directory=os.path.join(APP_DIR, "static")), nam
 
 
 async def status_poller():
-    """Poll motor status every second and broadcast to WebSocket clients."""
+    """Poll motor + relay status every second and broadcast to WebSocket clients."""
     while True:
         try:
             for mid, motor in list(mgr.motors.items()):
@@ -346,6 +458,13 @@ async def status_poller():
                     status["id"] = mid
                     status["type"] = motor.device_type
                     await mgr.broadcast({"type": "status", "motor": status})
+            for rid, relay in list(mgr.relays.items()):
+                if relay.connected and mgr.ws_clients:
+                    resp = await relay.send("STATUS")
+                    state = parse_status(resp, "usb_relay")
+                    state["id"] = rid
+                    state["type"] = relay.device_type
+                    await mgr.broadcast({"type": "relay_status", "relay": state})
             await asyncio.sleep(1)
         except asyncio.CancelledError:
             break
@@ -376,6 +495,17 @@ async def reconnection_poller():
                     if motor.connected:
                         logger.info(f"ESP reconnected: {mid}")
                         await mgr.broadcast({"type": "reconnect", "device": mid})
+
+            # ── Relay reconnect ──
+            for rid, relay in list(mgr.relays.items()):
+                if relay.connected:
+                    continue
+                if os.path.exists(relay.port):
+                    logger.info(f"Attempting Relay reconnect: {rid} on {relay.port}")
+                    relay.connect()
+                    if relay.connected:
+                        logger.info(f"Relay reconnected: {rid}")
+                        await mgr.broadcast({"type": "reconnect", "device": rid})
 
             # ── Camera reconnect ──
             for cid, cam in mgr.cameras.items():
@@ -433,7 +563,78 @@ async def index():
 
 @app.get("/api/devices")
 async def list_devices():
-    return {"motors": mgr.list_motors()}
+    return {"motors": mgr.list_motors(), "relays": mgr.list_relays()}
+
+# ── Relay endpoints ─────────────────────────────────────────────────────────
+
+@app.get("/api/relays")
+async def list_relay_devices():
+    return {"relays": mgr.list_relays()}
+
+@app.get("/api/relays/{relay_id}/status")
+async def relay_status(relay_id: str):
+    relay = mgr.get_relay(relay_id)
+    if not relay:
+        return {"error": "Relay not found"}
+    resp = await relay.send("STATUS")
+    state = parse_status(resp, "usb_relay")
+    state["id"] = relay_id
+    state["type"] = relay.device_type
+    state["raw"] = resp
+    return state
+
+@app.post("/api/relays/{relay_id}/all/{action}")
+async def relay_all_action(relay_id: str, action: str):
+    """Set all channels at once. action ∈ {on, off}.
+
+    Declared BEFORE the per-channel route below so FastAPI matches "all" as a
+    literal segment rather than trying to parse it as the int `channel`.
+    """
+    relay = mgr.get_relay(relay_id)
+    if not relay:
+        return {"error": "Relay not found"}
+    action_l = action.lower()
+    if action_l not in ("on", "off"):
+        return {"error": f"Unknown action: {action}"}
+    cmd = f"ALL {action_l.upper()}"
+    resp = await relay.send(cmd)
+    if relay.connected:
+        s_resp = await relay.send("STATUS")
+        state = parse_status(s_resp, "usb_relay")
+        state["id"] = relay_id
+        state["type"] = relay.device_type
+        await mgr.broadcast({"type": "relay_status", "relay": state})
+    return {"ok": True, "command": cmd, "response": resp}
+
+@app.post("/api/relays/{relay_id}/{channel}/{action}")
+async def relay_action(relay_id: str, channel: int, action: str):
+    """Set a single relay channel. action ∈ {on, off, toggle}."""
+    relay = mgr.get_relay(relay_id)
+    if not relay:
+        return {"error": "Relay not found"}
+    action_l = action.lower()
+    if action_l not in ("on", "off", "toggle"):
+        return {"error": f"Unknown action: {action}"}
+    if channel < 1 or channel > relay.num_channels:
+        return {"error": f"Channel out of range (1..{relay.num_channels})"}
+    cmd = f"{action_l.upper()} {channel}"
+    resp = await relay.send(cmd)
+    # Broadcast a fresh status so all UI clients update immediately
+    if relay.connected:
+        s_resp = await relay.send("STATUS")
+        state = parse_status(s_resp, "usb_relay")
+        state["id"] = relay_id
+        state["type"] = relay.device_type
+        await mgr.broadcast({"type": "relay_status", "relay": state})
+    return {"ok": True, "command": cmd, "response": resp}
+
+@app.post("/api/relays/{relay_id}/raw")
+async def relay_raw(relay_id: str, command: str):
+    relay = mgr.get_relay(relay_id)
+    if not relay:
+        return {"error": "Relay not found"}
+    resp = await relay.send(command)
+    return {"ok": True, "response": resp}
 
 @app.get("/api/motors/{motor_id}/status")
 async def motor_status(motor_id: str):
