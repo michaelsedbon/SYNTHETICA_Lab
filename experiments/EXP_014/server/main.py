@@ -51,6 +51,9 @@ class USBMotorConnection:
         self.device_type = "usb_serial"
         self.device_info = info or {}
         self.max_steps: Optional[int] = info.get("max_steps") if info else None
+        # Unsolicited firmware events ("EVENT SENSOR:1") accumulate here and are
+        # drained by status_poller after each STATUS poll.
+        self.event_buffer: list[str] = []
 
     def connect(self):
         try:
@@ -91,10 +94,32 @@ class USBMotorConnection:
             if not self.ser or not self.connected:
                 return "ERROR:NOT_CONNECTED"
             try:
-                self.ser.reset_input_buffer()
+                # Drain any pending unsolicited events that arrived since the
+                # last call. We deliberately do NOT reset_input_buffer — that
+                # would discard EVENT lines emitted between polls.
+                pending = self.ser.read_all().decode("utf-8", errors="replace")
+                for line in pending.splitlines():
+                    line = line.strip()
+                    if line.startswith("EVENT "):
+                        self.event_buffer.append(line)
+                    # other stale lines (e.g. lingering response) are dropped
+
                 self.ser.write(f"{command}\n".encode())
                 await asyncio.sleep(0.3)
-                return self.ser.read_all().decode("utf-8", errors="replace").strip()
+                raw = self.ser.read_all().decode("utf-8", errors="replace")
+
+                # Separate the command response from any events that arrived
+                # during the 0.3s response window.
+                response_lines: list[str] = []
+                for line in raw.splitlines():
+                    line = line.strip()
+                    if not line:
+                        continue
+                    if line.startswith("EVENT "):
+                        self.event_buffer.append(line)
+                    else:
+                        response_lines.append(line)
+                return "\n".join(response_lines)
             except serial.SerialException as e:
                 logger.error(f"Serial disconnected {self.port}: {e}")
                 self.connected = False
@@ -108,6 +133,11 @@ class USBMotorConnection:
                 logger.error(f"Serial error on {self.port}: {e}")
                 self.connected = False
                 return f"ERROR:{e}"
+
+    def drain_events(self) -> list[str]:
+        events = self.event_buffer
+        self.event_buffer = []
+        return events
 
     def close(self):
         if self.ser:
@@ -447,6 +477,35 @@ app = FastAPI(title="Machine Controller", lifespan=lifespan)
 app.mount("/static", StaticFiles(directory=os.path.join(APP_DIR, "static")), name="static")
 
 
+def parse_event(line: str) -> dict:
+    """Turn a firmware EVENT line into a partial status dict.
+
+    Examples:
+        "EVENT SENSOR:1"                          -> {"sensor": 1}
+        "EVENT CAL_DOWN_DONE POS:0 -> ..."        -> {"event": "CAL_DOWN_DONE", "pos": 0, "raw": "..."}
+        "EVENT CAL_DONE POS:5000"                 -> {"event": "CAL_DONE", "pos": 5000}
+    """
+    body = line[len("EVENT "):].strip() if line.startswith("EVENT ") else line.strip()
+    out: dict = {"raw": line}
+    parts = body.split()
+    if parts:
+        first = parts[0]
+        # Plain "WORD" with no colon is the event name (CAL_DONE, etc.).
+        # If it has a colon it's a key:value pair like SENSOR:1.
+        if ":" not in first:
+            out["event"] = first
+            parts = parts[1:]
+        for pair in parts:
+            if ":" not in pair:
+                continue
+            k, v = pair.split(":", 1)
+            try:
+                out[k.lower()] = int(v)
+            except ValueError:
+                out[k.lower()] = v
+    return out
+
+
 async def status_poller():
     """Poll motor + relay status every second and broadcast to WebSocket clients."""
     while True:
@@ -458,6 +517,16 @@ async def status_poller():
                     status["id"] = mid
                     status["type"] = motor.device_type
                     await mgr.broadcast({"type": "status", "motor": status})
+                    # Drain any firmware-pushed events captured during the call
+                    # and broadcast them as partial status updates so the UI
+                    # picks up edge changes immediately.
+                    if hasattr(motor, "drain_events"):
+                        for ev in motor.drain_events():
+                            partial = parse_event(ev)
+                            partial["id"] = mid
+                            partial["type"] = motor.device_type
+                            await mgr.broadcast({"type": "status", "motor": partial})
+                            logger.info(f"{mid} event: {ev}")
             for rid, relay in list(mgr.relays.items()):
                 if relay.connected and mgr.ws_clients:
                     resp = await relay.send("STATUS")

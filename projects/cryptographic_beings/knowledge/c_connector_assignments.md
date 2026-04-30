@@ -9,30 +9,31 @@ This is the mapping of the **front-panel `C##` connectors** of the controller bo
 C## (front panel)  ──W##──▶  L## (panel)  ──W(17–32)──▶  p## (installation)  ──W(33+)──▶  device
 ```
 
-EXP_020 validated W01–W16 with clean identity pinout, so each `C##` carries the same wires as its matching `L##` (subject to the labeling convention being physically correct — see open question below).
+> **Convention update (2026-04-29):** The numerical labels `W##`, `C##`, `L##`, `p##` are independent — `W01` does **not** necessarily plug into `C01` and `L01`. Each W cable's two endpoints are determined empirically. Below we record only confirmed mappings.
 
 ---
 
-## Known assignments
+## Confirmed mappings
 
-| C connector | Function | Cable | Wire count (EXP_020) | Cross-ref (via L↔p) | Confidence | Source |
-|-------------|----------|-------|----------------------|---------------------|------------|--------|
-| **C01** | _unknown_ | W01 | 3/4 | L1 → p5 → Level 3 220 V Gated Light | low | inferred |
-| **C02** | _unknown_ | W02 | 3/4 | L2 → p6 → Level 4 220 V Gated Light | low | inferred |
-| C03 | 220 V per-level light (level TBD) | W03 | 4/4 | L3 → p9 → 220 V (per old doc, channel→level pending) | medium (driven by LIGHTS_1) | user 2026-04-28 |
-| **C04** | _unknown_ | W04 | 4/4 | L4 → p3 → Level 1 220 V Gated Light | low | inferred |
-| C05 | 220 V per-level light (level TBD) | W05 | 3/4 | L5 → p4 → 220 V (per old doc, channel→level pending) | medium (driven by LIGHTS_1) | user 2026-04-28 |
-| C06 | 220 V per-level light (level TBD) | W06 | 3/4 | (old doc said Rotating LED — corrected; it's a 220 V light) | medium (driven by LIGHTS_1) | user 2026-04-28 |
-| C07 | 220 V per-level light (level TBD) | W07 | 4/4 | (old doc said Rotating LED — corrected; it's a 220 V light) | medium (driven by LIGHTS_1) | user 2026-04-28 |
-| C08 | 220 V per-level light (level TBD) | W08 | 4/4 | (old doc said 24 V input — corrected; it's a 220 V light) | medium (driven by LIGHTS_1) | user 2026-04-28 |
-| C09 | _unknown_ | W09 | 2/4 | L9 → p14 → Limit switch lin. actuator bottom rotation | low | inferred |
-| C10 | _unknown_ | W10 | 2/4 | L10 → p1 → Limit switch lin. actuator bottom | low | inferred |
-| C11 | _unknown_ | W11 | 2/4 | L11 → p15 → Limit switch lin. actuator top | low | inferred |
-| C12 | _unknown_ | W12 | 2/4 | L12 → p16 → Limit switch lin. actuator top rotation | low | inferred |
-| C13 | _unknown_ | W13 | 4/4 | L13 → p7 → Linear actuator bottom rotation | low | inferred |
-| C14 | _unknown_ | W14 | 2/4 | L14 → p8 → Linear actuator Top | low | inferred |
-| C15 | _unknown_ | W15 | 2/4 | L15 → p12 → Linear actuator Top rotation | low | inferred |
-| C16 | _unknown_ | W16 | 2/4 | L16 → p2 → Linear actuator bottom | low | inferred |
+| C connector | Cable | L connector | Bridge | p connector | Drives | Source / date |
+|-------------|-------|-------------|--------|-------------|--------|----------------|
+| **C15** | W03 (4 wires) | **L16** | W32 | p2 | **MOTOR_1 linear actuator** (DM556 STEP/DIR) | user 2026-04-29 |
+| **C16** | W01 (3 wires) | **L10** | W26 | p1 | **MOTOR_1 limit sensor** (LJ8A3-2-Z/BX, NPN-NO) | user 2026-04-30 |
+
+Both confirmed entries are for **MOTOR_1** (the bottom linear actuator). Together they form the complete signal path for that motor:
+
+```
+Arduino Nano (D2/D4 STEP/DIR) ── C15 ── W03 ── L16 ── W32 ── p2 ── DM556 ── motor coils
+Arduino Nano (D3 INPUT_PULLUP) ── C16 ── W01 ── L10 ── W26 ── p1 ── LJ8A3 limit sensor
+```
+
+## TBD
+
+| C connector | Status |
+|-------------|--------|
+| C01, C02, C03, C04, C05, C06, C07, C08, C09, C10, C11, C12, C13, C14 | Unknown — to be established as motors / sensors / lights are wired in |
+
+The five 220 V SSR-driven channels exposed by `LIGHTS_1` (per-level lights) are also assigned to specific C connectors at the front panel, but **which** C labels those are has not yet been validated by clicking each toggle and observing which level's light fires. Those assignments will be added as a third row group when confirmed.
 
 ---
 
@@ -48,9 +49,9 @@ This **resolves the previously flagged conflicts** for `C06`, `C07`, `C08`: the 
 
 1. ~~C06 / C07 documented as Rotating LED~~ — resolved: 220 V light.
 2. ~~C08 documented as 24 V input~~ — resolved: 220 V light.
-3. **Channel → level → `C##` mapping** — pending validation by clicking each `LIGHTS_1` toggle and observing which physical light fires.
-4. **Confirm C↔L physical numbering** — `cables.csv` says `W01` connects `C01` ↔ `L01`. EXP_020 validated each `W##` electrically but didn't verify that the labels physically match the front-panel order.
-5. **Other C-connector functions** — C01/C02/C04 + C09–C16 are still inferred from the L↔p chain only; not directly observed at the front-panel.
+3. ~~`W##↔C##↔L##` numerical match assumption~~ — resolved 2026-04-29: explicit user clarification that the numbering is independent. Mappings are now empirical only.
+4. **`LIGHTS_1` channel → C connector mapping** — pending validation by clicking each toggle and observing which level's light fires.
+5. **Other C-connector functions** — C01–C14 still mostly unknown. They'll be filled in as more motors / sensors / loads are wired and identified.
 6. **`p_connector_assignments.md` correction needed** — entries for L6/L7/L8 (Rotating LED rails and 24 V input) are inconsistent with the front-panel reality and should be revisited.
 
 ## Method note

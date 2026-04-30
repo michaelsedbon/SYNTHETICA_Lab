@@ -1,0 +1,77 @@
+# Per-motor build-time configuration for motor_nano firmware.
+#
+# Used by `build.py` to generate `src/config.h` before flashing. Add a new
+# top-level entry for every Nano you want to flash with this firmware. The
+# `device_id` here becomes DEVICE_ID at compile time and is what the firmware
+# returns to `IDENTIFY` over serial.
+#
+# Convention: device IDs match the udev symlinks (`/dev/motor_<n>`).
+
+MOTOR_1:
+  description: "Cryptographic Beings — Bottom Linear Actuator (vertical)"
+  port: /dev/motor_1
+  max_steps: 53000        # full travel from sensor (pos 0) to top
+  pin_step: 4             # DM556 PUL+
+  pin_dir: 2              # DM556 DIR+
+  pin_sensor: 3           # LJ8A3-2-Z/BX limit switch (INT1, NPN-NO, active LOW)
+  home_dir: -1            # negative steps = "down" toward the sensor
+  cal_enabled: true       # CALIBRATE command honoured by the firmware
+  cal_speed_down: 400     # sps — slow & cautious search
+  cal_speed_up: 1500      # sps — fast climb after sensor trip
+  cal_chunk_steps: 1000   # chunked move size during the down search
+  cal_pause_ms: 2000      # pause at sensor AND at top before moving to mid
+  default_speed: 2000     # sps — speed used by normal MOVE / MOVETO commands
+  default_accel: 1000     # acceleration during normal moves
+
+MOTOR_2:
+  description: "Cryptographic Beings — Bottom Linear Actuator ROTATION"
+  port: /dev/motor_2
+  cal_enabled: true       # calibration enabled now that the rotation is mechanically verified
+  max_steps: 5700         # rotation range (much smaller than the linear axis)
+  pin_step: 4
+  pin_dir: 2
+  pin_sensor: 3
+  home_dir: -1            # negative steps = toward limit switch (matches MOTOR_1 convention)
+  cal_speed_down: 600     # baseline speed during the chunked search
+  cal_speed_up: 600       # climb back up at the same speed for symmetry
+  cal_chunk_steps: 150    # search increment — small chunks for the slow rotation axis
+  cal_pause_ms: 2000      # 2 s pauses at sensor and at the top
+  default_speed: 600      # baseline speed for normal MOVE / MOVETO commands
+  default_accel: 100      # gentle acceleration appropriate for the geared rotation
+
+MOTOR_3:
+  description: "Cryptographic Beings — Top Linear Actuator (vertical)"
+  port: /dev/motor_3
+  # Inherit MOTOR_1's tuning. Calibration starts disabled until the wiring +
+  # mechanical setup is hand-validated; flip cal_enabled to true and re-flash
+  # once that's done.
+  cal_enabled: false
+  max_steps: 53000
+  pin_step: 4
+  pin_dir: 2
+  pin_sensor: 3
+  home_dir: -1
+  cal_speed_down: 400
+  cal_speed_up: 1500
+  cal_chunk_steps: 1000
+  cal_pause_ms: 2000
+  default_speed: 2000
+  default_accel: 1000
+
+MOTOR_4:
+  description: "Cryptographic Beings — Top Linear Actuator ROTATION"
+  port: /dev/motor_4
+  # Inherit MOTOR_2's tuning. Same caution as MOTOR_3 — cal disabled until
+  # mechanical setup is verified.
+  cal_enabled: false
+  max_steps: 5700
+  pin_step: 4
+  pin_dir: 2
+  pin_sensor: 3
+  home_dir: -1
+  cal_speed_down: 600
+  cal_speed_up: 600
+  cal_chunk_steps: 150
+  cal_pause_ms: 2000
+  default_speed: 600
+  default_accel: 100

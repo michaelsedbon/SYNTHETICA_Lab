@@ -20,7 +20,31 @@ usb_devices:
     experiment: EXP_014
     firmware: experiments/EXP_014/firmware/motor_nano/
     parent_experiments: [EXP_005, EXP_011]
-    notes: "DM556 driver, 24V, NEMA23, AccelStepper DRIVER mode, D4=Step D2=Dir D3=Sensor"
+    notes: "DM556 driver, 24V, NEMA23, AccelStepper DRIVER mode, D4=Step D2=Dir D3=Sensor. Front-panel: drive on C15 (W03), sensor on C16 (W01)."
+
+  - id: MOTOR_2
+    port: /dev/motor_2
+    type: dm556_stepper
+    description: "Bottom Linear Actuator ROTATION (DM556)"
+    experiment: EXP_014
+    firmware: experiments/EXP_014/firmware/motor_nano/
+    notes: "Drives the bottom rotation axis via p7 (M12, 4-wire). Calibration enabled. Limit sensor: p14 (M8, 3-wire) via L9."
+
+  - id: MOTOR_3
+    port: /dev/motor_3
+    type: dm556_stepper
+    description: "Top Linear Actuator (DM556)"
+    experiment: EXP_014
+    firmware: experiments/EXP_014/firmware/motor_nano/
+    notes: "Drives top vertical actuator via p8 (M12, 4-wire) → L14. Limit sensor: p15 (M8, 3-wire) → L11. Calibration disabled in firmware until mechanical setup is verified by hand."
+
+  - id: MOTOR_4
+    port: /dev/motor_4
+    type: dm556_stepper
+    description: "Top Linear Actuator ROTATION (DM556)"
+    experiment: EXP_014
+    firmware: experiments/EXP_014/firmware/motor_nano/
+    notes: "Drives top rotation axis via p12 (M12, 4-wire) → L15. Limit sensor: p16 (M8, 3-wire) → L12. Calibration disabled in firmware until mechanical setup is verified by hand."
 
 relay_devices:
   - id: LIGHTS_1
@@ -55,7 +79,33 @@ relay_devices:
       - id: R8
         pin: D9
         function: "Per-Level 220V Light (channel→level TBD)"
-    notes: "Arduino Uno R3, USB ID 2341:0043, serial 85734323231351D0A1A0. udev gives /dev/lights_1. 8-ch active-LOW relay module on D2..D9. Per user 2026-04-28 all channels drive per-level 220V lights (was originally documented as 5ch with mixed functions). Channel→level/C-connector mapping pending validation by clicking each toggle and observing which load fires."
+    notes: "Arduino Uno R3 (replaced 2026-04-30 — original genuine R3 burned, replacement is a CH340 clone). udev gives /dev/lights_1 by USB port path 1-7.4.5. 8-ch SSR module on D2..D9, ACTIVE_LOW=false. Per user 2026-04-28 all channels drive per-level 220V lights. Channel→level/C-connector mapping pending validation by clicking each toggle and observing which load fires."
+
+  - id: LIGHTS_2
+    port: /dev/lights_2
+    type: relay_16ch
+    description: "Additional 16-channel relay bank — lights"
+    experiment: EXP_022
+    firmware: experiments/EXP_022/firmware/lights_uno/
+    num_channels: 16
+    channels:
+      - { id: R1,  pin: D2 }
+      - { id: R2,  pin: D3 }
+      - { id: R3,  pin: D4 }
+      - { id: R4,  pin: D5 }
+      - { id: R5,  pin: D6 }
+      - { id: R6,  pin: D7 }
+      - { id: R7,  pin: D8 }
+      - { id: R8,  pin: D9 }
+      - { id: R9,  pin: D10 }
+      - { id: R10, pin: D11 }
+      - { id: R11, pin: D12 }
+      - { id: R12, pin: D13 }
+      - { id: R13, pin: A0 }
+      - { id: R14, pin: A1 }
+      - { id: R15, pin: A2 }
+      - { id: R16, pin: A3 }
+    notes: "16-channel mechanical relay bank on Arduino Uno (clone). All 16 digital outputs (D2..D13 + A0..A3) drive a relay. ACTIVE_LOW=true (mechanical relay convention)."
 
 camera_devices:
   - id: CAM_1

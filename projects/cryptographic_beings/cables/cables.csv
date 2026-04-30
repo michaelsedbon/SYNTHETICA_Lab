@@ -1,0 +1,51 @@
+wire_number,end_a_label,end_a_connector,end_b_label,end_b_connector,family,notes,status
+W01,W01-C16,C16,W01-L10,L10,controller,MOTOR_1 limit sensor (LJ8A3-2-Z/BX) — chain: C16 ↔ W01 ↔ L10 ↔ W26 ↔ p1,validated
+W02,W02-C02,C02,W02-L02,L02,controller,,todo
+W03,W03-C15,C15,W03-L16,L16,controller,MOTOR_1 linear actuator (4-wire DM556 step/dir) — chain: C15 ↔ W03 ↔ L16 ↔ W32 ↔ p2,validated
+W04,W04-C04,C04,W04-L04,L04,controller,,todo
+W05,W05-C05,C05,W05-L05,L05,controller,,todo
+W06,W06-C06,C06,W06-L06,L06,controller,,todo
+W07,W07-C07,C07,W07-L07,L07,controller,,todo
+W08,W08-C08,C08,W08-L08,L08,controller,,todo
+W09,W09-C09,C09,W09-L09,L09,controller,,todo
+W10,W10-C10,C10,W10-L10,L10,controller,,todo
+W11,W11-C11,C11,W11-L11,L11,controller,,todo
+W12,W12-C12,C12,W12-L12,L12,controller,,todo
+W13,W13-C13,C13,W13-L13,L13,controller,,todo
+W14,W14-C14,C14,W14-L14,L14,controller,,todo
+W15,W15-C15,C15,W15-L15,L15,controller,,todo
+W16,W16-C16,C16,W16-L16,L16,controller,,todo
+W17,W17-L01,L01,W17-P05,P05,bridge,2/4 wires (validated 2026-04-13),validated
+W18,W18-L02,L02,W18-P06,P06,bridge,2/4 wires — reworked from p18 to p6 2026-04-11,validated
+W19,W19-L03,L03,W19-P09,P09,bridge,2/4 wires (validated 2026-04-13),validated
+W20,W20-L04,L04,W20-P03,P03,bridge,2/4 wires (validated 2026-04-13),validated
+W21,W21-L05,L05,W21-P04,P04,bridge,2/4 wires (validated 2026-04-13),validated
+W22,W22-L06,L06,W22-P11,P11,bridge,2/4 wires (validated 2026-04-13),validated
+W23,W23-L07,L07,W23-P10,P10,bridge,2/4 wires (validated 2026-04-13),validated
+W24,W24-L08,L08,W24-P17,P17,bridge,2/4 wires — scan shows m2+m3 bridge (false positive),validated
+W25,W25-L09,L09,W25-P14,P14,bridge,3/4 wires (validated 2026-04-13),validated
+W26,W26-L10,L10,W26-P01,P01,bridge,3/4 wires — scan shows m2+m3 bridge (false positive),validated
+W27,W27-L11,L11,W27-P15,P15,bridge,3/4 wires (validated 2026-04-13),validated
+W28,W28-L12,L12,W28-P16,P16,bridge,3/4 wires (validated 2026-04-13),validated
+W29,W29-L13,L13,W29-P07,P07,bridge,4/4 wires — p7 housing needs shim,validated
+W30,W30-L14,L14,W30-P08,P08,bridge,4/4 wires (validated 2026-04-13),validated
+W31,W31-L15,L15,W31-P12,P12,bridge,4/4 wires (validated 2026-04-13),validated
+W32,W32-L16,L16,W32-P02,P02,bridge,4/4 wires (validated 2026-04-13),validated
+W33,W33-P01,P01,W33-D?,D?,installation,from bridge W26 (L10),todo
+W34,W34-P02,P02,W34-D?,D?,installation,from bridge W32 (L16),todo
+W35,W35-P03,P03,W35-D?,D?,installation,from bridge W20 (L4),todo
+W36,W36-P04,P04,W36-D?,D?,installation,from bridge W21 (L5),todo
+W37,W37-P05,P05,W37-D?,D?,installation,from bridge W17 (L1),todo
+W38,W38-P06,P06,W38-D?,D?,installation,from bridge W18 (L2),todo
+W39,W39-P07,P07,W39-D?,D?,installation,from bridge W29 (L13); p7 housing shim,todo
+W40,W40-P08,P08,W40-D?,D?,installation,from bridge W30 (L14),todo
+W41,W41-P09,P09,W41-D?,D?,installation,from bridge W19 (L3),todo
+W42,W42-P10,P10,W42-D?,D?,installation,from bridge W23 (L7),todo
+W43,W43-P11,P11,W43-D?,D?,installation,from bridge W22 (L6),todo
+W44,W44-P12,P12,W44-D?,D?,installation,from bridge W31 (L15),todo
+W45,W45-P13,P13,,,installation,internal wires only — no B-cable,n/a
+W46,W46-P14,P14,W46-D?,D?,installation,from bridge W25 (L9),todo
+W47,W47-P15,P15,W47-D?,D?,installation,from bridge W27 (L11),todo
+W48,W48-P16,P16,W48-D?,D?,installation,from bridge W28 (L12),todo
+W49,W49-P17,P17,W49-D?,D?,installation,from bridge W24 (L8),todo
+W50,W50-P18,P18,,,installation,p18 empty after rework,n/a

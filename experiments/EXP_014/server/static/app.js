@@ -165,18 +165,27 @@ function createMotorCard(motor) {
         log(`${motor.id} ← STOP`, 'cmd');
     });
 
-    // ESP-specific: Calibrate and Half buttons
+    // Calibrate (all motor types) + ESP-specific Half button
     const espActions = card.querySelector('.esp-actions');
-    if (isESP && espActions) {
+    if (espActions) {
         espActions.style.display = 'flex';
         card.querySelector('.btn-calibrate')?.addEventListener('click', () => {
             api('POST', `/api/motors/${motor.id}/calibrate`);
             log(`${motor.id} ← CALIBRATE`, 'cmd');
         });
-        card.querySelector('.btn-half')?.addEventListener('click', () => {
-            api('POST', `/api/motors/${motor.id}/half`);
-            log(`${motor.id} ← HALF`, 'cmd');
-        });
+        const halfBtn = card.querySelector('.btn-half');
+        if (halfBtn) {
+            if (isESP) {
+                halfBtn.addEventListener('click', () => {
+                    api('POST', `/api/motors/${motor.id}/half`);
+                    log(`${motor.id} ← HALF`, 'cmd');
+                });
+            } else {
+                // HALF is ESP-only — hide for USB motors so the Calibrate
+                // button doesn't share the row with a non-functional control.
+                halfBtn.style.display = 'none';
+            }
+        }
     }
 
     // Level Controls (all motors)
@@ -240,6 +249,27 @@ function updateMotorStatus(status) {
     if (status.pos !== undefined) pos.textContent = status.pos;
     if (status.target !== undefined) target.textContent = status.target;
     if (status.speed !== undefined) speed.textContent = status.speed;
+
+    // Sync the speed/accel sliders to the firmware's live values. Only when
+    // the user isn't currently dragging the slider (avoid yanking the thumb
+    // mid-drag). `:active` on a slider thumb isn't reliable cross-browser, so
+    // we use document.activeElement as a proxy.
+    if (status.speed !== undefined) {
+        const speedSlider = card.querySelector('.speed-slider');
+        if (speedSlider && document.activeElement !== speedSlider && parseInt(speedSlider.value) !== status.speed) {
+            speedSlider.value = status.speed;
+            const sv = card.querySelector('.speed-val');
+            if (sv) sv.textContent = status.speed;
+        }
+    }
+    if (status.accel !== undefined) {
+        const accelSlider = card.querySelector('.accel-slider');
+        if (accelSlider && document.activeElement !== accelSlider && parseInt(accelSlider.value) !== status.accel) {
+            accelSlider.value = status.accel;
+            const av = card.querySelector('.accel-val');
+            if (av) av.textContent = status.accel;
+        }
+    }
 
     // Show level % if max_steps is set
     const motorData = motors[status.id];

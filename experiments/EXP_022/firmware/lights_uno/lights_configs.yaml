@@ -1,0 +1,32 @@
+# Per-device build-time configuration for the lights_uno firmware.
+#
+# Each entry corresponds to one Arduino (Uno or Nano, ATmega328P) flashed with
+# the generic relay-controller firmware. `build.py` reads this file and
+# generates `config.h` before compiling + flashing.
+#
+# Fields:
+#   description    free text — surfaced in IDENTIFY and the boot banner
+#   port           /dev/<symlink> the udev rule binds to (just for build.py upload)
+#   num_channels   1..20 — number of relays this board controls
+#   pins           list of digital-pin numbers, in channel order (R1 = pins[0], etc.)
+#                  Arduino numbering: D0..D13 = 0..13, A0..A5 = 14..19
+#                  Avoid D0/D1 (USB serial RX/TX). D13 has the on-board LED but is fine.
+#   active_low     true  — mechanical 5 V relay boards (LOW on the pin = relay ON)
+#                  false — SSR boards (HIGH on the pin = relay ON)
+
+LIGHTS_1:
+  description: "Front-panel 220V SSR — per-level lights"
+  port: /dev/lights_1
+  num_channels: 8
+  pins: [2, 3, 4, 5, 6, 7, 8, 9]            # D2..D9
+  active_low: false                          # SSR module
+
+LIGHTS_2:
+  description: "Additional 16-ch relay bank — lights"
+  port: /dev/lights_2
+  num_channels: 16
+  # Uses every available digital pin except D0/D1 (USB serial). D2..D13 = 12 pins,
+  # plus A0..A3 = D14..D17 = 4 more pins → 16 total. Bump to 18 by extending
+  # to A5 if you have an 18-channel board.
+  pins: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+  active_low: false                          # this board is active-HIGH (HIGH = relay ON), confirmed by user 2026-04-30
